@@ -74,8 +74,12 @@ def documentation():
     html = functions.get_proms_html_header()
     html += '''
     <h1>Provenance Management Service</h1>
-    <h2>Documentation</h2>
+    <h2>Documentation for PROMS v3</h2>
     <p style="font-style: italic;">Under development, October, 2014.</p>
+    <h3>Documentation for PROMS and its related tools and concepts is maintained on the PROMS wiki:</h3>
+    <ul>
+        <li><a href="https://wiki.csiro.au/display/PROMS/">https://wiki.csiro.au/display/PROMS/</a></li>
+    </ul>
     '''
 
     html += functions.get_proms_html_footer()
