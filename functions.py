@@ -28,6 +28,9 @@ def get_proms_html_header():
                 border: solid 1px black;
                 padding: 3px;
             }
+            h4 {
+                font-weight:bold;
+            }
         </style>
     </head>
     '''
@@ -109,19 +112,48 @@ def put_report(report_in_turtle):
 def get_report(report_uri):
     #get the report metadata from DB
     query = '''
-        SELECT DISTINCT ?s ?t ?sat ?eat ?job ?u
+        PREFIX proms: <http://promsns.org/ns/proms#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        SELECT ?t ?sat ?eat ?job ?u ?rt
         WHERE {
-          ?s a proms:Report .
-          ?s dc:title ?t .
-          ?s prov:startedAtTime ?sat .
-          ?s prov:endedAtTime ?eat .
-          ?s proms:jobId ?job .
+          <''' + report_uri + '''> a proms:Report .
+          <''' + report_uri + '''> dc:title ?t .
+          <''' + report_uri + '''> prov:startedAtTime ?sat .
+          <''' + report_uri + '''> prov:endedAtTime ?eat .
+          <''' + report_uri + '''> proms:jobId ?job .
+          <''' + report_uri + '''> proms:reportType ?rt .
         }
         ORDER BY ?s
     '''
-    results = submit_stardog_query(query)
+    return submit_stardog_query(query)
 
-    return results['t']
+
+def get_report_html(report_uri):
+    results = get_report(report_uri)
+    if results[0]:
+        r = json.loads(results[1])
+        #determine display based on reportType
+        rt = r['results']['bindings'][0]['rt']['value']
+        html = ''
+        if rt == 'http://promsns.org/ns/proms#InternalReport':
+            pass
+        elif rt == 'http://promsns.org/ns/proms#ExternalReport':
+           html = '<h4><a href="http://promsns.org/ns/proms#ExternalReport"><em>External</em></a> Report</h4>'
+        else:
+            #Basic
+            #just display a table of the metadata
+            html = '<h4><a href="http://promsns.org/ns/proms#BasicReport"><em>Basic</em></a> Report</h4>'
+            html += '<table class="lines">'
+            #html += '  <tr><th colspan="2"><a href="' + report_uri + '">' + report_uri + '</a></th></tr>'
+            html += '  <tr><th>Title:</th><td>' + r['results']['bindings'][0]['t']['value'] + '</td></tr>'
+            html += '  <tr><th>JobId:</th><td>' + r['results']['bindings'][0]['job']['value'] + '</td></tr>'
+            html += '  <tr><th>Started:</th><td>' + r['results']['bindings'][0]['sat']['value'] + '</td></tr>'
+            html += '  <tr><th>Finished:</th><td>' + r['results']['bindings'][0]['eat']['value'] + '</td></tr>'
+            html += '</table>'
+
+    return html
+
 
 
 def get_entities():

@@ -42,8 +42,7 @@ def ids():
     html += functions.get_proms_html_footer()
     return Response(html, status=200, mimetype='text/html')
 
-
-@routes.route('/id/report', methods=['GET'])
+@routes.route('/id/report/', methods=['GET'])
 @routes.route('/id/report/', methods=['GET', 'POST'])
 def reports():
     if request.method == 'GET':
@@ -76,9 +75,25 @@ def reports():
             return Response('Only turtle documents allowed', status=400, mimetype='text/plain')
 
 
-@routes.route('/id/report/<string:report_id>', methods=['GET'])
-def report(report_id):
-    return "A report, ID: " + report_id
+@routes.route('/id/report/report', methods=['GET'])
+def report():
+    import urllib
+
+    if request.args.get('uri'):
+        #unencode the uri QSA
+        uri = urllib.unquote(request.args.get('uri'))
+        html = functions.get_proms_html_header()
+        html += '''
+        <h1>Provenance Management Service</h1>
+        <h2>A Report</h2>
+        <h3>URI: ''' + uri + '''</h3>
+        <p style="font-style: italic;">Under development, November, 2014.</p>
+        '''
+        html += functions.get_report_html(uri)
+        html += functions.get_proms_html_footer()
+        return Response(html, status=200, mimetype='text/html')
+    else:
+        return Response('Requests to /id/report must specify a \'uri\' query string argument', status=400, mimetype='text/plain')
 
 
 @routes.route('/id/entity', methods=['GET'])
