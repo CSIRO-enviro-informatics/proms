@@ -1,0 +1,49 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix proms: <http://promsns.org/ns/proms#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix :     <http://placeholder.org#> .
+
+:
+    a proms:ExternalReport ;
+    dc:title "Entity Types Test Report"^^xsd:string ;
+    proms:jobId "12345"^^xsd:string ;
+    proms:startingActivity :a0001 ;
+    proms:endingActivity :a0001 ;
+.
+
+:a0001
+    a prov:Activity ;
+    dc:title "Entity Types Test Activity"^^xsd:string ;
+    prov:endedAtTime "2014-20-25T11:20:04+10:00"^^xsd:dateTime ;
+    prov:startedAtTime "2014-20-25T11:20:04+10:00"^^xsd:dateTime ;
+    prov:used :e0001 ;
+    prov:used :e0002 ;
+    prov:used <http://data.bioregionalassessments.gov.au/dataset/00358558-b7fc-4165-a4e3-fd1ec26ed51a> ;
+    prov:generated <http://data.bioregionalassessments.gov.au/dataset/00c330ab-ada3-40a1-bcf6-546e1766007b> ;
+    prov:wasAssociatedWith <http://data.bioregionalassessments.gov.au/id/person/car587> ;
+.
+
+:e0001
+    a prov:Entity ;
+    dc:title "Entity 0001"^^xsd:string ;
+.
+
+:e0002
+    a prov:Plan ;
+    dc:title "Entity 0002"^^xsd:string ;
+    prov:value "Some Textual Value"^^xsd:string ;
+.
+
+<http://data.bioregionalassessments.gov.au/dataset/00358558-b7fc-4165-a4e3-fd1ec26ed51a>
+    a prov:Entity ;
+    dc:title "Entity 0003 defined by URI"^^xsd:string ;
+.
+
+<http://data.bioregionalassessments.gov.au/dataset/00c330ab-ada3-40a1-bcf6-546e1766007b>
+    a prov:Entity ;
+.
+

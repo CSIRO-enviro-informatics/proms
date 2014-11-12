@@ -57,7 +57,11 @@ class HasReport(Rule):
         PREFIX dc: <http://purl.org/dc/elements/1.1/>
         SELECT ?s
         WHERE {
-            ?s  a            proms:Report .
+            { ?s  a            proms:BasicReport .}
+            UNION
+            { ?s  a            proms:ExternalReport .}
+            UNION
+            { ?s  a            proms:InternalReport .}
         }
         ''')
         if not bool(qres):
@@ -70,7 +74,11 @@ class HasReport(Rule):
         PREFIX dc: <http://purl.org/dc/elements/1.1/>
         SELECT ?s
         WHERE {
-            ?s  a            proms:Report .
+            { ?s  a            proms:BasicReport .}
+            UNION
+            { ?s  a            proms:ExternalReport .}
+            UNION
+            { ?s  a            proms:InternalReport .}
             ?s  dc:title     ?t .
         }
         ''')
@@ -84,7 +92,11 @@ class HasReport(Rule):
         PREFIX dc: <http://purl.org/dc/elements/1.1/>
         SELECT ?s
         WHERE {
-            ?s  a            proms:Report .
+            { ?s  a            proms:BasicReport .}
+            UNION
+            { ?s  a            proms:ExternalReport .}
+            UNION
+            { ?s  a            proms:InternalReport .}
             ?s  proms:jobId  ?j .
         }
         ''')

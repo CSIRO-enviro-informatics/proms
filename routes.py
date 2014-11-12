@@ -1,6 +1,7 @@
 from flask import Blueprint, Response, request
 routes = Blueprint('routes', __name__)
 import functions
+import urllib
 
 
 #
@@ -46,19 +47,35 @@ def ids():
 @routes.route('/id/report/', methods=['GET', 'POST'])
 def reports():
     if request.method == 'GET':
-        html = functions.get_proms_html_header()
-        html += '''
-        <h1>Provenance Management Service</h1>
-        <h2>Reports Register</h2>
-        <p style="font-style: italic;">Under development, November, 2014.</p>
-        '''
-        reports = functions.get_reports()
-        if reports[0]:
-            html += functions.get_reports_html(reports[1])
+        #single Report
+        if request.args.get('uri'):
+            #unencode the uri QSA
+            uri = urllib.unquote(request.args.get('uri'))
+            html = functions.get_proms_html_header()
+            html += '''
+            <h1>Provenance Management Service</h1>
+            <h2>A Report</h2>
+            <h3>URI: ''' + uri + '''</h3>
+            <p style="font-style: italic;">Under development, November, 2014.</p>
+            '''
+            html += functions.get_report_html(uri)
+            html += functions.get_proms_html_footer()
+            return Response(html, status=200, mimetype='text/html')
+        #multiple Reports (register)
         else:
-            html += '<h4>There has been an error getting the Report</h4>'
-        html += functions.get_proms_html_footer()
-        return Response(html, status=200, mimetype='text/html')
+            html = functions.get_proms_html_header()
+            html += '''
+            <h1>Provenance Management Service</h1>
+            <h2>Reports Register</h2>
+            <p style="font-style: italic;">Under development, November, 2014.</p>
+            '''
+            reports = functions.get_reports()
+            if reports[0]:
+                html += functions.get_reports_html(reports[1])
+            else:
+                html += '<h4>There has been an error getting the Report</h4>'
+            html += functions.get_proms_html_footer()
+            return Response(html, status=200, mimetype='text/html')
 
     #process a posted Report
     if request.method == 'POST':
@@ -75,50 +92,40 @@ def reports():
             return Response('Only turtle documents allowed', status=400, mimetype='text/plain')
 
 
-@routes.route('/id/report/report', methods=['GET'])
-def report():
-    import urllib
-
+@routes.route('/id/entity', methods=['GET'])
+@routes.route('/id/entity/', methods=['GET'])
+def entities():
+    #single Report
     if request.args.get('uri'):
         #unencode the uri QSA
         uri = urllib.unquote(request.args.get('uri'))
         html = functions.get_proms_html_header()
         html += '''
         <h1>Provenance Management Service</h1>
-        <h2>A Report</h2>
+        <h2>An Entity</h2>
         <h3>URI: ''' + uri + '''</h3>
         <p style="font-style: italic;">Under development, November, 2014.</p>
         '''
-        html += functions.get_report_html(uri)
+        html += functions.get_entity_html(uri)
         html += functions.get_proms_html_footer()
         return Response(html, status=200, mimetype='text/html')
+    #multiple Entities (register)
     else:
-        return Response('Requests to /id/report must specify a \'uri\' query string argument', status=400, mimetype='text/plain')
+        html = functions.get_proms_html_header()
+        html += '''
+        <h1>Provenance Management Service</h1>
+        <h2>Entities Register</h2>
+        <p style="font-style: italic;">Under development, November, 2014.</p>
+        '''
 
+        e = functions.get_entities()
+        if e[0]:
+            html += functions.get_entities_html(e[1])
+        else:
+            html += '<h4>There has been an error getting the Entities</h4>'
 
-@routes.route('/id/entity', methods=['GET'])
-@routes.route('/id/entity/', methods=['GET'])
-def entities():
-    html = functions.get_proms_html_header()
-    html += '''
-    <h1>Provenance Management Service</h1>
-    <h2>Entities Register</h2>
-    <p style="font-style: italic;">Under development, November, 2014.</p>
-    '''
-
-    e = functions.get_entities()
-    if e[0]:
-        html += functions.get_entities_html(e[1])
-    else:
-        html += '<h4>There has been an error getting the Entities</h4>'
-
-    html += functions.get_proms_html_footer()
-    return Response(html, status=200, mimetype='text/html')
-
-
-@routes.route('/id/entity/<string:entity_id>', methods=['GET'])
-def entity(entity_id):
-    return "An Entity, ID: " + entity_id
+        html += functions.get_proms_html_footer()
+        return Response(html, status=200, mimetype='text/html')
 
 
 @routes.route('/id/activity', methods=['GET'])
