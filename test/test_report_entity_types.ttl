@@ -5,6 +5,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix :     <http://placeholder.org#> .
 
 :
@@ -30,12 +31,20 @@
 :e0001
     a prov:Entity ;
     dc:title "Entity 0001"^^xsd:string ;
+    prov:value "Entity 0001 value"^^xsd:string ;
+    prov:wasAttributedTo :ag001 ;
+.
+
+:ag001
+    a prov:Agent ;
+    foaf:name "Fozzie Bear"^^xsd:string ;
 .
 
 :e0002
     a prov:Plan ;
     dc:title "Entity 0002"^^xsd:string ;
-    prov:value "Some Textual Value"^^xsd:string ;
+    prov:value "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old."^^xsd:string ;
+    prov:wasAttributedTo <http://data.bioregionalassessments.gov.au/id/person/ste653> ;
 .
 
 <http://data.bioregionalassessments.gov.au/dataset/00358558-b7fc-4165-a4e3-fd1ec26ed51a>
@@ -45,5 +54,7 @@
 
 <http://data.bioregionalassessments.gov.au/dataset/00c330ab-ada3-40a1-bcf6-546e1766007b>
     a prov:Entity ;
+    prov:wasDerivedFrom :e0001 ;
+    prov:wasDerivedFrom :e0002 ;
 .
 
