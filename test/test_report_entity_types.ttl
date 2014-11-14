@@ -28,6 +28,17 @@
     prov:wasAssociatedWith <http://data.bioregionalassessments.gov.au/id/person/car587> ;
 .
 
+:a0002
+    a prov:Activity ;
+    dc:title "Entity Types Test Activity 2"^^xsd:string ;
+    prov:endedAtTime "2014-20-26T11:20:04+10:00"^^xsd:dateTime ;
+    prov:startedAtTime "2014-20-26T11:20:04+10:00"^^xsd:dateTime ;
+    prov:used :e0001 ;
+    prov:generated <http://data.bioregionalassessments.gov.au/dataset/00c330ab-ada3-40a1-bcf6-546e1766007b> ;
+    prov:wasAssociatedWith :ag001 ;
+    prov:wasInformedBy :a0001 ;
+.
+
 :e0001
     a prov:Entity ;
     dc:title "Entity 0001"^^xsd:string ;
@@ -38,13 +49,14 @@
 :ag001
     a prov:Agent ;
     foaf:name "Fozzie Bear"^^xsd:string ;
+    prov:actedOnBehalfOf <http://data.bioregionalassessments.gov.au/id/person/lei053> ;
 .
 
 :e0002
     a prov:Plan ;
     dc:title "Entity 0002"^^xsd:string ;
     prov:value "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old."^^xsd:string ;
-    prov:wasAttributedTo <http://data.bioregionalassessments.gov.au/id/person/ste653> ;
+    prov:wasAttributedTo <http://data.bioregionalassessments.gov.au/id/person/ste652> ;
 .
 
 <http://data.bioregionalassessments.gov.au/dataset/00358558-b7fc-4165-a4e3-fd1ec26ed51a>
@@ -58,3 +70,22 @@
     prov:wasDerivedFrom :e0002 ;
 .
 
+:e0005
+    a prov:Plan ;
+    dc:title "Entity 0005"^^xsd:string ;
+    prov:value "Small value."^^xsd:string ;
+    prov:wasGeneratedBy :a0002 ;
+    prov:wasAttributedTo <http://data.bioregionalassessments.gov.au/id/person/ste652> ;
+.
+
+:a0003
+    a prov:Activity ;
+    dc:title "Entity Types Test Activity 3"^^xsd:string ;
+    prov:endedAtTime "2014-20-27T11:20:04+10:00"^^xsd:dateTime ;
+    prov:startedAtTime "2014-20-27T11:20:04+10:00"^^xsd:dateTime ;
+    prov:used :e0001 ;
+    prov:generated <http://data.bioregionalassessments.gov.au/dataset/00c330ab-ada3-40a1-bcf6-546e1766007b> ;
+    prov:wasAssociatedWith :ag001 ;
+    prov:wasInformedBy :a0001 ;
+    prov:wasInformedBy :a0002 ;
+.

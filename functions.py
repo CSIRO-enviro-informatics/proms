@@ -48,12 +48,10 @@ def get_proms_html_footer():
 
 
 def submit_stardog_query(query):
-    url = settings.PROMS_DB_URI
+    uri = settings.PROMS_DB_URI
     qsa = {'query': query}
     h = {'accept': 'application/sparql-results+json'}
-    r = requests.get(url, params=qsa, headers=h, auth=('proms', 'proms'))
-
-    print query
+    r = requests.get(uri, params=qsa, headers=h, auth=('proms', 'proms'))
 
     if r.status_code == 200:
         return [True, r.text]
@@ -105,8 +103,8 @@ def get_reports_html(sparql_query_results_json):
     reports = json.loads(sparql_query_results_json)
     l = '<ul>'
     for report in reports['results']['bindings']:
-        url_encoded = urllib.quote(str(report['s']['value']))
-        l += '<li><a href="/id/report?uri=' + url_encoded + '">' + str(report['t']['value']) + '</a> (' + str(report['s']['value']) + ')</li>'
+        uri_encoded = urllib.quote(str(report['s']['value']))
+        l += '<li><a href="/id/report?uri=' + uri_encoded + '">' + str(report['t']['value']) + '</a> (' + str(report['s']['value']) + ')</li>'
     l += '</ul>'
 
     return l
@@ -156,9 +154,9 @@ def put_report(report_in_turtle):
         insert_query = 'INSERT DATA {' + g.serialize(format='n3') + '}'
 
         #insert into Stardog using the HTTP API
-        url = 'http://localhost:5820/proms/update'
+        uri = 'http://localhost:5820/proms/update'
         h = {'content-type': 'application/sparql-update'}
-        r = requests.post(url, data=insert_query, headers=h, auth=('proms', 'proms'))
+        r = requests.post(uri, data=insert_query, headers=h, auth=('proms', 'proms'))
 
         if r.status_code == 200:
             return [True]
@@ -209,16 +207,14 @@ def get_entity(entity_uri):
 
 
 def get_entities_html(sparql_query_results_json):
-    import urllib
-
     reports = json.loads(sparql_query_results_json)
     l = '<ul>'
     for report in reports['results']['bindings']:
         if report.get('t'):
-            url_encoded = urllib.quote(str(report['s']['value']))
-            l += '<li><a href="/id/entity?uri=' + url_encoded + '">' + str(report['t']['value']) + '</a> (' + str(report['s']['value']) + ')</li>'
+            uri_encoded = urllib.quote(str(report['s']['value']))
+            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/entity?uri=' + uri_encoded + '">' + str(report['t']['value']) + '</a> (' + str(report['s']['value']) + ')</li>'
         else:
-            l += '<li><a href="/id/entity?uri=' + str(report['s']['value']) + '">' + str(report['s']['value']) + '</a></li>'
+            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/entity?uri=' + str(report['s']['value']) + '">' + str(report['s']['value']) + '</a></li>'
     l += '</ul>'
 
     return l
@@ -230,7 +226,6 @@ def get_entity_details_svg(entity_uri):
     if get_entity_result[0]:
         entity_details = json.loads(get_entity_result[1])
         #check we got a result
-        print get_entity_result[1]
         if len(entity_details['results']['bindings']) > 0:
             script = '''
                     var svgContainer = d3.select("#container-content-2").append("svg")
@@ -309,7 +304,7 @@ def get_entity_details_svg(entity_uri):
                 '''
 
             #print its Agent, if it has one
-            if entity_details['results']['bindings'][0].get('v'):
+            if entity_details['results']['bindings'][0].get('wat'):
                 agent_uri = entity_details['results']['bindings'][0]['wat']['value']
                 agent_uri_encoded = urllib.quote(agent_uri)
                 if entity_details['results']['bindings'][0].get('wat_name'):
@@ -357,7 +352,7 @@ def get_entity_details_svg(entity_uri):
                                             .attr('width', 148)
                                             .attr('height', 98)
                                             .append("xhtml:body")
-                                            .html('<div style="width: 149px; font-size:smaller; background-color:moccasin; overflow:hidden;"><a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/agent/?url=''' + agent_uri_encoded + '''">''' + agent_name + '''</a></div>')
+                                            .html('<div style="width: 149px; font-size:smaller; background-color:moccasin; overflow:hidden;"><a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/agent/?uri=''' + agent_uri_encoded + '''">''' + agent_name + '''</a></div>')
                 '''
             return [True, script]
         else:
@@ -423,7 +418,7 @@ def get_entity_activity_wgb_svg(entity_uri):
 
                 //Activity title
                 title_html = '<div style="width: 147px; font-size:smaller; background-color:#cfceff;">' +
-                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''/id/activity/?url=''' + uri_encoded + '''">' +
+                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/activity/?uri=''' + uri_encoded + '''">' +
                             '         ''' + title + '''' +
                             '     </a>' +
                             '</div>';
@@ -498,7 +493,7 @@ def get_entity_activity_used_svg(entity_uri):
 
                 //Activity title
                 title_html = '<div style="width: 147px; font-size:smaller; background-color:#cfceff;">' +
-                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''/id/activity/?url=''' + uri_encoded + '''">' +
+                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/activity/?uri=''' + uri_encoded + '''">' +
                             '         ''' + title + '''' +
                             '     </a>' +
                             '</div>';
@@ -511,7 +506,6 @@ def get_entity_activity_used_svg(entity_uri):
                                 .html(title_html);
             '''
         elif len(used['bindings']) > 1:
-            print 'multi'
             script += '''
                 //Activity (used) multiple
                 var activityUsed1 = svgContainer.append("rect")
@@ -595,7 +589,7 @@ def get_entity_activity_used_svg(entity_uri):
     return script
 
 
-#TODO: implement get_entity_entity_wdf_svg
+#TODO: multiple Entity SPARQL
 def get_entity_entity_wdf_svg(entity_uri):
     script = ''
     query = '''
@@ -614,7 +608,6 @@ def get_entity_entity_wdf_svg(entity_uri):
 
     if stardog_results[0]:
         wdf = json.loads(stardog_results[1])['results']
-        print wdf['bindings']
         if len(wdf['bindings']) == 1:
             if wdf['bindings'][0].get('t'):
                 title = wdf['bindings'][0]['t']['value']
@@ -656,7 +649,7 @@ def get_entity_entity_wdf_svg(entity_uri):
 
                 //Activity title
                 title_html = '<div style="width: 147px; font-size:smaller; background-color:#ffffbe;">' +
-                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''/id/entity/?url=''' + uri_encoded + '''">' +
+                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/entity/?uri=''' + uri_encoded + '''">' +
                             '         ''' + title + '''' +
                             '     </a>' +
                             '</div>';
@@ -808,7 +801,1292 @@ def get_activities_html(sparql_query_results_json):
     reports = json.loads(sparql_query_results_json)
     l = '<ul>'
     for report in reports['results']['bindings']:
-        l += '<li><a href="' + str(report['s']['value']) + '">' + str(report['t']['value']) + '</a> (' + str(report['s']['value']) + ')</li>'
+        if report.get('t'):
+            uri_encoded = urllib.quote(str(report['s']['value']))
+            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/activity?uri=' + uri_encoded + '">' + str(report['t']['value']) + '</a> (' + str(report['s']['value']) + ')</li>'
+        else:
+            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/activity?uri=' + str(report['s']['value']) + '">' + str(report['s']['value']) + '</a></li>'
     l += '</ul>'
 
     return l
+
+
+def get_activity(activity_uri):
+    query = '''
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        SELECT *
+        WHERE {
+          <''' + activity_uri + '''> a prov:Activity .
+          <''' + activity_uri + '''> dc:title ?t .
+          <''' + activity_uri + '''> prov:startedAtTime ?sat .
+          <''' + activity_uri + '''> prov:endedAtTime ?eat .
+          <''' + activity_uri + '''> prov:wasAssociatedWith ?waw .
+          OPTIONAL {?waw foaf:name ?waw_name .}
+        }
+    '''
+    return submit_stardog_query(query)
+
+
+def get_activity_details_svg(activity_uri):
+    get_activity_result = get_activity(activity_uri)
+    #check for any faults
+    if get_activity_result[0]:
+        activity_details = json.loads(get_activity_result[1])
+        #check we got a result
+        if len(activity_details['results']['bindings']) > 0:
+            script = '''
+                    var svgContainer = d3.select("#container-content-2").append("svg")
+                                                        .attr("width", 700)
+                                                        .attr("height", 500);
+
+                    //Activity
+                    var activityWGB = svgContainer.append("rect")
+                                        .attr("x", 275)
+                                        .attr("y", 200)
+                                        .attr("width", 150)
+                                        .attr("height", 100)
+                                        .attr("fill", "#cfceff")
+                                        .attr("stroke", "blue")
+                                        .attr("stroke-width", "1");
+
+                    //Activity class name
+                    var activityName = svgContainer.append("text")
+                                            .attr("x", 350)
+                                            .attr("y", 230)
+                                            .text("Activity")
+                                            .style("font-family", "Verdana")
+                                            .style("text-anchor", "middle");
+            '''
+            #print its title, if it has one
+            if activity_details['results']['bindings'][0].get('t'):
+                title = activity_details['results']['bindings'][0]['t']['value']
+                script += '''
+                    //Activity title
+                    var activityTitle = svgContainer.append('foreignObject')
+                                            .attr('x', 276)
+                                            .attr('y', 250)
+                                            .attr('width', 148)
+                                            .attr('height', 100)
+                                            .append("xhtml:body")
+                                            .html('<div style="width: 149px; font-size:smaller; background-color:#cfceff;">''' + title + '''</div>')
+                '''
+
+            #print its Agent, if it has one
+            if activity_details['results']['bindings'][0].get('waw'):
+                agent_uri = activity_details['results']['bindings'][0]['waw']['value']
+                agent_uri_encoded = urllib.quote(agent_uri)
+                if activity_details['results']['bindings'][0].get('waw_name'):
+                    agent_name = activity_details['results']['bindings'][0]['waw_name']['value']
+                else:
+                    agent_name = agent_uri.split('#')
+                    if len(agent_name) < 2:
+                        agent_name = agent_uri.split('/')
+                    agent_name = agent_name[-1]
+
+                script += '''
+                    //Agent (wasAttributedTo)
+                    var agent = svgContainer.append("polygon")
+                                            .style("stroke", "black")
+                                            .style("fill", "moccasin")
+                                            .style("stroke-width", "1")
+                                            .attr("points", "350,1, 435,25, 435,100, 265,100, 265,25");
+
+                    //Agent class name
+                    var agentName = svgContainer.append("text")
+                                            .attr("x", 350)
+                                            .attr("y", 40)
+                                            .text("Agent")
+                                            .style("font-family", "Verdana")
+                                            .style("text-anchor", "middle");
+
+                    //Agent (wasAttributedTo) arrow
+                    var agentArrow = svgContainer.append("polygon")
+                                            .style("stroke-width", "1")
+                                            .attr("points", "349,199, 349,110, 344,110, 350,100, 356,110, 351,110, 351,199");
+
+                    //Agent (wasAttributedTo) arrow name
+                    var agentArrowName = svgContainer.append("text")
+                                            .attr("x", 350)
+                                            .attr("y", 150)
+                                            .text("prov:wasAssociatedWith")
+                                            .style("font-family", "Verdana")
+                                            .style("font-size", "smaller")
+                                            .style("text-anchor", "middle");
+
+                    //Agent name or URI
+                    var entityTitle = svgContainer.append('foreignObject')
+                                            .attr('x', 277)
+                                            .attr('y', 60)
+                                            .attr('width', 148)
+                                            .attr('height', 98)
+                                            .append("xhtml:body")
+                                            .html('<div style="width: 149px; font-size:smaller; background-color:moccasin; overflow:hidden;"><a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/agent/?uri=''' + agent_uri_encoded + '''">''' + agent_name + '''</a></div>')
+                '''
+            return [True, script]
+        else:
+            return [False, 'Not found']
+    else:
+        return [False, 'There was a fault']
+
+
+#TODO: multiple Entity SPARQL
+def get_activity_used_entities_svg(activity_uri):
+    script = ''
+    query = '''
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        SELECT *
+        WHERE {
+          <''' + activity_uri + '''> prov:used ?u .
+          OPTIONAL {?u dc:title ?t .}
+        }
+    '''
+    stardog_results = submit_stardog_query(query)
+    if stardog_results[0]:
+        used = json.loads(stardog_results[1])['results']
+        if len(used['bindings']) > 0:
+            if used['bindings'][0].get('t'):
+                title = used['bindings'][0]['t']['value']
+            else:
+                title = 'uri'
+            uri_encoded = urllib.quote(used['bindings'][0]['u']['value'])
+
+            script += '''
+                //Entity (used)
+                var entityUsed = svgContainer.append("ellipse")
+                                        .attr("cx", 101)
+                                        .attr("cy", 250)
+                                        .attr("rx", 100)
+                                        .attr("ry", 64)
+                                        .attr("fill", "#ffffbe")
+                                        .attr("stroke", "grey")
+                                        .attr("stroke-width", "1");
+
+                //Entity class name
+                var entityUsedName = svgContainer.append("text")
+                                        .attr("x", 101)
+                                        .attr("y", 230)
+                                        .text("Entity")
+                                        .style("font-family", "Verdana")
+                                        .style("text-anchor", "middle");
+
+                //Entity (used) arrow
+                var entityUsedArrow = svgContainer.append("polygon")
+                                        .style("stroke-width", "1")
+                                        .attr("points", "275,249, 211,249, 211,244, 201,250, 211,257, 211,251, 275,251");
+
+                //Entity (used) arrow name
+                var entityUsedArrowName = svgContainer.append("text")
+                                        .attr("x", 235)
+                                        .attr("y", 240)
+                                        .text("prov:used")
+                                        .style("font-family", "Verdana")
+                                        .style("font-size", "smaller")
+                                        .style("text-anchor", "middle");
+
+                //Entity title
+                title_html = '<div style="width: 147px; font-size:smaller; background-color:#ffffbe;">' +
+                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/entity/?uri=''' + uri_encoded + '''">' +
+                            '         ''' + title + '''' +
+                            '     </a>' +
+                            '</div>';
+                var entityUsedTitle = svgContainer.append('foreignObject')
+                                .attr('x', 25)
+                                .attr('y', 250)
+                                .attr('width', 147)
+                                .attr('height', 60)
+                                .append("xhtml:body")
+                                .html(title_html);
+            '''
+            if len(used['bindings']) > 1:
+                if used['bindings'][1].get('t'):
+                    title = used['bindings'][1]['t']['value']
+                else:
+                    title = 'uri'
+                uri_encoded = urllib.quote(used['bindings'][1]['u']['value'])
+
+                script += '''
+                    //Entity (used)
+                    var entityUsed = svgContainer.append("ellipse")
+                                            .attr("cx", 101)
+                                            .attr("cy", 100)
+                                            .attr("rx", 100)
+                                            .attr("ry", 64)
+                                            .attr("fill", "#ffffbe")
+                                            .attr("stroke", "grey")
+                                            .attr("stroke-width", "1");
+
+                    //Entity class name
+                    var entityUsedName = svgContainer.append("text")
+                                            .attr("x", 101)
+                                            .attr("y", 80)
+                                            .text("Entity")
+                                            .style("font-family", "Verdana")
+                                            .style("text-anchor", "middle");
+
+                    //Entity (used) arrow
+                    var entityUsedArrow = svgContainer.append("polygon")
+                                            .style("stroke-width", "1")
+                                            .attr("points", "275,249, 180,150, 176,153, 176,142, 186,144, 182,148, 275,247");
+
+                    //Entity title
+                    title_html = '<div style="width: 147px; font-size:smaller; background-color:#ffffbe;">' +
+                                '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/entity/?uri=''' + uri_encoded + '''">' +
+                                '         ''' + title + '''' +
+                                '     </a>' +
+                                '</div>';
+                    var entityUsedTitle = svgContainer.append('foreignObject')
+                                    .attr('x', 25)
+                                    .attr('y', 100)
+                                    .attr('width', 147)
+                                    .attr('height', 60)
+                                    .append("xhtml:body")
+                                    .html(title_html);
+                '''
+                if len(used['bindings']) == 3:
+                    if used['bindings'][2].get('t'):
+                        title = used['bindings'][2]['t']['value']
+                    else:
+                        title = 'uri'
+                    uri_encoded = urllib.quote(used['bindings'][2]['u']['value'])
+
+                    script += '''
+                        //Entity (used)
+                        var entityUsed = svgContainer.append("ellipse")
+                                                .attr("cx", 101)
+                                                .attr("cy", 400)
+                                                .attr("rx", 100)
+                                                .attr("ry", 64)
+                                                .attr("fill", "#ffffbe")
+                                                .attr("stroke", "grey")
+                                                .attr("stroke-width", "1");
+
+                        //Entity class name
+                        var entityUsedName = svgContainer.append("text")
+                                                .attr("x", 101)
+                                                .attr("y", 380)
+                                                .text("Entity")
+                                                .style("font-family", "Verdana")
+                                                .style("text-anchor", "middle");
+
+                        //Entity (used) arrow
+                        var entityUsedArrow = svgContainer.append("polygon")
+                                                .style("stroke-width", "1")
+                                                .attr("points", "275,251, 180,350, 176,347, 176,358, 186,356, 182,352, 275,253");
+
+                        //Entity title
+                        title_html = '<div style="width: 147px; font-size:smaller; background-color:#ffffbe;">' +
+                                    '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/entity/?uri=''' + uri_encoded + '''">' +
+                                    '         ''' + title + '''' +
+                                    '     </a>' +
+                                    '</div>';
+                        var entityUsedTitle = svgContainer.append('foreignObject')
+                                        .attr('x', 25)
+                                        .attr('y', 400)
+                                        .attr('width', 147)
+                                        .attr('height', 60)
+                                        .append("xhtml:body")
+                                        .html(title_html);
+                    '''
+                elif len(used['bindings']) > 3:
+                    # < 3
+                    script = ''  # reset script
+                    script += '''
+                        //Entity (used)
+                        var entityUsed1 = svgContainer.append("ellipse")
+                                                .attr("cx", 101)
+                                                .attr("cy", 250)
+                                                .attr("rx", 100)
+                                                .attr("ry", 64)
+                                                .attr("fill", "#ffffbe")
+                                                .attr("stroke", "grey")
+                                                .attr("stroke-width", "1");
+
+                        var entityUsed2 = svgContainer.append("ellipse")
+                                                .attr("cx", 106)
+                                                .attr("cy", 255)
+                                                .attr("rx", 100)
+                                                .attr("ry", 64)
+                                                .attr("fill", "#ffffbe")
+                                                .attr("stroke", "grey")
+                                                .attr("stroke-width", "1");
+
+                        var entityUsedN = svgContainer.append("ellipse")
+                                                .attr("cx", 111)
+                                                .attr("cy", 260)
+                                                .attr("rx", 100)
+                                                .attr("ry", 64)
+                                                .attr("fill", "#ffffbe")
+                                                .attr("stroke", "grey")
+                                                .attr("stroke-width", "1");
+
+                        //Entity class name
+                        var entityUsedName = svgContainer.append("text")
+                                                .attr("x", 111)
+                                                .attr("y", 240)
+                                                .text("Entity")
+                                                .style("font-family", "Verdana")
+                                                .style("text-anchor", "middle");
+
+                        //Entity (used) arrow
+                        var entityUsedArrow = svgContainer.append("polygon")
+                                                .style("stroke-width", "1")
+                                                .attr("points", "275,249, 221,249, 221,244, 211,250, 221,257, 221,251, 275,251");
+
+                        //Entity (used) arrow name
+                        var entityUsedArrowName = svgContainer.append("text")
+                                                .attr("x", 235)
+                                                .attr("y", 240)
+                                                .text("prov:used")
+                                                .style("font-family", "Verdana")
+                                                .style("font-size", "smaller")
+                                                .style("text-anchor", "middle");
+
+                        //Entity title
+                        title_html = '<div style="width: 147px; font-size:smaller; background-color:#ffffbe;">' +
+                                    '   Multiple Entities, click ' +
+                                    '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''/function/sparql/">here</a> ' +
+                                    '   to search' +
+                                    '</div>';
+                        var entityUsedTitle = svgContainer.append('foreignObject')
+                                        .attr('x', 35)
+                                        .attr('y', 250)
+                                        .attr('width', 147)
+                                        .attr('height', 60)
+                                        .append("xhtml:body")
+                                        .html(title_html);
+                    '''
+        else:
+            # zero
+            pass
+    else:
+        #we have a fault
+        script += '''
+            var entityUsedFaultText = svgContainer.append('foreignObject')
+                                    .attr('x', 1)
+                                    .attr('y', 200)
+                                    .attr('width', 149)
+                                    .attr('height', 100)
+                                    .append("xhtml:body")
+                                    .html('<div style="width: 149px;">There is a fault with retrieving Entities that may have been used by this Activity</div>')
+        '''
+    return script
+
+
+#TODO: multiple Entity SPARQL
+def get_activity_generated_entities_svg(activity_uri):
+    script = ''
+    query = '''
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        SELECT *
+        WHERE {
+          { <''' + activity_uri + '''> prov:generated ?u . }
+          UNION
+          { ?u prov:wasGeneratedBy <''' + activity_uri + '''> .}
+          OPTIONAL {?u dc:title ?t .}
+        }
+    '''
+
+    stardog_results = submit_stardog_query(query)
+    if stardog_results[0]:
+        gen = json.loads(stardog_results[1])['results']
+        if len(gen['bindings']) > 0:
+            if gen['bindings'][0].get('t'):
+                title = gen['bindings'][0]['t']['value']
+            else:
+                title = 'uri'
+            uri_encoded = urllib.quote(gen['bindings'][0]['u']['value'])
+
+            script += '''
+                //Entity (used)
+                var entityGen = svgContainer.append("ellipse")
+                                        .attr("cx", 599)
+                                        .attr("cy", 250)
+                                        .attr("rx", 100)
+                                        .attr("ry", 64)
+                                        .attr("fill", "#ffffbe")
+                                        .attr("stroke", "grey")
+                                        .attr("stroke-width", "1");
+
+                //Entity class name
+                var entityGenName = svgContainer.append("text")
+                                        .attr("x", 599)
+                                        .attr("y", 230)
+                                        .text("Entity")
+                                        .style("font-family", "Verdana")
+                                        .style("text-anchor", "middle");
+
+                //Entity (used) arrow
+                var entityGenArrow = svgContainer.append("polygon")
+                                        .style("stroke-width", "1")
+                                        .attr("points", "425,249, 489,249, 489,244, 499,250, 489,257, 489,251, 425,251");
+
+                //Entity (used) arrow name
+                var entityGenArrowName = svgContainer.append("text")
+                                        .attr("x", 480)
+                                        .attr("y", 190)
+                                        .text("prov:generated")
+                                        .style("font-family", "Verdana")
+                                        .style("font-size", "smaller")
+                                        .style("text-anchor", "middle");
+
+                //Entity title
+                title_html = '<div style="width: 147px; font-size:smaller; background-color:#ffffbe;">' +
+                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/entity/?uri=''' + uri_encoded + '''">' +
+                            '         ''' + title + '''' +
+                            '     </a>' +
+                            '</div>';
+                var entityGenTitle = svgContainer.append('foreignObject')
+                                .attr('x', 525)
+                                .attr('y', 250)
+                                .attr('width', 147)
+                                .attr('height', 60)
+                                .append("xhtml:body")
+                                .html(title_html);
+            '''
+            if len(gen['bindings']) > 1:
+                if gen['bindings'][1].get('t'):
+                    title = gen['bindings'][1]['t']['value']
+                else:
+                    title = 'uri'
+                uri_encoded = urllib.quote(gen['bindings'][1]['u']['value'])
+
+                script += '''
+                    //Entity (used)
+                    var entityGen = svgContainer.append("ellipse")
+                                            .attr("cx", 599)
+                                            .attr("cy", 100)
+                                            .attr("rx", 100)
+                                            .attr("ry", 64)
+                                            .attr("fill", "#ffffbe")
+                                            .attr("stroke", "grey")
+                                            .attr("stroke-width", "1");
+
+                    //Entity class name
+                    var entityGenName = svgContainer.append("text")
+                                            .attr("x", 599)
+                                            .attr("y", 80)
+                                            .text("Entity")
+                                            .style("font-family", "Verdana")
+                                            .style("text-anchor", "middle");
+
+                    //Entity (used) arrow
+                    var entityGenArrow = svgContainer.append("polygon")
+                                            .style("stroke-width", "1")
+                                            .attr("points", "425,249, 520,150, 524,153, 524,142, 514,144, 518,148, 425,247");
+
+                    //Entity title
+                    title_html = '<div style="width: 147px; font-size:smaller; background-color:#ffffbe;">' +
+                                '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/entity/?uri=''' + uri_encoded + '''">' +
+                                '         ''' + title + '''' +
+                                '     </a>' +
+                                '</div>';
+                    var entityGenTitle = svgContainer.append('foreignObject')
+                                    .attr('x', 525)
+                                    .attr('y', 100)
+                                    .attr('width', 147)
+                                    .attr('height', 60)
+                                    .append("xhtml:body")
+                                    .html(title_html);
+                '''
+                if len(gen['bindings']) == 3:
+                    if gen['bindings'][2].get('t'):
+                        title = gen['bindings'][2]['t']['value']
+                    else:
+                        title = 'uri'
+                    uri_encoded = urllib.quote(gen['bindings'][2]['u']['value'])
+
+                    script += '''
+                        //Entity (used)
+                        var entityGen = svgContainer.append("ellipse")
+                                                .attr("cx", 599)
+                                                .attr("cy", 400)
+                                                .attr("rx", 100)
+                                                .attr("ry", 64)
+                                                .attr("fill", "#ffffbe")
+                                                .attr("stroke", "grey")
+                                                .attr("stroke-width", "1");
+
+                        //Entity class name
+                        var entityGenName = svgContainer.append("text")
+                                                .attr("x", 599)
+                                                .attr("y", 380)
+                                                .text("Entity")
+                                                .style("font-family", "Verdana")
+                                                .style("text-anchor", "middle");
+
+                        //Entity (used) arrow
+                        var entityGenArrow = svgContainer.append("polygon")
+                                                .style("stroke-width", "1")
+                                                .attr("points", "425,251, 520,350, 524,347, 524,358, 514,356, 518,352, 425,253");
+
+                        //Entity title
+                        title_html = '<div style="width: 147px; font-size:smaller; background-color:#ffffbe;">' +
+                                    '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/entity/?uri=''' + uri_encoded + '''">' +
+                                    '         ''' + title + '''' +
+                                    '     </a>' +
+                                    '</div>';
+                        var entityGenTitle = svgContainer.append('foreignObject')
+                                        .attr('x', 525)
+                                        .attr('y', 400)
+                                        .attr('width', 147)
+                                        .attr('height', 60)
+                                        .append("xhtml:body")
+                                        .html(title_html);
+                    '''
+                elif len(gen['bindings']) > 3:
+                    # < 3
+                    script = ''  # reset script
+                    script += '''
+                        //Entity (used)
+                        var entityGen1 = svgContainer.append("ellipse")
+                                                .attr("cx", 599)
+                                                .attr("cy", 250)
+                                                .attr("rx", 100)
+                                                .attr("ry", 64)
+                                                .attr("fill", "#ffffbe")
+                                                .attr("stroke", "grey")
+                                                .attr("stroke-width", "1");
+
+                        var entityGen2 = svgContainer.append("ellipse")
+                                                .attr("cx", 594)
+                                                .attr("cy", 255)
+                                                .attr("rx", 100)
+                                                .attr("ry", 64)
+                                                .attr("fill", "#ffffbe")
+                                                .attr("stroke", "grey")
+                                                .attr("stroke-width", "1");
+
+                        var entityGenN = svgContainer.append("ellipse")
+                                                .attr("cx", 589)
+                                                .attr("cy", 260)
+                                                .attr("rx", 100)
+                                                .attr("ry", 64)
+                                                .attr("fill", "#ffffbe")
+                                                .attr("stroke", "grey")
+                                                .attr("stroke-width", "1");
+
+                        //Entity class name
+                        var entityGenName = svgContainer.append("text")
+                                                .attr("x", 589)
+                                                .attr("y", 240)
+                                                .text("Entity")
+                                                .style("font-family", "Verdana")
+                                                .style("text-anchor", "middle");
+
+                        //Entity (used) arrow
+                        var uentityGenArrow = svgContainer.append("polygon")
+                                                .style("stroke-width", "1")
+                                                .attr("points", "425,249, 479,249, 479,244, 489,250, 479,257, 479,251, 425,251");
+
+                        //Entity (used) arrow name
+                        var uentityGenArrowName = svgContainer.append("text")
+                                                .attr("x", 480)
+                                                .attr("y", 190)
+                                                .text("prov:generated")
+                                                .style("font-family", "Verdana")
+                                                .style("font-size", "smaller")
+                                                .style("text-anchor", "middle");
+
+                        //Entity title
+                        title_html = '<div style="width: 147px; font-size:smaller; background-color:#ffffbe;">' +
+                                    '   Multiple Entities, click ' +
+                                    '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''/function/sparql/">here</a> ' +
+                                    '   to search' +
+                                    '</div>';
+                        var entityGenTitle = svgContainer.append('foreignObject')
+                                        .attr('x', 525)
+                                        .attr('y', 250)
+                                        .attr('width', 147)
+                                        .attr('height', 60)
+                                        .append("xhtml:body")
+                                        .html(title_html);
+                    '''
+        else:
+            # zero
+            pass
+    else:
+        #we have a fault
+        script += '''
+            var entityGenFaultText = svgContainer.append('foreignObject')
+                                    .attr('x', 349)
+                                    .attr('y', 200)
+                                    .attr('width', 149)
+                                    .attr('height', 100)
+                                    .append("xhtml:body")
+                                    .html('<div style="width: 149px;">There is a fault with retrieving Entities that may have been used by this Activity</div>')
+        '''
+    return script
+
+
+#TODO: multiple Activity SPARQL
+def get_activity_was_informed_by(activity_uri):
+    script = ''
+    query = '''
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        SELECT *
+        WHERE {
+            <''' + activity_uri + '''> a prov:Activity .
+            <''' + activity_uri + '''> prov:wasInformedBy ?wif .
+            OPTIONAL { ?wif dc:title ?t . }
+        }
+    '''
+    stardog_results = submit_stardog_query(query)
+
+    if stardog_results[0]:
+        wif = json.loads(stardog_results[1])['results']
+        if len(wif['bindings']) == 1:
+            if wif['bindings'][0].get('t'):
+                title = wif['bindings'][0]['t']['value']
+            else:
+                title = 'uri'
+            uri_encoded = urllib.quote(wif['bindings'][0]['wif']['value'])
+            script += '''
+                //Activity (wasDerivedFrom)
+                var activityWIB = svgContainer.append("rect")
+                                        .attr("x", 275)
+                                        .attr("y", 399)
+                                        .attr("width", 150)
+                                        .attr("height", 100)
+                                        .attr("fill", "#cfceff")
+                                        .attr("stroke", "blue")
+                                        .attr("stroke-width", "1");
+
+                //Activity class name
+                var activityWIBName = svgContainer.append("text")
+                                        .attr("x", 350)
+                                        .attr("y", 420)
+                                        .text("Activity")
+                                        .style("font-family", "Verdana")
+                                        .style("text-anchor", "middle");
+
+                //Activity (wasInformedBy) arrow
+                var activityWIBArrow = svgContainer.append("polygon")
+                                        .style("stroke-width", "1")
+                                        .attr("points", "349,301, 349,388, 344,388, 350,398, 356,388, 351,388, 351,301");
+
+                //Activity (wasInformedBy) arrow name
+                var activityWIBArrowName = svgContainer.append("text")
+                                        .attr("x", 350)
+                                        .attr("y", 350)
+                                        .text("prov:wasInformedBy")
+                                        .style("font-family", "Verdana")
+                                        .style("font-size", "smaller")
+                                        .style("text-anchor", "middle");
+
+                //Activity title
+                title_html = '<div style="width: 147px; font-size:smaller; background-color:#cfceff;">' +
+                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/activity/?uri=''' + uri_encoded + '''">' +
+                            '         ''' + title + '''' +
+                            '     </a>' +
+                            '</div>';
+                var activityTitle = svgContainer.append('foreignObject')
+                                .attr('x', 276)
+                                .attr('y', 435)
+                                .attr('width', 147)
+                                .attr('height', 60)
+                                .append("xhtml:body")
+                                .html(title_html);
+            '''
+        elif len(wif['bindings']) > 1:
+            script += '''
+                //Activity (wasDerivedFrom)
+                var activityWIB = svgContainer.append("rect")
+                                        .attr("x", 275)
+                                        .attr("y", 399)
+                                        .attr("width", 150)
+                                        .attr("height", 100)
+                                        .attr("fill", "#cfceff")
+                                        .attr("stroke", "blue")
+                                        .attr("stroke-width", "1");
+
+                var activityWIB = svgContainer.append("rect")
+                                        .attr("x", 270)
+                                        .attr("y", 394)
+                                        .attr("width", 150)
+                                        .attr("height", 100)
+                                        .attr("fill", "#cfceff")
+                                        .attr("stroke", "blue")
+                                        .attr("stroke-width", "1");
+
+                var activityWIB = svgContainer.append("rect")
+                                        .attr("x", 265)
+                                        .attr("y", 389)
+                                        .attr("width", 150)
+                                        .attr("height", 100)
+                                        .attr("fill", "#cfceff")
+                                        .attr("stroke", "blue")
+                                        .attr("stroke-width", "1");
+
+                //Activity class name
+                var activityWIBName = svgContainer.append("text")
+                                        .attr("x", 350)
+                                        .attr("y", 420)
+                                        .text("Activity")
+                                        .style("font-family", "Verdana")
+                                        .style("text-anchor", "middle");
+
+                //Activity (wasInformedBy) arrow
+                var activityWIBArrow = svgContainer.append("polygon")
+                                        .style("stroke-width", "1")
+                                        .attr("points", "349,301, 349,378, 344,378, 350,388, 356,378, 351,378, 351,301");
+
+                //Activity (wasInformedBy) arrow name
+                var activityWIBArrowName = svgContainer.append("text")
+                                        .attr("x", 350)
+                                        .attr("y", 350)
+                                        .text("prov:wasInformedBy")
+                                        .style("font-family", "Verdana")
+                                        .style("font-size", "smaller")
+                                        .style("text-anchor", "middle");
+
+                //Activity title
+                title_html = '<div style="width: 147px; font-size:smaller; background-color:#cfceff;">' +
+                            '   Multiple Activities, click ' +
+                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''/function/sparql/">here</a> ' +
+                            '   to search' +
+                            '</div>';
+                var activityTitle = svgContainer.append('foreignObject')
+                                .attr('x', 266)
+                                .attr('y', 435)
+                                .attr('width', 147)
+                                .attr('height', 60)
+                                .append("xhtml:body")
+                                .html(title_html);
+            '''
+        else:
+            #do nothing as no Activities found
+            pass
+    else:
+        #we have a fault
+        script += '''
+            var activityUsedFaultText = svgContainer.append('foreignObject')
+                                    .attr('x', 550)
+                                    .attr('y', 200)
+                                    .attr('width', 149)
+                                    .attr('height', 100)
+                                    .append("xhtml:body")
+                                    .html('<div style="width: 149px;">There is a fault with retrieving Activities that may have used this Entity</div>')
+        '''
+
+    return script
+
+
+def get_activity_html(activity_uri):
+    activity_script = get_activity_details_svg(activity_uri)
+    if activity_script[0]:
+        #Activity (main)
+        script = activity_script[1]
+
+        #Activity used
+        script += get_activity_used_entities_svg(activity_uri)
+
+        #Activity generated
+        script += get_activity_generated_entities_svg(activity_uri)
+
+        #Activity wasInformedBy
+        script += get_activity_was_informed_by(activity_uri)
+
+        html = '''
+            <h4>Neighbours view</h4>
+            <script src="/static/js/d3.min.js" charset="utf-8"></script>
+            <style>
+                svg {
+                    /*border: solid 1px #eeeeee;*/
+                    margin-left:75px;
+                }
+            </style>
+            <script>
+                ''' + script + '''
+            </script>
+        '''
+    else:
+        html = '''
+            <h4>''' + activity_script[1] + '''</h4>
+        '''
+
+    return html
+
+
+#
+#   Agents
+#
+def get_agents():
+    query = '''
+            PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+            SELECT DISTINCT ?ag ?n
+            WHERE {
+                {
+                    { ?e a prov:Entity . }
+                    UNION
+                    { ?e a prov:Plan . }
+                    ?e prov:wasAttributedTo ?ag .
+                    OPTIONAL{ ?ag foaf:name ?n . }
+                }
+                UNION
+                {
+                    ?a a prov:Activity .
+                    ?a prov:wasAssociatedWith ?ag .
+                    OPTIONAL{ ?ag foaf:name ?n . }
+                }
+                UNION
+                {
+                    ?ag1 a prov:Agent .
+                    ?ag1 prov:actedOnBehalfOf ?ag .
+                    OPTIONAL{ ?ag foaf:name ?n . }
+                }
+            }
+            '''
+    return submit_stardog_query(query)
+
+
+def get_agents_html(sparql_query_results_json):
+    agents = json.loads(sparql_query_results_json)
+    l = '<ul>'
+    for agent in agents['results']['bindings']:
+        if agent.get('n'):
+            uri_encoded = urllib.quote(str(agent['ag']['value']))
+            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/agent?uri=' + uri_encoded + '">' + str(agent['n']['value']) + '</a> (' + str(agent['ag']['value']) + ')</li>'
+        else:
+            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/agent?uri=' + str(agent['ag']['value']) + '">' + str(agent['ag']['value']) + '</a></li>'
+    l += '</ul>'
+
+    return l
+
+
+def get_agent(agent_uri):
+    query = '''
+            PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            SELECT DISTINCT (<''' + agent_uri + '''> AS ?ag) ?n ?ag2
+            WHERE {
+                {
+                    { ?e a prov:Entity . }
+                    UNION
+                    { ?e a prov:Plan . }
+                    ?e prov:wasAttributedTo <''' + agent_uri + '''> .
+                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
+                    OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
+                }
+                UNION
+                {
+                    ?e a prov:Activity .
+                    ?e prov:wasAssociatedWith <''' + agent_uri + '''> .
+                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
+                    OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
+                }
+                UNION
+                {
+                    ?aoo a prov:Agent .
+                    ?aoo prov:actedOnBehalfOf <''' + agent_uri + '''> .
+                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
+                }
+                UNION
+                {
+                    <''' + agent_uri + '''> a prov:Agent .
+                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
+                    OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
+                }
+            }
+            '''
+    return submit_stardog_query(query)
+
+
+def get_agent_details_svg(agent_uri):
+    get_agent_result = get_agent(agent_uri)
+    #check for any faults
+    if get_agent_result[0]:
+        agent_details = json.loads(get_agent_result[1])
+        #check we got a result
+        if len(agent_details['results']['bindings']) > 0:
+            script = '''
+                var svgContainer = d3.select("#container-content-2").append("svg")
+                                                    .attr("width", 700)
+                                                    .attr("height", 500);
+
+                //Agent
+                var agent = svgContainer.append("polygon")
+                                        .style("stroke", "black")
+                                        .style("fill", "moccasin")
+                                        .style("stroke-width", "1")
+                                        .attr("points", "350,200, 435,225, 435,300, 265,300, 265,225");
+
+                //Agent class name
+                var agentName = svgContainer.append("text")
+                                        .attr("x", 350)
+                                        .attr("y", 240)
+                                        .text("Agent")
+                                        .style("font-family", "Verdana")
+                                        .style("text-anchor", "middle");
+            '''
+            #print its name, if it has one
+            if agent_details['results']['bindings'][0].get('n'):
+                name = agent_details['results']['bindings'][0]['n']['value']
+            else:
+                name = agent_details['results']['bindings'][0]['ag']['value']
+                name = name.split('#')
+                if len(name) < 2:
+                    name = agent_uri.split('/')
+                name = name[-1]
+            script += '''
+                //Activity title
+                var agentName = svgContainer.append('foreignObject')
+                                        .attr('x', 275)
+                                        .attr('y', 260)
+                                        .attr('width', 148)
+                                        .attr('height', 100)
+                                        .append("xhtml:body")
+                                        .html('<div style="width: 149px; font-size:smaller; background-color:moccasin;">''' + name + '''</div>')
+            '''
+
+            #print actedOnBehalfOf, if it has one
+            if agent_details['results']['bindings'][0].get('ag2'):
+                agent_uri = agent_details['results']['bindings'][0]['ag2']['value']
+                agent_uri_encoded = urllib.quote(agent_uri)
+                agent_name = agent_details['results']['bindings'][0]['ag2']['value']
+                agent_name = agent_name.split('#')
+                if len(agent_name) < 2:
+                    agent_name = agent_uri.split('/')
+                agent_name = agent_name[-1]
+                script += '''
+                    //Agent
+                    var agent = svgContainer.append("polygon")
+                                            .style("stroke", "black")
+                                            .style("fill", "moccasin")
+                                            .style("stroke-width", "1")
+                                            .attr("points", "350,1, 435,25, 435,100, 265,100, 265,25");
+
+                    //Agent class name
+                    var agentName = svgContainer.append("text")
+                                            .attr("x", 350)
+                                            .attr("y", 40)
+                                            .text("Agent")
+                                            .style("font-family", "Verdana")
+                                            .style("text-anchor", "middle");
+
+                    //Agent (actedOnBehalfOf) arrow
+                    var agentArrow = svgContainer.append("polygon")
+                                            .style("stroke-width", "1")
+                                            .attr("points", "349,201, 349,110, 344,110, 350,100, 356,110, 351,110, 351,201");
+
+                    //Agent (wasAttributedTo) arrow name
+                    var agentArrowName = svgContainer.append("text")
+                                            .attr("x", 350)
+                                            .attr("y", 150)
+                                            .text("prov:actedOnBehalfOf")
+                                            .style("font-family", "Verdana")
+                                            .style("font-size", "smaller")
+                                            .style("text-anchor", "middle");
+
+                    //Agent name
+                    var agentName = svgContainer.append('foreignObject')
+                                            .attr('x', 275)
+                                            .attr('y', 60)
+                                            .attr('width', 148)
+                                            .attr('height', 100)
+                                            .append("xhtml:body")
+                                            .html('<div style="width: 149px; font-size:smaller; background-color:moccasin; overflow:hidden;"><a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/agent/?uri=''' + agent_uri_encoded + '''">''' + agent_name + '''</a></div>')
+                '''
+
+            return [True, script]
+        else:
+            return [False, 'Not found']
+    else:
+        return [False, 'There was a fault']
+
+
+#TODO: multiple Entity SPARQL
+def get_agent_was_attributed_to_svg(agent_uri):
+    script = ''
+    query = '''
+            PREFIX dc: <http://purl.org/dc/elements/1.1/>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            SELECT DISTINCT ?e ?t
+            WHERE {
+                { ?e a prov:Entity .}
+                UNION
+                { ?e a prov:Plan .}
+                ?e prov:wasAttributedTo <''' + agent_uri + '''> ;
+                OPTIONAL { ?e dc:title ?t . }
+            }
+    '''
+    stardog_results = submit_stardog_query(query)
+
+    if stardog_results[0]:
+        wdf = json.loads(stardog_results[1])['results']
+        print wdf
+        if len(wdf['bindings']) == 1:
+            if wdf['bindings'][0].get('t'):
+                title = wdf['bindings'][0]['t']['value']
+            else:
+                title = 'uri'
+            uri_encoded = urllib.quote(wdf['bindings'][0]['e']['value'])
+            script += '''
+                //Entity (wasDerivedFrom)
+                var entityWDF = svgContainer.append("ellipse")
+                                        .attr("cx", 350)
+                                        .attr("cy", 435)
+                                        .attr("rx", 100)
+                                        .attr("ry", 64)
+                                        .attr("fill", "#ffffbe")
+                                        .attr("stroke", "grey")
+                                        .attr("stroke-width", "1");
+
+                //Entity class name
+                var entityWDFName = svgContainer.append("text")
+                                        .attr("x", 350)
+                                        .attr("y", 420)
+                                        .text("Entity")
+                                        .style("font-family", "Verdana")
+                                        .style("text-anchor", "middle");
+
+                //Entity (wasDerivedFrom) arrow
+                var entityWDFArrow = svgContainer.append("polygon")
+                                        .style("stroke-width", "1")
+                                        .attr("points", "349,301, 349,360, 344,360, 350,370, 356,360, 351,360, 351,301");
+
+                //Entity (wasDerivedFrom) arrow name
+                var entityWDFArrowName = svgContainer.append("text")
+                                        .attr("x", 350)
+                                        .attr("y", 350)
+                                        .text("prov:wasDerivedFrom")
+                                        .style("font-family", "Verdana")
+                                        .style("font-size", "smaller")
+                                        .style("text-anchor", "middle");
+
+                //Activity title
+                title_html = '<div style="width: 147px; font-size:smaller; background-color:#ffffbe;">' +
+                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/entity/?uri=''' + uri_encoded + '''">' +
+                            '         ''' + title + '''' +
+                            '     </a>' +
+                            '</div>';
+                var entityTitle = svgContainer.append('foreignObject')
+                                .attr('x', 275)
+                                .attr('y', 435)
+                                .attr('width', 147)
+                                .attr('height', 60)
+                                .append("xhtml:body")
+                                .html(title_html);
+            '''
+        elif len(wdf['bindings']) > 1:
+            script += '''
+                //Activity (used) multiple
+                var entityWdf1 = svgContainer.append("ellipse")
+                                        .attr("cx", 350)
+                                        .attr("cy", 435)
+                                        .attr("rx", 100)
+                                        .attr("ry", 64)
+                                        .attr("fill", "#ffffbe")
+                                        .attr("stroke", "grey")
+                                        .attr("stroke-width", "1");
+
+                var entityWdf2 = svgContainer.append("ellipse")
+                                        .attr("cx", 345)
+                                        .attr("cy", 430)
+                                        .attr("rx", 100)
+                                        .attr("ry", 64)
+                                        .attr("fill", "#ffffbe")
+                                        .attr("stroke", "grey")
+                                        .attr("stroke-width", "1");
+
+                var entityWdfN = svgContainer.append("ellipse")
+                                        .attr("cx", 340)
+                                        .attr("cy", 425)
+                                        .attr("rx", 100)
+                                        .attr("ry", 64)
+                                        .attr("fill", "#ffffbe")
+                                        .attr("stroke", "grey")
+                                        .attr("stroke-width", "1");
+
+                //Entit(y|ies) class name
+                var entityWDFName = svgContainer.append("text")
+                                        .attr("x", 340)
+                                        .attr("y", 400)
+                                        .text("Entity")
+                                        .style("font-family", "Verdana")
+                                        .style("text-anchor", "middle");
+
+                //Entity (wasDerivedFrom) arrow
+                var entityWDFArrow = svgContainer.append("polygon")
+                                        .style("stroke-width", "1")
+                                        .attr("points", "349,301, 349,350, 344,350, 350,360, 356,350, 351,350, 351,301");
+
+                //Entity (wasDerivedFrom) arrow name
+                var entityWDFArrowName = svgContainer.append("text")
+                                        .attr("x", 350)
+                                        .attr("y", 340)
+                                        .text("prov:wasDerivedFrom")
+                                        .style("font-family", "Verdana")
+                                        .style("font-size", "smaller")
+                                        .style("text-anchor", "middle");
+
+                //Entity title
+                title_html = '<div style="width: 147px; font-size:smaller; background-color:#ffffbe;">' +
+                            '   Multiple Entities, click ' +
+                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''/function/sparql/">here</a> ' +
+                            '   to search' +
+                            '</div>';
+                var entityTitle = svgContainer.append('foreignObject')
+                                .attr('x', 275)
+                                .attr('y', 425)
+                                .attr('width', 147)
+                                .attr('height', 60)
+                                .append("xhtml:body")
+                                .html(title_html);
+            '''
+        else:
+            #do nothing as no Activities found
+            pass
+    else:
+        #we have a fault
+        script += '''
+            var activityUsedFaultText = svgContainer.append('foreignObject')
+                                    .attr('x', 550)
+                                    .attr('y', 200)
+                                    .attr('width', 149)
+                                    .attr('height', 100)
+                                    .append("xhtml:body")
+                                    .html('<div style="width: 149px;">There is a fault with retrieving Activities that may have used this Entity</div>')
+        '''
+
+    return script
+
+
+#TODO: multiple Activity SPARQL
+def get_agent_was_associated_with_svg(agent_uri):
+    script = ''
+    query = '''
+            PREFIX dc: <http://purl.org/dc/elements/1.1/>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            SELECT DISTINCT ?e ?t
+            WHERE {
+                { ?a a prov:Activity .}
+                ?e prov:wasAssociatedWith <''' + agent_uri + '''> ;
+                OPTIONAL { ?e dc:title ?t . }
+            }
+    '''
+    stardog_results = submit_stardog_query(query)
+
+
+def get_agent_html(agent_uri):
+    agent_script = get_agent_details_svg(agent_uri)
+    if agent_script[0]:
+        #Agent (main)
+        script = agent_script[1]
+
+        #Agent wasAttributedTo
+        script += get_agent_was_attributed_to_svg(agent_uri)
+
+        #Agent wasAssociatedWith
+        #script += get_agent_was_associated_with_svg(agent_uri)
+
+        html = '''
+            <h4>Neighbours view</h4>
+            <script src="/static/js/d3.min.js" charset="utf-8"></script>
+            <style>
+                svg {
+                    /*border: solid 1px #eeeeee;*/
+                    margin-left:75px;
+                }
+            </style>
+            <script>
+                ''' + script + '''
+            </script>
+        '''
+    else:
+        html = '''
+            <h4>''' + agent_script[1] + '''</h4>
+        '''
+
+    return html
+
+
+def page_documentation():
+    #TODO: definitions of terms
+    html = get_proms_html_header()
+    html += '''
+    <h1>Provenance Management Service</h1>
+    <h2>Documentation for PROMS v3</h2>
+    <p style="font-style: italic;">Under development, November, 2014.</p>
+    <h3>Overview</h3>
+    <p>PROMS v3 is a provenance storage system. It is an <a href="http://en.wikipedia.org/wiki/Application_programming_interface" class="definition">API</a> that wraps a graph database (see <a href="">database</a> below for more on this) used to store provenance traces.</p>
+    <p>It does a few things to ensure that the data coming in from <em><a href="#" class="definition" style="text-decoration:line-through;">Reporting Systems</a></em> is acceptable and useful, it:</p>
+    <ul>
+        <li>validates incoming <a href="#" class="definition" style="text-decoration:line-through;">Reports</a> using the PROMS <a href="#" style="text-decoration:line-through;">Validation Criteria</a></li>
+        <li>allows <a href="http://www.w3.org/standards/semanticweb/inference" class="definition">inference</a> to take place on <em>Reports</em></li>
+        <li>provides <a href="http://en.wikipedia.org/wiki/Representational_state_transfer" class="definition">RESTful</a> endpoints to each of the classes of object that valid <em>Reports</em> contain</li>
+    </ul>
+    <h3>Data</h3>
+    <p>PROMS v3 uses an extension to the <a href="http://www.w3.org/TR/prov-o/">PROV</a> <a class="definition" href="http://en.wikipedia.org/wiki/Ontology_%28information_science%29">ontology</a> (PROV-O) as its data model.</p>
+    <p>Basic use of PROV-O includes the use of 3 basic classes of things:</p>
+    <ul>
+        <li><em>Entities</em> - things like datasets, files etc.</li>
+        <li><em>Activities</em> - things that happen to make or use Entities</li>
+        <li><em>Agents</em> - people or systems responsible for Activities (and thus Entities)</li>
+    </ul>
+    <p>PROMS extends the PROV-O into a <a href="http://promsns.org/def/proms">PROMS-O</a> by the inclusion of the following classes of thinfgs:</p>
+    <ul>
+        <li><em>Report</em> - a subclass of <em>Entity</em> with the following subclasses of its own:</li>
+        <li><em>BasicReport</em> - a Report about an event (Activity) containing very basic metada: "something called X happened"</li>
+        <li><em>ExternalReport</em> - a Report about an Activity with basic metadata and references to the input and output data it used</li>
+        <li><em>InternalReport</em> - a Report with basic metadata and a full (as full as the author can make it) details about the internal steps of the Activity, modelled in PROV</li>
+    </ul>
+    <h3>Functions</h3>
+    <p>The functions supported by PROMS v3 are:</p>
+    <ul>
+        <li>
+            <strong>Create a new report</strong>
+            <ul>
+                <li>post a provenance <em>Report</em> to PROMS</li>
+                <li>send a turtle document (RDF graph) to {PROMS_INSTANCE_URI}/id/report/</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Create a pingback</strong> <em>(under development)</em>
+            <ul>
+                <li>let PROMS know you've referred to one of its <em>Entities</em> in a provenance graph elsewhere</li>
+                <li>send a pingback JSON document to {PROMS_INSTANCE_URI}/function/pingback/</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Browse <em>Reports</em> and their members</strong>
+            <ul>
+                <li>browse and filter <em>Reports</em> and their components <em>Entities</em> &amp; <em>Activities</em></li>
+                <li><em>Reports</em> - <a href="/id/report/">{PROMS_INSTANCE_URI}/id/report/</a></li>
+                <li><em>Entities</em> - <a href="/id/entity/">{PROMS_INSTANCE_URI}/id/entity/</a></li>
+                <li><em>Activities</em> - <a href="/id/activity/">{PROMS_INSTANCE_URI}/id/activity/</a></li>
+            </ul>
+        </li>
+        <li>
+            <strong>Search the database</strong> <em>(under development)</em>
+            <ul>
+                <li>search the provenance data using PROM's SPARQL endpoint</li>
+                <li><em>Activities</em> - <a href="/function/sparql">{PROMS_INSTANCE_URI}/function/sparql</a></li>
+            </ul>
+        </li>
+    </ul>
+    <h3 id="howto">How Tos</h3>
+    <p><em>Coming, November, 2014!</em></p>
+    <h3>Implementation</h3>
+    <p>PROMS v3 is implemented according to Figure 1.</p>
+    <div class="figure">
+        <img src="/static/img/PROMS3_structure.png" alt="PROMS3 Structure" />
+        <p class="caption"><strong>Figure 1</strong>: PROMS v3 Structure</p>
+    </div>
+
+    <h3>More details</h3>
+    <h4>Further documentation for PROMS and its related tools and concepts is maintained on the PROMS wiki:</h4>
+    <ul>
+        <li><a href="https://wiki.csiro.au/display/PROMS/">https://wiki.csiro.au/display/PROMS/</a></li>
+    </ul>
+    '''
+
+    html += get_proms_html_footer()
+
+    return html

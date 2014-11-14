@@ -28,11 +28,12 @@ def ids():
     <h1>Provenance Management Service</h1>
     <h2>Endpoints</h2>
     <p style="font-style: italic;">Under development, October, 2014.</p>
-    <p>The current registers (lists) of things that PROMS delivers for all its reports are:</p>
+    <p>The current registers (lists) of things that provenance reports sent to PROMS describe are:</p>
     <ul>
         <li><a href="/id/report">Reports</a></li>
         <li><a href="/id/entity">Entities</a></li>
         <li><a href="/id/activity">Activities</a></li>
+        <li><a href="/id/agent/">Agents</a></li>
     </ul>
     <p>SPARQL endpoint for free-range queries:</p>
     <ul>
@@ -95,7 +96,7 @@ def reports():
 @routes.route('/id/entity', methods=['GET'])
 @routes.route('/id/entity/', methods=['GET'])
 def entities():
-    #single Report
+    #single Entity
     if request.args.get('uri'):
         #unencode the uri QSA
         uri = urllib.unquote(request.args.get('uri'))
@@ -131,26 +132,71 @@ def entities():
 @routes.route('/id/activity', methods=['GET'])
 @routes.route('/id/activity/', methods=['GET'])
 def activities():
-    html = functions.get_proms_html_header()
-    html += '''
-    <h1>Provenance Management Service</h1>
-    <h2>Activities Register</h2>
-    <p style="font-style: italic;">Under development, November, 2014.</p>
-    '''
-
-    a = functions.get_activities()
-    if a[0]:
-        html += functions.get_activities_html(a[1])
+    #single Report
+    if request.args.get('uri'):
+        #unencode the uri QSA
+        uri = urllib.unquote(request.args.get('uri'))
+        html = functions.get_proms_html_header()
+        html += '''
+        <h1>Provenance Management Service</h1>
+        <h2>An Activity</h2>
+        <h3>URI: ''' + uri + '''</h3>
+        <p style="font-style: italic;">Under development, November, 2014.</p>
+        '''
+        html += functions.get_activity_html(uri)
+        html += functions.get_proms_html_footer()
+        return Response(html, status=200, mimetype='text/html')
     else:
-        html += '<h4>There has been an error getting the Entities</h4>'
+        html = functions.get_proms_html_header()
+        html += '''
+        <h1>Provenance Management Service</h1>
+        <h2>Activities Register</h2>
+        <p style="font-style: italic;">Under development, November, 2014.</p>
+        '''
 
-    html += functions.get_proms_html_footer()
-    return Response(html, status=200, mimetype='text/html')
+        a = functions.get_activities()
+        if a[0]:
+            html += functions.get_activities_html(a[1])
+        else:
+            html += '<h4>There has been an error getting the Activities</h4>'
+
+        html += functions.get_proms_html_footer()
+        return Response(html, status=200, mimetype='text/html')
 
 
-@routes.route('/id/activity/<string:activity_id>', methods=['GET'])
-def activity(activity_id):
-    return "An activity, ID: " + activity_id
+@routes.route('/id/agent/', methods=['GET'])
+def agents():
+    #single Agent
+    if request.args.get('uri'):
+        #unencode the uri QSA
+        uri = urllib.unquote(request.args.get('uri'))
+        html = functions.get_proms_html_header()
+        html += '''
+        <h1>Provenance Management Service</h1>
+        <h2>An Agent</h2>
+        <h3>URI: ''' + uri + '''</h3>
+        <p style="font-style: italic;">Under development, November, 2014.</p>
+        '''
+        html += functions.get_agent_html(uri)
+        html += functions.get_proms_html_footer()
+        return Response(html, status=200, mimetype='text/html')
+    #multiple Agents (register)
+    else:
+        html = functions.get_proms_html_header()
+        html += '''
+        <h1>Provenance Management Service</h1>
+        <h2>Agents Register</h2>
+        <p style="font-style: italic;">Under development, November, 2014.</p>
+        '''
+
+        a = functions.get_agents()
+        if a[0]:
+            html += functions.get_agents_html(a[1])
+        else:
+            html += '<h4>There has been an error getting the Agents</h4>'
+
+        html += functions.get_proms_html_footer()
+        return Response(html, status=200, mimetype='text/html')
 
 
 @routes.route('/function/pingback', methods=['GET', 'POST'])
@@ -180,49 +226,4 @@ def sparql():
 
 @routes.route('/documentation', methods=['GET'])
 def documentation():
-    html = functions.get_proms_html_header()
-    html += '''
-    <h1>Provenance Management Service</h1>
-    <h2>Documentation for PROMS v3</h2>
-    <p style="font-style: italic;">Under development, November, 2014.</p>
-    <p>The function supported by PROMS v3 are:</p>
-    <ul>
-        <li>
-            <strong>Create a new report</strong>
-            <ul>
-                <li>post a provenance <em>Report</em> to PROMS</li>
-                <li>send a turtle document (RDF graph) to {PROMS_INSTANCE_URI}/id/report/</li>
-            </ul>
-        </li>
-        <li>
-            <strong>Create a pingback</strong> <em>(under development)</em>
-            <ul>
-                <li>let PROMS know you've referred to one of its <em>Entities</em> in a provenance graph elsewhere</li>
-                <li>send a pingback JSON document to {PROMS_INSTANCE_URI}/function/pingback/</li>
-            </ul>
-        </li>
-        <li>
-            <strong>Browse <em>Reports</em> and their members</strong>
-            <ul>
-                <li>browse and filter <em>Reports</em> and their components <em>Entities</em> &amp; <em>Activities</em></li>
-                <li><em>Reports</em> - <a href="/id/report/">{PROMS_INSTANCE_URI}/id/report/</a></li>
-                <li><em>Entities</em> - <a href="/id/entity/">{PROMS_INSTANCE_URI}/id/entity/</a></li>
-                <li><em>Activities</em> - <a href="/id/activity/">{PROMS_INSTANCE_URI}/id/activity/</a></li>
-            </ul>
-        </li>
-        <li>
-            <strong>Search the database</strong> <em>(under development)</em>
-            <ul>
-                <li>search the provenance data using PROM's SPARQL endpoint</li>
-                <li><em>Activities</em> - <a href="/function/sparql">{PROMS_INSTANCE_URI}/function/sparql</a></li>
-            </ul>
-        </li>
-    </ul>
-    <h3>Documentation for PROMS and its related tools and concepts is maintained on the PROMS wiki:</h3>
-    <ul>
-        <li><a href="https://wiki.csiro.au/display/PROMS/">https://wiki.csiro.au/display/PROMS/</a></li>
-    </ul>
-    '''
-
-    html += functions.get_proms_html_footer()
-    return Response(html, status=200, mimetype='text/html')
+    return Response(functions.page_documentation(), status=200, mimetype='text/html')
