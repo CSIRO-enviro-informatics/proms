@@ -14,7 +14,7 @@ class Proms(RuleSet):
         #
         #   Run all the rules
         #
-        rules_results.append(HasReport(report_graph).get_result())
+        rules_results.append(HasValidReport(report_graph).get_result())
 
         #
         #   Call the base RuleSet constructor
@@ -26,7 +26,7 @@ class Proms(RuleSet):
                          rules_results)
 
 
-class HasReport(Rule):
+class HasValidReport(Rule):
 
     #Base constructor:
     #   id,                     name,                       business_definition,    authority,
@@ -54,7 +54,6 @@ class HasReport(Rule):
         #has a Report class
         qres = report_graph.query('''
         PREFIX proms: <http://promsns.org/ns/proms#>
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
         SELECT ?s
         WHERE {
             { ?s  a            proms:BasicReport .}
@@ -84,12 +83,11 @@ class HasReport(Rule):
         ''')
         if not bool(qres):
             self.passed = False
-            self.fail_reasons.append('The report\'s Report class does not contain a dc:title')
+            self.fail_reasons.append('The Report class does not contain a dc:title')
 
         #has a jobId
         qres = report_graph.query('''
         PREFIX proms: <http://promsns.org/ns/proms#>
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
         SELECT ?s
         WHERE {
             { ?s  a            proms:BasicReport .}
@@ -102,7 +100,25 @@ class HasReport(Rule):
         ''')
         if not bool(qres):
             self.passed = False
-            self.fail_reasons.append('The report\'s Report class does not contain a proms:jobId')
+            self.fail_reasons.append('The Report class does not contain a proms:jobId')
+
+
+        #has a ReportingSystem
+        qres = report_graph.query('''
+        PREFIX proms: <http://promsns.org/ns/proms#>
+        SELECT ?s
+        WHERE {
+            { ?s  a            proms:BasicReport .}
+            UNION
+            { ?s  a            proms:ExternalReport .}
+            UNION
+            { ?s  a            proms:InternalReport .}
+            ?s  proms:reportingSystem  ?rs .
+        }
+        ''')
+        if not bool(qres):
+            self.passed = False
+            self.fail_reasons.append('The Report class does not contain a proms:reportingSystem')
 
 
         #
@@ -125,3 +141,9 @@ class HasReport(Rule):
 class ReportAppropriateActivities(Rule):
     pass
 
+
+#TODO: ensure the RS is found in this PROMS instance
+class ReportHasAValidReporingSystem(Rule):
+    #the RS needs to be on this PROMS instance
+    #if it is, we can assume it's valid since it got past its own validation on the way in
+    pass

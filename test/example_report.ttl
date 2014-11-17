@@ -14,6 +14,7 @@
     proms:jobId "12345"^^xsd:string ;
     proms:startingActivity :a0001 ;
     proms:endingActivity :a0001 ;
+    proms:reportingSystem <http://localhost:9000/id/reportingsystem/553a7777-1218-4d9d-9667-8da48041ce0d> ;
 .
 
 :a0001

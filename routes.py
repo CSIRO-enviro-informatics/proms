@@ -30,9 +30,10 @@ def ids():
     <p style="font-style: italic;">Under development, October, 2014.</p>
     <p>The current registers (lists) of things that provenance reports sent to PROMS describe are:</p>
     <ul>
-        <li><a href="/id/report">Reports</a></li>
-        <li><a href="/id/entity">Entities</a></li>
-        <li><a href="/id/activity">Activities</a></li>
+        <li><a href="/id/reportingsystem/">ReportingSystems</a></li>
+        <li><a href="/id/report/">Reports</a></li>
+        <li><a href="/id/entity/">Entities</a></li>
+        <li><a href="/id/activity/">Activities</a></li>
         <li><a href="/id/agent/">Agents</a></li>
     </ul>
     <p>SPARQL endpoint for free-range queries:</p>
@@ -43,6 +44,53 @@ def ids():
 
     html += functions.get_proms_html_footer()
     return Response(html, status=200, mimetype='text/html')
+
+
+@routes.route('/id/reportingsystem/', methods=['GET', 'POST'])
+def reportingsystem():
+    if request.method == 'GET':
+        #single Report
+        if request.args.get('uri'):
+            #unencode the uri QSA
+            uri = urllib.unquote(request.args.get('uri'))
+            html = functions.get_proms_html_header()
+            html += '''
+            <h1>Provenance Management Service</h1>
+            <h2>A ReportingSystem</h2>
+            <h3>URI: ''' + uri + '''</h3>
+            <p style="font-style: italic;">Under development, November, 2014.</p>
+            '''
+            html += functions.get_reportingsystem_html(uri)
+            html += functions.get_proms_html_footer()
+            return Response(html, status=200, mimetype='text/html')
+        #multiple Reports (register)
+        else:
+            html = functions.get_proms_html_header()
+            html += '''
+            <h1>Provenance Management Service</h1>
+            <h2>ReportingSystems Register</h2>
+            <p style="font-style: italic;">Under development, November, 2014.</p>
+            '''
+            reportingsystems = functions.get_reportingsystems()
+            if reportingsystems[0]:
+                html += functions.get_reportingsystems_html(reportingsystems[1])
+            else:
+                html += '<h4>There has been an error getting the ReportingSystems</h4>'
+            html += functions.get_proms_html_footer()
+            return Response(html, status=200, mimetype='text/html')
+    #process a posted Report
+    if request.method == 'POST':
+        #read the incoming report
+        #only accept turtle POSTS
+        if 'text/turtle' in request.headers['Content-Type']:
+            put_result = functions.put_reportingsystem(request.data)
+            if put_result[0]:
+                return Response('Inserted: ' + put_result[1], status=201, mimetype='text/plain')
+            else:
+                return Response('Insert failed for the following reasons:\n\n' + '\n'.join(put_result[1]), status=400, mimetype='text/plain')
+        else:
+            return Response('Only turtle documents allowed', status=400, mimetype='text/plain')
+
 
 @routes.route('/id/report/', methods=['GET'])
 @routes.route('/id/report/', methods=['GET', 'POST'])
