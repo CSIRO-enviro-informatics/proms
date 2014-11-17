@@ -121,6 +121,21 @@ def get_reportingsystems_html(sparql_query_results_json):
     return l
 
 
+def get_reportingsystems_dropdown(sparql_query_results_json):
+    reportingsystems = json.loads(sparql_query_results_json)
+    l = '<select name="reportingsystem" id="reportingsystem">'
+    l += '<option value="">Select...</option>'
+    for reportingsystem in reportingsystems['results']['bindings']:
+        if reportingsystem.get('t'):
+            uri_encoded = urllib.quote(str(reportingsystem['rs']['value']))
+            l += '<option value="' + uri_encoded + '">' + str(reportingsystem['t']['value']) + '</option>'
+        else:
+            l += '<option value="' + str(reportingsystem['rs']['value']) + '">' + str(reportingsystem['rs']['value']) + '</option>'
+    l += '</select>'
+
+    return l
+
+
 def get_reportingsystem(reportingsystem_uri):
     query = '''
         PREFIX dc: <http://purl.org/dc/elements/1.1/>
@@ -201,17 +216,39 @@ def put_reportingsystem(reportingsystem_in_turtle):
 def get_reports():
     query = '''
                 PREFIX dc: <http://purl.org/dc/elements/1.1/>
-                SELECT DISTINCT ?s ?t
+                SELECT DISTINCT ?r ?t
                 WHERE {
-                  { ?s a proms:BasicReport . }
+                  { ?r a proms:BasicReport . }
                   UNION
-                  { ?s a proms:ExternalReport . }
+                  { ?r a proms:ExternalReport . }
                   UNION
-                  { ?s a proms:InternalReport . }
-                  ?s dc:title ?t .
+                  { ?r a proms:InternalReport . }
+                  ?r dc:title ?t .
                 }
-                ORDER BY ?s
+                ORDER BY ?r
             '''
+    return submit_stardog_query(query)
+
+
+#TODO: get this query working
+#TODO: get ordering by Rport --> Activity --> startedAtTime
+def get_reports_for_rs(reportingsystem_uri):
+    query = '''
+                PREFIX proms: <http://promsns.org/ns/proms#>
+                PREFIX dc: <http://purl.org/dc/elements/1.1/>
+                SELECT ?r ?t
+                WHERE {
+                  { ?r a proms:BasicReport . }
+                  UNION
+                  { ?r a proms:ExternalReport . }
+                  UNION
+                  { ?r a proms:InternalReport . }
+                  ?r dc:title ?t .
+                  #?r proms:reportingSystem <''' + reportingsystem_uri + '''#> .
+                }
+                ORDER BY ?r
+            '''
+    print query
     return submit_stardog_query(query)
 
 
@@ -232,9 +269,7 @@ def get_report_metadata(report_uri):
           <''' + report_uri + '''> proms:startingActivity ?sac .
           ?sac prov:startedAtTime ?sat .
         }
-        ORDER BY ?s
     '''
-    print query
     return submit_stardog_query(query)
 
 
@@ -242,15 +277,17 @@ def get_reports_html(sparql_query_results_json):
     import urllib
 
     reports = json.loads(sparql_query_results_json)
+
     l = '<ul>'
     for report in reports['results']['bindings']:
-        uri_encoded = urllib.quote(str(report['s']['value']))
-        l += '<li><a href="/id/report?uri=' + uri_encoded + '">' + str(report['t']['value']) + '</a> (' + str(report['s']['value']) + ')</li>'
+        uri_encoded = urllib.quote(str(report['r']['value']))
+        l += '<li><a href="/id/report?uri=' + uri_encoded + '">' + str(report['t']['value']) + '</a> (' + str(report['r']['value']) + ')</li>'
     l += '</ul>'
 
     return l
 
 
+#TODO: draw Neighbours view for Report
 def get_report_details_svg():
     pass
 
@@ -1824,6 +1861,21 @@ def get_agents_html(sparql_query_results_json):
     return l
 
 
+def get_agents_dropdown(sparql_query_results_json):
+    agents = json.loads(sparql_query_results_json)
+    l = '<select name="agent" id="agent">'
+    l += '<option value="">Select...</option>'
+    for agent in agents['results']['bindings']:
+        if agent.get('n'):
+            uri_encoded = urllib.quote(str(agent['ag']['value']))
+            l += '<option value="' + uri_encoded + '">' + str(agent['n']['value']) + '</option>'
+        else:
+            l += '<option value="' + str(agent['ag']['value']) + '">' + str(agent['ag']['value']) + '</option>'
+    l += '</select>'
+
+    return l
+
+
 def get_agent(agent_uri):
     query = '''
             PREFIX foaf: <http://xmlns.com/foaf/0.1/>
@@ -2358,16 +2410,17 @@ def page_documentation():
             <strong>Browse <em>Reports</em> and their members</strong>
             <ul>
                 <li>browse and filter <em>Reports</em> and their components <em>Entities</em> &amp; <em>Activities</em></li>
+                <li><em>ReportingSystems</em> - <a href="/id/reportingsystem/">{PROMS_INSTANCE_URI}/id/reportingsystem/</a></li>
                 <li><em>Reports</em> - <a href="/id/report/">{PROMS_INSTANCE_URI}/id/report/</a></li>
                 <li><em>Entities</em> - <a href="/id/entity/">{PROMS_INSTANCE_URI}/id/entity/</a></li>
                 <li><em>Activities</em> - <a href="/id/activity/">{PROMS_INSTANCE_URI}/id/activity/</a></li>
+                <li><em>Agents</em> - <a href="/id/agent/">{PROMS_INSTANCE_URI}/id/agent/</a></li>
             </ul>
         </li>
         <li>
             <strong>Search the database</strong> <em>(under development)</em>
             <ul>
-                <li>search the provenance data using PROM's SPARQL endpoint</li>
-                <li><em>Activities</em> - <a href="/function/sparql">{PROMS_INSTANCE_URI}/function/sparql</a></li>
+                <li>search the provenance data using PROM's SPARQL endpoint - <a href="/function/sparql">{PROMS_INSTANCE_URI}/function/sparql</a></li>
             </ul>
         </li>
     </ul>
@@ -2387,6 +2440,49 @@ def page_documentation():
     </ul>
     '''
 
+    html += get_proms_html_footer()
+
+    return html
+
+
+#TODO: add create Agent with details option
+#TODO: add links to BAsic & External docco
+def page_create_report():
+    html = get_proms_html_header()
+    html += '''
+    <h1>Provenance Management Service</h1>
+    <h2>Create a <em>Report</em></h2>
+    <h1>Coming!</h1>
+    <table class="lines">
+        <tr>
+            <th>
+                Reporter Agent:<br />
+                <span style="font-size:small;">Choose from the list of people<br />
+                or add in your details</span>
+            </th>
+            <td valign="top">
+            ''' + get_agents_dropdown(get_agents()[1]) + '''
+            </td>
+        </tr>
+        <tr>
+            <th>Reporting System:</th><td>
+            ''' + get_reportingsystems_dropdown(get_reportingsystems()[1]) + '''
+            </td>
+        </tr>
+        <tr><th>Job ID:</th><td>{}</td></tr>
+        <tr>
+            <th>
+                Report Type:<br />
+                <span style="font-size:small;">Only <a href="www.promsns.org/ns/proms#BasicReport" class="definition">Basic</a> and <a href="www.promsns.org/ns/proms#ExternalReport" class="definition">External</a> Reports<br />
+                are allowed using this form<span></th>
+            <td valign="top">{}</td>
+        </tr>
+    </table>
+
+    <table class="lines">
+        <tr><th>More stuff...</th></tr>
+    </table>
+    '''
     html += get_proms_html_footer()
 
     return html

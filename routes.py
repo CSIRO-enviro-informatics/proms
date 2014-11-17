@@ -61,6 +61,12 @@ def reportingsystem():
             <p style="font-style: italic;">Under development, November, 2014.</p>
             '''
             html += functions.get_reportingsystem_html(uri)
+            reports = functions.get_reports_for_rs(uri)
+
+            if reports[0]:
+                html += functions.get_reports_html(reports[1])
+            else:
+                html += '<h4>There has been an error getting the Reports for this Reporting System</h4>'
             html += functions.get_proms_html_footer()
             return Response(html, status=200, mimetype='text/html')
         #multiple Reports (register)
@@ -257,6 +263,38 @@ def pingback():
         <p style="font-style: italic;">Under development, November, 2014.</p>
         <p>In future, other systems will be able to POST data to this endpoint to inform this PROMS server instance that a reference to one of the Entities listed here has been made in a provenance graph.</p>
         <p>This is in accordance with the idea of "Forward provenance" as per <a href="http://www.w3.org/TR/2013/WD-prov-aq-20130312/">PROV-AQ: Provenance Access and Query, W3C Working Draft 12 March 2013</a></p>
+        <h3>A derived Entity</h3>
+        <pre>
+            @prefix prov: &lt;http://www.w3.org/ns/prov#&gt; .
+
+            &lt;their_entity_uri&gt;
+                a   prov:Entity ;
+                prov:wasDerivedFrom &lt;our_entity_uri&gt; ;
+            .
+        </pre>
+        <h4>Processing:</h4>
+        <ol>
+            <li>validate pingback graph</li>
+            <li>test dereferencing of &lt;their_entity_uri&gt; </li>
+            <li>insert</li>
+        </ol>
+
+        <h3>An Activity that used an Entity</h3>
+        <pre>
+            @prefix prov: &lt;http://www.w3.org/ns/prov#&gt; .
+
+            &lt;their_activity_uri&gt;
+                a   prov:Activity ;
+                prov:used &lt;our_entity_uri&gt; ;
+            .
+        </pre>
+        <h4>Processing:</h4>
+        <ol>
+            <li>validate pingback graph</li>
+            <li>test dereferencing of &lt;their_activity_uri&gt; </li>
+            <li>insert</li>
+        </ol>
+
         '''
 
         html += functions.get_proms_html_footer()
@@ -275,3 +313,8 @@ def sparql():
 @routes.route('/documentation', methods=['GET'])
 def documentation():
     return Response(functions.page_documentation(), status=200, mimetype='text/html')
+
+
+@routes.route('/function/create_report', methods=['GET'])
+def create_report():
+    return Response(functions.page_create_report(), status=200, mimetype='text/html')
