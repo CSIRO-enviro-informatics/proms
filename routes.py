@@ -62,7 +62,6 @@ def reportingsystem():
             '''
             html += functions.get_reportingsystem_html(uri)
             reports = functions.get_reports_for_rs(uri)
-
             if reports[0]:
                 html += functions.get_reports_html(reports[1])
             else:

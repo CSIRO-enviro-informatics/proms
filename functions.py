@@ -163,11 +163,68 @@ def get_reportingsystem_html(reportingsystem_uri):
     reportingsystem_details = get_reportingsystem(reportingsystem_uri)
     if reportingsystem_details[0]:
         r = json.loads(reportingsystem_details[1])
+        title = r['results']['bindings'][0]['t']['value']
         html = '''
-            <table class="lines">
-                <tr><th>Title:</th><td>''' + r['results']['bindings'][0]['t']['value'] + '''</td></tr>
+            <table class="lined">
+                <tr><th>Title:</th><td>''' + title + '''</td></tr>
                 <tr><th>Owner:</th><td>''' + r['results']['bindings'][0]['fn']['value'] + '''</td></tr>
             </table>
+        '''
+
+        html += '''
+            <h4>Neighbours view</h4>
+            <script src="/static/js/d3.min.js" charset="utf-8"></script>
+            <style>
+                svg {
+                    /*border: solid 1px #eeeeee;*/
+                    margin-left:75px;
+                }
+            </style>
+            <script>
+                var svgContainer = d3.select("#container-content-2").append("svg")
+                                                    .attr("width", 700)
+                                                    .attr("height", 500);
+
+                //ReportingSystem
+                var reportingSystem = svgContainer.append("polygon")
+                                        .attr("stroke", "grey")
+                                        .attr("stroke-width", "1")
+                                        .attr("fill", "purple")
+                                        .attr("points", "310,130 390,130 420,160 420,240 390,270 310,270 280,240 280,160");
+
+                //ReportingSystem class name
+                var reportingSystemGenName = svgContainer.append("text")
+                                        .attr("x", 350)
+                                        .attr("y", 180)
+                                        .text("ReportingSystem")
+                                        .style("font-family", "Verdana")
+                                        .style("fill", "white")
+                                        .style("text-anchor", "middle");
+
+                //ReportingSystem title
+                var entityTitle = svgContainer.append('foreignObject')
+                                        .attr('x', 280)
+                                        .attr('y', 195)
+                                        .attr('width', 138)
+                                        .attr('height', 95)
+                                        .append("xhtml:body")
+                                        .html('<div style="width:138px; color:white; font-size:smaller; background-color:purple;">''' + title + '''</div>')
+            </script>
+        '''
+        #add in all the Reports for this ReportingSystem
+        '''
+        SELECT  *
+        WHERE {
+          {?r a proms:BasicReport}
+          UNION
+          {?r a proms:ExternalReport}
+          UNION
+          {?r a proms:InternalReport}
+          ?r proms:reportingSystem <http://localhost:9000/id/reportingsystem/553a7777-1218-4d9d-9667-8da48041ce0d> .
+          ?r dc:title ?t .
+          ?r proms:endingActivity ?sat .
+          ?sat prov:endedAtTime ?eat .
+        }
         '''
     else:
         html = '''
@@ -248,7 +305,6 @@ def get_reports_for_rs(reportingsystem_uri):
                 }
                 ORDER BY ?r
             '''
-    print query
     return submit_stardog_query(query)
 
 
@@ -1404,7 +1460,18 @@ def get_activity_generated_entities_svg(activity_uri):
             uri_encoded = urllib.quote(gen['bindings'][0]['u']['value'])
 
             script += '''
-                //Entity (used)
+                //Entity (used)                title_html = '<div style="width: 147px; font-size:smaller; background-color:#ffffbe;">' +
+                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/entity/?uri=''' + uri_encoded + '''">' +
+                            '         ''' + title + '''' +
+                            '     </a>' +
+                            '</div>';
+                var entityGenTitle = svgContainer.append('foreignObject')
+                                .attr('x', 525)
+                                .attr('y', 250)
+                                .attr('width', 147)
+                                .attr('height', 60)
+                                .append("xhtml:body")
+                                .html(title_html);
                 var entityGen = svgContainer.append("ellipse")
                                         .attr("cx", 599)
                                         .attr("cy", 250)
@@ -2190,7 +2257,6 @@ def get_agent_was_associated_with_svg(agent_uri):
 
     if stardog_results[0]:
         waw = json.loads(stardog_results[1])['results']
-        print waw
         if len(waw['bindings']) == 1:
             if waw['bindings'][0].get('t'):
                 title = waw['bindings'][0]['t']['value']
@@ -2393,10 +2459,10 @@ def page_documentation():
     <p>The functions supported by PROMS v3 are:</p>
     <ul>
         <li>
-            <strong>Create a new report</strong>
+            <strong>Create a new <em>Report</em></strong>
             <ul>
-                <li>post a provenance <em>Report</em> to PROMS</li>
-                <li>send a turtle document (RDF graph) to {PROMS_INSTANCE_URI}/id/report/</li>
+                <li>use the default <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''function/create_report"><em>Report</em> creation form</a></li>
+                <li>HTTP POST a pre-made <em>Report</em> in the <a class="definition" href="http://www.w3.org/TeamSubmission/turtle/">RDF turtle</a> format to {PROMS_INSTANCE_URI}/id/report/</li>
             </ul>
         </li>
         <li>
@@ -2410,11 +2476,11 @@ def page_documentation():
             <strong>Browse <em>Reports</em> and their members</strong>
             <ul>
                 <li>browse and filter <em>Reports</em> and their components <em>Entities</em> &amp; <em>Activities</em></li>
-                <li><em>ReportingSystems</em> - <a href="/id/reportingsystem/">{PROMS_INSTANCE_URI}/id/reportingsystem/</a></li>
-                <li><em>Reports</em> - <a href="/id/report/">{PROMS_INSTANCE_URI}/id/report/</a></li>
-                <li><em>Entities</em> - <a href="/id/entity/">{PROMS_INSTANCE_URI}/id/entity/</a></li>
-                <li><em>Activities</em> - <a href="/id/activity/">{PROMS_INSTANCE_URI}/id/activity/</a></li>
-                <li><em>Agents</em> - <a href="/id/agent/">{PROMS_INSTANCE_URI}/id/agent/</a></li>
+                <li><em>ReportingSystems</em> - <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/reportingsystem/">{PROMS_INSTANCE_URI}/id/reportingsystem/</a></li>
+                <li><em>Reports</em> - <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/report/">{PROMS_INSTANCE_URI}/id/report/</a></li>
+                <li><em>Entities</em> - <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/entity/">{PROMS_INSTANCE_URI}/id/entity/</a></li>
+                <li><em>Activities</em> - <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/activity/">{PROMS_INSTANCE_URI}/id/activity/</a></li>
+                <li><em>Agents</em> - <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/agent/">{PROMS_INSTANCE_URI}/id/agent/</a></li>
             </ul>
         </li>
         <li>
@@ -2446,18 +2512,18 @@ def page_documentation():
 
 
 #TODO: add create Agent with details option
-#TODO: add links to BAsic & External docco
+#TODO: add links to Basic & External docco
 def page_create_report():
     html = get_proms_html_header()
     html += '''
     <h1>Provenance Management Service</h1>
     <h2>Create a <em>Report</em></h2>
-    <h1>Coming!</h1>
-    <table class="lines">
+    <p>Blurb...</p>
+    <table class="lined">
         <tr>
             <th>
                 Reporter Agent:<br />
-                <span style="font-size:small;">Choose from the list of people<br />
+                <span style="font-size:small; font-weight:normal;">Choose from the list of people<br />
                 or add in your details</span>
             </th>
             <td valign="top">
@@ -2469,13 +2535,18 @@ def page_create_report():
             ''' + get_reportingsystems_dropdown(get_reportingsystems()[1]) + '''
             </td>
         </tr>
-        <tr><th>Job ID:</th><td>{}</td></tr>
+        <tr><th>Job ID:</th><td><input type="text" name="job" id="job" /></td></tr>
         <tr>
             <th>
                 Report Type:<br />
-                <span style="font-size:small;">Only <a href="www.promsns.org/ns/proms#BasicReport" class="definition">Basic</a> and <a href="www.promsns.org/ns/proms#ExternalReport" class="definition">External</a> Reports<br />
+                <span style="font-size:small; font-weight:normal;">Only <a href="www.promsns.org/ns/proms#BasicReport" class="definition">Basic</a> and <a href="www.promsns.org/ns/proms#ExternalReport" class="definition">External</a> Reports<br />
                 are allowed using this form<span></th>
-            <td valign="top">{}</td>
+            <td valign="top">
+                <select name="rtype" id="rtype">
+                    <option value="BasicReport">Basic</option>
+                    <option value="ExternalReport">External</option>
+                </select>
+            </td>
         </tr>
     </table>
 
