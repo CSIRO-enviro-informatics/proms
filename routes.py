@@ -8,17 +8,8 @@ import urllib
 #   All the routes in the API
 #
 @routes.route('/')
-def index():
-    html = functions.get_proms_html_header()
-    html += '''
-    <h1>Provenance Management System</h1>
-    <h4>This is the index page for PROMS, the Provenance Management Service</h4>
-    <p style="font-style: italic;">Under development, November, 2014.</p>
-    <p>This web service is not yet in operation and is acting only as a stub.</p>
-    '''
-
-    html += functions.get_proms_html_footer()
-    return Response(html, status=200, mimetype='text/html')
+def home():
+    return Response(functions.page_home(), status=200, mimetype='text/html')
 
 
 @routes.route('/id/')

@@ -158,7 +158,159 @@ def get_reportingsystem(reportingsystem_uri):
     return submit_stardog_query(query)
 
 
+def draw_report(n, uri, title, jobId):
+    uri_encoded = urllib.quote(uri)
+    y_offset = n * 130
+    y1 = y_offset + 16
+    y2 = y_offset + 16
+    y3 = y_offset + 97
+    y4 = y_offset + 117
+    y5 = y_offset + 117
+    y_label = y_offset + 40
+
+    ya1 = y_offset + 49
+    ya2 = y_offset + 49
+    ya3 = y_offset + 44
+    ya4 = y_offset + 50
+    ya5 = y_offset + 57
+    ya6 = y_offset + 51
+    ya7 = y_offset + 51
+
+    svg = '''
+        //Report
+        var report1 = svgContainer.append("polygon")
+                                .attr("stroke", "grey")
+                                .attr("stroke-width", "1")
+                                .attr("fill", "MediumVioletRed")
+                                .attr("points", "250,''' + str(y1) + ''' 390,''' + str(y2) + ''' 390,''' + str(y3) + ''' 370,''' + str(y4) + ''' 250,''' + str(y5) + '''");
+
+        //Report class name
+        var reportName = svgContainer.append("text")
+                                .attr("x", 320)
+                                .attr("y", ''' + str(y_label) + ''')
+                                .text("Report")
+                                .style("font-family", "Verdana")
+                                .style("fill", "white")
+                                .style("text-anchor", "middle");
+
+        //Report N arrow
+        var reportNArrow = svgContainer.append("polygon")
+                                .style("stroke-width", "1")
+                                .attr("points", "250,''' + str(ya1) + ''' 192,''' + str(ya1) + ''' 192,''' + str(ya1-130) + ''' 190,''' + str(ya1-130) + ''' 190,''' + str(ya6) + ''' 250,''' + str(ya6) + ''' ");
+
+        //Report N title
+        var entityTitle = svgContainer.append('foreignObject')
+                                .attr('x', 250)
+                                .attr('y', ''' + str(y_offset + 47) + ''')
+                                .attr('width', 138)
+                                .attr('height', 95)
+                                .append("xhtml:body")
+                                .html('<div style="width:138px; color:white; font-size:smaller; background-color:MediumVioletRed;"><a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/report/?uri=''' + uri_encoded + '''">''' + title + '''</a><br />jobId: ''' + jobId + '''</div>')
+    '''
+
+    return svg
+
+
+def get_reportingsystem_reports_svg(reportingsystem_uri):
+    #add in all the Reports for this ReportingSystem
+    query = '''
+    PREFIX prov: <http://www.w3.org/ns/prov#>
+    PREFIX proms: <http://promsns.org/ns/proms#>
+    PREFIX dc: <http://purl.org/dc/elements/1.1/>
+    SELECT  *
+    WHERE {
+      {?r a proms:BasicReport}
+      UNION
+      {?r a proms:ExternalReport}
+      UNION
+      {?r a proms:InternalReport}
+      ?r proms:reportingSystem <''' + reportingsystem_uri + '''> .
+      ?r dc:title ?t .
+      ?r proms:jobId ?job .
+      ?r proms:endingActivity ?sat .
+      ?sat prov:endedAtTime ?eat .
+    }
+    ORDER BY DESC(?eat)
+    '''
+    reports = submit_stardog_query(query)
+    print reports
+    if reports[1]:
+        rp = json.loads(reports[1])
+        if len(rp['results']['bindings']) > 0:
+            r1uri_encoded = urllib.quote(rp['results']['bindings'][0]['r']['value'])
+            r1title = rp['results']['bindings'][0]['t']['value']
+            r1jobId = rp['results']['bindings'][0]['job']['value']
+            reports_script = '''
+            //Report
+            var report1 = svgContainer.append("polygon")
+                                    .attr("stroke", "grey")
+                                    .attr("stroke-width", "1")
+                                    .attr("fill", "MediumVioletRed")
+                                    .attr("points", "250,16 390,16 390,97 370,117 250,117");
+
+            //Report class name
+            var reportName = svgContainer.append("text")
+                                    .attr("x", 320)
+                                    .attr("y", 40)
+                                    .text("Report")
+                                    .style("font-family", "Verdana")
+                                    .style("fill", "white")
+                                    .style("text-anchor", "middle");
+
+            //Report 1 title
+            var entityTitle = svgContainer.append('foreignObject')
+                                    .attr('x', 250)
+                                    .attr('y', 47)
+                                    .attr('width', 138)
+                                    .attr('height', 95)
+                                    .append("xhtml:body")
+                                    .html('<div style="width:138px; color:white; font-size:smaller; background-color:MediumVioletRed;"><a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/report/?uri=''' + r1uri_encoded + '''">''' + r1title + '''</a><br />jobId: ''' + r1jobId + '''</div>')
+
+            //Report 1 arrow
+            var report1Arrow = svgContainer.append("polygon")
+                                    .style("stroke-width", "1")
+                                    .attr("points", "250,49, 150,49, 150,44, 140,50, 150,57, 150,51, 250,51");
+
+            //Report 1 arrow name
+            var report1ArrowName = svgContainer.append("text")
+                                    .attr("x", 180)
+                                    .attr("y", 10)
+                                    .text("proms:reportingSystem")
+                                    .style("font-family", "Verdana")
+                                    .style("font-size", "smaller")
+                                    .style("text-anchor", "middle");
+            '''
+
+            if len(rp['results']['bindings']) > 1:
+                reports = rp['results']['bindings'][1:]
+                i = 1
+                for report in reports:
+                    uri = rp['results']['bindings'][i]['r']['value']
+                    title = rp['results']['bindings'][i]['t']['value']
+                    jobId = rp['results']['bindings'][i]['job']['value']
+                    print rp['results']['bindings'][i]['eat']['value']
+                    reports_script += draw_report(i, uri, title, jobId)
+                    i += 1
+        else:
+            #no reports
+            reports_script = ''
+    else:
+        #we have a fault
+        reports_script = '''
+            var activityUsedFaultText = svgContainer.append('foreignObject')
+                                .attr('x', 550)
+                                .attr('y', 200)
+                                .attr('width', 149)
+                                .attr('height', 100)
+                                .append("xhtml:body")
+                                .html('<div style="width: 149px;">There is a fault with retrieving Activities that may have used this Entity</div>')
+        '''
+
+    return reports_script
+
+
 #TODO: complete get_reportingsystem_html()
+#TODO: think about expanding SVG area with report count
 def get_reportingsystem_html(reportingsystem_uri):
     reportingsystem_details = get_reportingsystem(reportingsystem_uri)
     if reportingsystem_details[0]:
@@ -170,6 +322,9 @@ def get_reportingsystem_html(reportingsystem_uri):
                 <tr><th>Owner:</th><td>''' + r['results']['bindings'][0]['fn']['value'] + '''</td></tr>
             </table>
         '''
+
+        #get the list of reports
+        reports_script = get_reportingsystem_reports_svg(reportingsystem_uri)
 
         html += '''
             <h4>Neighbours view</h4>
@@ -190,12 +345,12 @@ def get_reportingsystem_html(reportingsystem_uri):
                                         .attr("stroke", "grey")
                                         .attr("stroke-width", "1")
                                         .attr("fill", "purple")
-                                        .attr("points", "310,130 390,130 420,160 420,240 390,270 310,270 280,240 280,160");
+                                        .attr("points", "31,16 111,16 141,46 141,126 111,156 31,156 1,126 1,46");
 
                 //ReportingSystem class name
                 var reportingSystemGenName = svgContainer.append("text")
-                                        .attr("x", 350)
-                                        .attr("y", 180)
+                                        .attr("x", 70)
+                                        .attr("y", 66)
                                         .text("ReportingSystem")
                                         .style("font-family", "Verdana")
                                         .style("fill", "white")
@@ -203,28 +358,15 @@ def get_reportingsystem_html(reportingsystem_uri):
 
                 //ReportingSystem title
                 var entityTitle = svgContainer.append('foreignObject')
-                                        .attr('x', 280)
-                                        .attr('y', 195)
+                                        .attr('x', 2)
+                                        .attr('y', 81)
                                         .attr('width', 138)
                                         .attr('height', 95)
                                         .append("xhtml:body")
                                         .html('<div style="width:138px; color:white; font-size:smaller; background-color:purple;">''' + title + '''</div>')
+
+                ''' + reports_script + '''
             </script>
-        '''
-        #add in all the Reports for this ReportingSystem
-        '''
-        SELECT  *
-        WHERE {
-          {?r a proms:BasicReport}
-          UNION
-          {?r a proms:ExternalReport}
-          UNION
-          {?r a proms:InternalReport}
-          ?r proms:reportingSystem <http://localhost:9000/id/reportingsystem/553a7777-1218-4d9d-9667-8da48041ce0d> .
-          ?r dc:title ?t .
-          ?r proms:endingActivity ?sat .
-          ?sat prov:endedAtTime ?eat .
-        }
         '''
     else:
         html = '''
@@ -2422,6 +2564,46 @@ def get_agent_html(agent_uri):
             <h4>''' + agent_script[1] + '''</h4>
         '''
 
+    return html
+
+
+#
+#   Pages
+#
+def page_home():
+    html = get_proms_html_header()
+    html += '''
+    <h1>Provenance Management System</h1>
+    <p style="font-style: italic;">Under development, November, 2014.</p>
+    <h4>This is the index page for the PROMS (PROvenance Management System) data store. It contains a database to store provenance data and a series of functions to manage that data.</h4>
+    <h4>Getting Strated</h4>
+    <p>Follow the links above to the right in the blue to navigate this system.</p>
+    <h4>Documentation</h4>
+    <p>Please visit the documentation page for details of service endpoints and features:</p>
+    <ul>
+        <li><a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''documentation">Documentation Page</a></li>
+    </ul>
+    <h4>Maintenance &amp; Contact</h4>
+    <p>PROMS v3 is maintained by CSIRO's software engineers, led by Nicholas Car &amp; Matthew Stenson in CSIRO's Land &amp; Water Flagship, EcoScienes, Brisbane.</p>
+    <p>Contact Nicholas with any issues:</p>
+    <p>
+        <strong>Nicholas Car</strong><br />
+        <strong>ph:</strong> +61 7 3833 5600<br />
+        <strong>e:</strong> <a href="mailto:nicholas.car@csiro.au">nicholas.car@csiro.au</a>
+    </p>
+    <h4>Licensing</h4>
+    <p>PROMS v3 is licensed using the CSIRO Open Source Software License, based on the MIT/BSD Open Source License:</p>
+    <ul>
+        <li><a href="https://wiki.csiro.au/pages/viewpage.action?pageId=663847169">CSIRO Open Source Software License</a></li>
+    </ul>
+    <h4>Code</h4>
+    <p>The code for PROV v3 is available from CSIRO's Stash code repository manager as the a Git repository:</p>
+    <ul>
+        <li><a href="https://stash.csiro.au/projects/EIS/repos/PROMS">PROMS v3 Git Repository</a></li>
+    </ul>
+    '''
+
+    html += get_proms_html_footer()
     return html
 
 

@@ -11,7 +11,7 @@
 :
     a proms:ExternalReport ;
     dc:title "Entity Types Test Report"^^xsd:string ;
-    proms:jobId "12345"^^xsd:string ;
+    proms:jobId "12391"^^xsd:string ;
     proms:startingActivity :a0001 ;
     proms:endingActivity :a0001 ;
     proms:reportingSystem <http://localhost:9000/id/reportingsystem/553a7777-1218-4d9d-9667-8da48041ce0d> ;
@@ -20,8 +20,8 @@
 :a0001
     a prov:Activity ;
     dc:title "Entity Types Test Activity"^^xsd:string ;
-    prov:endedAtTime "2014-20-25T11:20:04+10:00"^^xsd:dateTime ;
-    prov:startedAtTime "2014-20-25T11:20:04+10:00"^^xsd:dateTime ;
+    prov:endedAtTime "2014-20-27T11:20:04+10:00"^^xsd:dateTime ;
+    prov:startedAtTime "2014-20-26T11:20:04+10:00"^^xsd:dateTime ;
     prov:used :e0001 ;
     prov:used :e0002 ;
     prov:used <http://data.bioregionalassessments.gov.au/dataset/00358558-b7fc-4165-a4e3-fd1ec26ed51a> ;
@@ -32,7 +32,7 @@
 :a0002
     a prov:Activity ;
     dc:title "Entity Types Test Activity 2"^^xsd:string ;
-    prov:endedAtTime "2014-20-26T11:20:04+10:00"^^xsd:dateTime ;
+    prov:endedAtTime "2014-20-28T11:20:04+10:00"^^xsd:dateTime ;
     prov:startedAtTime "2014-20-26T11:20:04+10:00"^^xsd:dateTime ;
     prov:used :e0001 ;
     prov:generated <http://data.bioregionalassessments.gov.au/dataset/00c330ab-ada3-40a1-bcf6-546e1766007b> ;
