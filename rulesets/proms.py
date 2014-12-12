@@ -95,7 +95,7 @@ class HasValidReport(Rule):
             { ?s  a            proms:ExternalReport .}
             UNION
             { ?s  a            proms:InternalReport .}
-            ?s  proms:jobId  ?j .
+            ?s  proms:nativeId  ?j .
         }
         ''')
         if not bool(qres):

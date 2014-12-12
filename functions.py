@@ -32,6 +32,16 @@ def get_proms_html_header():
             h4 {
                 font-weight:bold;
             }
+
+            .layout {
+                border-collapse: collapse;
+                border: none;
+            }
+
+            .layout th,
+            .layout td {
+                border: none;
+            }
         </style>
     </head>
     '''
@@ -233,7 +243,6 @@ def get_reportingsystem_reports_svg(reportingsystem_uri):
     ORDER BY DESC(?eat)
     '''
     reports = submit_stardog_query(query)
-    print reports
     if reports[1]:
         rp = json.loads(reports[1])
         if len(rp['results']['bindings']) > 0:
@@ -288,7 +297,6 @@ def get_reportingsystem_reports_svg(reportingsystem_uri):
                     uri = rp['results']['bindings'][i]['r']['value']
                     title = rp['results']['bindings'][i]['t']['value']
                     jobId = rp['results']['bindings'][i]['job']['value']
-                    print rp['results']['bindings'][i]['eat']['value']
                     reports_script += draw_report(i, uri, title, jobId)
                     i += 1
         else:
@@ -2608,7 +2616,6 @@ def page_home():
 
 
 def page_documentation():
-    #TODO: definitions of terms
     html = get_proms_html_header()
     html += '''
     <h1>Provenance Management Service</h1>
@@ -2680,9 +2687,17 @@ def page_documentation():
         <img src="/static/img/PROMS3_structure.png" alt="PROMS3 Structure" />
         <p class="caption"><strong>Figure 1</strong>: PROMS v3 Structure</p>
     </div>
-
+    <h3 id="resources">Resources</h3>
+    <p>Toolkits exist to generate PROMS <a class="definition" href="www.promsns.org/ns/proms#Report">Report</a>s that can then be lodged with this system.</p>
+    <table class="lined">
+        <tr><th>Toolkit</th><th>Technologies</th><th>Location</th></tr>
+        <tr><td>PROMS Java client</td><td>Java, Jena (a Java RDF system)</td><td><a href="https://stash.csiro.au/projects/EIS/repos/proms-clients-java">https://stash.csiro.au/projects/EIS/repos/proms-clients-java</a></td></tr>
+        <tr><td>pyproms<br />Python PROMS client module</td><td>Python (2.7), rdflib (a Python RDF framework)</td><td><a href="https://pypi.python.org/pypi/pyproms">pyproms on the Python package index</a></td></tr>
+        <tr><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td></tr>
+    </table>
     <h3>More details</h3>
-    <h4>Further documentation for PROMS and its related tools and concepts is maintained on the PROMS wiki:</h4>
+    <p>Further documentation for PROMS and its related tools and concepts is maintained on the PROMS wiki:</p>
     <ul>
         <li><a href="https://wiki.csiro.au/display/PROMS/">https://wiki.csiro.au/display/PROMS/</a></li>
     </ul>
@@ -2696,45 +2711,144 @@ def page_documentation():
 #TODO: add create Agent with details option
 #TODO: add links to Basic & External docco
 def page_create_report():
+
     html = get_proms_html_header()
     html += '''
     <h1>Provenance Management Service</h1>
     <h2>Create a <em>Report</em></h2>
-    <p>Blurb...</p>
-    <table class="lined">
-        <tr>
-            <th>
-                Reporter Agent:<br />
-                <span style="font-size:small; font-weight:normal;">Choose from the list of people<br />
-                or add in your details</span>
-            </th>
-            <td valign="top">
-            ''' + get_agents_dropdown(get_agents()[1]) + '''
-            </td>
-        </tr>
-        <tr>
-            <th>Reporting System:</th><td>
-            ''' + get_reportingsystems_dropdown(get_reportingsystems()[1]) + '''
-            </td>
-        </tr>
-        <tr><th>Job ID:</th><td><input type="text" name="job" id="job" /></td></tr>
-        <tr>
-            <th>
-                Report Type:<br />
-                <span style="font-size:small; font-weight:normal;">Only <a href="www.promsns.org/ns/proms#BasicReport" class="definition">Basic</a> and <a href="www.promsns.org/ns/proms#ExternalReport" class="definition">External</a> Reports<br />
-                are allowed using this form<span></th>
-            <td valign="top">
-                <select name="rtype" id="rtype">
-                    <option value="BasicReport">Basic</option>
-                    <option value="ExternalReport">External</option>
-                </select>
-            </td>
-        </tr>
-    </table>
+    <p>This page allows someone to create a provenance <a class="definition" href="http://www.promsns.org/ns/proms#Report">Report</a> which can then be lodged with this instance of PROMS or downloaded for use elsewhere. Given that there are tools for creating complex <em>Reports</em> for a series of programming environments (see <a href="/documentation#resources">Documentation &gt; Resources</a>, this page is limited to creating simple <a class="definition" href="http://www.promsns.org/ns/proms#BasicReport">Basic</a> and <a class="definition" href="http://www.promsns.org/ns/proms#ExternalReport">External</a> <em>Reports</em>and cannot produce the more detailed <a class="definition" href="http://www.promsns.org/ns/proms#InternalReport">Internal</a> <em>Reports</em>.</p>
+    <p>Complete the form below to create a <em>Report</em>. Input validation will ensure that the <em>Report</em> is valid.</p>
+    <script src="/static/js/jquery.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"/ >
+    <script src="/static/js/jquery.datetimepicker.js"></script>
+    <script>
+        $(function() {
+            $('input[name=agent-new-existing]').change(function () {
+                if ($('input[name=agent-new-existing]:checked', '#create-report').val() == "existing") {
+                    $('#agent-existing-value').show();
+                    $('#agent-new-value').hide();
+                } else {
+                    $('#agent-existing-value').hide();
+                    $('#agent-new-value').show();
+                }
+            });
 
-    <table class="lines">
-        <tr><th>More stuff...</th></tr>
-    </table>
+            //DateTime picker
+            $('#startedAtTime').datetimepicker({
+              format:'Y-m-d H:i:s',
+              inline:true,
+              lang:'en'
+            });
+            $('#endedAtTime').datetimepicker({
+              format:'Y-m-d H:i:s',
+              inline:true,
+              lang:'en'
+            });
+        });
+    </script>
+    <form id="create-report" action="/function/create_report" method="post">
+        <table class="lined" style="width:860px;">
+            <tr><td colspan="2"><h3>Agent</h3></td></tr>
+            <tr>
+                <th style="width:300px;">
+                    Reporter:<br />
+                    <span style="font-size:small; font-weight:normal;">Choose from the list of people or add in your details</span>
+                </th>
+                <td valign="top" style="width:560px;">
+                    <p>
+                        <input type="radio" name="agent-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>
+                        <input type="radio" name="agent-new-existing" value="new" /> New
+                    </p>
+
+                    <div id="agent-existing-value" style="width:300px;">''' + get_agents_dropdown(get_agents()[1]) + '''</div>
+                    <div id="agent-new-value" style="width:300px; display:none;">
+                        <table class="layout">
+                            <tr><td>Name:</td><td><input id="agent-name" name="agent-name" type="text" /></td></tr>
+                            <tr><td>URI:</td><td><input id="agent-uri" name="agent-uri" type="text" /></td></tr>
+                            <tr><td>Email:</td><td><input id="agent-email" name="agent-email" type="text" /></td></tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+            <tr><td colspan="2"><h3>Report</h3></td></tr>
+            <tr>
+                <th>
+                    Report Type:<br />
+                    <span style="font-size:small; font-weight:normal;">Only <a href="www.promsns.org/ns/proms#BasicReport" class="definition">Basic</a> and <a href="www.promsns.org/ns/proms#ExternalReport" class="definition">External</a> <em>Reports</em> are allowed using this form.</span></th>
+                <td valign="top">
+                    <select name="rtype" id="rtype">
+                        <option value="BasicReport">Basic</option>
+                        <option value="ExternalReport">External</option>
+                    </select>
+                </td>
+            </tr>
+            <tr><th>Report Title:<br /><span style="font-size:small; font-weight:normal;">A simple title for the <em>Report</em>. Can be the same for multiple <em>Reports</em> where systems are reporting multiple times.</span></th><td><input type="text" name="report-title" id="report-title" /></td></tr>
+            <tr>
+                <th>
+                    Reporting System:<br />
+                    <span style="font-size:small; font-weight:normal;">You must have already registered a <a href="www.promsns.org/ns/proms#ReportingSystem" class="definition">Reporting System</a> for this <em>Report</em>. See the <a style="text-decoration:line-through;" href="/function/register_reporting_system">Reporting System registration</a> page.</span>
+                </th><td>
+                ''' + get_reportingsystems_dropdown(get_reportingsystems()[1]) + '''
+                </td>
+            </tr>
+            <tr><th>Native ID:<br /><span style="font-size:small; font-weight:normal;">An ID for this <em>Report</em> assigned by the system you are reporting for. If no ID can be known (e.g. for a manual process), use the word "none".</span></th><td><input type="text" name="nativeId" id="nativeId" /></td></tr>
+            <tr>
+                <th colspan="3" style="text-align:right;">
+                    <button id="generate-report">Generate Report</button><br />
+                    <button id="generate-report">Store Report Here</button>
+                </th>
+            </tr>
+            <tr><td colspan="2"><h3>Activity</h3></td></tr>
+            <tr>
+                <th>Activity Title:<br /><span style="font-size:small; font-weight:normal;">A simple title for the <em>Activity</em>. Try to use something different from the Report Title.</span></th>
+                <td><input type="text" name="activity-title" id="activity-title" /></td>
+            </tr>
+            <tr>
+                <th>Activity Started At Time:<br /><span style="font-size:small; font-weight:normal;">The time at which the <em>Activity</em> started.</span></th>
+                <td><input type="text" name="startedAtTime" id="startedAtTime" /></td>
+            </tr>
+            <tr>
+                <th>Activity Ended At Time:<br /><span style="font-size:small; font-weight:normal;">The time at which the <em>Activity</em> ended.</span></th>
+                <td><input type="text" name="endedAtTime" id="endedAtTime" /></td>
+            </tr>
+            <tr><td colspan="2"><h3>Entities</h3></td></tr>
+            <tr>
+                <th>
+                    Reporter:<br />
+                    <span style="font-size:small; font-weight:normal;">Choose from the list of people or add in your details</span>
+                </th>
+                <td valign="top">
+                    <p>
+                        <input type="radio" name="agent-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>
+                        <input type="radio" name="agent-new-existing" value="new" /> New
+                    </p>
+
+                    <div id="agent-existing-value" style="width:300px;">''' + get_agents_dropdown(get_agents()[1]) + '''</div>
+                    <div id="agent-new-value" style="width:300px; display:none;">
+                        <table class="layout">
+                            <tr><td>Name:</td><td><input id="agent-name" name="agent-name" type="text" /></td></tr>
+                            <tr><td>URI:</td><td><input id="agent-uri" name="agent-uri" type="text" /></td></tr>
+                            <tr><td>Email:</td><td><input id="agent-email" name="agent-email" type="text" /></td></tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+    '''
+    html += get_proms_html_footer()
+
+    return html
+
+
+def page_cregister_reporting_system():
+
+    html = get_proms_html_header()
+    html += '''
+    <h1>Provenance Management Service</h1>
+    <h2>Register a <em>Reporting System</em></h2>
+    <h3 style="color:red; font-style:italic;">Coming!</h3>
     '''
     html += get_proms_html_footer()
 

@@ -308,3 +308,8 @@ def documentation():
 @routes.route('/function/create_report', methods=['GET'])
 def create_report():
     return Response(functions.page_create_report(), status=200, mimetype='text/html')
+
+
+@routes.route('/function/register_reporting_system', methods=['GET'])
+def register_reporting_system():
+    return Response(functions.page_cregister_reporting_system(), status=200, mimetype='text/html')
