@@ -133,7 +133,7 @@ def get_reportingsystems_html(sparql_query_results_json):
 
 def get_reportingsystems_dropdown(sparql_query_results_json):
     reportingsystems = json.loads(sparql_query_results_json)
-    l = '<select name="reportingsystem" id="reportingsystem">'
+    l = '<select name="report-reportingsystem" id="report-reportingsystem">'
     l += '<option value="">Select...</option>'
     for reportingsystem in reportingsystems['results']['bindings']:
         if reportingsystem.get('t'):
@@ -579,14 +579,14 @@ def put_report(report_in_turtle):
 def get_entities():
     query = '''
                 PREFIX dc: <http://purl.org/dc/elements/1.1/>
-                SELECT DISTINCT ?s ?t
+                SELECT DISTINCT ?e ?t
                 WHERE {
-                  { ?s a prov:Entity . }
+                  { ?e a prov:Entity . }
                   UNION
-                  { ?s a prov:Plan . }
+                  { ?e a prov:Plan . }
                   OPTIONAL { ?s dc:title ?t . }
                 }
-                ORDER BY ?s
+                ORDER BY ?e
             '''
     return submit_stardog_query(query)
 
@@ -618,11 +618,25 @@ def get_entities_html(sparql_query_results_json):
     l = '<ul>'
     for entity in entities['results']['bindings']:
         if entity.get('t'):
-            uri_encoded = urllib.quote(str(entity['s']['value']))
-            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/entity?uri=' + uri_encoded + '">' + str(entity['t']['value']) + '</a> (' + str(entity['s']['value']) + ')</li>'
+            uri_encoded = urllib.quote(str(entity['e']['value']))
+            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/entity?uri=' + uri_encoded + '">' + str(entity['t']['value']) + '</a> (' + str(entity['e']['value']) + ')</li>'
         else:
-            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/entity?uri=' + str(entity['s']['value']) + '">' + str(entity['s']['value']) + '</a></li>'
+            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/entity?uri=' + str(entity['e']['value']) + '">' + str(entity['e']['value']) + '</a></li>'
     l += '</ul>'
+
+    return l
+
+
+def get_entities_dropdown(sparql_query_results_json):
+    agents = json.loads(sparql_query_results_json)
+    l = '<option value="">Select...</option>'
+    for agent in agents['results']['bindings']:
+        if agent.get('t'):
+            uri_encoded = urllib.quote(str(agent['e']['value']))
+            l += '<option value="' + uri_encoded + '">' + str(agent['t']['value']) + '</option>'
+        else:
+            l += '<option value="' + str(agent['e']['value']) + '">' + str(agent['e']['value']) + '</option>'
+    l += '</select>'
 
     return l
 
@@ -2688,7 +2702,7 @@ def page_documentation():
         <p class="caption"><strong>Figure 1</strong>: PROMS v3 Structure</p>
     </div>
     <h3 id="resources">Resources</h3>
-    <p>Toolkits exist to generate PROMS <a class="definition" href="www.promsns.org/ns/proms#Report">Report</a>s that can then be lodged with this system.</p>
+    <p>Toolkits exist to generate PROMS <a class="definition" href="http://www.promsns.org/ns/proms#Report">Report</a>s that can then be lodged with this system.</p>
     <table class="lined">
         <tr><th>Toolkit</th><th>Technologies</th><th>Location</th></tr>
         <tr><td>PROMS Java client</td><td>Java, Jena (a Java RDF system)</td><td><a href="https://stash.csiro.au/projects/EIS/repos/proms-clients-java">https://stash.csiro.au/projects/EIS/repos/proms-clients-java</a></td></tr>
@@ -2716,12 +2730,24 @@ def page_create_report():
     html += '''
     <h1>Provenance Management Service</h1>
     <h2>Create a <em>Report</em></h2>
-    <p>This page allows someone to create a provenance <a class="definition" href="http://www.promsns.org/ns/proms#Report">Report</a> which can then be lodged with this instance of PROMS or downloaded for use elsewhere. Given that there are tools for creating complex <em>Reports</em> for a series of programming environments (see <a href="/documentation#resources">Documentation &gt; Resources</a>, this page is limited to creating simple <a class="definition" href="http://www.promsns.org/ns/proms#BasicReport">Basic</a> and <a class="definition" href="http://www.promsns.org/ns/proms#ExternalReport">External</a> <em>Reports</em>and cannot produce the more detailed <a class="definition" href="http://www.promsns.org/ns/proms#InternalReport">Internal</a> <em>Reports</em>.</p>
+    <p>This page allows someone toget_entities create a provenance <a class="definition" href="http://www.promsns.org/ns/proms#Report">Report</a> which can then be lodged with this instance of PROMS or downloaded for use elsewhere. Given that there are tools for creating complex <em>Reports</em> for a series of programming environments (see <a href="/documentation#resources">Documentation &gt; Resources</a>, this page is limited to creating simple <a class="definition" href="http://www.promsns.org/ns/proms#BasicReport">Basic</a> and <a class="definition" href="http://www.promsns.org/ns/proms#ExternalReport">External</a> <em>Reports</em>and cannot produce the more detailed <a class="definition" href="http://www.promsns.org/ns/proms#InternalReport">Internal</a> <em>Reports</em>.</p>
     <p>Complete the form below to create a <em>Report</em>. Input validation will ensure that the <em>Report</em> is valid.</p>
     <script src="/static/js/jquery.min.js" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"/ >
     <script src="/static/js/jquery.datetimepicker.js"></script>
+    <style>
+        .entity-input-delete,
+        .entity-output-delete,
+        .entity-input-add,
+        .entity-output-add {
+            color: #0f4a84;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
     <script>
+        var entityInputCounter = 0;
+        var entityOutputCounter = 0;
         $(function() {
             $('input[name=agent-new-existing]').change(function () {
                 if ($('input[name=agent-new-existing]:checked', '#create-report').val() == "existing") {
@@ -2734,17 +2760,112 @@ def page_create_report():
             });
 
             //DateTime picker
-            $('#startedAtTime').datetimepicker({
-              format:'Y-m-d H:i:s',
+            $('#activity-startedAtTime').datetimepicker({
+              format:'Y-m-d H:i:s' + get_time_zone_offset(),
               inline:true,
               lang:'en'
             });
-            $('#endedAtTime').datetimepicker({
-              format:'Y-m-d H:i:s',
+            $('#activity-endedAtTime').datetimepicker({
+              format:'Y-m-d H:i:s' + get_time_zone_offset(),
               inline:true,
               lang:'en'
+            });
+
+            //Entity Inputs
+            $('body').on('click', '.entity-input-delete', function (event) {
+                //get this number
+                number_str = this.id.substr(this.id.lastIndexOf('-')+1, this.id.lastIndexOf('-')+2);
+
+                //delete the row
+                $('#entity-input-row-' + number_str).remove();
+            });
+
+            $('body').on('click', '.entity-input-add', function (event) {
+                //get the largest entity-input number
+                //increment the number
+                entityInputCounter = entityInputCounter + 1
+                number_inc_str = pad(entityInputCounter + 1, 2);
+                console.log(number_inc_str);
+                $('#entity-input-row-add').before('<tr id="entity-input-row-' + number_inc_str + '">' +
+                                                        '<td>' +
+                                                        '    <input type="radio" class="entity-used-new-existing" name="entity-' + number_inc_str + '-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>' +
+                                                        '    <input type="radio" class="entity-used-new-existing" name="entity-' + number_inc_str + '-new-existing" value="new" /> New' +
+                                                        '</td>' +
+                                                  '     <td><input type="text" class="entity-input" name="entity-input-' + number_inc_str + '" id="entity-input-' + number_inc_str + '" /></td>'+
+                                                  '     <td><span class="entity-input-delete" id="entity-input-delete-' + number_inc_str + '">delete</span></td>'+
+                                                  '</tr>');
+            });
+
+            $('body').on('change', 'input.entity-used-new-existing', function (event) {
+                //TODO: complete new/existing Entity selection
+                alert($(this).attr('name'));
+            });
+
+            $('#generate-report').click(function(event) {
+                event.preventDefault();
+                //validate fields
+
+
+                //construct the JSON object from form fields
+                var form_parts_json_obj = new Object();
+                form_parts_json_obj.agent_new_existing = $('input[name=agent-new-existing]:checked', '#create-report').val();
+                form_parts_json_obj.agent = $('#agent').val();
+                form_parts_json_obj.agent_name = $('#agent-name').val();
+                form_parts_json_obj.agent_uri = $('#agent-uri').val();
+                form_parts_json_obj.agent_email = $('#agent-email').val();
+                form_parts_json_obj.report_type = $('#report-type').val();
+                form_parts_json_obj.report_title = $('#report-title').val();
+                form_parts_json_obj.report_reportingsystem = $('#report-reportingsystem').val();
+                form_parts_json_obj.report_nativeId = $('#report-nativeId').val();
+                form_parts_json_obj.activity_title = $('#activity-title').val();
+                form_parts_json_obj.activity_description = $('#activity-description').val();
+                form_parts_json_obj.activity_startedAtTime = $('#activity-startedAtTime').val();
+                form_parts_json_obj.activity_endedAtTime = $('#activity-endedAtTime').val();
+
+                console.log(form_parts_json_obj);
+
+                //post the JSON object to PROMS to convert it into Turtle
+                /*
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: data,
+                    success: success,
+                    dataType: dataType
+                });
+                */
+
+                //show the results to the user
+                $('#generated-results').text("This is text");
+                $('#generated-results').show();
             });
         });
+
+        //only Australian timezones handles so far
+        function get_time_zone_offset( ) {
+            var current_date = new Date();
+            switch (-current_date.getTimezoneOffset() / 60) {
+                case 8:
+                    ret = '+08:00';
+                break;
+                case 9:
+                    ret = '+09:30';
+                break;
+                case 10:
+                    ret = '+10:00';
+                break;
+                case 11:
+                    ret = '+11:00';
+                break;
+            }
+            return ret;
+        }
+
+        function pad(n, width, z) {
+            z = z || '0';
+            n = n + '';
+            return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+        }
     </script>
     <form id="create-report" action="/function/create_report" method="post">
         <table class="lined" style="width:860px;">
@@ -2774,9 +2895,9 @@ def page_create_report():
             <tr>
                 <th>
                     Report Type:<br />
-                    <span style="font-size:small; font-weight:normal;">Only <a href="www.promsns.org/ns/proms#BasicReport" class="definition">Basic</a> and <a href="www.promsns.org/ns/proms#ExternalReport" class="definition">External</a> <em>Reports</em> are allowed using this form.</span></th>
+                    <span style="font-size:small; font-weight:normal;">Only <a href="http://www.promsns.org/ns/proms#BasicReport" class="definition">Basic</a> and <a href="http://www.promsns.org/ns/proms#ExternalReport" class="definition">External</a> <em>Reports</em> are allowed using this form.</span></th>
                 <td valign="top">
-                    <select name="rtype" id="rtype">
+                    <select name="report-type" id="report-type">
                         <option value="BasicReport">Basic</option>
                         <option value="ExternalReport">External</option>
                     </select>
@@ -2786,17 +2907,15 @@ def page_create_report():
             <tr>
                 <th>
                     Reporting System:<br />
-                    <span style="font-size:small; font-weight:normal;">You must have already registered a <a href="www.promsns.org/ns/proms#ReportingSystem" class="definition">Reporting System</a> for this <em>Report</em>. See the <a style="text-decoration:line-through;" href="/function/register_reporting_system">Reporting System registration</a> page.</span>
-                </th><td>
+                    <span style="font-size:small; font-weight:normal;">You must have already registered a <a href="http://www.promsns.org/ns/proms#ReportingSystem" class="definition">Reporting System</a> for this <em>Report</em>. See the <a style="text-decoration:line-through;" href="/function/register_reporting_system">Reporting System registration</a> page.</span>
+                </th>
+                <td>
                 ''' + get_reportingsystems_dropdown(get_reportingsystems()[1]) + '''
                 </td>
             </tr>
-            <tr><th>Native ID:<br /><span style="font-size:small; font-weight:normal;">An ID for this <em>Report</em> assigned by the system you are reporting for. If no ID can be known (e.g. for a manual process), use the word "none".</span></th><td><input type="text" name="nativeId" id="nativeId" /></td></tr>
             <tr>
-                <th colspan="3" style="text-align:right;">
-                    <button id="generate-report">Generate Report</button><br />
-                    <button id="generate-report">Store Report Here</button>
-                </th>
+                <th>Native ID:<br /><span style="font-size:small; font-weight:normal;">An ID for this <em>Report</em> assigned by the system you are reporting for. If no ID can be known (e.g. for a manual process), use the word "none".</span></th>
+                <td><input type="text" name="report-nativeId" id="report-nativeId" /></td>
             </tr>
             <tr><td colspan="2"><h3>Activity</h3></td></tr>
             <tr>
@@ -2804,36 +2923,69 @@ def page_create_report():
                 <td><input type="text" name="activity-title" id="activity-title" /></td>
             </tr>
             <tr>
+                <th>Activity Description:<br /><span style="font-size:small; font-weight:normal;">A simple description for the <em>Activity</em>.</span></th>
+                <td><textarea name="activity-description" id="activity-description" style="width:230px;"></textarea></td>
+            </tr>
+            <tr>
                 <th>Activity Started At Time:<br /><span style="font-size:small; font-weight:normal;">The time at which the <em>Activity</em> started.</span></th>
-                <td><input type="text" name="startedAtTime" id="startedAtTime" /></td>
+                <td><input type="text" name="activity-startedAtTime" id="activity-startedAtTime" /></td>
             </tr>
             <tr>
                 <th>Activity Ended At Time:<br /><span style="font-size:small; font-weight:normal;">The time at which the <em>Activity</em> ended.</span></th>
-                <td><input type="text" name="endedAtTime" id="endedAtTime" /></td>
+                <td><input type="text" name="activity-endedAtTime" id="activity-endedAtTime" /></td>
             </tr>
             <tr><td colspan="2"><h3>Entities</h3></td></tr>
             <tr>
                 <th>
-                    Reporter:<br />
-                    <span style="font-size:small; font-weight:normal;">Choose from the list of people or add in your details</span>
+                    Entity Used:<br />
+                    <span style="font-size:small; font-weight:normal;">Choose from the list of <em>Entities</em> known to this PROMS instance or add in your own details</span>
                 </th>
                 <td valign="top">
+                    <table class="entity layout" id="entity-inputs">
+                        <tr id="entity-input-row-01">
+                            <td>
+                                <input type="radio" class="entity-used-new-existing" name="entity-01-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>
+                                <input type="radio" class="entity-used-new-existing" name="entity-01-new-existing" value="new" /> New
+                            </td>
+                            <td><input type="text" class="entity-input" name="entity-input-01" id="entity-input-01" /></td>
+                            <td><span class="entity-input-delete" id="entity-input-delete-01">delete</span></td>
+                        </tr>
+                        <tr id="entity-input-row-add">
+                            <td></td>
+                            <td></td>
+                            <td><span class="entity-input-add">add another</span></td>
+                        </tr>
+                    </table>
+
+                    <!--
                     <p>
-                        <input type="radio" name="agent-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>
-                        <input type="radio" name="agent-new-existing" value="new" /> New
+                        <input type="radio" name="entity-01-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>
+                        <input type="radio" name="entity-01-new-existing" value="new" /> New
                     </p>
 
-                    <div id="agent-existing-value" style="width:300px;">''' + get_agents_dropdown(get_agents()[1]) + '''</div>
-                    <div id="agent-new-value" style="width:300px; display:none;">
+                    <div id="entity-01-existing-value" style="width:300px;">
+                        <select name="entity-01" id="entity-01">
+                        ''' + get_entities_dropdown(get_entities()[1]) + '''
+                        </select>
+                    </div>
+                    <div id="entity-01-new-value" style="width:300px; display:none;">
                         <table class="layout">
-                            <tr><td>Name:</td><td><input id="agent-name" name="agent-name" type="text" /></td></tr>
-                            <tr><td>URI:</td><td><input id="agent-uri" name="agent-uri" type="text" /></td></tr>
-                            <tr><td>Email:</td><td><input id="agent-email" name="agent-email" type="text" /></td></tr>
+                            <tr><td>Title:</td><td><input id="entity-01-title" name="entity-01-title" type="text" /></td></tr>
+                            <tr><td>URI:</td><td><input id="entity-01-uri" name="entity-01-uri" type="text" /></td></tr>
+                            <tr><td>Value:</td><td><input id="entity-01-value" name="entity-01-value" type="text" /></td></tr>
                         </table>
                     </div>
+                    -->
                 </td>
             </tr>
-
+            <tr>
+                <th colspan="3" style="text-align:right;">
+                    <br />
+                    <button id="generate-report">Generate Report</button><br />
+                    <textarea id="generated-results" style="display:none; width:840px;"></textarea>
+                    <button id="generate-report" style="display:none;">Store Report Here</button>
+                </th>
+            </tr>
         </table>
     </form>
     '''
@@ -2842,7 +2994,25 @@ def page_create_report():
     return html
 
 
-def page_cregister_reporting_system():
+def create_report_formparts(form_parts_json_obj):
+    #agent-new-existing [new, existing]
+    #   - agent (URI)
+    #   - agent-name, agent-URI, agent-email
+
+    #report-type [BasicReport, ExternalReport]
+    #report-title
+    #report-reportingsystem (URI-encoded)
+    #report-nativeId
+
+    #activity-title
+    #activity-description
+    #activity-startedAtTime
+    #activity-endedAtTime
+
+    pass
+
+
+def page_register_reporting_system():
 
     html = get_proms_html_header()
     html += '''

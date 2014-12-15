@@ -310,6 +310,11 @@ def create_report():
     return Response(functions.page_create_report(), status=200, mimetype='text/html')
 
 
+@routes.route('/function/create_report_formparts', methods=['POST'])
+def create_report_formparts(form_parts):
+    return Response(functions.create_report_formparts(form_parts), status=200, mimetype='text/plain')
+
+
 @routes.route('/function/register_reporting_system', methods=['GET'])
 def register_reporting_system():
     return Response(functions.page_cregister_reporting_system(), status=200, mimetype='text/html')
