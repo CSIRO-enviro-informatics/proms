@@ -10,6 +10,7 @@ import urllib
 
 
 def get_proms_html_header():
+    # TODO: make this fault tolerant
     html = requests.get('http://scikey.org/theme/template-header.inc').text
 
     nav = open(settings.HOME_DIR + settings.STATIC_DIR + 'nav.html', 'r').read()
@@ -51,6 +52,7 @@ def get_proms_html_header():
 
 
 def get_proms_html_footer():
+    # TODO: make this fault-tolerant
     html = requests.get('http://scikey.org/theme/template-footer.inc').text
     html = html.replace('This web page is maintained', 'This system\'s web page is maintained')
 
@@ -499,6 +501,7 @@ def get_report_details_svg():
 
 
 def get_report_html(report_uri):
+    print report_uri
     report_details = get_report_metadata(report_uri)
     if report_details[0]:
         r = json.loads(report_details[1])

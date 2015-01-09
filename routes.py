@@ -1,4 +1,4 @@
-from flask import Blueprint, Response, request
+from flask import Blueprint, Response, request, redirect
 routes = Blueprint('routes', __name__)
 import functions
 import urllib
@@ -135,6 +135,56 @@ def reports():
                 return Response('Insert failed for the following reasons:\n\n' + '\n'.join(put_result[1]), status=400, mimetype='text/plain')
         else:
             return Response('Only turtle documents allowed', status=400, mimetype='text/plain')
+
+
+@routes.route('/id/report/<regex(".{36}"):report_id><regex("(\..{3,4})?"):extension>', methods=['GET'])
+def report_id(report_id, extension):
+    # we're only handling turtl & HTML docs for now
+    # we forward on the accept header/_format directive or extension as an extension
+
+    #check requested format
+    if (request.headers.get('Content-Type') == 'text/turtle' or
+        request.args.get('_format') == 'text/turtle' or
+        extension == '.ttl'):
+        new_extension = '.ttl'
+    else:
+        # default is HTML
+        #   Content-Type' == 'text/html',
+        #   _format == 'text/html'
+        #   extension == '.html'
+        #   extension == '.htm' ?? perhaps
+        new_extension = '.html'
+
+    return redirect('/doc/report/' + report_id + new_extension, code=303)
+
+
+@routes.route('/doc/report/<regex(".{36}"):report_id><regex("(\..{3,4})?"):extension>', methods=['GET'])
+def report_doc(report_id, extension):
+
+    #check requested format
+    if (request.headers.get('Content-Type') == 'text/turtle' or
+        request.args.get('_format') == 'text/turtle' or
+        extension == '.ttl'):
+
+        # TODO: return turtle
+        return 'report in turtle'
+    else:
+        # this code is the same as for /id/report/?url=X
+        # TODO: de-duplicate this code
+        uri = request.url
+        #get back the original URI
+        uri = uri.replace('/doc/', '/id/')
+        uri = uri.replace(extension, '')
+        html = functions.get_proms_html_header()
+        html += '''
+        <h1>Provenance Management Service</h1>
+        <h2>A Report</h2>
+        <h3>URI: ''' + uri + '''</h3>
+        <p style="font-style: italic;">Under development, November, 2014.</p>
+        '''
+        html += functions.get_report_html(uri)
+        html += functions.get_proms_html_footer()
+        return Response(html, status=200, mimetype='text/html')
 
 
 @routes.route('/id/entity', methods=['GET'])
