@@ -1,3 +1,4 @@
+import functions_db
 import settings
 import re
 import json
@@ -7,68 +8,7 @@ from rdflib import Graph
 import requests
 from rulesets import proms
 import urllib
-
-
-def get_proms_html_header():
-    # TODO: make this fault tolerant
-    html = requests.get('http://scikey.org/theme/template-header.inc').text
-
-    nav = open(settings.HOME_DIR + settings.STATIC_DIR + 'nav.html', 'r').read()
-    html = html.replace('<?php include $nav ?>', nav)
-    html = re.sub(r'<title>(.*)</title>', '<title>PROMS: Provenance Management System</title>', html)
-    style = '''
-        <style>
-            .lined {
-                border: solid 2px black;
-                border-collapse: collapse;
-
-                font-family: Verdana;
-                font-size: 12px;
-            }
-            .lined th,
-            .lined td {
-                border: solid 1px black;
-                padding: 3px;
-            }
-            h4 {
-                font-weight:bold;
-            }
-
-            .layout {
-                border-collapse: collapse;
-                border: none;
-            }
-
-            .layout th,
-            .layout td {
-                border: none;
-            }
-        </style>
-    </head>
-    '''
-    html = re.sub('</head>', style, html)
-
-    return html
-
-
-def get_proms_html_footer():
-    # TODO: make this fault-tolerant
-    html = requests.get('http://scikey.org/theme/template-footer.inc').text
-    html = html.replace('This web page is maintained', 'This system\'s web page is maintained')
-
-    return html
-
-
-def submit_stardog_query(query):
-    uri = settings.PROMS_DB_URI
-    qsa = {'query': query}
-    h = {'accept': 'application/sparql-results+json'}
-    r = requests.get(uri, params=qsa, headers=h, auth=('proms', 'proms'))
-
-    if r.status_code == 200:
-        return [True, r.text]
-    else:
-        return [False, 'ERROR: ' + r.text]
+import pprint
 
 
 #
@@ -116,7 +56,7 @@ def get_reportingsystems():
         }
     '''
 
-    return submit_stardog_query(query)
+    return functions_db.db_query_secure(query)
 
 
 def get_reportingsystems_html(sparql_query_results_json):
@@ -133,19 +73,36 @@ def get_reportingsystems_html(sparql_query_results_json):
     return l
 
 
-def get_reportingsystems_dropdown(sparql_query_results_json):
-    reportingsystems = json.loads(sparql_query_results_json)
-    l = '<select name="report-reportingsystem" id="report-reportingsystem">'
-    l += '<option value="">Select...</option>'
+def get_reportingsystems_dict():
+    query = '''
+        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX proms: <http://promsns.org/ns/proms#>
+        PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
+        SELECT ?rs ?t ?fn ?em ?ph ?add
+        WHERE {
+          ?rs a proms:ReportingSystem .
+          ?rs dc:title ?t .
+          ?rs proms:owner ?o .
+          ?o vcard:fn ?fn .
+          ?o vcard:hasEmail ?em .
+          ?o vcard:hasTelephone ?ph_1 .
+          ?ph_1 vcard:hasValue ?ph .
+          ?o vcard:hasAddress ?add_1 .
+          ?add_1 vcard:locality ?add
+        }
+    '''
+
+    reportingsystems = functions_db.db_query_secure(query)
+
+    ret = {}
     for reportingsystem in reportingsystems['results']['bindings']:
         if reportingsystem.get('t'):
             uri_encoded = urllib.quote(str(reportingsystem['rs']['value']))
-            l += '<option value="' + uri_encoded + '">' + str(reportingsystem['t']['value']) + '</option>'
+            ret[uri_encoded] = str(reportingsystem['t']['value'])
         else:
-            l += '<option value="' + str(reportingsystem['rs']['value']) + '">' + str(reportingsystem['rs']['value']) + '</option>'
-    l += '</select>'
+            ret[str(reportingsystem['rs']['value'])] = str(reportingsystem['rs']['value'])
 
-    return l
+    return ret
 
 
 def get_reportingsystem(reportingsystem_uri):
@@ -167,7 +124,7 @@ def get_reportingsystem(reportingsystem_uri):
         }
     '''
 
-    return submit_stardog_query(query)
+    return functions_db.db_query_secure(query)
 
 
 def draw_report(n, uri, title, jobId):
@@ -244,7 +201,7 @@ def get_reportingsystem_reports_svg(reportingsystem_uri):
     }
     ORDER BY DESC(?eat)
     '''
-    reports = submit_stardog_query(query)
+    reports = functions_db.db_query_secure(query)
     if reports[1]:
         rp = json.loads(reports[1])
         if len(rp['results']['bindings']) > 0:
@@ -436,7 +393,7 @@ def get_reports():
                 }
                 ORDER BY ?r
             '''
-    return submit_stardog_query(query)
+    return functions_db.db_query_secure(query)
 
 
 #TODO: get this query working
@@ -457,7 +414,7 @@ def get_reports_for_rs(reportingsystem_uri):
                 }
                 ORDER BY ?r
             '''
-    return submit_stardog_query(query)
+    return functions_db.db_query_secure(query)
 
 
 def get_report_metadata(report_uri):
@@ -478,7 +435,7 @@ def get_report_metadata(report_uri):
           ?sac prov:startedAtTime ?sat .
         }
     '''
-    return submit_stardog_query(query)
+    return functions_db.db_query_secure(query)
 
 
 def get_reports_html(sparql_query_results_json):
@@ -591,7 +548,7 @@ def get_entities():
                 }
                 ORDER BY ?e
             '''
-    return submit_stardog_query(query)
+    return functions_db.db_query_secure(query)
 
 
 def get_entity(entity_uri):
@@ -613,7 +570,7 @@ def get_entity(entity_uri):
             OPTIONAL { ?wat foaf:name ?wat_name . }
         }
     '''
-    return submit_stardog_query(query)
+    return functions_db.db_query_secure(query)
 
 
 def get_entities_html(sparql_query_results_json):
@@ -796,7 +753,7 @@ def get_entity_activity_wgb_svg(entity_uri):
           ?a dc:title ?t .
         }
     '''
-    stardog_results = submit_stardog_query(query)
+    stardog_results = functions_db.db_query_secure(query)
 
     if stardog_results[0]:
         wgb = json.loads(stardog_results[1])['results']
@@ -871,7 +828,7 @@ def get_entity_activity_used_svg(entity_uri):
           ?a dc:title ?t .
         }
     '''
-    stardog_results = submit_stardog_query(query)
+    stardog_results = functions_db.db_query_secure(query)
 
     if stardog_results[0]:
         used = json.loads(stardog_results[1])['results']
@@ -1028,7 +985,7 @@ def get_entity_entity_wdf_svg(entity_uri):
             ?e dc:title ?t .
         }
     '''
-    stardog_results = submit_stardog_query(query)
+    stardog_results = functions_db.db_query_secure(query)
 
     if stardog_results[0]:
         wdf = json.loads(stardog_results[1])['results']
@@ -1218,7 +1175,7 @@ def get_activities():
                 }
                 ORDER BY ?s
             '''
-    return submit_stardog_query(query)
+    return functions_db.db_query_secure(query)
 
 
 def get_activities_html(sparql_query_results_json):
@@ -1250,7 +1207,7 @@ def get_activity(activity_uri):
           OPTIONAL {?waw foaf:name ?waw_name .}
         }
     '''
-    return submit_stardog_query(query)
+    return functions_db.db_query_secure(query)
 
 
 def get_activity_details_svg(activity_uri):
@@ -1368,7 +1325,7 @@ def get_activity_used_entities_svg(activity_uri):
           OPTIONAL {?u dc:title ?t .}
         }
     '''
-    stardog_results = submit_stardog_query(query)
+    stardog_results = functions_db.db_query_secure(query)
     if stardog_results[0]:
         used = json.loads(stardog_results[1])['results']
         if len(used['bindings']) > 0:
@@ -1616,7 +1573,7 @@ def get_activity_generated_entities_svg(activity_uri):
         }
     '''
 
-    stardog_results = submit_stardog_query(query)
+    stardog_results = functions_db.db_query_secure(query)
     if stardog_results[0]:
         gen = json.loads(stardog_results[1])['results']
         if len(gen['bindings']) > 0:
@@ -1872,7 +1829,7 @@ def get_activity_was_informed_by(activity_uri):
             OPTIONAL { ?wif dc:title ?t . }
         }
     '''
-    stardog_results = submit_stardog_query(query)
+    stardog_results = functions_db.db_query_secure(query)
 
     if stardog_results[0]:
         wif = json.loads(stardog_results[1])['results']
@@ -2055,6 +2012,7 @@ def get_activity_html(activity_uri):
 def get_agents():
     query = '''
             PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             SELECT DISTINCT ?ag ?n
             WHERE {
                 {
@@ -2078,7 +2036,7 @@ def get_agents():
                 }
             }
             '''
-    return submit_stardog_query(query)
+    return functions_db.db_query_secure(query)
 
 
 def get_agents_html(sparql_query_results_json):
@@ -2095,19 +2053,44 @@ def get_agents_html(sparql_query_results_json):
     return l
 
 
-def get_agents_dropdown(sparql_query_results_json):
-    agents = json.loads(sparql_query_results_json)
-    l = '<select name="agent" id="agent">'
-    l += '<option value="">Select...</option>'
+def get_agents_dict():
+    query = '''
+            PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            SELECT DISTINCT ?ag ?n
+            WHERE {
+                {
+                    { ?e a prov:Entity . }
+                    UNION
+                    { ?e a prov:Plan . }
+                    ?e prov:wasAttributedTo ?ag .
+                    OPTIONAL{ ?ag foaf:name ?n . }
+                }
+                UNION
+                {
+                    ?a a prov:Activity .
+                    ?a prov:wasAssociatedWith ?ag .
+                    OPTIONAL{ ?ag foaf:name ?n . }
+                }
+                UNION
+                {
+                    ?ag1 a prov:Agent .
+                    ?ag1 prov:actedOnBehalfOf ?ag .
+                    OPTIONAL{ ?ag foaf:name ?n . }
+                }
+            }
+            '''
+    agents = functions_db.db_query_secure(query)
+
+    ret = {}
     for agent in agents['results']['bindings']:
         if agent.get('n'):
             uri_encoded = urllib.quote(str(agent['ag']['value']))
-            l += '<option value="' + uri_encoded + '">' + str(agent['n']['value']) + '</option>'
+            ret[uri_encoded] = str(agent['n']['value'])
         else:
-            l += '<option value="' + str(agent['ag']['value']) + '">' + str(agent['ag']['value']) + '</option>'
-    l += '</select>'
+            ret[str(agent['ag']['value'])] = str(agent['ag']['value'])
 
-    return l
+    return ret
 
 
 def get_agent(agent_uri):
@@ -2145,7 +2128,7 @@ def get_agent(agent_uri):
                 }
             }
             '''
-    return submit_stardog_query(query)
+    return functions_db.db_query_secure(query)
 
 
 def get_agent_details_svg(agent_uri):
@@ -2266,7 +2249,7 @@ def get_agent_was_attributed_to_svg(agent_uri):
                 OPTIONAL { ?e dc:title ?t . }
             }
     '''
-    stardog_results = submit_stardog_query(query)
+    stardog_results = functions_db.db_query_secure(query)
 
     if stardog_results[0]:
         wat = json.loads(stardog_results[1])['results']
@@ -2420,7 +2403,7 @@ def get_agent_was_associated_with_svg(agent_uri):
                 OPTIONAL { ?a dc:title ?t . }
             }
     '''
-    stardog_results = submit_stardog_query(query)
+    stardog_results = functions_db.db_query_secure(query)
 
     if stardog_results[0]:
         waw = json.loads(stardog_results[1])['results']
@@ -2630,4 +2613,3 @@ def page_register_reporting_system():
     html += get_proms_html_footer()
 
     return html
-

@@ -15,27 +15,7 @@ def home():
 
 @routes.route('/id/')
 def ids():
-    html = functions.get_proms_html_header()
-    html += '''
-    <h1>Provenance Management Service</h1>
-    <h2>Endpoints</h2>
-    <p style="font-style: italic;">Under development, October, 2014.</p>
-    <p>The current registers (lists) of things that provenance reports sent to PROMS describe are:</p>
-    <ul>
-        <li><a href="/id/reportingsystem/">ReportingSystems</a></li>
-        <li><a href="/id/report/">Reports</a></li>
-        <li><a href="/id/entity/">Entities</a></li>
-        <li><a href="/id/activity/">Activities</a></li>
-        <li><a href="/id/agent/">Agents</a></li>
-    </ul>
-    <p>SPARQL endpoint for free-range queries:</p>
-    <ul>
-        <li><a href="/function/sparql">SPARQL Endpoint</a></li>
-    </ul>
-    '''
-
-    html += functions.get_proms_html_footer()
-    return Response(html, status=200, mimetype='text/html')
+    return render_template('id.html', PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
 
 
 @routes.route('/id/reportingsystem/', methods=['GET', 'POST'])
@@ -348,7 +328,7 @@ def pingback():
 
 @routes.route('/function/sparql')
 def sparql():
-    return "SPARQL endpoint"
+    return render_template('function_sparql.html')
 
 
 @routes.route('/documentation', methods=['GET'])
@@ -358,10 +338,9 @@ def documentation():
 
 @routes.route('/function/create_report', methods=['GET'])
 def create_report():
-    return render_template('documentation.html',
-                           select_agents=functions.get_agents_dropdown(functions.get_agents()[1]),
-                           select_rs=functions.get_reportingsystems_dropdown(functions.get_reportingsystems()[1]))
-
+    return render_template('function_create_report.html',
+                           agents=functions.get_agents_dict(),
+                           reportingsystems=functions.get_reportingsystems_dict())
 
 
 @routes.route('/function/create_report_formparts', methods=['POST'])

@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <h1>PROMS Server</h1>
     <h2>Create a <em>Report</em></h2>
     <p>This page allows someone toget_entities create a provenance <a class="definition" href="http://www.promsns.org/ns/proms#Report">Report</a> which can then be lodged with this instance of PROMS or downloaded for use elsewhere. Given that there are tools for creating complex <em>Reports</em> for a series of programming environments (see <a href="/documentation#resources">Documentation &gt; Resources</a>, this page is limited to creating simple <a class="definition" href="http://www.promsns.org/ns/proms#BasicReport">Basic</a> and <a class="definition" href="http://www.promsns.org/ns/proms#ExternalReport">External</a> <em>Reports</em>and cannot produce the more detailed <a class="definition" href="http://www.promsns.org/ns/proms#InternalReport">Internal</a> <em>Reports</em>.</p>
     <p>Complete the form below to create a <em>Report</em>. Input validation will ensure that the <em>Report</em> is valid.</p>
@@ -154,7 +153,11 @@
                     </p>
 
                     <div id="agent-existing-value" style="width:300px;">
-                        {{ select_agents }}
+                        <select name="agent" id="agent">
+                            {% for key, value in agents.items() %}
+                            <option value="{{ key }}">{{ value }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div id="agent-new-value" style="width:300px; display:none;">
                         <table class="layout">
@@ -185,6 +188,12 @@
                 </th>
                 <td>
                     {{ select_rs }}
+
+                    <select name="reportingsystem" id="reportingsystem">
+                        {% for key, value in reportingsystems.items() %}
+                        <option value="{{ key }}">{{ value }}</option>
+                        {% endfor %}
+                    </select>
                 </td>
             </tr>
             <tr>

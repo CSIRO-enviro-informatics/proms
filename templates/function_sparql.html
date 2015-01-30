@@ -1,10 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+{% extends "layout.html" %}
 
-</body>
-</html>
+{% block content %}
+    <h2>SPARQL endpoint</h2>
+    <h4>Enter your SPARQL query in the text box below:</h4>
+    <form action="#" method="POST">
+        <textarea name="query" style="width:500px; height:300px;"></textarea>
+        <br />
+        <input type="submit" value="Query PROMS" />
+    </form>
+{% endblock %}
