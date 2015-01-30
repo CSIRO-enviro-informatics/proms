@@ -1,7 +1,8 @@
-from flask import Blueprint, Response, request, redirect
+from flask import Blueprint, Response, request, redirect, render_template
 routes = Blueprint('routes', __name__)
 import functions
 import urllib
+import settings
 
 
 #
@@ -9,7 +10,7 @@ import urllib
 #
 @routes.route('/')
 def home():
-    return Response(functions.page_home(), status=200, mimetype='text/html')
+    return render_template('index.html', PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
 
 
 @routes.route('/id/')
@@ -352,12 +353,15 @@ def sparql():
 
 @routes.route('/documentation', methods=['GET'])
 def documentation():
-    return Response(functions.page_documentation(), status=200, mimetype='text/html')
+    return render_template('documentation.html', PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
 
 
 @routes.route('/function/create_report', methods=['GET'])
 def create_report():
-    return Response(functions.page_create_report(), status=200, mimetype='text/html')
+    return render_template('documentation.html',
+                           select_agents=functions.get_agents_dropdown(functions.get_agents()[1]),
+                           select_rs=functions.get_reportingsystems_dropdown(functions.get_reportingsystems()[1]))
+
 
 
 @routes.route('/function/create_report_formparts', methods=['POST'])
@@ -367,4 +371,4 @@ def create_report_formparts(form_parts):
 
 @routes.route('/function/register_reporting_system', methods=['GET'])
 def register_reporting_system():
-    return Response(functions.page_cregister_reporting_system(), status=200, mimetype='text/html')
+    return Response(functions.page_register_reporting_system(), status=200, mimetype='text/html')

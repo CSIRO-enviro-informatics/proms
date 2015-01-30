@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>PROMS Server</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/csiro_theme.css') }}" />
+</head>
+<body>
+    <div id="container-logo">
+        <img id="csiro-logo" src="{{ url_for('static', filename = 'img/logo.gif') }}" alt="CSIRO's logo" />
+	    <div id="navblue-container">
+            <span id="navblue">
+			    {% include 'proms_nav.html' %}
+            </span>
+	    </div>
+    </div>
+    <div id="container-content">
+        <div id="container-content-2">
+            {% block content %}{% endblock %}
+        </div>
+	</div>
+
+	<div id="footer-external">
+		<ul id="footer-external-links">
+            {% include 'csiro_footer.html' %}
+		</ul>
+	</div><!-- footer external -->
+</body>
+</html>

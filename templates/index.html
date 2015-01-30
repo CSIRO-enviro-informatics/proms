@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h1>PROMS Server</h1>
+    <h2>Provenance Management System Server Home</h2>
+    <p style="font-style: italic;">Under development, November, 2014.</p>
+    <h4>This is the index page for the PROMS (PROvenance Management System) data store. It contains a database to store provenance data and a series of functions to manage that data.</h4>
+    <h4>Getting Strated</h4>
+    <p>Follow the links above to the right in the blue to navigate this system.</p>
+    <h4>Documentation</h4>
+    <p>Please visit the documentation page for details of service endpoints and features:</p>
+    <ul>
+        <li><a href="{{ PROMS_INSTANCE_NAMESPACE_URI }}documentation">Documentation Page</a></li>
+    </ul>
+    <h4>Maintenance &amp; Contact</h4>
+    <p>PROMS v3 is maintained by CSIRO's software engineers, led by Nicholas Car &amp; Matthew Stenson in CSIRO's Land &amp; Water Flagship, EcoScienes, Brisbane.</p>
+    <p>Contact Nicholas with any issues:</p>
+    <p>
+        <strong>Nicholas Car</strong><br />
+        <strong>ph:</strong> +61 7 3833 5600<br />
+        <strong>e:</strong> <a href="mailto:nicholas.car@csiro.au">nicholas.car@csiro.au</a>
+    </p>
+    <h4>Licensing</h4>
+    <p>PROMS v3 is licensed using the CSIRO Open Source Software License, based on the MIT/BSD Open Source License:</p>
+    <ul>
+        <li><a href="https://wiki.csiro.au/pages/viewpage.action?pageId=663847169">CSIRO Open Source Software License</a></li>
+    </ul>
+    <h4>Code</h4>
+    <p>The code for PROV v3 is available from CSIRO's Stash code repository manager as the a Git repository:</p>
+    <ul>
+        <li><a href="https://stash.csiro.au/projects/EIS/repos/PROMS">PROMS v3 Git Repository</a></li>
+    </ul>
+{% endblock %}
