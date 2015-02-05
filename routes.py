@@ -1,6 +1,7 @@
 from flask import Blueprint, Response, request, redirect, render_template
 routes = Blueprint('routes', __name__)
 import functions
+import functions_db
 import urllib
 import settings
 
@@ -21,40 +22,9 @@ def ids():
 @routes.route('/id/reportingsystem/', methods=['GET', 'POST'])
 def reportingsystem():
     if request.method == 'GET':
-        #single Report
-        if request.args.get('uri'):
-            #unencode the uri QSA
-            uri = urllib.unquote(request.args.get('uri'))
-            html = functions.get_proms_html_header()
-            html += '''
-            <h1>Provenance Management Service</h1>
-            <h2>A ReportingSystem</h2>
-            <h3>URI: ''' + uri + '''</h3>
-            <p style="font-style: italic;">Under development, November, 2014.</p>
-            '''
-            html += functions.get_reportingsystem_html(uri)
-            reports = functions.get_reports_for_rs(uri)
-            if reports[0]:
-                html += functions.get_reports_html(reports[1])
-            else:
-                html += '<h4>There has been an error getting the Reports for this Reporting System</h4>'
-            html += functions.get_proms_html_footer()
-            return Response(html, status=200, mimetype='text/html')
-        #multiple Reports (register)
-        else:
-            html = functions.get_proms_html_header()
-            html += '''
-            <h1>Provenance Management Service</h1>
-            <h2>ReportingSystems Register</h2>
-            <p style="font-style: italic;">Under development, November, 2014.</p>
-            '''
-            reportingsystems = functions.get_reportingsystems()
-            if reportingsystems[0]:
-                html += functions.get_reportingsystems_html(reportingsystems[1])
-            else:
-                html += '<h4>There has been an error getting the ReportingSystems</h4>'
-            html += functions.get_proms_html_footer()
-            return Response(html, status=200, mimetype='text/html')
+        reportingsystems=functions.get_reportingsystems_dict()
+        return render_template('reportingsystem.html',
+                               REPORTINGSYSTEMS=reportingsystems)
     #process a posted Report
     if request.method == 'POST':
         #read the incoming report
@@ -315,7 +285,6 @@ def pingback():
             <li>test dereferencing of &lt;their_activity_uri&gt; </li>
             <li>insert</li>
         </ol>
-
         '''
 
         html += functions.get_proms_html_footer()
@@ -326,9 +295,18 @@ def pingback():
         pass
 
 
-@routes.route('/function/sparql')
+@routes.route('/function/sparql', methods=['GET', 'POST'])
 def sparql():
-    return render_template('function_sparql.html')
+    # Query submitted
+    if request.method == 'POST':
+        query = request.form['query']
+        query_result = functions_db.db_query_secure(query);
+        return render_template('function_sparql.html',
+                               query=query,
+                               query_result=query_result);
+    # No query, display form
+    else:
+        return render_template('function_sparql.html')
 
 
 @routes.route('/documentation', methods=['GET'])

@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h1>Provenance Management Service</h1>
+    <p style="font-style: italic;">Under development, February, 2015.</p>
+    <h2>Reporting Systems</h2>
+    {% if REPORTINGSYSTEMS|length == 0 %}
+        <p>No reporting systems found.</p>
+    {% else %}
+        {% for reportingsystem in REPORTINGSYSTEMS %}
+            <p>A report</p>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+

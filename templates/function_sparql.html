@@ -3,9 +3,12 @@
 {% block content %}
     <h2>SPARQL endpoint</h2>
     <h4>Enter your SPARQL query in the text box below:</h4>
-    <form action="#" method="POST">
-        <textarea name="query" style="width:500px; height:300px;"></textarea>
+    <form action="/function/sparql" method="post">
+        <textarea name="query" id="query" style="width:500px; height:300px;">{% if query != '' %}{{query}}{% endif %}</textarea>
         <br />
-        <input type="submit" value="Query PROMS" />
+        <input type="submit" value="Query PROMS" /><br />
+        <!--<button id="query-proms">Query PROMS</button><br />-->
+        <h4>Result</h4>
+        <textarea id="query-result" style="width:500px; height:300px;" readonly>{% if query_result != '' %}{{query_result}}{% endif %}</textarea>
     </form>
 {% endblock %}
