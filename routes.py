@@ -62,13 +62,15 @@ def reports():
             #uri = request.args.get('uri')
             report = functions.get_report_dict(uri)
             return render_template('report.html',
-                                   REPORT=report)
+                                   REPORT=report,
+                                   PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
         #multiple Reports (register)
         else:
             reports = functions.get_reports_dict()
             print(reports)
             return render_template('report.html',
-                                   REPORTS=reports)
+                                   REPORTS=reports,
+                                   PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
 
 
     #process a posted Report
