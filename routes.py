@@ -156,39 +156,18 @@ def entities():
 @routes.route('/id/activity', methods=['GET'])
 @routes.route('/id/activity/', methods=['GET'])
 def activities():
-    return render_template('activity.html')
-    """
-    #single Report
+    #single Activity
     if request.args.get('uri'):
         #unencode the uri QSA
         uri = urllib.unquote(request.args.get('uri'))
-        html = functions.get_proms_html_header()
-        html += '''
-        <h1>Provenance Management Service</h1>
-        <h2>An Activity</h2>
-        <h3>URI: ''' + uri + '''</h3>
-        <p style="font-style: italic;">Under development, November, 2014.</p>
-        '''
-        html += functions.get_activity_html(uri)
-        html += functions.get_proms_html_footer()
-        return Response(html, status=200, mimetype='text/html')
+        activity = functions.get_activity_dict(uri)
+        return render_template('activity.html',
+                               ACTIVITY=activity)
+    #multiple Activities (register)
     else:
-        html = functions.get_proms_html_header()
-        html += '''
-        <h1>Provenance Management Service</h1>
-        <h2>Activities Register</h2>
-        <p style="font-style: italic;">Under development, November, 2014.</p>
-        '''
-
-        a = functions.get_activities()
-        if a[0]:
-            html += functions.get_activities_html(a[1])
-        else:
-            html += '<h4>There has been an error getting the Activities</h4>'
-
-        html += functions.get_proms_html_footer()
-        return Response(html, status=200, mimetype='text/html')
-        """
+        activities = functions.get_activities_dict()
+        return render_template('activity.html',
+                               ACTIVITIES=activities)
 
 
 @routes.route('/id/agent/', methods=['GET'])
