@@ -689,35 +689,17 @@ def get_entities_dict():
 
 
 def get_entity_dict(entity_uri):
-    """
-    query = '''
-        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX proms: <http://promsns.org/def/proms#>
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
-        SELECT ?rt ?l ?t ?id ?rs ?rs_t ?sat
-        WHERE {
-          <''' + report_uri + '''> a ?rt .
-          <''' + report_uri + '''> rdf:label ?l .
-          <''' + report_uri + '''> proms:reportType ?t .
-          <''' + report_uri + '''> proms:nativeId ?id .
-          <''' + report_uri + '''> proms:reportingSystem ?rs .
-          ?rs rdf:label ?rs_t .
-          <''' + report_uri + '''> proms:startingActivity ?sac .
-          ?sac prov:startedAtTime ?sat .
-        }
-    '''
-    """
     query = '''
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX dcat: <http://www.w3.org/ns/dcat#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         SELECT DISTINCT ?l ?c ?dl ?t ?v ?wat ?wat_name
-        WHERE
+        WHERE {
             <''' + entity_uri + '''> rdf:label ?l .
             <''' + entity_uri + '''> dc:created ?c .
-            <''' + entity_uri + '''> dc:downloadURL ?dl .
+            <''' + entity_uri + '''> dcat:downloadURL ?dl .
             { <''' + entity_uri + '''> a prov:Entity . }
             UNION
             { <''' + entity_uri + '''> a prov:Plan . }
@@ -732,12 +714,19 @@ def get_entity_dict(entity_uri):
     # Check this
     if entity_detail and entity_detail['results']['bindings']:
         ret['l'] = entity_detail['results']['bindings'][0]['l']['value']
-        ret['t'] = entity_detail['results']['bindings'][0]['t']['value']
-        ret['v'] = entity_detail['results']['bindings'][0]['v']['value']
-        ret['wat'] = entity_detail['results']['bindings'][0]['wat']['value']
-        ret['wat_name'] = entity_detail['results']['bindings'][0]['wat_name']['value']
+        ret['c'] = entity_detail['results']['bindings'][0]['c']['value']
+        ret['dl'] = entity_detail['results']['bindings'][0]['dl']['value']
+        if('t' in entity_detail['results']['bindings'][0]):
+            ret['t'] = entity_detail['results']['bindings'][0]['t']['value']
+        if('v' in entity_detail['results']['bindings'][0]):
+            ret['v'] = entity_detail['results']['bindings'][0]['v']['value']
+        if('wat' in entity_detail['results']['bindings'][0]):
+            ret['wat'] = entity_detail['results']['bindings'][0]['wat']['value']
+        if('wat_name' in entity_detail['results']['bindings'][0]):
+            ret['wat_name'] = entity_detail['results']['bindings'][0]['wat_name']['value']
         ret['uri'] = entity_uri
     return ret
+
 
 def get_entity(entity_uri):
     #TODO: landing page with view options:
