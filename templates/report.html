@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h1>Provenance Management Service</h1>
+    {% if REPORT %}
+        <h2>A Report</h2>
+        <h3>URI: {{REPORT['uri']}}</h3>
+        <h4><a class="definition" href={{REPORT['t']}}>{{REPORT['t_str']}}</a> Report</h4>
+        <table class="lines">
+            <tr><th>Title:</th><td>{{REPORT['l']}}</td></tr>
+            <tr><th>Reporting System:</th><td><a href={{PROMS_INSTANCE_NAMESPACE_URI}}id/reportingsystem/?uri={{REPORT['rs']}}>{{REPORT['rs_t']}}</a></td></tr>
+            <tr><th>Job ID:</th><td>{{REPORT['id']}}</td></tr>
+        </table>
+    {% elif REPORTS %}
+        <h2>Reports Register</h2>
+        {% if REPORTS|length == 0 %}
+            <p>No Reports found.</p>
+        {% else %}
+            <ul>
+            {% for uri, t in REPORTS.iteritems() %}
+                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/report?uri={{uri}}">
+                    {% if t -%}
+                        {{t}}
+                    {% else %}
+                        {{uri}}
+                    {% endif %}
+                    </a>
+                    {% if t -%}
+                        ({{uri}})
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endif %}
+{% endblock %}

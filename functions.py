@@ -1,14 +1,11 @@
 import functions_db
 import settings
-import re
 import json
-#import pyproms
 import cStringIO
 from rdflib import Graph
 import requests
 from rulesets import proms
 import urllib
-import pprint
 
 
 #
@@ -40,7 +37,7 @@ def get_reportingsystems():
     '''
     query = '''
         PREFIX dc: <http://purl.org/dc/elements/1.1/>
-        PREFIX proms: <http://promsns.org/ns/proms#>
+        PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
         SELECT ?rs ?t ?fn ?em ?ph ?add
         WHERE {
@@ -91,17 +88,16 @@ def get_reportingsystems_dict():
           ?add_1 vcard:locality ?add
         }
     '''
-
     reportingsystems = functions_db.db_query_secure(query)
-
     ret = {}
-    for reportingsystem in reportingsystems['results']['bindings']:
-        if reportingsystem.get('t'):
-            uri_encoded = urllib.quote(str(reportingsystem['rs']['value']))
-            ret[uri_encoded] = str(reportingsystem['t']['value'])
-        else:
-            ret[str(reportingsystem['rs']['value'])] = str(reportingsystem['rs']['value'])
-
+    # Check if nothing is returned
+    if reportingsystems and reportingsystems['results']['bindings']:
+        for reportingsystem in reportingsystems['results']['bindings']:
+            if reportingsystem.get('t'):
+                uri_encoded = urllib.quote(str(reportingsystem['rs']['value']))
+                ret[uri_encoded] = str(reportingsystem['t']['value'])
+            else:
+                ret[str(reportingsystem['rs']['value'])] = str(reportingsystem['rs']['value'])
     return ret
 
 
@@ -123,8 +119,35 @@ def get_reportingsystem(reportingsystem_uri):
           ?add_1 vcard:locality ?add
         }
     '''
-
     return functions_db.db_query_secure(query)
+
+
+def get_reportingsystem_dict(reportingsystem_uri):
+    query = '''
+        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX proms: <http://promsns.org/ns/proms#>
+        PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
+        SELECT ?t ?fn ?em ?ph ?add
+        WHERE {
+          <''' + reportingsystem_uri + '''> a proms:ReportingSystem .
+          <''' + reportingsystem_uri + '''> dc:title ?t .
+          <''' + reportingsystem_uri + '''> proms:owner ?o .
+          ?o vcard:fn ?fn .
+          ?o vcard:hasEmail ?em .
+          ?o vcard:hasTelephone ?ph_1 .
+          ?ph_1 vcard:hasValue ?ph .
+          ?o vcard:hasAddress ?add_1 .
+          ?add_1 vcard:locality ?add
+        }
+    '''
+    reportingsystem_detail = functions_db.db_query_secure(query)
+    ret = {}
+    if reportingsystem_detail and reportingsystem_detail:
+        ret['title'] = reportingsystem_detail['results']['bindings'][0]['t']['value']
+        ret['fn'] = reportingsystem_detail['results']['bindings'][0]['fn']['value']
+        ret['uri'] = reportingsystem_uri
+        ret['rs_script'] = get_reportingsystem_reports_svg(reportingsystem_uri)
+    return ret
 
 
 def draw_report(n, uri, title, jobId):
@@ -280,10 +303,14 @@ def get_reportingsystem_reports_svg(reportingsystem_uri):
 #TODO: think about expanding SVG area with report count
 def get_reportingsystem_html(reportingsystem_uri):
     reportingsystem_details = get_reportingsystem(reportingsystem_uri)
-    if reportingsystem_details[0]:
+    #if reportingsystem_details[0]:
+
+    html = ''
+
+    if len(reportingsystem_details) >= 2:
         r = json.loads(reportingsystem_details[1])
         title = r['results']['bindings'][0]['t']['value']
-        html = '''
+        html += '''
             <table class="lined">
                 <tr><th>Title:</th><td>''' + title + '''</td></tr>
                 <tr><th>Owner:</th><td>''' + r['results']['bindings'][0]['fn']['value'] + '''</td></tr>
@@ -335,10 +362,12 @@ def get_reportingsystem_html(reportingsystem_uri):
                 ''' + reports_script + '''
             </script>
         '''
+    """
     else:
         html = '''
             <h4>''' + reportingsystem_details[1] + '''</h4>
         '''
+    """
 
     return html
 
@@ -381,7 +410,17 @@ def put_reportingsystem(reportingsystem_in_turtle):
 #
 def get_reports():
     query = '''
+                PREFIX proms: <http://promsns.org/def/proms#>
+                SELECT DISTINCT ?r ?t
+                WHERE {
+                  ?r a proms:Report .
+                }
+                ORDER BY ?r
+            '''
+    """
+    query = '''
                 PREFIX dc: <http://purl.org/dc/elements/1.1/>
+                PREFIX proms: <http://promsns.org/ns/proms#>
                 SELECT DISTINCT ?r ?t
                 WHERE {
                   { ?r a proms:BasicReport . }
@@ -393,11 +432,78 @@ def get_reports():
                 }
                 ORDER BY ?r
             '''
+    """
     return functions_db.db_query_secure(query)
 
 
+def get_reports_dict():
+    query = '''
+                PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+                PREFIX proms: <http://promsns.org/def/proms#>
+                SELECT DISTINCT ?r ?t
+                WHERE {
+                  ?r a proms:Report .
+                  ?r rdf:label ?t
+                }
+                ORDER BY ?r
+            '''
+    reports = functions_db.db_query_secure(query)
+    ret = {}
+    # Check if nothing is returned
+    if reports and reports['results']['bindings']:
+        for report in reports['results']['bindings']:
+            if report.get('t'):
+                uri_encoded = urllib.quote(str(report['r']['value']))
+                ret[uri_encoded] = str(report['t']['value'])
+            else:
+                ret[str(report['r']['value'])] = str(report['r']['value'])
+    return ret
+
+
+def get_report_dict(report_uri):
+    query = '''
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX proms: <http://promsns.org/def/proms#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        SELECT ?rt ?l ?t ?id ?rs ?rs_t ?sat
+        WHERE {
+          <''' + report_uri + '''> a ?rt .
+          <''' + report_uri + '''> rdf:label ?l .
+          <''' + report_uri + '''> proms:reportType ?t .
+          <''' + report_uri + '''> proms:nativeId ?id .
+          <''' + report_uri + '''> proms:reportingSystem ?rs .
+          ?rs rdf:label ?rs_t .
+          <''' + report_uri + '''> proms:startingActivity ?sac .
+          ?sac prov:startedAtTime ?sat .
+        }
+    '''
+    report_detail = functions_db.db_query_secure(query)
+    ret = {}
+    # Check this
+    if report_detail and report_detail['results']['bindings']:
+        ret['l'] = report_detail['results']['bindings'][0]['l']['value']
+        ret['t'] = report_detail['results']['bindings'][0]['t']['value']
+        if 'Basic' in ret['t']:
+            ret['t_str'] = 'Basic'
+        elif 'Internal' in ret['t']:
+            ret['t_str'] = 'Internal'
+        elif 'External' in ret['t']:
+            ret['t_str'] = 'External'
+        else:
+            ret['t_str'] = 'Unknown Report Type'
+        ret['id'] = report_detail['results']['bindings'][0]['id']['value']
+        #ret['rs'] = report_detail['results']['bindings'][0]['rs']['value']
+        ret['rs'] = urllib.quote(report_detail['results']['bindings'][0]['rs']['value'])
+        ret['rs_t'] = report_detail['results']['bindings'][0]['rs_t']['value']
+        #ret['rs_encoded'] = settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem/?uri=' + urllib.quote(report_detail['results']['bindings'][0]['rs']['value'])
+        ret['sat'] = report_detail['results']['bindings'][0]['sat']['value']
+        ret['uri'] = report_uri
+    return ret
+
+
 #TODO: get this query working
-#TODO: get ordering by Rport --> Activity --> startedAtTime
+#TODO: get ordering by Report --> Activity --> startedAtTime
 def get_reports_for_rs(reportingsystem_uri):
     query = '''
                 PREFIX proms: <http://promsns.org/ns/proms#>
@@ -424,11 +530,11 @@ def get_report_metadata(report_uri):
         PREFIX proms: <http://promsns.org/ns/proms#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX dc: <http://purl.org/dc/elements/1.1/>
-        SELECT ?rt ?t ?job ?rs ?rs_t ?sat
+        SELECT ?rt ?t ?id ?rs ?rs_t ?sat
         WHERE {
           <''' + report_uri + '''> a ?rt .
           <''' + report_uri + '''> dc:title ?t .
-          <''' + report_uri + '''> proms:jobId ?job .
+          <''' + report_uri + '''> proms:nativeId ?id .
           <''' + report_uri + '''> proms:reportingSystem ?rs .
           ?rs dc:title ?rs_t .
           <''' + report_uri + '''> proms:startingActivity ?sac .
@@ -538,6 +644,7 @@ def put_report(report_in_turtle):
 #
 def get_entities():
     query = '''
+                PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX dc: <http://purl.org/dc/elements/1.1/>
                 SELECT DISTINCT ?e ?t
                 WHERE {
@@ -550,6 +657,87 @@ def get_entities():
             '''
     return functions_db.db_query_secure(query)
 
+
+# XXX check
+def get_entities_dict():
+    # XXX What is ?t
+    query = '''
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+                PREFIX dc: <http://purl.org/dc/elements/1.1/>
+                SELECT DISTINCT ?e ?l ?t
+                WHERE {
+                  { ?e rdf:label ?l . }
+                  { ?e a prov:Entity . }
+                  UNION
+                  { ?e a prov:Plan . }
+                  OPTIONAL { ?s dc:title ?t . }
+                }
+                ORDER BY ?e
+            '''
+    entities = functions_db.db_query_secure(query)
+    ret = {}
+    # Check if nothing is returned
+    if entities and entities['results']['bindings']:
+        for entity in entities['results']['bindings']:
+            if entity.get('l'):
+                uri_encoded = urllib.quote(str(entity['e']['value']))
+                ret[uri_encoded] = str(entity['l']['value'])
+            else:
+                ret[str(entity['e']['value'])] = str(entity['e']['value'])
+    return ret
+
+
+def get_entity_dict(entity_uri):
+    """
+    query = '''
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX proms: <http://promsns.org/def/proms#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        SELECT ?rt ?l ?t ?id ?rs ?rs_t ?sat
+        WHERE {
+          <''' + report_uri + '''> a ?rt .
+          <''' + report_uri + '''> rdf:label ?l .
+          <''' + report_uri + '''> proms:reportType ?t .
+          <''' + report_uri + '''> proms:nativeId ?id .
+          <''' + report_uri + '''> proms:reportingSystem ?rs .
+          ?rs rdf:label ?rs_t .
+          <''' + report_uri + '''> proms:startingActivity ?sac .
+          ?sac prov:startedAtTime ?sat .
+        }
+    '''
+    """
+    query = '''
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        SELECT DISTINCT ?l ?c ?dl ?t ?v ?wat ?wat_name
+        WHERE
+            <''' + entity_uri + '''> rdf:label ?l .
+            <''' + entity_uri + '''> dc:created ?c .
+            <''' + entity_uri + '''> dc:downloadURL ?dl .
+            { <''' + entity_uri + '''> a prov:Entity . }
+            UNION
+            { <''' + entity_uri + '''> a prov:Plan . }
+            OPTIONAL { <''' + entity_uri + '''> dc:title ?t . }
+            OPTIONAL { <''' + entity_uri + '''> prov:value ?v . }
+            OPTIONAL { <''' + entity_uri + '''> prov:wasAttributedTo ?wat . }
+            OPTIONAL { ?wat foaf:name ?wat_name . }
+        }
+    '''
+    entity_detail = functions_db.db_query_secure(query)
+    ret = {}
+    # Check this
+    if entity_detail and entity_detail['results']['bindings']:
+        ret['l'] = entity_detail['results']['bindings'][0]['l']['value']
+        ret['t'] = entity_detail['results']['bindings'][0]['t']['value']
+        ret['v'] = entity_detail['results']['bindings'][0]['v']['value']
+        ret['wat'] = entity_detail['results']['bindings'][0]['wat']['value']
+        ret['wat_name'] = entity_detail['results']['bindings'][0]['wat_name']['value']
+        ret['uri'] = entity_uri
+    return ret
 
 def get_entity(entity_uri):
     #TODO: landing page with view options:
@@ -1158,7 +1346,6 @@ def get_entity_html(entity_uri):
         html = '''
             <h4>''' + entity_script[1] + '''</h4>
         '''
-
     return html
 
 
@@ -1176,6 +1363,29 @@ def get_activities():
                 ORDER BY ?s
             '''
     return functions_db.db_query_secure(query)
+
+
+def get_activities_dict():
+    query = '''
+                PREFIX dc: <http://purl.org/dc/elements/1.1/>
+                SELECT DISTINCT ?s ?t
+                WHERE {
+                  ?s a prov:Activity .
+                  ?s dc:title ?t .
+                }
+                ORDER BY ?s
+            '''
+    activities = functions_db.db_query_secure(query)
+    ret = {}
+    # Check if nothing is returned
+    if activities != '':
+        for activity in activities['results']['bindings']:
+            if activity.get('t'):
+                uri_encoded = urllib.quote(str(activity['s']['value']))
+                ret[str(activity['s']['value'])] = (uri_encoded, str(activity['t']['value']))
+            else:
+                ret[str(activity['s']['value'])] = (uri_encoded, '')
+    return ret
 
 
 def get_activities_html(sparql_query_results_json):
@@ -2604,12 +2814,12 @@ def create_report_formparts(form_parts_json_obj):
 
 def page_register_reporting_system():
 
-    html = get_proms_html_header()
-    html += '''
+    #html = get_proms_html_header()
+    html = '''
     <h1>Provenance Management Service</h1>
     <h2>Register a <em>Reporting System</em></h2>
     <h3 style="color:red; font-style:italic;">Coming!</h3>
     '''
-    html += get_proms_html_footer()
+    #html += get_proms_html_footer()
 
     return html

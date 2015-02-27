@@ -2,14 +2,73 @@
 
 {% block content %}
     <h1>Provenance Management Service</h1>
-    <p style="font-style: italic;">Under development, February, 2015.</p>
-    <h2>Reporting Systems</h2>
-    {% if REPORTINGSYSTEMS|length == 0 %}
-        <p>No reporting systems found.</p>
-    {% else %}
-        {% for reportingsystem in REPORTINGSYSTEMS %}
-            <p>A report</p>
-        {% endfor %}
+    {% if REPORTINGSYSTEM %}
+        <h2>A ReportingSystem</h2>
+        <h3>URI: {{REPORTINGSYSTEM['uri']}}</h3>
+        <table class="lined">
+            <tr><th>Title:</th><td>{{REPORTINGSYSTEM['title']}}</td></tr>
+            <tr><th>Owner:</th><td>{{REPORTINGSYSTEM['fn']}}</td></tr>
+        </table>
+        <h4>Neighbours view</h4>
+        <script src="/static/js/d3.min.js" charset="utf-8"></script>
+        <style>
+            svg {
+                /*border: solid 1px #eeeeee;*/
+                margin-left:75px;
+            }
+        </style>
+        <script>
+            var svgContainer = d3.select("#container-content-2").append("svg")
+                                                .attr("width", 700)
+                                                .attr("height", 500);
+
+            //ReportingSystem
+            var reportingSystem = svgContainer.append("polygon")
+                                    .attr("stroke", "grey")
+                                    .attr("stroke-width", "1")
+                                    .attr("fill", "purple")
+                                    .attr("points", "31,16 111,16 141,46 141,126 111,156 31,156 1,126 1,46");
+
+            //ReportingSystem class name
+            var reportingSystemGenName = svgContainer.append("text")
+                                    .attr("x", 70)
+                                    .attr("y", 66)
+                                    .text("ReportingSystem")
+                                    .style("font-family", "Verdana")
+                                    .style("fill", "white")
+                                    .style("text-anchor", "middle");
+
+            //ReportingSystem title
+            var entityTitle = svgContainer.append('foreignObject')
+                                    .attr('x', 2)
+                                    .attr('y', 81)
+                                    .attr('width', 138)
+                                    .attr('height', 95)
+                                    .append("xhtml:body")
+                                    .html('<div style="width:138px; color:white; font-size:smaller; background-color:purple;">''' + title + '''</div>')
+
+            {{REPORTINGSYSTEM['rs_script']}}
+        </script>
+    {% elif REPORTINGSYSTEMS %}
+        <h2>ReportingSystems Register</h2>
+        {% if REPORTINGSYSTEMS|length == 0 %}
+            <p>No ReportingSystems found.</p>
+        {% else %}
+            <ul>
+            {% for uri, t in REPORTINGSYSTEMS.iteritems() %}
+                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/reportingsystem?uri={{uri}}">
+                    {% if t -%}
+                        {{t}}
+                    {% else %}
+                        {{uri}}
+                    {% endif %}
+                    </a>
+                    {% if t -%}
+                        ({{uri}})
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
     {% endif %}
 {% endblock %}
-

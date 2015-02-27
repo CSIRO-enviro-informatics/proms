@@ -22,9 +22,22 @@ def ids():
 @routes.route('/id/reportingsystem/', methods=['GET', 'POST'])
 def reportingsystem():
     if request.method == 'GET':
-        reportingsystems=functions.get_reportingsystems_dict()
-        return render_template('reportingsystem.html',
-                               REPORTINGSYSTEMS=reportingsystems)
+        if request.args.get('uri'):
+            reportingsystem = functions.get_reportingsystem_dict(request.args.get('uri'))
+            return render_template('reportingsystem.html',
+                                       REPORTINGSYSTEM=reportingsystem)
+
+        else:
+            #if 'text/html' in request.headers.get('Accept'):
+                reportingsystems=functions.get_reportingsystems_dict()
+                return render_template('reportingsystem.html',
+                                       REPORTINGSYSTEMS=reportingsystems,
+                                       PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
+            #else:
+            #    if request.headers.get('rdf_object'):
+            #        rdf_object = request.args.get('rdf_object')
+            #        return Response(json.dumps(rdf_object), status_code=200, mimetype="application/rdf+json")
+
     #process a posted Report
     if request.method == 'POST':
         #read the incoming report
@@ -39,7 +52,6 @@ def reportingsystem():
             return Response('Only turtle documents allowed', status=400, mimetype='text/plain')
 
 
-@routes.route('/id/report/', methods=['GET'])
 @routes.route('/id/report/', methods=['GET', 'POST'])
 def reports():
     if request.method == 'GET':
@@ -47,31 +59,17 @@ def reports():
         if request.args.get('uri'):
             #unencode the uri QSA
             uri = urllib.unquote(request.args.get('uri'))
-            html = functions.get_proms_html_header()
-            html += '''
-            <h1>Provenance Management Service</h1>
-            <h2>A Report</h2>
-            <h3>URI: ''' + uri + '''</h3>
-            <p style="font-style: italic;">Under development, November, 2014.</p>
-            '''
-            html += functions.get_report_html(uri)
-            html += functions.get_proms_html_footer()
-            return Response(html, status=200, mimetype='text/html')
+            #uri = request.args.get('uri')
+            report = functions.get_report_dict(uri)
+            return render_template('report.html',
+                                   REPORT=report)
         #multiple Reports (register)
         else:
-            html = functions.get_proms_html_header()
-            html += '''
-            <h1>Provenance Management Service</h1>
-            <h2>Reports Register</h2>
-            <p style="font-style: italic;">Under development, November, 2014.</p>
-            '''
-            reports = functions.get_reports()
-            if reports[0]:
-                html += functions.get_reports_html(reports[1])
-            else:
-                html += '<h4>There has been an error getting the Report</h4>'
-            html += functions.get_proms_html_footer()
-            return Response(html, status=200, mimetype='text/html')
+            reports = functions.get_reports_dict()
+            print(reports)
+            return render_template('report.html',
+                                   REPORTS=reports)
+
 
     #process a posted Report
     if request.method == 'POST':
@@ -145,38 +143,21 @@ def entities():
     if request.args.get('uri'):
         #unencode the uri QSA
         uri = urllib.unquote(request.args.get('uri'))
-        html = functions.get_proms_html_header()
-        html += '''
-        <h1>Provenance Management Service</h1>
-        <h2>An Entity</h2>
-        <h3>URI: ''' + uri + '''</h3>
-        <p style="font-style: italic;">Under development, November, 2014.</p>
-        '''
-        html += functions.get_entity_html(uri)
-        html += functions.get_proms_html_footer()
-        return Response(html, status=200, mimetype='text/html')
+        entity = functions.get_entity_dict(uri)
+        return render_template('entity.html',
+                           ENTITY=entity)
     #multiple Entities (register)
     else:
-        html = functions.get_proms_html_header()
-        html += '''
-        <h1>Provenance Management Service</h1>
-        <h2>Entities Register</h2>
-        <p style="font-style: italic;">Under development, November, 2014.</p>
-        '''
-
-        e = functions.get_entities()
-        if e[0]:
-            html += functions.get_entities_html(e[1])
-        else:
-            html += '<h4>There has been an error getting the Entities</h4>'
-
-        html += functions.get_proms_html_footer()
-        return Response(html, status=200, mimetype='text/html')
+        entities = functions.get_entities_dict()
+        return render_template('entity.html',
+                           ENTITIES=entities)
 
 
 @routes.route('/id/activity', methods=['GET'])
 @routes.route('/id/activity/', methods=['GET'])
 def activities():
+    return render_template('activity.html')
+    """
     #single Report
     if request.args.get('uri'):
         #unencode the uri QSA
@@ -207,6 +188,7 @@ def activities():
 
         html += functions.get_proms_html_footer()
         return Response(html, status=200, mimetype='text/html')
+        """
 
 
 @routes.route('/id/agent/', methods=['GET'])

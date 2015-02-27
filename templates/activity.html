@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h1>Provenance Management Service</h1>
+    {% if ACTIVITY %}
+        <h2>An Activity</h2>
+        <h3>URI: {{ACTIVITY['uri']}}</h3>
+
+    {% elif ACTIVITIES %}
+        <h2>Activities Register</h2>
+        {% if ACTIVITIES|length == 0 %}
+            <p>No Activities found.</p>
+        {% else %}
+            <ul>
+            {% for uri, t in ACTIVITIES.iteritems() %}
+                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/activity?uri={{uri}}">
+                    {% if t -%}
+                        {{t}}
+                    {% else %}
+                        {{uri}}
+                    {% endif %}
+                    </a>
+                    {% if t -%}
+                        ({{uri}})
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endif }
+{% endblock %}

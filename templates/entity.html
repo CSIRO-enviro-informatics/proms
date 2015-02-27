@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h1>Provenance Management Service</h1>
+    {% if ENTITY %}
+        <h2>An Entity</h2>
+        <h3>URI: {{ENTITY['uri']}}</h3>
+        <table class="lines">
+            <tr><th>Title:</th><td>{{ENTITY['l']}}</td></tr>
+            <tr><th>Title:</th><td>{{ENTITY['l']}}</td></tr>
+
+        </table>
+
+    {% elif ENTITIES %}
+        <h2>Entities Register</h2>
+        {% if ENTITIES|length == 0 %}
+            <p>No Entities found.</p>
+        {% else %}
+            <ul>
+            {% for uri, t in ENTITIES.iteritems() %}
+                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/entity?uri={{uri}}">
+                    {% if t -%}
+                        {{t}}
+                    {% else %}
+                        {{uri}}
+                    {% endif %}
+                    </a>
+                    {% if t -%}
+                        ({{uri}})
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endif %}
+{% endblock %}
