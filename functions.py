@@ -711,7 +711,6 @@ def get_entity_dict(entity_uri):
     '''
     entity_detail = functions_db.db_query_secure(query)
     ret = {}
-    # Check this
     if entity_detail and entity_detail['results']['bindings']:
         ret['l'] = entity_detail['results']['bindings'][0]['l']['value']
         ret['c'] = entity_detail['results']['bindings'][0]['c']['value']
@@ -1343,37 +1342,74 @@ def get_entity_html(entity_uri):
 #
 def get_activities():
     query = '''
-                PREFIX dc: <http://purl.org/dc/elements/1.1/>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
                 SELECT DISTINCT ?s ?t
                 WHERE {
-                  ?s a prov:Activity .
-                  ?s dc:title ?t .
+                  ?a a prov:Activity .
+                  ?a rdf:label ?t
                 }
-                ORDER BY ?s
+                ORDER BY ?a
             '''
     return functions_db.db_query_secure(query)
 
 
 def get_activities_dict():
     query = '''
-                PREFIX dc: <http://purl.org/dc/elements/1.1/>
-                SELECT DISTINCT ?s ?t
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+                SELECT DISTINCT ?a ?l
                 WHERE {
-                  ?s a prov:Activity .
-                  ?s dc:title ?t .
+                  ?a a prov:Activity .
+                  ?a rdf:label ?l
                 }
-                ORDER BY ?s
+                ORDER BY ?a
             '''
     activities = functions_db.db_query_secure(query)
     ret = {}
-    # Check if nothing is returned
-    if activities != '':
+
+    if activities and activities['results']['bindings']:
         for activity in activities['results']['bindings']:
-            if activity.get('t'):
-                uri_encoded = urllib.quote(str(activity['s']['value']))
-                ret[str(activity['s']['value'])] = (uri_encoded, str(activity['t']['value']))
+            if activity.get('l'):
+                uri_encoded = urllib.quote(str(activity['a']['value']))
+                ret[uri_encoded] = str(activity['l']['value'])
             else:
-                ret[str(activity['s']['value'])] = (uri_encoded, '')
+                ret[str(activity['a']['value'])] = str(activity['a']['value'])
+    return ret
+
+
+def get_activity_dict(activity_uri):
+    query = '''
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        SELECT DISTINCT ?l ?t ?sat ?eat ?waw
+        WHERE {
+          <''' + activity_uri + '''> a prov:Activity .
+          <''' + activity_uri + '''> rdf:label ?l .
+          OPTIONAL { <''' + activity_uri + '''> dc:title ?t . }
+          OPTIONAL { <''' + activity_uri + '''> prov:startedAtTime ?sat . }
+          OPTIONAL { <''' + activity_uri + '''> prov:endedAtTime ?eat . }
+          OPTIONAL { <''' + activity_uri + '''> prov:wasAssociatedWith ?waw . }
+          OPTIONAL { ?waw foaf:name ?waw_name . }
+        }
+    '''
+    activity_detail = functions_db.db_query_secure(query)
+    ret = {}
+    if activity_detail and activity_detail['results']['bindings']:
+        ret['l'] = activity_detail['results']['bindings'][0]['l']['value']
+        if 't' in activity_detail['results']['bindings'][0]:
+            ret['t'] = activity_detail['results']['bindings'][0]['t']['value']
+        if 'sat' in activity_detail['results']['bindings'][0]:
+            ret['sat'] = activity_detail['results']['bindings'][0]['sat']['value']
+        if 'eat' in activity_detail['results']['bindings'][0]:
+            ret['eat'] = activity_detail['results']['bindings'][0]['eat']['value']
+        if 'waw' in activity_detail['results']['bindings'][0]:
+            ret['waw'] = activity_detail['results']['bindings'][0]['waw']['value']
+        if 'waw_name' in activity_detail['results']['bindings'][0]:
+            ret['waw_name'] = activity_detail['results']['bindings'][0]['waw_name']['value']
+        ret['uri'] = activity_uri
     return ret
 
 

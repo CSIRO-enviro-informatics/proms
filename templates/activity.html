@@ -5,7 +5,18 @@
     {% if ACTIVITY %}
         <h2>An Activity</h2>
         <h3>URI: {{ACTIVITY['uri']}}</h3>
-
+        <table class="lines">
+            <tr><th>Title:</th><td>{{ACTIVITY['l']}}</td></tr>
+            {% if ACTIVITY['sat'] %}
+            <tr><th>Started at:</th><td>{{ACTIVITY['sat']}}</td></tr>
+            {% endif %}
+            {% if ACTIVITY['eat'] %}
+            <tr><th>Ended at:</th><td>{{ACTIVITY['eat']}}</td></tr>
+            {% endif %}
+            {% if ACTIVITY['waw'] %}
+            <tr><th>Was associated with:</th><td>{{ACTIVITY['waw']}}</td></tr>
+            {% endif %}
+        </table>
     {% elif ACTIVITIES %}
         <h2>Activities Register</h2>
         {% if ACTIVITIES|length == 0 %}
@@ -27,5 +38,5 @@
             {% endfor %}
             </ul>
         {% endif %}
-    {% endif }
+    {% endif %}
 {% endblock %}
