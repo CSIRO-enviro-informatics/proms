@@ -152,6 +152,7 @@ def entities():
     else:
         entities = functions.get_entities_dict()
         return render_template('entity.html',
+                           PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
                            ENTITIES=entities)
 
 
@@ -169,6 +170,7 @@ def activities():
     else:
         activities = functions.get_activities_dict()
         return render_template('activity.html',
+                               PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
                                ACTIVITIES=activities)
 
 
