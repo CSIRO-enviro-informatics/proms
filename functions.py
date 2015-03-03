@@ -72,20 +72,12 @@ def get_reportingsystems_html(sparql_query_results_json):
 
 def get_reportingsystems_dict():
     query = '''
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
-        PREFIX proms: <http://promsns.org/ns/proms#>
-        PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
-        SELECT ?rs ?t ?fn ?em ?ph ?add
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX proms: <http://promsns.org/def/proms#>
+        SELECT ?rs ?t
         WHERE {
           ?rs a proms:ReportingSystem .
-          ?rs dc:title ?t .
-          ?rs proms:owner ?o .
-          ?o vcard:fn ?fn .
-          ?o vcard:hasEmail ?em .
-          ?o vcard:hasTelephone ?ph_1 .
-          ?ph_1 vcard:hasValue ?ph .
-          ?o vcard:hasAddress ?add_1 .
-          ?add_1 vcard:locality ?add
+          ?rs rdf:label ?t .
         }
     '''
     reportingsystems = functions_db.db_query_secure(query)
@@ -103,13 +95,13 @@ def get_reportingsystems_dict():
 
 def get_reportingsystem(reportingsystem_uri):
     query = '''
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
-        PREFIX proms: <http://promsns.org/ns/proms#>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
         SELECT ?t ?fn ?em ?ph ?add
         WHERE {
           <''' + reportingsystem_uri + '''> a proms:ReportingSystem .
-          <''' + reportingsystem_uri + '''> dc:title ?t .
+          <''' + reportingsystem_uri + '''> rdf:label ?t .
           <''' + reportingsystem_uri + '''> proms:owner ?o .
           ?o vcard:fn ?fn .
           ?o vcard:hasEmail ?em .
@@ -124,29 +116,38 @@ def get_reportingsystem(reportingsystem_uri):
 
 def get_reportingsystem_dict(reportingsystem_uri):
     query = '''
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
-        PREFIX proms: <http://promsns.org/ns/proms#>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
-        SELECT ?t ?fn ?em ?ph ?add
+        SELECT ?t ?fn ?o ?em ?ph ?add
         WHERE {
           <''' + reportingsystem_uri + '''> a proms:ReportingSystem .
-          <''' + reportingsystem_uri + '''> dc:title ?t .
-          <''' + reportingsystem_uri + '''> proms:owner ?o .
-          ?o vcard:fn ?fn .
-          ?o vcard:hasEmail ?em .
-          ?o vcard:hasTelephone ?ph_1 .
-          ?ph_1 vcard:hasValue ?ph .
-          ?o vcard:hasAddress ?add_1 .
-          ?add_1 vcard:locality ?add
+          <''' + reportingsystem_uri + '''> rdf:label ?t .
+          OPTIONAL { <''' + reportingsystem_uri + '''> proms:owner ?o . }
+          OPTIONAL { ?o vcard:fn ?fn . }
+          OPTIONAL { ?o vcard:hasEmail ?em . }
+          OPTIONAL { ?o vcard:hasTelephone ?ph_1 . }
+          OPTIONAL { ?ph_1 vcard:hasValue ?ph . }
+          OPTIONAL { ?o vcard:hasAddress ?add_1 . }
+          OPTIONAL { ?add_1 vcard:locality ?add }
         }
     '''
     reportingsystem_detail = functions_db.db_query_secure(query)
     ret = {}
     if reportingsystem_detail and reportingsystem_detail['results']['bindings']:
-        ret['title'] = reportingsystem_detail['results']['bindings'][0]['t']['value']
-        ret['fn'] = reportingsystem_detail['results']['bindings'][0]['fn']['value']
+        ret['t'] = reportingsystem_detail['results']['bindings'][0]['t']['value']
+        if 'fn' in reportingsystem_detail['results']['bindings'][0]:
+            ret['fn'] = reportingsystem_detail['results']['bindings'][0]['fn']['value']
+        if 'o' in reportingsystem_detail['results']['bindings'][0]:
+            ret['o'] = reportingsystem_detail['results']['bindings'][0]['o']['value']
+        if 'em' in reportingsystem_detail['results']['bindings'][0]:
+            ret['em'] = reportingsystem_detail['results']['bindings'][0]['em']['value']
+        if 'ph' in reportingsystem_detail['results']['bindings'][0]:
+            ret['ph'] = reportingsystem_detail['results']['bindings'][0]['ph']['value']
+        if 'add' in reportingsystem_detail['results']['bindings'][0]:
+            ret['add'] = reportingsystem_detail['results']['bindings'][0]['add']['value']
         ret['uri'] = reportingsystem_uri
-        ret['rs_script'] = get_reportingsystem_reports_svg(reportingsystem_uri)
+        #ret['rs_script'] = get_reportingsystem_reports_svg(reportingsystem_uri)
     return ret
 
 
