@@ -142,7 +142,7 @@ def get_reportingsystem_dict(reportingsystem_uri):
     '''
     reportingsystem_detail = functions_db.db_query_secure(query)
     ret = {}
-    if reportingsystem_detail and reportingsystem_detail:
+    if reportingsystem_detail and reportingsystem_detail['results']['bindings']:
         ret['title'] = reportingsystem_detail['results']['bindings'][0]['t']['value']
         ret['fn'] = reportingsystem_detail['results']['bindings'][0]['fn']['value']
         ret['uri'] = reportingsystem_uri
