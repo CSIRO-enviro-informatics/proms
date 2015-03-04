@@ -179,33 +179,15 @@ def agents():
     if request.args.get('uri'):
         #unencode the uri QSA
         uri = urllib.unquote(request.args.get('uri'))
-        html = functions.get_proms_html_header()
-        html += '''
-        <h1>Provenance Management Service</h1>
-        <h2>An Agent</h2>
-        <h3>URI: ''' + uri + '''</h3>
-        <p style="font-style: italic;">Under development, November, 2014.</p>
-        '''
-        html += functions.get_agent_html(uri)
-        html += functions.get_proms_html_footer()
-        return Response(html, status=200, mimetype='text/html')
+        agent = functions.get_agent_dict(uri)
+        return render_template('agent.html',
+                               AGENT=agent)
     #multiple Agents (register)
     else:
-        html = functions.get_proms_html_header()
-        html += '''
-        <h1>Provenance Management Service</h1>
-        <h2>Agents Register</h2>
-        <p style="font-style: italic;">Under development, November, 2014.</p>
-        '''
-
-        a = functions.get_agents()
-        if a[0]:
-            html += functions.get_agents_html(a[1])
-        else:
-            html += '<h4>There has been an error getting the Agents</h4>'
-
-        html += functions.get_proms_html_footer()
-        return Response(html, status=200, mimetype='text/html')
+        agents = functions.get_activities_dict()
+        return render_template('agent.html',
+                               PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                               AGENTS=agents)
 
 
 @routes.route('/function/pingback', methods=['GET', 'POST'])

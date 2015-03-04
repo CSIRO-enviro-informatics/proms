@@ -1370,7 +1370,6 @@ def get_activities_dict():
             '''
     activities = functions_db.db_query_secure(query)
     ret = {}
-
     if activities and 'results' in activities:
         for activity in activities['results']['bindings']:
             if activity.get('l'):
@@ -2319,7 +2318,6 @@ def get_agents_dict():
             }
             '''
     agents = functions_db.db_query_secure(query)
-
     ret = {}
     if agents and 'results' in agents:
         for agent in agents['results']['bindings']:
@@ -2328,7 +2326,6 @@ def get_agents_dict():
                 ret[uri_encoded] = str(agent['n']['value'])
             else:
                 ret[str(agent['ag']['value'])] = str(agent['ag']['value'])
-
     return ret
 
 
@@ -2368,6 +2365,55 @@ def get_agent(agent_uri):
             }
             '''
     return functions_db.db_query_secure(query)
+
+
+def get_agent_dict(agent_uri):
+    #http%3A//placeholder.org%230427520a-d3cb-4453-9506-032607774f1d
+    query = '''
+            PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            SELECT DISTINCT (<''' + agent_uri + '''> AS ?ag) ?n ?ag2
+            WHERE {
+                {
+                    { ?e a prov:Entity . }
+                    UNION
+                    { ?e a prov:Plan . }
+                    OPTIONAL{ ?e prov:wasAttributedTo <''' + agent_uri + '''> . }
+                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
+                    OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
+                }
+                UNION
+                {
+                    ?e a prov:Activity .
+                    OPTIONAL{ ?e prov:wasAssociatedWith <''' + agent_uri + '''> . }
+                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
+                    OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
+                }
+                UNION
+                {
+                    ?aoo a prov:Agent .
+                    ?aoo prov:actedOnBehalfOf <''' + agent_uri + '''> .
+                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
+                }
+                UNION
+                {
+                    <''' + agent_uri + '''> a prov:Agent .
+                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
+                    OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
+                }
+            }
+            '''
+    agent_detail = functions_db.db_query_secure(query)
+    print agent_detail
+    ret = {}
+    if agent_detail and 'results' in agent_detail and len(agent_detail['results']['bindings']) > 0:
+        # Need better checks
+        if 'n' in agent_detail['results']['bindings'][0]:
+            ret['n'] = agent_detail['results']['bindings'][0]['n']['value']
+        else:
+            ret['n'] = agent_uri
+        ret['uri'] = agent_uri
+    return ret
 
 
 def get_agent_details_svg(agent_uri):
