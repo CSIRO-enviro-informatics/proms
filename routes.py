@@ -72,7 +72,6 @@ def reports():
                                    REPORTS=reports,
                                    PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
 
-
     #process a posted Report
     if request.method == 'POST':
         #read the incoming report

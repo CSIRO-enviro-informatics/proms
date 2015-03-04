@@ -7,8 +7,11 @@
         <h3>URI: {{REPORTINGSYSTEM['uri']}}</h3>
         <table class="lined">
             <tr><th>Title:</th><td>{{REPORTINGSYSTEM['t']}}</td></tr>
-            <!--<tr><th>Owner:</th><td>{{REPORTINGSYSTEM['fn']}}</td></tr>-->
+            {% if REPORTINGSYSTEM['o'] %}
+                <tr><th>Owner:</th><td>{{REPORTINGSYSTEM['o']}}</td></tr>
+            {% endif %}
         </table>
+        {% if REPORTINGSYSTEM['rs_script'] %}
         <h4>Neighbours view</h4>
         <script src="/static/js/d3.min.js" charset="utf-8"></script>
         <style>
@@ -45,10 +48,11 @@
                                     .attr('width', 138)
                                     .attr('height', 95)
                                     .append("xhtml:body")
-                                    .html('<div style="width:138px; color:white; font-size:smaller; background-color:purple;">''' + title + '''</div>')
-
-            {{REPORTINGSYSTEM['rs_script']}}
+                                    .html('<div style="width:138px; color:white; font-size:smaller; background-color:purple;">{{REPORTINGSYSTEM['t']}}</div>')
+            {{REPORTINGSYSTEM['rs_script'] | safe}}
         </script>
+        {% endif %}
+
     {% elif REPORTINGSYSTEMS %}
         <h2>ReportingSystems Register</h2>
         {% if REPORTINGSYSTEMS|length == 0 %}

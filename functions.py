@@ -83,7 +83,7 @@ def get_reportingsystems_dict():
     reportingsystems = functions_db.db_query_secure(query)
     ret = {}
     # Check if nothing is returned
-    if reportingsystems and reportingsystems['results']['bindings']:
+    if reportingsystems and 'results' in reportingsystems:
         for reportingsystem in reportingsystems['results']['bindings']:
             if reportingsystem.get('t'):
                 uri_encoded = urllib.quote(str(reportingsystem['rs']['value']))
@@ -134,7 +134,7 @@ def get_reportingsystem_dict(reportingsystem_uri):
     '''
     reportingsystem_detail = functions_db.db_query_secure(query)
     ret = {}
-    if reportingsystem_detail and reportingsystem_detail['results']['bindings']:
+    if reportingsystem_detail and 'results' in reportingsystem_detail:
         ret['t'] = reportingsystem_detail['results']['bindings'][0]['t']['value']
         if 'fn' in reportingsystem_detail['results']['bindings'][0]:
             ret['fn'] = reportingsystem_detail['results']['bindings'][0]['fn']['value']
@@ -147,7 +147,7 @@ def get_reportingsystem_dict(reportingsystem_uri):
         if 'add' in reportingsystem_detail['results']['bindings'][0]:
             ret['add'] = reportingsystem_detail['results']['bindings'][0]['add']['value']
         ret['uri'] = reportingsystem_uri
-        #ret['rs_script'] = get_reportingsystem_reports_svg(reportingsystem_uri)
+        ret['rs_script'] = get_reportingsystem_reports_svg(reportingsystem_uri)
     return ret
 
 
@@ -207,31 +207,33 @@ def draw_report(n, uri, title, jobId):
 def get_reportingsystem_reports_svg(reportingsystem_uri):
     #add in all the Reports for this ReportingSystem
     query = '''
+    PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX prov: <http://www.w3.org/ns/prov#>
-    PREFIX proms: <http://promsns.org/ns/proms#>
+    PREFIX proms: <http://promsns.org/def/proms#>
     PREFIX dc: <http://purl.org/dc/elements/1.1/>
     SELECT  *
     WHERE {
+      {?r a proms:Report}
+      UNION
       {?r a proms:BasicReport}
       UNION
       {?r a proms:ExternalReport}
       UNION
       {?r a proms:InternalReport}
       ?r proms:reportingSystem <''' + reportingsystem_uri + '''> .
-      ?r dc:title ?t .
-      ?r proms:jobId ?job .
+      ?r rdf:label ?t .
+      ?r proms:nativeId ?job .
       ?r proms:endingActivity ?sat .
       ?sat prov:endedAtTime ?eat .
     }
     ORDER BY DESC(?eat)
     '''
     reports = functions_db.db_query_secure(query)
-    if reports[1]:
-        rp = json.loads(reports[1])
-        if len(rp['results']['bindings']) > 0:
-            r1uri_encoded = urllib.quote(rp['results']['bindings'][0]['r']['value'])
-            r1title = rp['results']['bindings'][0]['t']['value']
-            r1jobId = rp['results']['bindings'][0]['job']['value']
+    if reports and reports['results']['bindings']:
+        if len(reports['results']['bindings']) > 0:
+            r1uri_encoded = urllib.quote(reports['results']['bindings'][0]['r']['value'])
+            r1title = reports['results']['bindings'][0]['t']['value']
+            r1jobId = reports['results']['bindings'][0]['job']['value']
             reports_script = '''
             //Report
             var report1 = svgContainer.append("polygon")
@@ -273,13 +275,13 @@ def get_reportingsystem_reports_svg(reportingsystem_uri):
                                     .style("text-anchor", "middle");
             '''
 
-            if len(rp['results']['bindings']) > 1:
-                reports = rp['results']['bindings'][1:]
+            if len(reports['results']['bindings']) > 1:
+                reports = reports['results']['bindings'][1:]
                 i = 1
                 for report in reports:
-                    uri = rp['results']['bindings'][i]['r']['value']
-                    title = rp['results']['bindings'][i]['t']['value']
-                    jobId = rp['results']['bindings'][i]['job']['value']
+                    uri = reports['results']['bindings'][i]['r']['value']
+                    title = reports['results']['bindings'][i]['t']['value']
+                    jobId = reports['results']['bindings'][i]['job']['value']
                     reports_script += draw_report(i, uri, title, jobId)
                     i += 1
         else:
@@ -421,7 +423,7 @@ def get_reports():
     """
     query = '''
                 PREFIX dc: <http://purl.org/dc/elements/1.1/>
-                PREFIX proms: <http://promsns.org/ns/proms#>
+                PREFIX proms: <http://promsns.org/def/proms#>
                 SELECT DISTINCT ?r ?t
                 WHERE {
                   { ?r a proms:BasicReport . }
@@ -451,7 +453,7 @@ def get_reports_dict():
     reports = functions_db.db_query_secure(query)
     ret = {}
     # Check if nothing is returned
-    if reports and reports['results']['bindings']:
+    if reports and 'results' in reports:
         for report in reports['results']['bindings']:
             if report.get('t'):
                 uri_encoded = urllib.quote(str(report['r']['value']))
@@ -482,7 +484,7 @@ def get_report_dict(report_uri):
     report_detail = functions_db.db_query_secure(query)
     ret = {}
     # Check this
-    if report_detail and report_detail['results']['bindings']:
+    if report_detail and 'results' in report_detail:
         ret['l'] = report_detail['results']['bindings'][0]['l']['value']
         ret['t'] = report_detail['results']['bindings'][0]['t']['value']
         if 'Basic' in ret['t']:
@@ -507,7 +509,7 @@ def get_report_dict(report_uri):
 #TODO: get ordering by Report --> Activity --> startedAtTime
 def get_reports_for_rs(reportingsystem_uri):
     query = '''
-                PREFIX proms: <http://promsns.org/ns/proms#>
+                PREFIX proms: <http://promsns.org/def/proms#>
                 PREFIX dc: <http://purl.org/dc/elements/1.1/>
                 SELECT ?r ?t
                 WHERE {
@@ -528,7 +530,7 @@ def get_report_metadata(report_uri):
     #TODO: landing page
     #get the report metadata from DB
     query = '''
-        PREFIX proms: <http://promsns.org/ns/proms#>
+        PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX dc: <http://purl.org/dc/elements/1.1/>
         SELECT ?rt ?t ?id ?rs ?rs_t ?sat
@@ -573,15 +575,15 @@ def get_report_html(report_uri):
         rs = r['results']['bindings'][0]['rs']['value']
         rs_t = r['results']['bindings'][0]['rs_t']['value']
         rs_encoded = urllib.quote(rs)
-        if rt == 'http://promsns.org/ns/proms#InternalReport':
-            html = '<h4><a class="definition" href="http://promsns.org/ns/proms#ExternalReport">Internal</a> Report</h4>'
+        if rt == 'http://promsns.org/def/proms#InternalReport':
+            html = '<h4><a class="definition" href="http://promsns.org/def/proms#ExternalReport">Internal</a> Report</h4>'
             html += '<table class="lines">'
             html += '  <tr><th>Title:</th><td>' + r['results']['bindings'][0]['t']['value'] + '</td></tr>'
             html += '  <tr><th>Reporting System:</th><td><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem/?uri=' + rs_encoded + '">' + rs_t + '</td></tr>'
             html += '  <tr><th>JobId:</th><td>' + r['results']['bindings'][0]['job']['value'] + '</td></tr>'
             html += '</table>'
-        elif rt == 'http://promsns.org/ns/proms#ExternalReport':
-            html = '<h4><a class="definition" href="http://promsns.org/ns/proms#ExternalReport">External</a> Report</h4>'
+        elif rt == 'http://promsns.org/def/proms#ExternalReport':
+            html = '<h4><a class="definition" href="http://promsns.org/def/proms#ExternalReport">External</a> Report</h4>'
             html += '<table class="lines">'
             html += '  <tr><th>Title:</th><td>' + r['results']['bindings'][0]['t']['value'] + '</td></tr>'
             html += '  <tr><th>Reporting System:</th><td><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem/?uri=' + rs_encoded + '">' + rs_t + '</td></tr>'
@@ -589,7 +591,7 @@ def get_report_html(report_uri):
             html += '</table>'
         else:
             #Basic
-            html = '<h4><a class="definition" href="http://promsns.org/ns/proms#BasicReport">Basic</a> Report</h4>'
+            html = '<h4><a class="definition" href="http://promsns.org/def/proms#BasicReport">Basic</a> Report</h4>'
             html += '<table class="lines">'
             html += '  <tr><th>Title:</th><td>' + r['results']['bindings'][0]['t']['value'] + '</td></tr>'
             html += '  <tr><th>Reporting System:</th><td><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem/?uri=' + rs_encoded + '">' + rs_t + '</td></tr>'
@@ -679,7 +681,7 @@ def get_entities_dict():
     entities = functions_db.db_query_secure(query)
     ret = {}
     # Check if nothing is returned
-    if entities and entities['results']['bindings']:
+    if entities and 'results' in entities:
         for entity in entities['results']['bindings']:
             if entity.get('l'):
                 uri_encoded = urllib.quote(str(entity['e']['value']))
@@ -712,7 +714,7 @@ def get_entity_dict(entity_uri):
     '''
     entity_detail = functions_db.db_query_secure(query)
     ret = {}
-    if entity_detail and entity_detail['results']['bindings']:
+    if entity_detail and 'results' in entity_detail:
         ret['l'] = entity_detail['results']['bindings'][0]['l']['value']
         ret['c'] = entity_detail['results']['bindings'][0]['c']['value']
         ret['dl'] = entity_detail['results']['bindings'][0]['dl']['value']
@@ -1369,7 +1371,7 @@ def get_activities_dict():
     activities = functions_db.db_query_secure(query)
     ret = {}
 
-    if activities and activities['results']['bindings']:
+    if activities and 'results' in activities:
         for activity in activities['results']['bindings']:
             if activity.get('l'):
                 uri_encoded = urllib.quote(str(activity['a']['value']))
@@ -1398,7 +1400,7 @@ def get_activity_dict(activity_uri):
     '''
     activity_detail = functions_db.db_query_secure(query)
     ret = {}
-    if activity_detail and activity_detail['results']['bindings']:
+    if activity_detail and 'results' in activity_detail:
         ret['l'] = activity_detail['results']['bindings'][0]['l']['value']
         if 't' in activity_detail['results']['bindings'][0]:
             ret['t'] = activity_detail['results']['bindings'][0]['t']['value']
@@ -2319,12 +2321,13 @@ def get_agents_dict():
     agents = functions_db.db_query_secure(query)
 
     ret = {}
-    for agent in agents['results']['bindings']:
-        if agent.get('n'):
-            uri_encoded = urllib.quote(str(agent['ag']['value']))
-            ret[uri_encoded] = str(agent['n']['value'])
-        else:
-            ret[str(agent['ag']['value'])] = str(agent['ag']['value'])
+    if agents and 'results' in agents:
+        for agent in agents['results']['bindings']:
+            if agent.get('n'):
+                uri_encoded = urllib.quote(str(agent['ag']['value']))
+                ret[uri_encoded] = str(agent['n']['value'])
+            else:
+                ret[str(agent['ag']['value'])] = str(agent['ag']['value'])
 
     return ret
 
