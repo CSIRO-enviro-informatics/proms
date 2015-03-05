@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h1>Provenance Management Service</h1>
+    {% if AGENT %}
+        <h2>An Agent</h2>
+        <h3>URI: {{AGENT['uri']}}</h3>
+        <table class="lines">
+            <tr><th>Title:</th><td>{{AGENT['n']}}</td></tr>
+        </table>
+    {% elif AGENTS %}
+        <h2>Agents Register</h2>
+        {% if AGENTS|length == 0 %}
+            <p>No Agents found.</p>
+        {% else %}
+            <ul>
+            {% for uri, t in AGENTS.iteritems() %}
+                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/agent?uri={{uri}}">
+                    {% if t -%}
+                        {{t}}
+                    {% else %}
+                        {{uri}}
+                    {% endif %}
+                    </a>
+                    {% if t -%}
+                        ({{uri}})
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% else %}
+        <p>No Activity information found.</p>
+    {% endif %}
+{% endblock %}
