@@ -67,7 +67,6 @@ def reports():
         #multiple Reports (register)
         else:
             reports = functions.get_reports_dict()
-            print(reports)
             return render_template('report.html',
                                    REPORTS=reports,
                                    PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)

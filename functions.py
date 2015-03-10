@@ -36,13 +36,13 @@ def get_reportingsystems():
     .
     '''
     query = '''
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
         SELECT ?rs ?t ?fn ?em ?ph ?add
         WHERE {
           ?rs a proms:ReportingSystem .
-          ?rs dc:title ?t .
+          ?rs rdf:label ?t .
           ?rs proms:owner ?o .
           ?o vcard:fn ?fn .
           ?o vcard:hasEmail ?em .
@@ -422,7 +422,7 @@ def get_reports():
             '''
     """
     query = '''
-                PREFIX dc: <http://purl.org/dc/elements/1.1/>
+                PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX proms: <http://promsns.org/def/proms#>
                 SELECT DISTINCT ?r ?t
                 WHERE {
@@ -431,7 +431,7 @@ def get_reports():
                   { ?r a proms:ExternalReport . }
                   UNION
                   { ?r a proms:InternalReport . }
-                  ?r dc:title ?t .
+                  ?r rdf:label ?t .
                 }
                 ORDER BY ?r
             '''
@@ -510,7 +510,7 @@ def get_report_dict(report_uri):
 def get_reports_for_rs(reportingsystem_uri):
     query = '''
                 PREFIX proms: <http://promsns.org/def/proms#>
-                PREFIX dc: <http://purl.org/dc/elements/1.1/>
+                PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
                 SELECT ?r ?t
                 WHERE {
                   { ?r a proms:BasicReport . }
@@ -518,7 +518,7 @@ def get_reports_for_rs(reportingsystem_uri):
                   { ?r a proms:ExternalReport . }
                   UNION
                   { ?r a proms:InternalReport . }
-                  ?r dc:title ?t .
+                  ?r rdf:label ?t .
                   #?r proms:reportingSystem <''' + reportingsystem_uri + '''#> .
                 }
                 ORDER BY ?r
@@ -532,14 +532,14 @@ def get_report_metadata(report_uri):
     query = '''
         PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT ?rt ?t ?id ?rs ?rs_t ?sat
         WHERE {
           <''' + report_uri + '''> a ?rt .
-          <''' + report_uri + '''> dc:title ?t .
+          <''' + report_uri + '''> rdf:label ?t .
           <''' + report_uri + '''> proms:nativeId ?id .
           <''' + report_uri + '''> proms:reportingSystem ?rs .
-          ?rs dc:title ?rs_t .
+          ?rs rdf:label ?rs_t .
           <''' + report_uri + '''> proms:startingActivity ?sac .
           ?sac prov:startedAtTime ?sat .
         }
@@ -567,7 +567,6 @@ def get_report_details_svg():
 
 
 def get_report_html(report_uri):
-    print report_uri
     report_details = get_report_metadata(report_uri)
     if report_details[0]:
         r = json.loads(report_details[1])
@@ -648,13 +647,13 @@ def put_report(report_in_turtle):
 def get_entities():
     query = '''
                 PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX dc: <http://purl.org/dc/elements/1.1/>
+                PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
                 SELECT DISTINCT ?e ?t
                 WHERE {
                   { ?e a prov:Entity . }
                   UNION
                   { ?e a prov:Plan . }
-                  OPTIONAL { ?s dc:title ?t . }
+                  OPTIONAL { ?s rdf:label ?t . }
                 }
                 ORDER BY ?e
             '''
@@ -667,14 +666,13 @@ def get_entities_dict():
     query = '''
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-                PREFIX dc: <http://purl.org/dc/elements/1.1/>
                 SELECT DISTINCT ?e ?l ?t
                 WHERE {
                   { ?e rdf:label ?l . }
                   { ?e a prov:Entity . }
                   UNION
                   { ?e a prov:Plan . }
-                  OPTIONAL { ?s dc:title ?t . }
+                  OPTIONAL { ?s rdf:label ?t . }
                 }
                 ORDER BY ?e
             '''
@@ -706,7 +704,7 @@ def get_entity_dict(entity_uri):
             { <''' + entity_uri + '''> a prov:Entity . }
             UNION
             { <''' + entity_uri + '''> a prov:Plan . }
-            OPTIONAL { <''' + entity_uri + '''> dc:title ?t . }
+            OPTIONAL { <''' + entity_uri + '''> rdf:label ?t . }
             OPTIONAL { <''' + entity_uri + '''> prov:value ?v . }
             OPTIONAL { <''' + entity_uri + '''> prov:wasAttributedTo ?wat . }
             OPTIONAL { ?wat foaf:name ?wat_name . }
@@ -726,6 +724,13 @@ def get_entity_dict(entity_uri):
             ret['wat'] = entity_detail['results']['bindings'][0]['wat']['value']
         if('wat_name' in entity_detail['results']['bindings'][0]):
             ret['wat_name'] = entity_detail['results']['bindings'][0]['wat_name']['value']
+        svg_script = get_entity_details_svg(entity_uri)
+        if svg_script[0] == True:
+            e_script = svg_script[1]
+            e_script += get_entity_activity_wgb_svg(entity_uri)
+            e_script += get_entity_activity_used_svg(entity_uri)
+            e_script += get_entity_entity_wdf_svg(entity_uri)
+            ret['e_script'] = e_script
         ret['uri'] = entity_uri
     return ret
 
@@ -736,14 +741,14 @@ def get_entity(entity_uri):
     #get the report metadata from DB
     query = '''
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         SELECT DISTINCT ?t ?v ?wat ?wat_name
         WHERE {
             { <''' + entity_uri + '''> a prov:Entity . }
             UNION
             { <''' + entity_uri + '''> a prov:Plan . }
-            OPTIONAL { <''' + entity_uri + '''> dc:title ?t . }
+            OPTIONAL { <''' + entity_uri + '''> rdf:label ?t . }
             OPTIONAL { <''' + entity_uri + '''> prov:value ?v . }
             OPTIONAL { <''' + entity_uri + '''> prov:wasAttributedTo ?wat . }
             OPTIONAL { ?wat foaf:name ?wat_name . }
@@ -783,10 +788,8 @@ def get_entities_dropdown(sparql_query_results_json):
 def get_entity_details_svg(entity_uri):
     get_entity_result = get_entity(entity_uri)
     #check for any faults
-    if get_entity_result[0]:
-        entity_details = json.loads(get_entity_result[1])
-        #check we got a result
-        if len(entity_details['results']['bindings']) > 0:
+    if get_entity_result and 'results' in get_entity_result:
+        if len(get_entity_result['results']['bindings']) > 0:
             script = '''
                     var svgContainer = d3.select("#container-content-2").append("svg")
                                                         .attr("width", 700)
@@ -811,8 +814,8 @@ def get_entity_details_svg(entity_uri):
                                             .style("text-anchor", "middle");
             '''
             #print its title, if it has one
-            if entity_details['results']['bindings'][0].get('t'):
-                title = entity_details['results']['bindings'][0]['t']['value']
+            if get_entity_result['results']['bindings'][0].get('t'):
+                title = get_entity_result['results']['bindings'][0]['t']['value']
                 script += '''
                     //Entity title
                     var entityTitle = svgContainer.append('foreignObject')
@@ -824,8 +827,8 @@ def get_entity_details_svg(entity_uri):
                                             .html('<div style="width: 149px; font-size:smaller; background-color:#ffffbe;">''' + title + '''</div>')
                 '''
             #print its value, if it has one
-            if entity_details['results']['bindings'][0].get('v'):
-                value = entity_details['results']['bindings'][0]['v']['value']
+            if get_entity_result['results']['bindings'][0].get('v'):
+                value = get_entity_result['results']['bindings'][0]['v']['value']
                 script += '''
                     //value
                     var value = svgContainer.append("rect")
@@ -864,11 +867,11 @@ def get_entity_details_svg(entity_uri):
                 '''
 
             #print its Agent, if it has one
-            if entity_details['results']['bindings'][0].get('wat'):
-                agent_uri = entity_details['results']['bindings'][0]['wat']['value']
+            if get_entity_result['results']['bindings'][0].get('wat'):
+                agent_uri = get_entity_result['results']['bindings'][0]['wat']['value']
                 agent_uri_encoded = urllib.quote(agent_uri)
-                if entity_details['results']['bindings'][0].get('wat_name'):
-                    agent_name = entity_details['results']['bindings'][0]['wat_name']['value']
+                if get_entity_result['results']['bindings'][0].get('wat_name'):
+                    agent_name = get_entity_result['results']['bindings'][0]['wat_name']['value']
                 else:
                     agent_name = agent_uri.split('#')
                     if len(agent_name) < 2:
@@ -925,23 +928,23 @@ def get_entity_activity_wgb_svg(entity_uri):
     script = ''
     query = '''
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT ?a ?t
         WHERE {
           ?a prov:generated <''' + entity_uri + '''> .
-          ?a dc:title ?t .
+          ?a rdf:label ?t .
         }
     '''
-    stardog_results = functions_db.db_query_secure(query)
+    entity_results = functions_db.db_query_secure(query)
 
-    if stardog_results[0]:
-        wgb = json.loads(stardog_results[1])['results']
-        if len(wgb['bindings']) == 1:
-            if wgb['bindings'][0].get('t'):
+    if entity_results and 'results' in entity_results:
+        wgb = entity_results['results']['bindings']
+        if len(wgb) == 1:
+            if wgb[0].get('t'):
                 title = wgb['bindings'][0]['t']['value']
             else:
                 title = 'uri'
-            uri_encoded = urllib.quote(wgb['bindings'][0]['a']['value'])
+            uri_encoded = urllib.quote(wgb[0]['a']['value'])
 
             script += '''
                 //Activity (wasGeneratedBy)
@@ -1000,23 +1003,24 @@ def get_entity_activity_used_svg(entity_uri):
     script = ''
     query = '''
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT ?a ?t
         WHERE {
           ?a prov:used <''' + entity_uri + '''> .
-          ?a dc:title ?t .
+          ?a rdf:label ?t .
         }
     '''
-    stardog_results = functions_db.db_query_secure(query)
+    entity_result = functions_db.db_query_secure(query)
 
-    if stardog_results[0]:
-        used = json.loads(stardog_results[1])['results']
-        if len(used['bindings']) == 1:
-            if used['bindings'][0].get('t'):
-                title = used['bindings'][0]['t']['value']
+    if entity_result and 'results' in entity_result:
+        #used = json.loads(entity_result[1])['results']
+        used = entity_result['results']['bindings']
+        if len(used) == 1:
+            if used[0].get('t'):
+                title = used[0]['t']['value']
             else:
                 title = 'uri'
-            uri_encoded = urllib.quote(used['bindings'][0]['a']['value'])
+            uri_encoded = urllib.quote(used[0]['a']['value'])
 
             script += '''
                 //Activity (used)
@@ -1065,7 +1069,7 @@ def get_entity_activity_used_svg(entity_uri):
                                 .append("xhtml:body")
                                 .html(title_html);
             '''
-        elif len(used['bindings']) > 1:
+        elif len(used) > 1:
             script += '''
                 //Activity (used) multiple
                 var activityUsed1 = svgContainer.append("rect")
@@ -1154,26 +1158,27 @@ def get_entity_entity_wdf_svg(entity_uri):
     script = ''
     query = '''
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT DISTINCT ?e ?t
         WHERE {
             { <''' + entity_uri + '''> a prov:Entity . }
             UNION
             { <''' + entity_uri + '''> a prov:Plan . }
             <''' + entity_uri + '''> prov:wasDerivedFrom ?e .
-            ?e dc:title ?t .
+            ?e rdf:label ?t .
         }
     '''
-    stardog_results = functions_db.db_query_secure(query)
+    entity_results = functions_db.db_query_secure(query)
 
-    if stardog_results[0]:
-        wdf = json.loads(stardog_results[1])['results']
-        if len(wdf['bindings']) == 1:
-            if wdf['bindings'][0].get('t'):
-                title = wdf['bindings'][0]['t']['value']
+    if entity_results and 'results' in entity_results:
+        #wdf = json.loads(entity_results[1])['results']
+        wdf = entity_results['results']['bindings']
+        if len(wdf) == 1:
+            if wdf[0].get('t'):
+                title = wdf[0]['t']['value']
             else:
                 title = 'uri'
-            uri_encoded = urllib.quote(wdf['bindings'][0]['e']['value'])
+            uri_encoded = urllib.quote(wdf[0]['e']['value'])
             script += '''
                 //Entity (wasDerivedFrom)
                 var entityWDF = svgContainer.append("ellipse")
@@ -1221,7 +1226,7 @@ def get_entity_entity_wdf_svg(entity_uri):
                                 .append("xhtml:body")
                                 .html(title_html);
             '''
-        elif len(wdf['bindings']) > 1:
+        elif len(wdf) > 1:
             script += '''
                 //Activity (used) multiple
                 var entityWdf1 = svgContainer.append("ellipse")
@@ -1384,13 +1389,12 @@ def get_activity_dict(activity_uri):
     query = '''
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         SELECT DISTINCT ?l ?t ?sat ?eat ?waw
         WHERE {
           <''' + activity_uri + '''> a prov:Activity .
           <''' + activity_uri + '''> rdf:label ?l .
-          OPTIONAL { <''' + activity_uri + '''> dc:title ?t . }
+          OPTIONAL { <''' + activity_uri + '''> rdf:label ?t . }
           OPTIONAL { <''' + activity_uri + '''> prov:startedAtTime ?sat . }
           OPTIONAL { <''' + activity_uri + '''> prov:endedAtTime ?eat . }
           OPTIONAL { <''' + activity_uri + '''> prov:wasAssociatedWith ?waw . }
@@ -1411,6 +1415,13 @@ def get_activity_dict(activity_uri):
             ret['waw'] = activity_detail['results']['bindings'][0]['waw']['value']
         if 'waw_name' in activity_detail['results']['bindings'][0]:
             ret['waw_name'] = activity_detail['results']['bindings'][0]['waw_name']['value']
+        svg_script = get_activity_details_svg(activity_uri)
+        if svg_script[0] == True:
+            a_script = svg_script[1]
+            a_script += get_activity_used_entities_svg(activity_uri)
+            a_script += get_activity_generated_entities_svg(activity_uri)
+            a_script += get_activity_was_informed_by(activity_uri)
+            ret['a_script'] = a_script
         ret['uri'] = activity_uri
     return ret
 
@@ -1431,17 +1442,17 @@ def get_activities_html(sparql_query_results_json):
 
 def get_activity(activity_uri):
     query = '''
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         SELECT *
         WHERE {
           <''' + activity_uri + '''> a prov:Activity .
-          <''' + activity_uri + '''> dc:title ?t .
-          <''' + activity_uri + '''> prov:startedAtTime ?sat .
-          <''' + activity_uri + '''> prov:endedAtTime ?eat .
-          <''' + activity_uri + '''> prov:wasAssociatedWith ?waw .
-          OPTIONAL {?waw foaf:name ?waw_name .}
+          <''' + activity_uri + '''> rdf:label ?t .
+          OPTIONAL { <''' + activity_uri + '''> prov:startedAtTime ?sat . }
+          OPTIONAL { <''' + activity_uri + '''> prov:endedAtTime ?eat . }
+          OPTIONAL { <''' + activity_uri + '''> prov:wasAssociatedWith ?waw . }
+          OPTIONAL { ?waw foaf:name ?waw_name . }
         }
     '''
     return functions_db.db_query_secure(query)
@@ -1450,10 +1461,10 @@ def get_activity(activity_uri):
 def get_activity_details_svg(activity_uri):
     get_activity_result = get_activity(activity_uri)
     #check for any faults
-    if get_activity_result[0]:
-        activity_details = json.loads(get_activity_result[1])
+    if get_activity_result and 'results' in get_activity_result:
+        #activity_details = json.loads(get_activity_result[1])
         #check we got a result
-        if len(activity_details['results']['bindings']) > 0:
+        if len(get_activity_result['results']['bindings']) > 0:
             script = '''
                     var svgContainer = d3.select("#container-content-2").append("svg")
                                                         .attr("width", 700)
@@ -1478,8 +1489,8 @@ def get_activity_details_svg(activity_uri):
                                             .style("text-anchor", "middle");
             '''
             #print its title, if it has one
-            if activity_details['results']['bindings'][0].get('t'):
-                title = activity_details['results']['bindings'][0]['t']['value']
+            if get_activity_result['results']['bindings'][0].get('t'):
+                title = get_activity_result['results']['bindings'][0]['t']['value']
                 script += '''
                     //Activity title
                     var activityTitle = svgContainer.append('foreignObject')
@@ -1492,11 +1503,11 @@ def get_activity_details_svg(activity_uri):
                 '''
 
             #print its Agent, if it has one
-            if activity_details['results']['bindings'][0].get('waw'):
-                agent_uri = activity_details['results']['bindings'][0]['waw']['value']
+            if get_activity_result['results']['bindings'][0].get('waw'):
+                agent_uri = get_activity_result['results']['bindings'][0]['waw']['value']
                 agent_uri_encoded = urllib.quote(agent_uri)
-                if activity_details['results']['bindings'][0].get('waw_name'):
-                    agent_name = activity_details['results']['bindings'][0]['waw_name']['value']
+                if get_activity_result['results']['bindings'][0].get('waw_name'):
+                    agent_name = get_activity_result['results']['bindings'][0]['waw_name']['value']
                 else:
                     agent_name = agent_uri.split('#')
                     if len(agent_name) < 2:
@@ -1554,17 +1565,17 @@ def get_activity_used_entities_svg(activity_uri):
     script = ''
     query = '''
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
-        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT *
         WHERE {
           <''' + activity_uri + '''> prov:used ?u .
-          OPTIONAL {?u dc:title ?t .}
+          OPTIONAL {?u rdf:label ?t .}
         }
     '''
-    stardog_results = functions_db.db_query_secure(query)
-    if stardog_results[0]:
-        used = json.loads(stardog_results[1])['results']
+    activity_results = functions_db.db_query_secure(query)
+    if activity_results and 'results' in activity_results:
+        #used = json.loads(activity_results[1])['results']
+        used = activity_results['results']
         if len(used['bindings']) > 0:
             if used['bindings'][0].get('t'):
                 title = used['bindings'][0]['t']['value']
@@ -1799,20 +1810,20 @@ def get_activity_generated_entities_svg(activity_uri):
     script = ''
     query = '''
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
-        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT *
         WHERE {
           { <''' + activity_uri + '''> prov:generated ?u . }
           UNION
           { ?u prov:wasGeneratedBy <''' + activity_uri + '''> .}
-          OPTIONAL {?u dc:title ?t .}
+          OPTIONAL {?u rdf:label ?t .}
         }
     '''
 
-    stardog_results = functions_db.db_query_secure(query)
-    if stardog_results[0]:
-        gen = json.loads(stardog_results[1])['results']
+    activity_results = functions_db.db_query_secure(query)
+    if activity_results and 'results' in activity_results:
+        #gen = json.loads(activity_results[1])['results']
+        gen = activity_results['results']
         if len(gen['bindings']) > 0:
             if gen['bindings'][0].get('t'):
                 title = gen['bindings'][0]['t']['value']
@@ -2058,18 +2069,19 @@ def get_activity_was_informed_by(activity_uri):
     script = ''
     query = '''
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT *
         WHERE {
             <''' + activity_uri + '''> a prov:Activity .
             <''' + activity_uri + '''> prov:wasInformedBy ?wif .
-            OPTIONAL { ?wif dc:title ?t . }
+            OPTIONAL { ?wif rdf:label ?t . }
         }
     '''
-    stardog_results = functions_db.db_query_secure(query)
+    activity_results = functions_db.db_query_secure(query)
 
-    if stardog_results[0]:
-        wif = json.loads(stardog_results[1])['results']
+    if activity_results and 'results' in activity_results:
+        #wif = json.loads(activity_results[1])['results']
+        wif = activity_results['results']
         if len(wif['bindings']) == 1:
             if wif['bindings'][0].get('t'):
                 title = wif['bindings'][0]['t']['value']
@@ -2404,7 +2416,6 @@ def get_agent_dict(agent_uri):
             }
             '''
     agent_detail = functions_db.db_query_secure(query)
-    print agent_detail
     ret = {}
     if agent_detail and 'results' in agent_detail and len(agent_detail['results']['bindings']) > 0:
         # Need better checks
@@ -2523,7 +2534,7 @@ def get_agent_details_svg(agent_uri):
 def get_agent_was_attributed_to_svg(agent_uri):
     script = ''
     query = '''
-            PREFIX dc: <http://purl.org/dc/elements/1.1/>
+            PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             SELECT DISTINCT ?e ?t
             WHERE {
@@ -2531,13 +2542,13 @@ def get_agent_was_attributed_to_svg(agent_uri):
                 UNION
                 { ?e a prov:Plan .}
                 ?e prov:wasAttributedTo <''' + agent_uri + '''> ;
-                OPTIONAL { ?e dc:title ?t . }
+                OPTIONAL { ?e rdf:label ?t . }
             }
     '''
-    stardog_results = functions_db.db_query_secure(query)
+    entity_results = functions_db.db_query_secure(query)
 
-    if stardog_results[0]:
-        wat = json.loads(stardog_results[1])['results']
+    if entity_results[0]:
+        wat = json.loads(entity_results[1])['results']
         if len(wat['bindings']) == 1:
             if wat['bindings'][0].get('t'):
                 title = wat['bindings'][0]['t']['value']
@@ -2679,19 +2690,19 @@ def get_agent_was_attributed_to_svg(agent_uri):
 def get_agent_was_associated_with_svg(agent_uri):
     script = ''
     query = '''
-            PREFIX dc: <http://purl.org/dc/elements/1.1/>
+            PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             SELECT DISTINCT ?a ?t
             WHERE {
                 { ?a a prov:Activity .}
                 ?a prov:wasAssociatedWith <''' + agent_uri + '''> ;
-                OPTIONAL { ?a dc:title ?t . }
+                OPTIONAL { ?a rdf:label ?t . }
             }
     '''
-    stardog_results = functions_db.db_query_secure(query)
+    activity_results = functions_db.db_query_secure(query)
 
-    if stardog_results[0]:
-        waw = json.loads(stardog_results[1])['results']
+    if activity_results[0]:
+        waw = json.loads(activity_results[1])['results']
         if len(waw['bindings']) == 1:
             if waw['bindings'][0].get('t'):
                 title = waw['bindings'][0]['t']['value']

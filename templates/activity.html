@@ -17,6 +17,19 @@
             <tr><th>Was associated with:</th><td>{{ACTIVITY['waw']}}</td></tr>
             {% endif %}
         </table>
+        {% if ACTIVITY['a_script'] %}
+            <h4>Neighbours view</h4>
+            <script src="/static/js/d3.min.js" charset="utf-8"></script>
+            <style>
+                svg {
+                    /*border: solid 1px #eeeeee;*/
+                    margin-left:75px;
+                }
+            </style>
+            <script>
+                {{ACTIVITY['a_script'] | safe}}
+            </script>
+        {% endif %}
     {% elif ACTIVITIES %}
         <h2>Activities Register</h2>
         {% if ACTIVITIES|length == 0 %}

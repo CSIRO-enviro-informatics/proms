@@ -10,6 +10,19 @@
             <tr><th>Created:</th><td>{{ENTITY['c']}}</td></tr>
             <tr><th>Download URL:</th><td><a href={{ENTITY['dl']}}>{{ENTITY['dl']}}</a></td></tr>
         </table>
+        {% if ENTITY['e_script'] %}
+            <h4>Neighbours view</h4>
+            <script src="/static/js/d3.min.js" charset="utf-8"></script>
+            <style>
+                svg {
+                    /*border: solid 1px #eeeeee;*/
+                    margin-left:75px;
+                }
+            </style>
+            <script>
+                {{ENTITY['e_script'] | safe}}
+            </script>
+        {% endif %}
     {% elif ENTITIES %}
         <h2>Entities Register</h2>
         {% if ENTITIES|length == 0 %}
