@@ -1121,7 +1121,7 @@ def get_entity_activity_used_svg(entity_uri):
                 //Activity title
                 title_html = '<div style="width: 147px; font-size:smaller; background-color:#cfceff;">' +
                             '   Multiple Activities, click ' +
-                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''/function/sparql/">here</a> ' +
+                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''function/sparql/">here</a> ' +
                             '   to search' +
                             '</div>';
                 var activityTitle = svgContainer.append('foreignObject')
@@ -1278,7 +1278,7 @@ def get_entity_entity_wdf_svg(entity_uri):
                 //Entity title
                 title_html = '<div style="width: 147px; font-size:smaller; background-color:#ffffbe;">' +
                             '   Multiple Entities, click ' +
-                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''/function/sparql/">here</a> ' +
+                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''function/sparql/">here</a> ' +
                             '   to search' +
                             '</div>';
                 var entityTitle = svgContainer.append('foreignObject')
@@ -1775,7 +1775,7 @@ def get_activity_used_entities_svg(activity_uri):
                         //Entity title
                         title_html = '<div style="width: 147px; font-size:smaller; background-color:#ffffbe;">' +
                                     '   Multiple Entities, click ' +
-                                    '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''/function/sparql/">here</a> ' +
+                                    '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''function/sparql/">here</a> ' +
                                     '   to search' +
                                     '</div>';
                         var entityUsedTitle = svgContainer.append('foreignObject')
@@ -2034,7 +2034,7 @@ def get_activity_generated_entities_svg(activity_uri):
                         //Entity title
                         title_html = '<div style="width: 147px; font-size:smaller; background-color:#ffffbe;">' +
                                     '   Multiple Entities, click ' +
-                                    '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''/function/sparql/">here</a> ' +
+                                    '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''function/sparql/">here</a> ' +
                                     '   to search' +
                                     '</div>';
                         var entityGenTitle = svgContainer.append('foreignObject')
@@ -2188,7 +2188,7 @@ def get_activity_was_informed_by(activity_uri):
                 //Activity title
                 title_html = '<div style="width: 147px; font-size:smaller; background-color:#cfceff;">' +
                             '   Multiple Activities, click ' +
-                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''/function/sparql/">here</a> ' +
+                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''function/sparql/">here</a> ' +
                             '   to search' +
                             '</div>';
                 var activityTitle = svgContainer.append('foreignObject')
@@ -2653,7 +2653,7 @@ def get_agent_was_attributed_to_svg(agent_uri):
                 //Entity title
                 title_html = '<div style="width: 147px; font-size:smaller; background-color:#ffffbe;">' +
                             '   Multiple Entities, click ' +
-                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''/function/sparql/">here</a> ' +
+                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''function/sparql/">here</a> ' +
                             '   to search' +
                             '</div>';
                 var entityTitle = svgContainer.append('foreignObject')
