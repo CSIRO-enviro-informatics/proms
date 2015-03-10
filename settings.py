@@ -11,5 +11,7 @@ FUSEKI_SECURE_QUERY_URI = 'http://115.146.94.255/fuseki/data/query'
 FUSEKI_SECURE_UPDATE_URI = 'http://115.146.94.255/fuseki/data/update'
 FUSEKI_SECURE_USR = 'fusekiusr'
 FUSEKI_SECURE_PWD = 'fusekirocks'
+# Request Timeout in seconds
+FUSEKI_TIMEOUT = 5
 
 STARDOG_QUERY_URI = 'http://localhost:5820/proms/query'

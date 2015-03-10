@@ -21,6 +21,7 @@ def db_query(sparql_query):
 def db_query_secure(sparql_query):
     sparql = SPARQLWrapper.SPARQLWrapper(settings.FUSEKI_SECURE_QUERY_URI, returnFormat=SPARQLWrapper.JSON)
     sparql.setCredentials(settings.FUSEKI_SECURE_USR, settings.FUSEKI_SECURE_PWD)
+    sparql.setTimeout(settings.FUSEKI_TIMEOUT)
     sparql.setQuery(sparql_query)
     sparql.method = 'GET'
 
