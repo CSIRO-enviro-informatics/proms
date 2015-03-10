@@ -52,7 +52,6 @@ def get_reportingsystems():
           ?add_1 vcard:locality ?add
         }
     '''
-
     return functions_db.db_query_secure(query)
 
 
@@ -135,19 +134,20 @@ def get_reportingsystem_dict(reportingsystem_uri):
     reportingsystem_detail = functions_db.db_query_secure(query)
     ret = {}
     if reportingsystem_detail and 'results' in reportingsystem_detail:
-        ret['t'] = reportingsystem_detail['results']['bindings'][0]['t']['value']
-        if 'fn' in reportingsystem_detail['results']['bindings'][0]:
-            ret['fn'] = reportingsystem_detail['results']['bindings'][0]['fn']['value']
-        if 'o' in reportingsystem_detail['results']['bindings'][0]:
-            ret['o'] = reportingsystem_detail['results']['bindings'][0]['o']['value']
-        if 'em' in reportingsystem_detail['results']['bindings'][0]:
-            ret['em'] = reportingsystem_detail['results']['bindings'][0]['em']['value']
-        if 'ph' in reportingsystem_detail['results']['bindings'][0]:
-            ret['ph'] = reportingsystem_detail['results']['bindings'][0]['ph']['value']
-        if 'add' in reportingsystem_detail['results']['bindings'][0]:
-            ret['add'] = reportingsystem_detail['results']['bindings'][0]['add']['value']
-        ret['uri'] = reportingsystem_uri
-        ret['rs_script'] = get_reportingsystem_reports_svg(reportingsystem_uri)
+        if len(reportingsystem_detail['results']['bindings']) > 0:
+            ret['t'] = reportingsystem_detail['results']['bindings'][0]['t']['value']
+            if 'fn' in reportingsystem_detail['results']['bindings'][0]:
+                ret['fn'] = reportingsystem_detail['results']['bindings'][0]['fn']['value']
+            if 'o' in reportingsystem_detail['results']['bindings'][0]:
+                ret['o'] = reportingsystem_detail['results']['bindings'][0]['o']['value']
+            if 'em' in reportingsystem_detail['results']['bindings'][0]:
+                ret['em'] = reportingsystem_detail['results']['bindings'][0]['em']['value']
+            if 'ph' in reportingsystem_detail['results']['bindings'][0]:
+                ret['ph'] = reportingsystem_detail['results']['bindings'][0]['ph']['value']
+            if 'add' in reportingsystem_detail['results']['bindings'][0]:
+                ret['add'] = reportingsystem_detail['results']['bindings'][0]['add']['value']
+            ret['uri'] = reportingsystem_uri
+            ret['rs_script'] = get_reportingsystem_reports_svg(reportingsystem_uri)
     return ret
 
 
@@ -306,10 +306,7 @@ def get_reportingsystem_reports_svg(reportingsystem_uri):
 #TODO: think about expanding SVG area with report count
 def get_reportingsystem_html(reportingsystem_uri):
     reportingsystem_details = get_reportingsystem(reportingsystem_uri)
-    #if reportingsystem_details[0]:
-
     html = ''
-
     if len(reportingsystem_details) >= 2:
         r = json.loads(reportingsystem_details[1])
         title = r['results']['bindings'][0]['t']['value']
@@ -485,23 +482,24 @@ def get_report_dict(report_uri):
     ret = {}
     # Check this
     if report_detail and 'results' in report_detail:
-        ret['l'] = report_detail['results']['bindings'][0]['l']['value']
-        ret['t'] = report_detail['results']['bindings'][0]['t']['value']
-        if 'Basic' in ret['t']:
-            ret['t_str'] = 'Basic'
-        elif 'Internal' in ret['t']:
-            ret['t_str'] = 'Internal'
-        elif 'External' in ret['t']:
-            ret['t_str'] = 'External'
-        else:
-            ret['t_str'] = 'Unknown Report Type'
-        ret['id'] = report_detail['results']['bindings'][0]['id']['value']
-        #ret['rs'] = report_detail['results']['bindings'][0]['rs']['value']
-        ret['rs'] = urllib.quote(report_detail['results']['bindings'][0]['rs']['value'])
-        ret['rs_t'] = report_detail['results']['bindings'][0]['rs_t']['value']
-        #ret['rs_encoded'] = settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem/?uri=' + urllib.quote(report_detail['results']['bindings'][0]['rs']['value'])
-        ret['sat'] = report_detail['results']['bindings'][0]['sat']['value']
-        ret['uri'] = report_uri
+        if len(report_detail['results']['bindings']) > 0:
+            ret['l'] = report_detail['results']['bindings'][0]['l']['value']
+            ret['t'] = report_detail['results']['bindings'][0]['t']['value']
+            if 'Basic' in ret['t']:
+                ret['t_str'] = 'Basic'
+            elif 'Internal' in ret['t']:
+                ret['t_str'] = 'Internal'
+            elif 'External' in ret['t']:
+                ret['t_str'] = 'External'
+            else:
+                ret['t_str'] = 'Unknown Report Type'
+            ret['id'] = report_detail['results']['bindings'][0]['id']['value']
+            #ret['rs'] = report_detail['results']['bindings'][0]['rs']['value']
+            ret['rs'] = urllib.quote(report_detail['results']['bindings'][0]['rs']['value'])
+            ret['rs_t'] = report_detail['results']['bindings'][0]['rs_t']['value']
+            #ret['rs_encoded'] = settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem/?uri=' + urllib.quote(report_detail['results']['bindings'][0]['rs']['value'])
+            ret['sat'] = report_detail['results']['bindings'][0]['sat']['value']
+            ret['uri'] = report_uri
     return ret
 
 
@@ -660,9 +658,7 @@ def get_entities():
     return functions_db.db_query_secure(query)
 
 
-# XXX check
 def get_entities_dict():
-    # XXX What is ?t
     query = '''
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
@@ -713,25 +709,26 @@ def get_entity_dict(entity_uri):
     entity_detail = functions_db.db_query_secure(query)
     ret = {}
     if entity_detail and 'results' in entity_detail:
-        ret['l'] = entity_detail['results']['bindings'][0]['l']['value']
-        ret['c'] = entity_detail['results']['bindings'][0]['c']['value']
-        ret['dl'] = entity_detail['results']['bindings'][0]['dl']['value']
-        if('t' in entity_detail['results']['bindings'][0]):
-            ret['t'] = entity_detail['results']['bindings'][0]['t']['value']
-        if('v' in entity_detail['results']['bindings'][0]):
-            ret['v'] = entity_detail['results']['bindings'][0]['v']['value']
-        if('wat' in entity_detail['results']['bindings'][0]):
-            ret['wat'] = entity_detail['results']['bindings'][0]['wat']['value']
-        if('wat_name' in entity_detail['results']['bindings'][0]):
-            ret['wat_name'] = entity_detail['results']['bindings'][0]['wat_name']['value']
-        svg_script = get_entity_details_svg(entity_uri)
-        if svg_script[0] == True:
-            e_script = svg_script[1]
-            e_script += get_entity_activity_wgb_svg(entity_uri)
-            e_script += get_entity_activity_used_svg(entity_uri)
-            e_script += get_entity_entity_wdf_svg(entity_uri)
-            ret['e_script'] = e_script
-        ret['uri'] = entity_uri
+        if len(entity_detail['results']['bindings']) > 0:
+            ret['l'] = entity_detail['results']['bindings'][0]['l']['value']
+            ret['c'] = entity_detail['results']['bindings'][0]['c']['value']
+            ret['dl'] = entity_detail['results']['bindings'][0]['dl']['value']
+            if('t' in entity_detail['results']['bindings'][0]):
+                ret['t'] = entity_detail['results']['bindings'][0]['t']['value']
+            if('v' in entity_detail['results']['bindings'][0]):
+                ret['v'] = entity_detail['results']['bindings'][0]['v']['value']
+            if('wat' in entity_detail['results']['bindings'][0]):
+                ret['wat'] = entity_detail['results']['bindings'][0]['wat']['value']
+            if('wat_name' in entity_detail['results']['bindings'][0]):
+                ret['wat_name'] = entity_detail['results']['bindings'][0]['wat_name']['value']
+            svg_script = get_entity_details_svg(entity_uri)
+            if svg_script[0] == True:
+                e_script = svg_script[1]
+                e_script += get_entity_activity_wgb_svg(entity_uri)
+                e_script += get_entity_activity_used_svg(entity_uri)
+                e_script += get_entity_entity_wdf_svg(entity_uri)
+                ret['e_script'] = e_script
+            ret['uri'] = entity_uri
     return ret
 
 
@@ -1404,25 +1401,26 @@ def get_activity_dict(activity_uri):
     activity_detail = functions_db.db_query_secure(query)
     ret = {}
     if activity_detail and 'results' in activity_detail:
-        ret['l'] = activity_detail['results']['bindings'][0]['l']['value']
-        if 't' in activity_detail['results']['bindings'][0]:
-            ret['t'] = activity_detail['results']['bindings'][0]['t']['value']
-        if 'sat' in activity_detail['results']['bindings'][0]:
-            ret['sat'] = activity_detail['results']['bindings'][0]['sat']['value']
-        if 'eat' in activity_detail['results']['bindings'][0]:
-            ret['eat'] = activity_detail['results']['bindings'][0]['eat']['value']
-        if 'waw' in activity_detail['results']['bindings'][0]:
-            ret['waw'] = activity_detail['results']['bindings'][0]['waw']['value']
-        if 'waw_name' in activity_detail['results']['bindings'][0]:
-            ret['waw_name'] = activity_detail['results']['bindings'][0]['waw_name']['value']
-        svg_script = get_activity_details_svg(activity_uri)
-        if svg_script[0] == True:
-            a_script = svg_script[1]
-            a_script += get_activity_used_entities_svg(activity_uri)
-            a_script += get_activity_generated_entities_svg(activity_uri)
-            a_script += get_activity_was_informed_by(activity_uri)
-            ret['a_script'] = a_script
-        ret['uri'] = activity_uri
+        if len(activity_detail['results']['bindings']) > 0:
+            ret['l'] = activity_detail['results']['bindings'][0]['l']['value']
+            if 't' in activity_detail['results']['bindings'][0]:
+                ret['t'] = activity_detail['results']['bindings'][0]['t']['value']
+            if 'sat' in activity_detail['results']['bindings'][0]:
+                ret['sat'] = activity_detail['results']['bindings'][0]['sat']['value']
+            if 'eat' in activity_detail['results']['bindings'][0]:
+                ret['eat'] = activity_detail['results']['bindings'][0]['eat']['value']
+            if 'waw' in activity_detail['results']['bindings'][0]:
+                ret['waw'] = activity_detail['results']['bindings'][0]['waw']['value']
+            if 'waw_name' in activity_detail['results']['bindings'][0]:
+                ret['waw_name'] = activity_detail['results']['bindings'][0]['waw_name']['value']
+            svg_script = get_activity_details_svg(activity_uri)
+            if svg_script[0] == True:
+                a_script = svg_script[1]
+                a_script += get_activity_used_entities_svg(activity_uri)
+                a_script += get_activity_generated_entities_svg(activity_uri)
+                a_script += get_activity_was_informed_by(activity_uri)
+                ret['a_script'] = a_script
+            ret['uri'] = activity_uri
     return ret
 
 
@@ -2380,7 +2378,6 @@ def get_agent(agent_uri):
 
 
 def get_agent_dict(agent_uri):
-    #http%3A//placeholder.org%230427520a-d3cb-4453-9506-032607774f1d
     query = '''
             PREFIX foaf: <http://xmlns.com/foaf/0.1/>
             PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -2418,7 +2415,6 @@ def get_agent_dict(agent_uri):
     agent_detail = functions_db.db_query_secure(query)
     ret = {}
     if agent_detail and 'results' in agent_detail and len(agent_detail['results']['bindings']) > 0:
-        # Need better checks
         if 'n' in agent_detail['results']['bindings'][0]:
             ret['n'] = agent_detail['results']['bindings'][0]['n']['value']
         else:

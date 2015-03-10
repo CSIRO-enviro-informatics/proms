@@ -183,7 +183,7 @@ def agents():
                                AGENT=agent)
     #multiple Agents (register)
     else:
-        agents = functions.get_activities_dict()
+        agents = functions.get_agents_dict()
         return render_template('agent.html',
                                PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
                                AGENTS=agents)
