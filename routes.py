@@ -240,7 +240,6 @@ def pingback():
         pass
 
 
-@routes.route('/function/sparql', methods=['GET', 'POST'])
 @routes.route('/function/sparql/', methods=['GET', 'POST'])
 def sparql():
     # Query submitted

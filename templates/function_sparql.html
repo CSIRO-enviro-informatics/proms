@@ -3,7 +3,7 @@
 {% block content %}
     <h2>SPARQL endpoint</h2>
     <h4>Enter your SPARQL query in the text box below:</h4>
-    <form action="/function/sparql" method="post">
+    <form action="/function/sparql/" method="post">
         <textarea name="query" id="query" style="width:500px; height:300px;">{% if query != '' %}{{query}}{% endif %}</textarea>
         <br />
         <input type="submit" value="Query PROMS" /><br />
