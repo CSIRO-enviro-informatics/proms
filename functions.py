@@ -466,11 +466,10 @@ def get_report_dict(report_uri):
         PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX dc: <http://purl.org/dc/elements/1.1/>
-        SELECT ?rt ?l ?t ?id ?rs ?rs_t ?sat
+        SELECT ?rt ?l ?id ?rs ?rs_t ?sat
         WHERE {
           <''' + report_uri + '''> a ?rt .
           <''' + report_uri + '''> rdf:label ?l .
-          <''' + report_uri + '''> proms:reportType ?t .
           <''' + report_uri + '''> proms:nativeId ?id .
           <''' + report_uri + '''> proms:reportingSystem ?rs .
           ?rs rdf:label ?rs_t .
@@ -483,8 +482,11 @@ def get_report_dict(report_uri):
     # Check this
     if report_detail and 'results' in report_detail:
         if len(report_detail['results']['bindings']) > 0:
-            ret['l'] = report_detail['results']['bindings'][0]['l']['value']
-            ret['t'] = report_detail['results']['bindings'][0]['t']['value']
+            index = 0;
+            if len(report_detail['results']['bindings']) > 1:
+                index = 1;
+            ret['l'] = report_detail['results']['bindings'][index]['l']['value']
+            ret['t'] = report_detail['results']['bindings'][index]['rt']['value']
             if 'Basic' in ret['t']:
                 ret['t_str'] = 'Basic'
             elif 'Internal' in ret['t']:
@@ -493,12 +495,10 @@ def get_report_dict(report_uri):
                 ret['t_str'] = 'External'
             else:
                 ret['t_str'] = 'Unknown Report Type'
-            ret['id'] = report_detail['results']['bindings'][0]['id']['value']
-            #ret['rs'] = report_detail['results']['bindings'][0]['rs']['value']
-            ret['rs'] = urllib.quote(report_detail['results']['bindings'][0]['rs']['value'])
-            ret['rs_t'] = report_detail['results']['bindings'][0]['rs_t']['value']
-            #ret['rs_encoded'] = settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem/?uri=' + urllib.quote(report_detail['results']['bindings'][0]['rs']['value'])
-            ret['sat'] = report_detail['results']['bindings'][0]['sat']['value']
+            ret['id'] = report_detail['results']['bindings'][index]['id']['value']
+            ret['rs'] = urllib.quote(report_detail['results']['bindings'][index]['rs']['value'])
+            ret['rs_t'] = report_detail['results']['bindings'][index]['rs_t']['value']
+            ret['sat'] = report_detail['results']['bindings'][index]['sat']['value']
             ret['uri'] = report_uri
     return ret
 
@@ -815,13 +815,22 @@ def get_entity_details_svg(entity_uri):
                 title = get_entity_result['results']['bindings'][0]['t']['value']
                 script += '''
                     //Entity title
-                    var entityTitle = svgContainer.append('foreignObject')
+                    if(navigator.appName != "Microsoft Internet Explorer")
+                        var entityTitle = svgContainer.append('foreignObject')
                                             .attr('x', 275)
                                             .attr('y', 250)
                                             .attr('width', 149)
                                             .attr('height', 100)
                                             .append("xhtml:body")
-                                            .html('<div style="width: 149px; font-size:smaller; background-color:#ffffbe;">''' + title + '''</div>')
+                                            .html('<div style="width: 149px; font-size:smaller; background-color:#ffffbe;">''' + title + '''</div>');
+                    else
+                        var entityTitle = svgContainer.append("text")
+                                            .attr("x", 350)
+                                            .attr("y", 260)
+                                            .text("''' + title + '''")
+                                            .style("font-family", "Verdana")
+                                            .style("font-size", "12px")
+                                            .style("text-anchor", "middle");
                 '''
             #print its value, if it has one
             if get_entity_result['results']['bindings'][0].get('v'):
@@ -844,7 +853,7 @@ def get_entity_details_svg(entity_uri):
                                             .attr('width', 148)
                                             .attr('height', 98)
                                             .append("xhtml:body")
-                                            .html('<div style="width: 149px; font-size:smaller; background-color:white; overflow:hidden;">''' + value + '''</div>')
+                                            .html('<div style="width: 149px; font-size:smaller; background-color:white; overflow:hidden;">''' + value + '''</div>');
 
                     //value property arrow
                     var valueArrow = svgContainer.append("polygon")
