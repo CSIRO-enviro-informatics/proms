@@ -70,7 +70,7 @@ class HasValidReport(Rule):
         #has a title
         qres = report_graph.query('''
         PREFIX proms: <http://promsns.org/ns/proms#>
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT ?s
         WHERE {
             { ?s  a            proms:BasicReport .}
@@ -78,12 +78,12 @@ class HasValidReport(Rule):
             { ?s  a            proms:ExternalReport .}
             UNION
             { ?s  a            proms:InternalReport .}
-            ?s  dc:title     ?t .
+            ?s  rdf:label     ?t .
         }
         ''')
         if not bool(qres):
             self.passed = False
-            self.fail_reasons.append('The Report class does not contain a dc:title')
+            self.fail_reasons.append('The Report class does not contain a rdf:label')
 
         #has a jobId
         qres = report_graph.query('''

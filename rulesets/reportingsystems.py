@@ -65,12 +65,12 @@ class HasValidReportingSystem(Rule):
 
         #has a title
         qres = reportingsystem_graph.query('''
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX proms: <http://promsns.org/ns/proms#>
         SELECT ?t
         WHERE {
           ?rs a proms:ReportingSystem .
-          ?rs dc:title ?t .
+          ?rs rdf:label ?t .
         }
         ''')
         if not bool(qres):
