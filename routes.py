@@ -59,7 +59,6 @@ def reports():
         if request.args.get('uri'):
             #unencode the uri QSA
             uri = urllib.unquote(request.args.get('uri'))
-            #uri = request.args.get('uri')
             report = functions.get_report_dict(uri)
             return render_template('report.html',
                                    REPORT=report,

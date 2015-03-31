@@ -5,8 +5,9 @@ import cStringIO
 from rdflib import Graph
 import requests
 #import rules_proms
-#from rulesets import proms
-from rulesets import proms_report
+from rulesets import proms
+from rulesets import reportingsystems
+#from rulesets import proms_report
 #from rulesets.rules_proms import proms_report
 import urllib
 
@@ -389,8 +390,8 @@ def put_reportingsystem(reportingsystem_in_turtle):
 
     #conformance
     #from rulesets import proms_report
-    #conf_results = reportingsystems.ReportingSystems(g).get_result()
-    conf_results = proms_report.ReportingSystems(g).get_result()
+    conf_results = reportingsystems.ReportingSystems(g).get_result()
+    #conf_results = proms_report.ReportingSystems(g).get_result()
 
     if conf_results['rule_results'][0]['passed']:
         #passed conformance so sent to DB
@@ -629,23 +630,30 @@ def put_report(report_in_turtle):
         return [False, ['Could not parse input: ' + str(e)]]
 
     #conformance
-    conf_results = proms_report.PromsReport(g).get_result()
+    conf_results = proms.PromsReport(g).get_result()
     #conf_results = proms_report.PromsReport(g).get_result()
 
     if conf_results['rule_results'][0]['passed']:
-        #passed conformance so sent to DB
-        #put data into a SPARQL 1.1 INSERT DATA query
-        insert_query = 'INSERT DATA {' + g.serialize(format='n3') + '}'
+        ##passed conformance so sent to DB
+        ##put data into a SPARQL 1.1 INSERT DATA query
+        #insert_query = 'INSERT DATA {' + g.serialize(format='n3') + '}'
 
-        #insert into Stardog using the HTTP API
-        uri = 'http://localhost:5820/proms/update'
-        h = {'content-type': 'application/sparql-update'}
-        r = requests.post(uri, data=insert_query, headers=h, auth=('proms', 'proms'))
+        ##insert into Stardog using the HTTP API
+        #uri = 'http://localhost:5820/proms/update'
+        #h = {'content-type': 'application/sparql-update'}
+        #r = requests.post(uri, data=insert_query, headers=h, auth=('proms', 'proms'))
 
-        if r.status_code == 200:
-            return [True]
+        #if r.status_code == 200:
+        #    return [True]
+        #else:
+        #    return [False, r.text]
+
+        result = functions_db.db_insert(report_in_turtle, True)
+        if result[0]:
+            return [True, 'OK']
         else:
-            return [False, r.text]
+            return [False, 'Unable to POST report']
+
     else:
         return [False, conf_results['rule_results'][0]['fail_reasons']]
 

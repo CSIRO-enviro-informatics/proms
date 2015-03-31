@@ -31,7 +31,7 @@ class Rule:
         self.business_definition = business_definition
         self.authority = authority
         self.functional_definition = functional_definition
-        self.time = (datetime.datetime.utcnow() + datetime.timedelta(hours=10)).strftime('%Y-%m-%dT%H:%M:%S')
+        self.time = datetime.datetime.utcnow()
         self.component_name = component_name
 
         #set the dynamic things
@@ -46,7 +46,7 @@ class Rule:
             'business_definition': self.business_definition,
             'authority': self.authority,
             'functional_definition': self.functional_definition,
-            'time': self.time,
+            'time': self.time.strftime('%Y-%m-%dT%H:%M:%SZ'),
             'passed': self.passed,
             'fail_reasons': self.fail_reasons,
             'components': {
@@ -61,7 +61,7 @@ class Rule:
         return self.return_object
 
     def save_as_json(self, resultset_id, results_dir):
-        ruletset_results_filename = 'result_ruleset_' + resultset_id + '_rule_' + self.id + '_' + self.time + '.json'
+        ruletset_results_filename = 'result_ruleset_' + resultset_id + '_rule_' + self.id + '_' + self.time.strftime('%Y-%m-%dT%H-%M-%SZ') + '.json'
         with open(results_dir + ruletset_results_filename, 'w') as outfile:
             json.dump(self.return_object, outfile, indent=4)
 

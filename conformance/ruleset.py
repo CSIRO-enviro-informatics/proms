@@ -13,7 +13,7 @@ class RuleSet:
     variables.
     """
 
-    def __init__(self, id, name, owner, rules_results):
+    def __init__(self, id, name, owner, rules_results, passed):
         """
         Initialise the RuleSet
 
@@ -25,21 +25,27 @@ class RuleSet:
         self.id = id
         self.name = name
         self.owner = owner
-        self.time = (datetime.datetime.utcnow() + datetime.timedelta(hours=10)).strftime('%Y-%m-%dT%H:%M:%S')
+        self.time = datetime.datetime.utcnow()
+        self.passed = passed
         self.rules_results = rules_results
         self.return_object = {
             'id': self.id,
             'name': self.name,
             'owner': self.owner,
-            'time': self.time,
+            'time': self.time.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'passed': self.passed,
             'rule_results': self.rules_results,
         }
 
     def get_result(self):
+        """
+
+        :rtype : dict of rules
+        """
         return self.return_object
 
     def save_as_json(self, results_dir):
-        ruletset_results_filename = 'results_ruleset_' + self.id + '_' + self.time + '.json'
+        ruletset_results_filename = 'results_ruleset_' + self.id + '_' + self.time.strftime('%Y-%m-%dT%H-%M-%SZ') + '.json'
         with open(results_dir + ruletset_results_filename, 'w') as outfile:
             json.dump(self.return_object, outfile, indent=4)
 
