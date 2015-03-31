@@ -4,7 +4,10 @@ import json
 import cStringIO
 from rdflib import Graph
 import requests
-from rulesets import proms
+#import rules_proms
+#from rulesets import proms
+from rulesets import proms_report
+#from rulesets.rules_proms import proms_report
 import urllib
 
 
@@ -385,8 +388,10 @@ def put_reportingsystem(reportingsystem_in_turtle):
         return [False, ['Could not parse input: ' + str(e)]]
 
     #conformance
-    from rulesets import reportingsystems
-    conf_results = reportingsystems.ReportingSystems(g).get_result()
+    #from rulesets import proms_report
+    #conf_results = reportingsystems.ReportingSystems(g).get_result()
+    conf_results = proms_report.ReportingSystems(g).get_result()
+
     if conf_results['rule_results'][0]['passed']:
         #passed conformance so sent to DB
         #put data into a SPARQL 1.1 INSERT DATA query
@@ -442,7 +447,11 @@ def get_reports_dict():
                 PREFIX proms: <http://promsns.org/def/proms#>
                 SELECT DISTINCT ?r ?t
                 WHERE {
-                  ?r a proms:Report .
+                  { ?r a proms:BasicReport . }
+                  UNION
+                  { ?r a proms:ExternalReport . }
+                  UNION
+                  { ?r a proms:InternalReport . }
                   ?r rdf:label ?t
                 }
                 ORDER BY ?r
@@ -620,7 +629,9 @@ def put_report(report_in_turtle):
         return [False, ['Could not parse input: ' + str(e)]]
 
     #conformance
-    conf_results = proms.Proms(g).get_result()
+    conf_results = proms_report.PromsReport(g).get_result()
+    #conf_results = proms_report.PromsReport(g).get_result()
+
     if conf_results['rule_results'][0]['passed']:
         #passed conformance so sent to DB
         #put data into a SPARQL 1.1 INSERT DATA query
