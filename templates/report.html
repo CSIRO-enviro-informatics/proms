@@ -8,7 +8,13 @@
         <h4><a class="definition" href={{REPORT['t']}}>{{REPORT['t_str']}}</a> Report</h4>
         <table class="lines">
             <tr><th>Title:</th><td>{{REPORT['l']}}</td></tr>
-            <tr><th>Reporting System:</th><td><a href={{PROMS_INSTANCE_NAMESPACE_URI}}id/reportingsystem/?uri={{REPORT['rs']}}>{{REPORT['rs_t']}}</a></td></tr>
+            <tr><th>Reporting System:</th><td>
+                {% if REPORT['rs'] %}
+                <a href={{PROMS_INSTANCE_NAMESPACE_URI}}id/reportingsystem/?uri={{REPORT['rs']}}>{{REPORT['rs_t']}}</a>
+                {% else %}
+                No ReportingSystem Registered
+                {% endif %}
+            </td></tr>
             <tr><th>Job ID:</th><td>{{REPORT['id']}}</td></tr>
         </table>
     {% elif REPORTS %}

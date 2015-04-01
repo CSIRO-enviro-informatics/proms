@@ -481,10 +481,10 @@ def get_report_dict(report_uri):
           <''' + report_uri + '''> a ?rt .
           <''' + report_uri + '''> rdf:label ?l .
           <''' + report_uri + '''> proms:nativeId ?id .
-          <''' + report_uri + '''> proms:reportingSystem ?rs .
+          OPTIONAL { <''' + report_uri + '''> proms:reportingSystem ?rs .
           ?rs rdf:label ?rs_t .
           <''' + report_uri + '''> proms:startingActivity ?sac .
-          ?sac prov:startedAtTime ?sat .
+          ?sac prov:startedAtTime ?sat . }
         }
     '''
     report_detail = functions_db.db_query_secure(query)
@@ -506,9 +506,11 @@ def get_report_dict(report_uri):
             else:
                 ret['t_str'] = 'Unknown Report Type'
             ret['id'] = report_detail['results']['bindings'][index]['id']['value']
-            ret['rs'] = urllib.quote(report_detail['results']['bindings'][index]['rs']['value'])
-            ret['rs_t'] = report_detail['results']['bindings'][index]['rs_t']['value']
-            ret['sat'] = report_detail['results']['bindings'][index]['sat']['value']
+            if('rs' in report_detail['results']['bindings'][0]):
+                ret['rs'] = urllib.quote(report_detail['results']['bindings'][index]['rs']['value'])
+                ret['rs_t'] = report_detail['results']['bindings'][index]['rs_t']['value']
+            if('sat' in report_detail['results']['bindings'][0]):
+                ret['sat'] = report_detail['results']['bindings'][index]['sat']['value']
             ret['uri'] = report_uri
     return ret
 
