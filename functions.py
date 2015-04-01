@@ -482,8 +482,8 @@ def get_report_dict(report_uri):
           <''' + report_uri + '''> rdf:label ?l .
           <''' + report_uri + '''> proms:nativeId ?id .
           OPTIONAL { <''' + report_uri + '''> proms:reportingSystem ?rs .
-          ?rs rdf:label ?rs_t .
-          <''' + report_uri + '''> proms:startingActivity ?sac .
+          OPTIONAL { ?rs rdf:label ?rs_t . } }
+          OPTIONAL { <''' + report_uri + '''> proms:startingActivity ?sac .
           ?sac prov:startedAtTime ?sat . }
         }
     '''
@@ -508,6 +508,7 @@ def get_report_dict(report_uri):
             ret['id'] = report_detail['results']['bindings'][index]['id']['value']
             if('rs' in report_detail['results']['bindings'][0]):
                 ret['rs'] = urllib.quote(report_detail['results']['bindings'][index]['rs']['value'])
+            if('rs_t' in report_detail['results']['bindings'][0]):
                 ret['rs_t'] = report_detail['results']['bindings'][index]['rs_t']['value']
             if('sat' in report_detail['results']['bindings'][0]):
                 ret['sat'] = report_detail['results']['bindings'][index]['sat']['value']
