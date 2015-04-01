@@ -155,7 +155,7 @@ def get_reportingsystem_dict(reportingsystem_uri):
     return ret
 
 
-def draw_report(n, uri, title, jobId):
+def draw_report(n, uri, title, nativeId):
     uri_encoded = urllib.quote(uri)
     y_offset = n * 130
     y1 = y_offset + 16
@@ -202,7 +202,7 @@ def draw_report(n, uri, title, jobId):
                                 .attr('width', 138)
                                 .attr('height', 95)
                                 .append("xhtml:body")
-                                .html('<div style="width:138px; color:white; font-size:smaller; background-color:MediumVioletRed;"><a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/report/?uri=''' + uri_encoded + '''">''' + title + '''</a><br />jobId: ''' + jobId + '''</div>')
+                                .html('<div style="width:138px; color:white; font-size:smaller; background-color:MediumVioletRed;"><a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/report/?uri=''' + uri_encoded + '''">''' + title + '''</a><br />nativeId: ''' + nativeId + '''</div>')
     '''
 
     return svg
@@ -214,7 +214,6 @@ def get_reportingsystem_reports_svg(reportingsystem_uri):
     PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX proms: <http://promsns.org/def/proms#>
-    PREFIX dc: <http://purl.org/dc/elements/1.1/>
     SELECT  *
     WHERE {
       {?r a proms:Report}
@@ -262,7 +261,7 @@ def get_reportingsystem_reports_svg(reportingsystem_uri):
                                     .attr('width', 138)
                                     .attr('height', 95)
                                     .append("xhtml:body")
-                                    .html('<div style="width:138px; color:white; font-size:smaller; background-color:MediumVioletRed;"><a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/report/?uri=''' + r1uri_encoded + '''">''' + r1title + '''</a><br />jobId: ''' + r1jobId + '''</div>')
+                                    .html('<div style="width:138px; color:white; font-size:smaller; background-color:MediumVioletRed;"><a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/report/?uri=''' + r1uri_encoded + '''">''' + r1title + '''</a><br />nativeId: ''' + r1jobId + '''</div>')
 
             //Report 1 arrow
             var report1Arrow = svgContainer.append("polygon")
@@ -283,9 +282,9 @@ def get_reportingsystem_reports_svg(reportingsystem_uri):
                 reports = reports['results']['bindings'][1:]
                 i = 1
                 for report in reports:
-                    uri = reports['results']['bindings'][i]['r']['value']
-                    title = reports['results']['bindings'][i]['t']['value']
-                    jobId = reports['results']['bindings'][i]['job']['value']
+                    uri = report['r']['value']
+                    title = report['t']['value']
+                    jobId = report['job']['value']
                     reports_script += draw_report(i, uri, title, jobId)
                     i += 1
         else:
@@ -475,7 +474,6 @@ def get_report_dict(report_uri):
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
         SELECT ?rt ?l ?id ?rs ?rs_t ?sat
         WHERE {
           <''' + report_uri + '''> a ?rt .
