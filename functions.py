@@ -634,25 +634,11 @@ def put_report(report_in_turtle):
     #conf_results = proms_report.PromsReport(g).get_result()
 
     if conf_results['rule_results'][0]['passed']:
-        ##passed conformance so sent to DB
-        ##put data into a SPARQL 1.1 INSERT DATA query
-        #insert_query = 'INSERT DATA {' + g.serialize(format='n3') + '}'
-
-        ##insert into Stardog using the HTTP API
-        #uri = 'http://localhost:5820/proms/update'
-        #h = {'content-type': 'application/sparql-update'}
-        #r = requests.post(uri, data=insert_query, headers=h, auth=('proms', 'proms'))
-
-        #if r.status_code == 200:
-        #    return [True]
-        #else:
-        #    return [False, r.text]
-
-        result = functions_db.db_insert(report_in_turtle, True)
+        result = functions_db.db_insert_secure(report_in_turtle, True)
         if result[0]:
             return [True, 'OK']
         else:
-            return [False, 'Unable to POST report']
+            return [False, 'Error writing report to triplestore']
 
     else:
         return [False, conf_results['rule_results'][0]['fail_reasons']]

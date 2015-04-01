@@ -70,7 +70,7 @@ def db_insert_secure(turtle, from_string=False):
     sparql.method = 'POST'
 
     try:
-        return sparql.query()
+        return [True, sparql.query()]
     except Exception, e:
         print e.message
         return e.message
