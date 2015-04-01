@@ -95,7 +95,7 @@ class ReportClassValidProperties(Rule):
         ''')
         if not bool(qres):
             self.passed = False
-            self.fail_reasons.append('The Report class does not contain a dc:title')
+            self.fail_reasons.append('The Report class does not contain a rdfs:label')
 
         # has a nativeId
         qres = report_graph.query('''
@@ -202,12 +202,12 @@ class HasValidReportingSystem(Rule):
 
         #has a title
         qres = reportingsystem_graph.query('''
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX proms: <http://promsns.org/def/proms#>
         SELECT ?t
         WHERE {
           ?rs a proms:ReportingSystem .
-          ?rs dc:title ?t .
+          ?rs rdfs:label ?t .
         }
         ''')
         if not bool(qres):
