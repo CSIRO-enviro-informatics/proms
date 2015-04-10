@@ -513,6 +513,7 @@ def get_report_dict(report_uri):
             ret['id'] = report_detail['results']['bindings'][index]['id']['value']
             if('rs' in report_detail['results']['bindings'][0]):
                 ret['rs'] = urllib.quote(report_detail['results']['bindings'][index]['rs']['value'])
+                ret['rs_u'] = report_detail['results']['bindings'][index]['rs']['value']
             if('rs_t' in report_detail['results']['bindings'][0]):
                 ret['rs_t'] = report_detail['results']['bindings'][index]['rs_t']['value']
             if('sat' in report_detail['results']['bindings'][0]):
@@ -631,15 +632,16 @@ def put_report(report_in_turtle):
     base_uri = settings.PROMS_INSTANCE_NAMESPACE_URI
     if base_uri.endswith('/'):
         base_uri = base_uri[:-1]
-    base_uri += '#'
     while 1:
-        pat = '<%s#([^>]*)>' % ('http://placeholder.org')
+        pat = '<%s([^>]*)#([^>]*)>' % ('http://placeholder.org')
         x = re.compile(pat)
         m = re.search(x, report_in_turtle)
         if not m:
             break
-        new_uri = '<' + base_uri + str(uuid.uuid4()) + '>'
-        report_in_turtle = report_in_turtle.replace(m.group(0), new_uri)
+        new_uri = '<' + base_uri + m.group(1) + "#" + str(uuid.uuid4()) + '>'
+        original_uri = '<http://placeholder.org' + m.group(1) + '#' + m.group(2) + '>'
+        report_in_turtle = report_in_turtle.replace(original_uri, new_uri)
+        #report_in_turtle = report_in_turtle.replace(m.group(0), new_uri)
 
     #try to make a graph of the input text
     g = Graph()
@@ -660,7 +662,6 @@ def put_report(report_in_turtle):
             return [False, 'Error writing report to triplestore']
     else:
         return [False, conf_results['rule_results'][0]['fail_reasons']]
-
 
 #
 #   Entities
