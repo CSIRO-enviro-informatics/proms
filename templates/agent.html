@@ -14,16 +14,16 @@
             <p>No Agents found.</p>
         {% else %}
             <ul>
-            {% for uri, t in AGENTS.iteritems() %}
-                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/agent?uri={{uri}}">
-                    {% if t -%}
-                        {{t}}
+            {% for agent in AGENTS %}
+                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/agent?uri={{agent['ag']}}">
+                    {% if agent['n'] -%}
+                        {{agent['n']}}
                     {% else %}
-                        {{uri}}
+                        {{agent['ag_u']}}
                     {% endif %}
                     </a>
-                    {% if t -%}
-                        ({{uri}})
+                    {% if agent['n'] -%}
+                        ({{agent['ag_u']}})
                     {% endif %}
                 </li>
             {% endfor %}

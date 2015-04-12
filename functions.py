@@ -85,16 +85,17 @@ def get_reportingsystems_dict():
         }
     '''
     reportingsystems = functions_db.db_query_secure(query)
-    ret = {}
+    reportingsystem_items = []
     # Check if nothing is returned
     if reportingsystems and 'results' in reportingsystems:
         for reportingsystem in reportingsystems['results']['bindings']:
+            ret = {}
+            ret['rs'] = urllib.quote(str(reportingsystem['rs']['value']))
+            ret['rs_u'] = str(reportingsystem['rs']['value'])
             if reportingsystem.get('t'):
-                uri_encoded = urllib.quote(str(reportingsystem['rs']['value']))
-                ret[uri_encoded] = str(reportingsystem['t']['value'])
-            else:
-                ret[str(reportingsystem['rs']['value'])] = str(reportingsystem['rs']['value'])
-    return ret
+                ret['t'] = str(reportingsystem['t']['value'])
+            reportingsystem_items.append(ret)
+    return reportingsystem_items
 
 
 def get_reportingsystem(reportingsystem_uri):
@@ -464,16 +465,18 @@ def get_reports_dict():
                 ORDER BY ?r
             '''
     reports = functions_db.db_query_secure(query)
-    ret = {}
+
+    report_items = []
     # Check if nothing is returned
     if reports and 'results' in reports:
         for report in reports['results']['bindings']:
+            ret = {}
+            ret['r'] = urllib.quote(str(report['r']['value']))
+            ret['r_u'] = str(report['r']['value'])
             if report.get('t'):
-                uri_encoded = urllib.quote(str(report['r']['value']))
-                ret[uri_encoded] = str(report['t']['value'])
-            else:
-                ret[str(report['r']['value'])] = str(report['r']['value'])
-    return ret
+                ret['t'] = str(report['t']['value'])
+            report_items.append(ret)
+    return report_items
 
 
 def get_report_dict(report_uri):
@@ -697,16 +700,17 @@ def get_entities_dict():
                 ORDER BY ?e
             '''
     entities = functions_db.db_query_secure(query)
-    ret = {}
+    entity_items = []
     # Check if nothing is returned
     if entities and 'results' in entities:
         for entity in entities['results']['bindings']:
+            ret = {}
+            ret['e'] = urllib.quote(str(entity['e']['value']))
+            ret['e_u'] = str(entity['e']['value'])
             if entity.get('l'):
-                uri_encoded = urllib.quote(str(entity['e']['value']))
-                ret[uri_encoded] = str(entity['l']['value'])
-            else:
-                ret[str(entity['e']['value'])] = str(entity['e']['value'])
-    return ret
+                ret['l'] = str(entity['l']['value'])
+            entity_items.append(ret)
+    return entity_items
 
 
 def get_entity_dict(entity_uri):
@@ -1404,15 +1408,16 @@ def get_activities_dict():
                 ORDER BY ?a
             '''
     activities = functions_db.db_query_secure(query)
-    ret = {}
+    activity_items = []
     if activities and 'results' in activities:
         for activity in activities['results']['bindings']:
+            ret = {}
+            ret['a'] = urllib.quote(str(activity['a']['value']))
+            ret['a_u'] = str(activity['a']['value'])
             if activity.get('l'):
-                uri_encoded = urllib.quote(str(activity['a']['value']))
-                ret[uri_encoded] = str(activity['l']['value'])
-            else:
-                ret[str(activity['a']['value'])] = str(activity['a']['value'])
-    return ret
+                ret['l'] = str(activity['l']['value'])
+            activity_items.append(ret)
+    return activity_items
 
 
 def get_activity_dict(activity_uri):
@@ -2361,15 +2366,16 @@ def get_agents_dict():
             }
             '''
     agents = functions_db.db_query_secure(query)
-    ret = {}
+    agent_items = []
     if agents and 'results' in agents:
         for agent in agents['results']['bindings']:
+            ret = {}
+            ret['ag'] = urllib.quote(str(agent['ag']['value']))
+            ret['ag_u'] = str(agent['ag']['value'])
             if agent.get('n'):
-                uri_encoded = urllib.quote(str(agent['ag']['value']))
-                ret[uri_encoded] = str(agent['n']['value'])
-            else:
-                ret[str(agent['ag']['value'])] = str(agent['ag']['value'])
-    return ret
+                ret['n'] = str(agent['n']['value'])
+            agent_items.append(ret)
+    return agent_items
 
 
 def get_agent(agent_uri):

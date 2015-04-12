@@ -29,16 +29,16 @@
             <p>No Entities found.</p>
         {% else %}
             <ul>
-            {% for uri, t in ENTITIES.iteritems() %}
-                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/entity?uri={{uri}}">
-                    {% if t -%}
-                        {{t}}
+            {% for entity in ENTITIES %}
+                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/entity?uri={{entity['e']}}">
+                    {% if entity['l'] -%}
+                        {{entity['l']}}
                     {% else %}
-                        {{uri}}
+                        {{entity['e_u']}}
                     {% endif %}
                     </a>
-                    {% if t -%}
-                        ({{uri}})
+                    {% if entity['l'] -%}
+                        ({{entity['e_u']}})
                     {% endif %}
                 </li>
             {% endfor %}

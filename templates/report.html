@@ -12,7 +12,7 @@
                 {% if REPORT['rs'] and REPORT['rs_t'] %}
                 <a href={{PROMS_INSTANCE_NAMESPACE_URI}}id/reportingsystem/?uri={{REPORT['rs']}}>{{REPORT['rs_t']}}</a>
                 {% elif REPORT['rs'] %}
-                <a href={{PROMS_INSTANCE_NAMESPACE_URI}}id/reportingsystem/?uri={{REPORT['rs']}}>{{REPORT['rs']}}</a>
+                <a href={{PROMS_INSTANCE_NAMESPACE_URI}}id/reportingsystem/?uri={{REPORT['rs']}}>{{REPORT['rs_u']}}</a>
                 {% else %}
                 No ReportingSystem Registered
                 {% endif %}
@@ -25,16 +25,16 @@
             <p>No Reports found.</p>
         {% else %}
             <ul>
-            {% for uri, t in REPORTS.iteritems() %}
-                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/report?uri={{uri}}">
-                    {% if t -%}
-                        {{t}}
+            {% for report in REPORTS %}
+                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/report?uri={{report['r']}}">
+                    {% if report['t'] -%}
+                        {{report['t']}}
                     {% else %}
-                        {{uri}}
+                        {{report['r_u']}}
                     {% endif %}
                     </a>
-                    {% if t -%}
-                        ({{uri}})
+                    {% if report['t'] -%}
+                        ({{report['r_u']}})
                     {% endif %}
                 </li>
             {% endfor %}

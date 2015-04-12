@@ -36,16 +36,16 @@
             <p>No Activities found.</p>
         {% else %}
             <ul>
-            {% for uri, t in ACTIVITIES.iteritems() %}
-                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/activity?uri={{uri}}">
-                    {% if t -%}
-                        {{t}}
+            {% for activity in ACTIVITIES %}
+                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/activity?uri={{activity['a']}}">
+                    {% if activity['l'] -%}
+                        {{activity['l']}}
                     {% else %}
-                        {{uri}}
+                        {{activity['a_u']}}
                     {% endif %}
                     </a>
-                    {% if t -%}
-                        ({{uri}})
+                    {% if activity['l'] -%}
+                        ({{activity['a_u']}})
                     {% endif %}
                 </li>
             {% endfor %}

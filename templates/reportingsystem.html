@@ -59,16 +59,16 @@
             <p>No ReportingSystems found.</p>
         {% else %}
             <ul>
-            {% for uri, t in REPORTINGSYSTEMS.iteritems() %}
-                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/reportingsystem?uri={{uri}}">
-                    {% if t -%}
-                        {{t}}
+            {% for reportingsystem in REPORTINGSYSTEMS %}
+                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/reportingsystem?uri={{reportingsystem['rs']}}">
+                    {% if reportingsystem['t'] -%}
+                        {{reportingsystem['t']}}
                     {% else %}
-                        {{uri}}
+                        {{reportingsystem['rs_u']}}
                     {% endif %}
                     </a>
-                    {% if t -%}
-                        ({{uri}})
+                    {% if reportingsystem['t'] -%}
+                        ({{reportingsystem['rs_u']}})
                     {% endif %}
                 </li>
             {% endfor %}
