@@ -8,7 +8,9 @@
         <table class="lines">
             <tr><th>Title:</th><td>{{ENTITY['l']}}</td></tr>
             <tr><th>Created:</th><td>{{ENTITY['c']}}</td></tr>
+            {% if ENTITY['dl'] %}
             <tr><th>Download URL:</th><td><a href={{ENTITY['dl']}}>{{ENTITY['dl']}}</a></td></tr>
+            {% endif %}
         </table>
         {% if ENTITY['e_script'] %}
             <h4>Neighbours view</h4>

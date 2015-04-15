@@ -76,6 +76,31 @@ def db_insert_secure(turtle, from_string=False):
         return e.message
 
 
+
+def db_insert_secure_named_graph(turtle, graph_uri, from_string=False):
+    #convert the Turtle into N-Triples
+    import rdflib
+    g = rdflib.Graph()
+    if from_string:
+        g.parse(data=turtle, format='text/turtle')
+    else:
+        g.load(turtle, format='n3')
+
+    # SPARQL INSERT
+    sparql = SPARQLWrapper.SPARQLWrapper(settings.FUSEKI_SECURE_UPDATE_URI)
+    sparql.setCredentials(settings.FUSEKI_SECURE_USR, settings.FUSEKI_SECURE_PWD)
+    sparql.setQuery('INSERT DATA { GRAPH ' + graph_uri + ' { ' + g.serialize(format='nt') + ' } }')
+    sparql.method = 'POST'
+    if graph_uri:
+        sparql.addParameter("named-graph-uri", graph_uri)
+    try:
+        return [True, sparql.query()]
+    except Exception, e:
+        print e.message
+        return e.message
+
+
+
 def submit_stardog_query(query):
     uri = settings.PROMS_DB_URI
     qsa = {'query': query}

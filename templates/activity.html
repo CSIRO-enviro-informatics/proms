@@ -16,6 +16,13 @@
             {% if ACTIVITY['waw'] %}
             <tr><th>Was associated with:</th><td>{{ACTIVITY['waw']}}</td></tr>
             {% endif %}
+            {% if ACTIVITY['r'] %}
+                {% if ACTIVITY['rt'] %}
+                    <tr><th>Report:</th><td><a href={{PROMS_INSTANCE_NAMESPACE_URI}}id/report/?uri={{ACTIVITY['r']}}>{{ACTIVITY['rt']}}</a></td></tr>
+                {% else %}
+                    <tr><th>Report:</th><td><a href={{PROMS_INSTANCE_NAMESPACE_URI}}id/report/?uri={{ACTIVITY['r']}}>{{ACTIVITY['r_u']}}</a></td></tr>
+                {% endif %}
+            {% endif %}
         </table>
         {% if ACTIVITY['a_script'] %}
             <h4>Neighbours view</h4>

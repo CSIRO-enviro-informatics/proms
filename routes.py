@@ -162,6 +162,7 @@ def activities():
         uri = urllib.unquote(request.args.get('uri'))
         activity = functions.get_activity_dict(uri)
         return render_template('activity.html',
+                               PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
                                ACTIVITY=activity)
     #multiple Activities (register)
     else:

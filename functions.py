@@ -11,69 +11,12 @@ from rulesets import reportingsystems
 #from rulesets.rules_proms import proms_report
 import urllib
 import re
+import uuid
 
 
 #
 #   ReportingSystems
 #
-def get_reportingsystems():
-    ''''''
-    '''
-    @prefix vcard:  <http://www.w3.org/2006/vcard/ns#> .
-    @prefix :       <http://placeholder.org#> .
-
-    :
-        a proms:reportingSystem ;
-        dc:title "Example Reporting System"^^xsd:string ;
-        proms:owner [
-            a vcard:Individual;
-            vcard:fn "Nicholas Car";
-            vcard:hasEmail <mailto:nicholas.car@csiro.au> ;
-            vcard:hasAddress [ a vcard:Work;
-                vcard:country-name "Australia";
-                vcard:locality "Brisbane";
-                vcard:postal-code "4152";
-                vcard:street-address "EcoSciences Precinct, 41 Boggo Rd, Dutton Park" ];
-            vcard:hasTelephone [ a vcard:Work,
-                vcard:Voice;
-                vcard:hasValue <tel:+61738335600> ];
-        ]
-    .
-    '''
-    query = '''
-        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX proms: <http://promsns.org/def/proms#>
-        PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
-        SELECT ?rs ?t ?fn ?em ?ph ?add
-        WHERE {
-          ?rs a proms:ReportingSystem .
-          ?rs rdf:label ?t .
-          ?rs proms:owner ?o .
-          ?o vcard:fn ?fn .
-          ?o vcard:hasEmail ?em .
-          ?o vcard:hasTelephone ?ph_1 .
-          ?ph_1 vcard:hasValue ?ph .
-          ?o vcard:hasAddress ?add_1 .
-          ?add_1 vcard:locality ?add
-        }
-    '''
-    return functions_db.db_query_secure(query)
-
-
-def get_reportingsystems_html(sparql_query_results_json):
-    reportingsystms = json.loads(sparql_query_results_json)
-    l = '<ul>'
-    for reportingsystem in reportingsystms['results']['bindings']:
-        if reportingsystem.get('t'):
-            uri_encoded = urllib.quote(str(reportingsystem['rs']['value']))
-            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem?uri=' + uri_encoded + '">' + str(reportingsystem['t']['value']) + '</a> (' + str(reportingsystem['rs']['value']) + ')</li>'
-        else:
-            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem?uri=' + str(reportingsystem['rs']['value']) + '">' + str(reportingsystem['rs']['value']) + '</a></li>'
-    l += '</ul>'
-
-    return l
-
-
 def get_reportingsystems_dict():
     query = '''
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
@@ -96,27 +39,6 @@ def get_reportingsystems_dict():
                 ret['t'] = str(reportingsystem['t']['value'])
             reportingsystem_items.append(ret)
     return reportingsystem_items
-
-
-def get_reportingsystem(reportingsystem_uri):
-    query = '''
-        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX proms: <http://promsns.org/def/proms#>
-        PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
-        SELECT ?t ?fn ?em ?ph ?add
-        WHERE {
-          <''' + reportingsystem_uri + '''> a proms:ReportingSystem .
-          <''' + reportingsystem_uri + '''> rdf:label ?t .
-          <''' + reportingsystem_uri + '''> proms:owner ?o .
-          ?o vcard:fn ?fn .
-          ?o vcard:hasEmail ?em .
-          ?o vcard:hasTelephone ?ph_1 .
-          ?ph_1 vcard:hasValue ?ph .
-          ?o vcard:hasAddress ?add_1 .
-          ?add_1 vcard:locality ?add
-        }
-    '''
-    return functions_db.db_query_secure(query)
 
 
 def get_reportingsystem_dict(reportingsystem_uri):
@@ -206,32 +128,31 @@ def draw_report(n, uri, title, nativeId):
                                 .append("xhtml:body")
                                 .html('<div style="width:138px; color:white; font-size:smaller; background-color:MediumVioletRed;"><a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/report/?uri=''' + uri_encoded + '''">''' + title + '''</a><br />nativeId: ''' + nativeId + '''</div>')
     '''
-
     return svg
 
 
 def get_reportingsystem_reports_svg(reportingsystem_uri):
     #add in all the Reports for this ReportingSystem
     query = '''
-    PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX prov: <http://www.w3.org/ns/prov#>
-    PREFIX proms: <http://promsns.org/def/proms#>
-    SELECT  *
-    WHERE {
-      {?r a proms:Report}
-      UNION
-      {?r a proms:BasicReport}
-      UNION
-      {?r a proms:ExternalReport}
-      UNION
-      {?r a proms:InternalReport}
-      ?r proms:reportingSystem <''' + reportingsystem_uri + '''> .
-      ?r rdf:label ?t .
-      ?r proms:nativeId ?job .
-      ?r proms:endingActivity ?sat .
-      ?sat prov:endedAtTime ?eat .
-    }
-    ORDER BY DESC(?eat)
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX proms: <http://promsns.org/def/proms#>
+        SELECT  *
+        WHERE { GRAPH ?g {
+          {?r a proms:Report}
+          UNION
+          {?r a proms:BasicReport}
+          UNION
+          {?r a proms:ExternalReport}
+          UNION
+          {?r a proms:InternalReport}
+          ?r proms:reportingSystem <''' + reportingsystem_uri + '''> .
+          ?r rdf:label ?t .
+          ?r proms:nativeId ?job .
+          ?r proms:endingActivity ?sat .
+          ?sat prov:endedAtTime ?eat .
+        } }
+        ORDER BY DESC(?eat)
     '''
     reports = functions_db.db_query_secure(query)
     if reports and reports['results']['bindings']:
@@ -279,7 +200,6 @@ def get_reportingsystem_reports_svg(reportingsystem_uri):
                                     .style("font-size", "smaller")
                                     .style("text-anchor", "middle");
             '''
-
             if len(reports['results']['bindings']) > 1:
                 reports = reports['results']['bindings'][1:]
                 i = 1
@@ -303,95 +223,17 @@ def get_reportingsystem_reports_svg(reportingsystem_uri):
                                 .append("xhtml:body")
                                 .html('<div style="width: 149px;">There is a fault with retrieving Activities that may have used this Entity</div>')
         '''
-
     return reports_script
-
-
-#TODO: complete get_reportingsystem_html()
-#TODO: think about expanding SVG area with report count
-def get_reportingsystem_html(reportingsystem_uri):
-    reportingsystem_details = get_reportingsystem(reportingsystem_uri)
-    html = ''
-    if len(reportingsystem_details) >= 2:
-        r = json.loads(reportingsystem_details[1])
-        title = r['results']['bindings'][0]['t']['value']
-        html += '''
-            <table class="lined">
-                <tr><th>Title:</th><td>''' + title + '''</td></tr>
-                <tr><th>Owner:</th><td>''' + r['results']['bindings'][0]['fn']['value'] + '''</td></tr>
-            </table>
-        '''
-
-        #get the list of reports
-        reports_script = get_reportingsystem_reports_svg(reportingsystem_uri)
-
-        html += '''
-            <h4>Neighbours view</h4>
-            <script src="/static/js/d3.min.js" charset="utf-8"></script>
-            <style>
-                svg {
-                    /*border: solid 1px #eeeeee;*/
-                    margin-left:75px;
-                }
-            </style>
-            <script>
-                var svgContainer = d3.select("#container-content-2").append("svg")
-                                                    .attr("width", 700)
-                                                    .attr("height", 500);
-
-                //ReportingSystem
-                var reportingSystem = svgContainer.append("polygon")
-                                        .attr("stroke", "grey")
-                                        .attr("stroke-width", "1")
-                                        .attr("fill", "purple")
-                                        .attr("points", "31,16 111,16 141,46 141,126 111,156 31,156 1,126 1,46");
-
-                //ReportingSystem class name
-                var reportingSystemGenName = svgContainer.append("text")
-                                        .attr("x", 70)
-                                        .attr("y", 66)
-                                        .text("ReportingSystem")
-                                        .style("font-family", "Verdana")
-                                        .style("fill", "white")
-                                        .style("text-anchor", "middle");
-
-                //ReportingSystem title
-                var entityTitle = svgContainer.append('foreignObject')
-                                        .attr('x', 2)
-                                        .attr('y', 81)
-                                        .attr('width', 138)
-                                        .attr('height', 95)
-                                        .append("xhtml:body")
-                                        .html('<div style="width:138px; color:white; font-size:smaller; background-color:purple;">''' + title + '''</div>')
-
-                ''' + reports_script + '''
-            </script>
-        '''
-    """
-    else:
-        html = '''
-            <h4>''' + reportingsystem_details[1] + '''</h4>
-        '''
-    """
-
-    return html
 
 
 def put_reportingsystem(reportingsystem_in_turtle):
     #replace the document's placeholder URI with one generated by this PROMS instance
-    import uuid
-
-    #doc_uri = settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem/' + str(uuid.uuid4())
-    #report_in_turtle = reportingsystem_in_turtle.replace('http://placeholder.org#', doc_uri)
-
-
-    doc_uri = settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem/' + str(uuid.uuid4())
-    report_in_turtle = reportingsystem_in_turtle.replace('http://placeholder.org#', doc_uri)
+    reportingsystem_in_turtle = replace_placeholder_uuids(reportingsystem_in_turtle)
 
     #try to make a graph of the input text
     g = Graph()
     try:
-        g.parse(cStringIO.StringIO(report_in_turtle), format="n3")
+        g.parse(cStringIO.StringIO(reportingsystem_in_turtle), format="n3")
     except Exception as e:
         return [False, ['Could not parse input: ' + str(e)]]
 
@@ -401,19 +243,11 @@ def put_reportingsystem(reportingsystem_in_turtle):
     #conf_results = proms_report.ReportingSystems(g).get_result()
 
     if conf_results['rule_results'][0]['passed']:
-        #passed conformance so sent to DB
-        #put data into a SPARQL 1.1 INSERT DATA query
-        insert_query = 'INSERT DATA {' + g.serialize(format='n3') + '}'
-
-        #insert into Stardog using the HTTP API
-        uri = 'http://localhost:5820/proms/update'
-        h = {'content-type': 'application/sparql-update'}
-        r = requests.post(uri, data=insert_query, headers=h, auth=('proms', 'proms'))
-
-        if r.status_code == 200:
-            return [True, doc_uri]
+        result = functions_db.db_insert_secure(reportingsystem_in_turtle, True)
+        if result[0]:
+            return [True, 'OK']
         else:
-            return [False, r.text]
+            return [False, 'Error writing report to triplestore']
     else:
         return [False, conf_results['rule_results'][0]['fail_reasons']]
 
@@ -421,49 +255,21 @@ def put_reportingsystem(reportingsystem_in_turtle):
 #
 #   Reports
 #
-def get_reports():
-    query = '''
-                PREFIX proms: <http://promsns.org/def/proms#>
-                SELECT DISTINCT ?r ?t
-                WHERE {
-                  ?r a proms:Report .
-                }
-                ORDER BY ?r
-            '''
-    """
-    query = '''
-                PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-                PREFIX proms: <http://promsns.org/def/proms#>
-                SELECT DISTINCT ?r ?t
-                WHERE {
-                  { ?r a proms:BasicReport . }
-                  UNION
-                  { ?r a proms:ExternalReport . }
-                  UNION
-                  { ?r a proms:InternalReport . }
-                  ?r rdf:label ?t .
-                }
-                ORDER BY ?r
-            '''
-    """
-    return functions_db.db_query_secure(query)
-
-
 def get_reports_dict():
     query = '''
-                PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-                PREFIX proms: <http://promsns.org/def/proms#>
-                SELECT DISTINCT ?r ?t
-                WHERE {
-                  { ?r a proms:BasicReport . }
-                  UNION
-                  { ?r a proms:ExternalReport . }
-                  UNION
-                  { ?r a proms:InternalReport . }
-                  ?r rdf:label ?t
-                }
-                ORDER BY ?r
-            '''
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX proms: <http://promsns.org/def/proms#>
+        SELECT DISTINCT ?r ?t
+        WHERE { GRAPH ?g {
+          { ?r a proms:BasicReport . }
+          UNION
+          { ?r a proms:ExternalReport . }
+          UNION
+          { ?r a proms:InternalReport . }
+          ?r rdf:label ?t
+        } }
+        ORDER BY ?r
+    '''
     reports = functions_db.db_query_secure(query)
 
     report_items = []
@@ -485,7 +291,7 @@ def get_report_dict(report_uri):
         PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
         SELECT ?rt ?l ?id ?rs ?rs_t ?sat
-        WHERE {
+        WHERE { GRAPH ?g {
           <''' + report_uri + '''> a ?rt .
           <''' + report_uri + '''> rdf:label ?l .
           <''' + report_uri + '''> proms:nativeId ?id .
@@ -493,7 +299,7 @@ def get_report_dict(report_uri):
           OPTIONAL { ?rs rdf:label ?rs_t . } }
           OPTIONAL { <''' + report_uri + '''> proms:startingActivity ?sac .
           ?sac prov:startedAtTime ?sat . }
-        }
+        } }
     '''
     report_detail = functions_db.db_query_secure(query)
     ret = {}
@@ -525,27 +331,29 @@ def get_report_dict(report_uri):
     return ret
 
 
+#TODO: Make sure needed
 #TODO: get this query working
 #TODO: get ordering by Report --> Activity --> startedAtTime
 def get_reports_for_rs(reportingsystem_uri):
     query = '''
-                PREFIX proms: <http://promsns.org/def/proms#>
-                PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-                SELECT ?r ?t
-                WHERE {
-                  { ?r a proms:BasicReport . }
-                  UNION
-                  { ?r a proms:ExternalReport . }
-                  UNION
-                  { ?r a proms:InternalReport . }
-                  ?r rdf:label ?t .
-                  #?r proms:reportingSystem <''' + reportingsystem_uri + '''#> .
-                }
-                ORDER BY ?r
-            '''
+        PREFIX proms: <http://promsns.org/def/proms#>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        SELECT ?r ?t
+        WHERE { GRAPH ?g {
+          { ?r a proms:BasicReport . }
+          UNION
+          { ?r a proms:ExternalReport . }
+          UNION
+          { ?r a proms:InternalReport . }
+          ?r rdf:label ?t .
+          #?r proms:reportingSystem <''' + reportingsystem_uri + '''#> .
+        } }
+        ORDER BY ?r
+    '''
     return functions_db.db_query_secure(query)
 
 
+#TODO: Check if this is used
 def get_report_metadata(report_uri):
     #TODO: landing page
     #get the report metadata from DB
@@ -554,7 +362,7 @@ def get_report_metadata(report_uri):
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT ?rt ?t ?id ?rs ?rs_t ?sat
-        WHERE {
+        WHERE { GRAPH ?g {
           <''' + report_uri + '''> a ?rt .
           <''' + report_uri + '''> rdf:label ?t .
           <''' + report_uri + '''> proms:nativeId ?id .
@@ -562,23 +370,9 @@ def get_report_metadata(report_uri):
           ?rs rdf:label ?rs_t .
           <''' + report_uri + '''> proms:startingActivity ?sac .
           ?sac prov:startedAtTime ?sat .
-        }
+        } }
     '''
     return functions_db.db_query_secure(query)
-
-
-def get_reports_html(sparql_query_results_json):
-    import urllib
-
-    reports = json.loads(sparql_query_results_json)
-
-    l = '<ul>'
-    for report in reports['results']['bindings']:
-        uri_encoded = urllib.quote(str(report['r']['value']))
-        l += '<li><a href="/id/report?uri=' + uri_encoded + '">' + str(report['t']['value']) + '</a> (' + str(report['r']['value']) + ')</li>'
-    l += '</ul>'
-
-    return l
 
 
 #TODO: draw Neighbours view for Report
@@ -586,65 +380,10 @@ def get_report_details_svg():
     pass
 
 
-def get_report_html(report_uri):
-    report_details = get_report_metadata(report_uri)
-    if report_details[0]:
-        r = json.loads(report_details[1])
-        rt = r['results']['bindings'][0]['rt']['value']
-        rs = r['results']['bindings'][0]['rs']['value']
-        rs_t = r['results']['bindings'][0]['rs_t']['value']
-        rs_encoded = urllib.quote(rs)
-        if rt == 'http://promsns.org/def/proms#InternalReport':
-            html = '<h4><a class="definition" href="http://promsns.org/def/proms#ExternalReport">Internal</a> Report</h4>'
-            html += '<table class="lines">'
-            html += '  <tr><th>Title:</th><td>' + r['results']['bindings'][0]['t']['value'] + '</td></tr>'
-            html += '  <tr><th>Reporting System:</th><td><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem/?uri=' + rs_encoded + '">' + rs_t + '</td></tr>'
-            html += '  <tr><th>JobId:</th><td>' + r['results']['bindings'][0]['job']['value'] + '</td></tr>'
-            html += '</table>'
-        elif rt == 'http://promsns.org/def/proms#ExternalReport':
-            html = '<h4><a class="definition" href="http://promsns.org/def/proms#ExternalReport">External</a> Report</h4>'
-            html += '<table class="lines">'
-            html += '  <tr><th>Title:</th><td>' + r['results']['bindings'][0]['t']['value'] + '</td></tr>'
-            html += '  <tr><th>Reporting System:</th><td><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem/?uri=' + rs_encoded + '">' + rs_t + '</td></tr>'
-            html += '  <tr><th>JobId:</th><td>' + r['results']['bindings'][0]['job']['value'] + '</td></tr>'
-            html += '</table>'
-        else:
-            #Basic
-            html = '<h4><a class="definition" href="http://promsns.org/def/proms#BasicReport">Basic</a> Report</h4>'
-            html += '<table class="lines">'
-            html += '  <tr><th>Title:</th><td>' + r['results']['bindings'][0]['t']['value'] + '</td></tr>'
-            html += '  <tr><th>Reporting System:</th><td><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem/?uri=' + rs_encoded + '">' + rs_t + '</td></tr>'
-            html += '  <tr><th>JobId:</th><td>' + r['results']['bindings'][0]['job']['value'] + '</td></tr>'
-            html += '</table>'
-
-            #Neighbours view
-            #Report starting/ending Activity
-
-    else:
-        html = '''
-            <h4>''' + report_details[1] + '''</h4>
-        '''
-
-    return html
-
-
 #TODO: remove hash from URI rewrite
 def put_report(report_in_turtle):
     #replace the document's placeholder URI with one generated by this PROMS instance
-    import uuid
-    base_uri = settings.PROMS_INSTANCE_NAMESPACE_URI
-    if base_uri.endswith('/'):
-        base_uri = base_uri[:-1]
-    while 1:
-        pat = '<%s([^>]*)#([^>]*)>' % ('http://placeholder.org')
-        x = re.compile(pat)
-        m = re.search(x, report_in_turtle)
-        if not m:
-            break
-        new_uri = '<' + base_uri + m.group(1) + "#" + str(uuid.uuid4()) + '>'
-        original_uri = '<http://placeholder.org' + m.group(1) + '#' + m.group(2) + '>'
-        report_in_turtle = report_in_turtle.replace(original_uri, new_uri)
-        #report_in_turtle = report_in_turtle.replace(m.group(0), new_uri)
+    report_in_turtle = replace_placeholder_uuids(report_in_turtle)
 
     #try to make a graph of the input text
     g = Graph()
@@ -658,47 +397,67 @@ def put_report(report_in_turtle):
     #conf_results = proms_report.PromsReport(g).get_result()
 
     if conf_results['rule_results'][0]['passed']:
+        #Get Report URI
+        query = '''
+            PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX proms: <http://promsns.org/def/proms#>
+            SELECT  ?r ?job
+            WHERE {
+              {?r a proms:Report}
+              UNION
+              {?r a proms:BasicReport}
+              UNION
+              {?r a proms:ExternalReport}
+              UNION
+              {?r a proms:InternalReport}
+              ?r proms:nativeId ?job .
+            }
+        '''
+        r_uri = ''
+        r_nid = ''
+        graph_name = ''
+        qres = g.query(query)
+        for row in qres:
+            r_uri = row[0]
+            r_nid = row[1]
+            break
+        if r_uri and r_nid:
+            graph_name = '<' + r_uri + '>'
+            #graph_name = r_uri# + '#' +r_nid
+
+        result = functions_db.db_insert_secure_named_graph(report_in_turtle, graph_name, True)
+        if result[0]:
+            return [True, 'OK']
+        else:
+            return [False, 'Error writing report to triplestore']
+        """
         result = functions_db.db_insert_secure(report_in_turtle, True)
         if result[0]:
             return [True, 'OK']
         else:
             return [False, 'Error writing report to triplestore']
+        """
     else:
         return [False, conf_results['rule_results'][0]['fail_reasons']]
 
 #
 #   Entities
 #
-def get_entities():
-    query = '''
-                PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-                SELECT DISTINCT ?e ?t
-                WHERE {
-                  { ?e a prov:Entity . }
-                  UNION
-                  { ?e a prov:Plan . }
-                  OPTIONAL { ?s rdf:label ?t . }
-                }
-                ORDER BY ?e
-            '''
-    return functions_db.db_query_secure(query)
-
-
 def get_entities_dict():
     query = '''
-                PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-                SELECT DISTINCT ?e ?l ?t
-                WHERE {
-                  { ?e rdf:label ?l . }
-                  { ?e a prov:Entity . }
-                  UNION
-                  { ?e a prov:Plan . }
-                  OPTIONAL { ?s rdf:label ?t . }
-                }
-                ORDER BY ?e
-            '''
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        SELECT DISTINCT ?e ?l ?t
+        WHERE { GRAPH ?g {
+          { ?e rdf:label ?l . }
+          { ?e a prov:Entity . }
+          UNION
+          { ?e a prov:Plan . }
+          OPTIONAL { ?s rdf:label ?t . }
+        } }
+        ORDER BY ?e
+    '''
     entities = functions_db.db_query_secure(query)
     entity_items = []
     # Check if nothing is returned
@@ -721,10 +480,10 @@ def get_entity_dict(entity_uri):
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         SELECT DISTINCT ?l ?c ?dl ?t ?v ?wat ?wat_name
-        WHERE {
+        WHERE { GRAPH ?g {
             <''' + entity_uri + '''> rdf:label ?l .
             <''' + entity_uri + '''> dc:created ?c .
-            <''' + entity_uri + '''> dcat:downloadURL ?dl .
+            OPTIONAL { <''' + entity_uri + '''> dcat:downloadURL ?dl . }
             { <''' + entity_uri + '''> a prov:Entity . }
             UNION
             { <''' + entity_uri + '''> a prov:Plan . }
@@ -732,7 +491,7 @@ def get_entity_dict(entity_uri):
             OPTIONAL { <''' + entity_uri + '''> prov:value ?v . }
             OPTIONAL { <''' + entity_uri + '''> prov:wasAttributedTo ?wat . }
             OPTIONAL { ?wat foaf:name ?wat_name . }
-        }
+        } }
     '''
     entity_detail = functions_db.db_query_secure(query)
     ret = {}
@@ -740,7 +499,8 @@ def get_entity_dict(entity_uri):
         if len(entity_detail['results']['bindings']) > 0:
             ret['l'] = entity_detail['results']['bindings'][0]['l']['value']
             ret['c'] = entity_detail['results']['bindings'][0]['c']['value']
-            ret['dl'] = entity_detail['results']['bindings'][0]['dl']['value']
+            if('dl' in entity_detail['results']['bindings'][0]):
+                ret['dl'] = entity_detail['results']['bindings'][0]['dl']['value']
             if('t' in entity_detail['results']['bindings'][0]):
                 ret['t'] = entity_detail['results']['bindings'][0]['t']['value']
             if('v' in entity_detail['results']['bindings'][0]):
@@ -760,6 +520,7 @@ def get_entity_dict(entity_uri):
     return ret
 
 
+#TODO: Only used by SVG method, make _dict call this as well
 def get_entity(entity_uri):
     #TODO: landing page with view options:
     #   wasDerivedFrom, wasGeneratedBy, inv. used, hadPrimarySource, wasAttributedTo, value
@@ -769,7 +530,7 @@ def get_entity(entity_uri):
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         SELECT DISTINCT ?t ?v ?wat ?wat_name
-        WHERE {
+        WHERE { GRAPH ?g {
             { <''' + entity_uri + '''> a prov:Entity . }
             UNION
             { <''' + entity_uri + '''> a prov:Plan . }
@@ -777,37 +538,9 @@ def get_entity(entity_uri):
             OPTIONAL { <''' + entity_uri + '''> prov:value ?v . }
             OPTIONAL { <''' + entity_uri + '''> prov:wasAttributedTo ?wat . }
             OPTIONAL { ?wat foaf:name ?wat_name . }
-        }
+        } }
     '''
     return functions_db.db_query_secure(query)
-
-
-def get_entities_html(sparql_query_results_json):
-    entities = json.loads(sparql_query_results_json)
-    l = '<ul>'
-    for entity in entities['results']['bindings']:
-        if entity.get('t'):
-            uri_encoded = urllib.quote(str(entity['e']['value']))
-            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/entity?uri=' + uri_encoded + '">' + str(entity['t']['value']) + '</a> (' + str(entity['e']['value']) + ')</li>'
-        else:
-            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/entity?uri=' + str(entity['e']['value']) + '">' + str(entity['e']['value']) + '</a></li>'
-    l += '</ul>'
-
-    return l
-
-
-def get_entities_dropdown(sparql_query_results_json):
-    agents = json.loads(sparql_query_results_json)
-    l = '<option value="">Select...</option>'
-    for agent in agents['results']['bindings']:
-        if agent.get('t'):
-            uri_encoded = urllib.quote(str(agent['e']['value']))
-            l += '<option value="' + uri_encoded + '">' + str(agent['t']['value']) + '</option>'
-        else:
-            l += '<option value="' + str(agent['e']['value']) + '">' + str(agent['e']['value']) + '</option>'
-    l += '</select>'
-
-    return l
 
 
 def get_entity_details_svg(entity_uri):
@@ -964,10 +697,10 @@ def get_entity_activity_wgb_svg(entity_uri):
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT ?a ?t
-        WHERE {
+        WHERE { GRAPH ?g {
           ?a prov:generated <''' + entity_uri + '''> .
           ?a rdf:label ?t .
-        }
+        } }
     '''
     entity_results = functions_db.db_query_secure(query)
 
@@ -1039,15 +772,14 @@ def get_entity_activity_used_svg(entity_uri):
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT ?a ?t
-        WHERE {
+        WHERE { GRAPH ?g {
           ?a prov:used <''' + entity_uri + '''> .
           ?a rdf:label ?t .
-        }
+        } }
     '''
     entity_result = functions_db.db_query_secure(query)
 
     if entity_result and 'results' in entity_result:
-        #used = json.loads(entity_result[1])['results']
         used = entity_result['results']['bindings']
         if len(used) == 1:
             if used[0].get('t'):
@@ -1194,18 +926,17 @@ def get_entity_entity_wdf_svg(entity_uri):
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT DISTINCT ?e ?t
-        WHERE {
+        WHERE { GRAPH ?g {
             { <''' + entity_uri + '''> a prov:Entity . }
             UNION
             { <''' + entity_uri + '''> a prov:Plan . }
             <''' + entity_uri + '''> prov:wasDerivedFrom ?e .
             ?e rdf:label ?t .
-        }
+        } }
     '''
     entity_results = functions_db.db_query_secure(query)
 
     if entity_results and 'results' in entity_results:
-        #wdf = json.loads(entity_results[1])['results']
         wdf = entity_results['results']['bindings']
         if len(wdf) == 1:
             if wdf[0].get('t'):
@@ -1344,69 +1075,20 @@ def get_entity_entity_wdf_svg(entity_uri):
     return script
 
 
-def get_entity_html(entity_uri):
-    entity_script = get_entity_details_svg(entity_uri)
-    if entity_script[0]:
-        #Entity (main)
-        script = entity_script[1]
-
-        #Activity wasGeneratedBy
-        script += get_entity_activity_wgb_svg(entity_uri)
-
-        #Activity used
-        script += get_entity_activity_used_svg(entity_uri)
-
-        #Entity(s) wasDerivedFrom
-        script += get_entity_entity_wdf_svg(entity_uri)
-
-        html = '''
-            <h4>Neighbours view</h4>
-            <script src="/static/js/d3.min.js" charset="utf-8"></script>
-            <style>
-                svg {
-                    /*border: solid 1px #eeeeee;*/
-                    margin-left:75px;
-                }
-            </style>
-            <script>
-                ''' + script + '''
-            </script>
-        '''
-    else:
-        html = '''
-            <h4>''' + entity_script[1] + '''</h4>
-        '''
-    return html
-
-
 #
 #   Activities
 #
-def get_activities():
-    query = '''
-                PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-                SELECT DISTINCT ?s ?t
-                WHERE {
-                  ?a a prov:Activity .
-                  ?a rdf:label ?t
-                }
-                ORDER BY ?a
-            '''
-    return functions_db.db_query_secure(query)
-
-
 def get_activities_dict():
     query = '''
-                PREFIX prov: <http://www.w3.org/ns/prov#>
-                PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-                SELECT DISTINCT ?a ?l
-                WHERE {
-                  ?a a prov:Activity .
-                  ?a rdf:label ?l
-                }
-                ORDER BY ?a
-            '''
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        SELECT DISTINCT ?a ?l
+        WHERE { GRAPH ?g {
+          ?a a prov:Activity .
+          ?a rdf:label ?l
+        } }
+        ORDER BY ?a
+    '''
     activities = functions_db.db_query_secure(query)
     activity_items = []
     if activities and 'results' in activities:
@@ -1425,16 +1107,21 @@ def get_activity_dict(activity_uri):
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-        SELECT DISTINCT ?l ?t ?sat ?eat ?waw
-        WHERE {
+        PREFIX proms: <http://promsns.org/def/proms#>
+        SELECT DISTINCT ?l ?t ?sat ?eat ?waw ?r ?rt
+        WHERE { GRAPH ?g {
           <''' + activity_uri + '''> a prov:Activity .
           <''' + activity_uri + '''> rdf:label ?l .
+          { ?r proms:startingActivity <''' + activity_uri + '''> . }
+          UNION
+          { ?r proms:endingActivity <''' + activity_uri + '''> . }
+          OPTIONAL { ?r rdf:label ?rt . }
           OPTIONAL { <''' + activity_uri + '''> rdf:label ?t . }
           OPTIONAL { <''' + activity_uri + '''> prov:startedAtTime ?sat . }
           OPTIONAL { <''' + activity_uri + '''> prov:endedAtTime ?eat . }
           OPTIONAL { <''' + activity_uri + '''> prov:wasAssociatedWith ?waw . }
           OPTIONAL { ?waw foaf:name ?waw_name . }
-        }
+        } }
     '''
     activity_detail = functions_db.db_query_secure(query)
     ret = {}
@@ -1451,6 +1138,11 @@ def get_activity_dict(activity_uri):
                 ret['waw'] = activity_detail['results']['bindings'][0]['waw']['value']
             if 'waw_name' in activity_detail['results']['bindings'][0]:
                 ret['waw_name'] = activity_detail['results']['bindings'][0]['waw_name']['value']
+            if 'r' in activity_detail['results']['bindings'][0]:
+                ret['r'] = urllib.quote(activity_detail['results']['bindings'][0]['r']['value'])
+                ret['r_u'] = activity_detail['results']['bindings'][0]['r']['value']
+            if 'rt' in activity_detail['results']['bindings'][0]:
+                ret['rt'] = activity_detail['results']['bindings'][0]['rt']['value']
             svg_script = get_activity_details_svg(activity_uri)
             if svg_script[0] == True:
                 a_script = svg_script[1]
@@ -1462,34 +1154,21 @@ def get_activity_dict(activity_uri):
     return ret
 
 
-def get_activities_html(sparql_query_results_json):
-    reports = json.loads(sparql_query_results_json)
-    l = '<ul>'
-    for report in reports['results']['bindings']:
-        if report.get('t'):
-            uri_encoded = urllib.quote(str(report['s']['value']))
-            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/activity?uri=' + uri_encoded + '">' + str(report['t']['value']) + '</a> (' + str(report['s']['value']) + ')</li>'
-        else:
-            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/activity?uri=' + str(report['s']['value']) + '">' + str(report['s']['value']) + '</a></li>'
-    l += '</ul>'
-
-    return l
-
-
+#TODO: Only used by SVG method, make _dict call this as well
 def get_activity(activity_uri):
     query = '''
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         SELECT *
-        WHERE {
+        WHERE { GRAPH ?g {
           <''' + activity_uri + '''> a prov:Activity .
           <''' + activity_uri + '''> rdf:label ?t .
           OPTIONAL { <''' + activity_uri + '''> prov:startedAtTime ?sat . }
           OPTIONAL { <''' + activity_uri + '''> prov:endedAtTime ?eat . }
           OPTIONAL { <''' + activity_uri + '''> prov:wasAssociatedWith ?waw . }
           OPTIONAL { ?waw foaf:name ?waw_name . }
-        }
+        } }
     '''
     return functions_db.db_query_secure(query)
 
@@ -1603,10 +1282,10 @@ def get_activity_used_entities_svg(activity_uri):
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT *
-        WHERE {
+        WHERE { GRAPH ?g {
           <''' + activity_uri + '''> prov:used ?u .
           OPTIONAL {?u rdf:label ?t .}
-        }
+        } }
     '''
     activity_results = functions_db.db_query_secure(query)
     if activity_results and 'results' in activity_results:
@@ -1848,12 +1527,12 @@ def get_activity_generated_entities_svg(activity_uri):
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT *
-        WHERE {
+        WHERE { GRAPH ?g {
           { <''' + activity_uri + '''> prov:generated ?u . }
           UNION
           { ?u prov:wasGeneratedBy <''' + activity_uri + '''> .}
           OPTIONAL {?u rdf:label ?t .}
-        }
+        } }
     '''
 
     activity_results = functions_db.db_query_secure(query)
@@ -2107,11 +1786,11 @@ def get_activity_was_informed_by(activity_uri):
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT *
-        WHERE {
+        WHERE { GRAPH ?g {
             <''' + activity_uri + '''> a prov:Activity .
             <''' + activity_uri + '''> prov:wasInformedBy ?wif .
             OPTIONAL { ?wif rdf:label ?t . }
-        }
+        } }
     '''
     activity_results = functions_db.db_query_secure(query)
 
@@ -2255,116 +1934,36 @@ def get_activity_was_informed_by(activity_uri):
     return script
 
 
-def get_activity_html(activity_uri):
-    activity_script = get_activity_details_svg(activity_uri)
-    if activity_script[0]:
-        #Activity (main)
-        script = activity_script[1]
-
-        #Activity used
-        script += get_activity_used_entities_svg(activity_uri)
-
-        #Activity generated
-        script += get_activity_generated_entities_svg(activity_uri)
-
-        #Activity wasInformedBy
-        script += get_activity_was_informed_by(activity_uri)
-
-        html = '''
-            <h4>Neighbours view</h4>
-            <script src="/static/js/d3.min.js" charset="utf-8"></script>
-            <style>
-                svg {
-                    /*border: solid 1px #eeeeee;*/
-                    margin-left:75px;
-                }
-            </style>
-            <script>
-                ''' + script + '''
-            </script>
-        '''
-    else:
-        html = '''
-            <h4>''' + activity_script[1] + '''</h4>
-        '''
-
-    return html
-
-
 #
 #   Agents
 #
-def get_agents():
-    query = '''
-            PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-            PREFIX prov: <http://www.w3.org/ns/prov#>
-            SELECT DISTINCT ?ag ?n
-            WHERE {
-                {
-                    { ?e a prov:Entity . }
-                    UNION
-                    { ?e a prov:Plan . }
-                    ?e prov:wasAttributedTo ?ag .
-                    OPTIONAL{ ?ag foaf:name ?n . }
-                }
-                UNION
-                {
-                    ?a a prov:Activity .
-                    ?a prov:wasAssociatedWith ?ag .
-                    OPTIONAL{ ?ag foaf:name ?n . }
-                }
-                UNION
-                {
-                    ?ag1 a prov:Agent .
-                    ?ag1 prov:actedOnBehalfOf ?ag .
-                    OPTIONAL{ ?ag foaf:name ?n . }
-                }
-            }
-            '''
-    return functions_db.db_query_secure(query)
-
-
-def get_agents_html(sparql_query_results_json):
-    agents = json.loads(sparql_query_results_json)
-    l = '<ul>'
-    for agent in agents['results']['bindings']:
-        if agent.get('n'):
-            uri_encoded = urllib.quote(str(agent['ag']['value']))
-            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/agent?uri=' + uri_encoded + '">' + str(agent['n']['value']) + '</a> (' + str(agent['ag']['value']) + ')</li>'
-        else:
-            l += '<li><a href="' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/agent?uri=' + str(agent['ag']['value']) + '">' + str(agent['ag']['value']) + '</a></li>'
-    l += '</ul>'
-
-    return l
-
-
 def get_agents_dict():
     query = '''
-            PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-            PREFIX prov: <http://www.w3.org/ns/prov#>
-            SELECT DISTINCT ?ag ?n
-            WHERE {
-                {
-                    { ?e a prov:Entity . }
-                    UNION
-                    { ?e a prov:Plan . }
-                    ?e prov:wasAttributedTo ?ag .
-                    OPTIONAL{ ?ag foaf:name ?n . }
-                }
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        SELECT DISTINCT ?ag ?n
+        WHERE { GRAPH ?g {
+            {
+                { ?e a prov:Entity . }
                 UNION
-                {
-                    ?a a prov:Activity .
-                    ?a prov:wasAssociatedWith ?ag .
-                    OPTIONAL{ ?ag foaf:name ?n . }
-                }
-                UNION
-                {
-                    ?ag1 a prov:Agent .
-                    ?ag1 prov:actedOnBehalfOf ?ag .
-                    OPTIONAL{ ?ag foaf:name ?n . }
-                }
+                { ?e a prov:Plan . }
+                ?e prov:wasAttributedTo ?ag .
+                OPTIONAL{ ?ag foaf:name ?n . }
             }
-            '''
+            UNION
+            {
+                ?a a prov:Activity .
+                ?a prov:wasAssociatedWith ?ag .
+                OPTIONAL{ ?ag foaf:name ?n . }
+            }
+            UNION
+            {
+                ?ag1 a prov:Agent .
+                ?ag1 prov:actedOnBehalfOf ?ag .
+                OPTIONAL{ ?ag foaf:name ?n . }
+            }
+        } }
+        '''
     agents = functions_db.db_query_secure(query)
     agent_items = []
     if agents and 'results' in agents:
@@ -2378,79 +1977,80 @@ def get_agents_dict():
     return agent_items
 
 
+#TODO: Only used by SVG method, make _dict call this as well
 def get_agent(agent_uri):
     query = '''
-            PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-            PREFIX prov: <http://www.w3.org/ns/prov#>
-            SELECT DISTINCT (<''' + agent_uri + '''> AS ?ag) ?n ?ag2
-            WHERE {
-                {
-                    { ?e a prov:Entity . }
-                    UNION
-                    { ?e a prov:Plan . }
-                    ?e prov:wasAttributedTo <''' + agent_uri + '''> .
-                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
-                    OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
-                }
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        SELECT DISTINCT (<''' + agent_uri + '''> AS ?ag) ?n ?ag2
+        WHERE { GRAPH ?g {
+            {
+                { ?e a prov:Entity . }
                 UNION
-                {
-                    ?e a prov:Activity .
-                    ?e prov:wasAssociatedWith <''' + agent_uri + '''> .
-                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
-                    OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
-                }
-                UNION
-                {
-                    ?aoo a prov:Agent .
-                    ?aoo prov:actedOnBehalfOf <''' + agent_uri + '''> .
-                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
-                }
-                UNION
-                {
-                    <''' + agent_uri + '''> a prov:Agent .
-                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
-                    OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
-                }
+                { ?e a prov:Plan . }
+                ?e prov:wasAttributedTo <''' + agent_uri + '''> .
+                OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
+                OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
             }
-            '''
+            UNION
+            {
+                ?e a prov:Activity .
+                ?e prov:wasAssociatedWith <''' + agent_uri + '''> .
+                OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
+                OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
+            }
+            UNION
+            {
+                ?aoo a prov:Agent .
+                ?aoo prov:actedOnBehalfOf <''' + agent_uri + '''> .
+                OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
+            }
+            UNION
+            {
+                <''' + agent_uri + '''> a prov:Agent .
+                OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
+                OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
+            }
+        } }
+        '''
     return functions_db.db_query_secure(query)
 
 
 def get_agent_dict(agent_uri):
     query = '''
-            PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-            PREFIX prov: <http://www.w3.org/ns/prov#>
-            SELECT DISTINCT (<''' + agent_uri + '''> AS ?ag) ?n ?ag2
-            WHERE {
-                {
-                    { ?e a prov:Entity . }
-                    UNION
-                    { ?e a prov:Plan . }
-                    OPTIONAL{ ?e prov:wasAttributedTo <''' + agent_uri + '''> . }
-                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
-                    OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
-                }
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        SELECT DISTINCT (<''' + agent_uri + '''> AS ?ag) ?n ?ag2
+        WHERE { GRAPH ?g {
+            {
+                { ?e a prov:Entity . }
                 UNION
-                {
-                    ?e a prov:Activity .
-                    OPTIONAL{ ?e prov:wasAssociatedWith <''' + agent_uri + '''> . }
-                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
-                    OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
-                }
-                UNION
-                {
-                    ?aoo a prov:Agent .
-                    ?aoo prov:actedOnBehalfOf <''' + agent_uri + '''> .
-                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
-                }
-                UNION
-                {
-                    <''' + agent_uri + '''> a prov:Agent .
-                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
-                    OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
-                }
+                { ?e a prov:Plan . }
+                OPTIONAL{ ?e prov:wasAttributedTo <''' + agent_uri + '''> . }
+                OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
+                OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
             }
-            '''
+            UNION
+            {
+                ?e a prov:Activity .
+                OPTIONAL{ ?e prov:wasAssociatedWith <''' + agent_uri + '''> . }
+                OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
+                OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
+            }
+            UNION
+            {
+                ?aoo a prov:Agent .
+                ?aoo prov:actedOnBehalfOf <''' + agent_uri + '''> .
+                OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
+            }
+            UNION
+            {
+                <''' + agent_uri + '''> a prov:Agent .
+                OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
+                OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
+            }
+        } }
+        '''
     agent_detail = functions_db.db_query_secure(query)
     ret = {}
     if agent_detail and 'results' in agent_detail and len(agent_detail['results']['bindings']) > 0:
@@ -2569,16 +2169,16 @@ def get_agent_details_svg(agent_uri):
 def get_agent_was_attributed_to_svg(agent_uri):
     script = ''
     query = '''
-            PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX prov: <http://www.w3.org/ns/prov#>
-            SELECT DISTINCT ?e ?t
-            WHERE {
-                { ?e a prov:Entity .}
-                UNION
-                { ?e a prov:Plan .}
-                ?e prov:wasAttributedTo <''' + agent_uri + '''> ;
-                OPTIONAL { ?e rdf:label ?t . }
-            }
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        SELECT DISTINCT ?e ?t
+        WHERE { GRAPH ?g {
+            { ?e a prov:Entity .}
+            UNION
+            { ?e a prov:Plan .}
+            ?e prov:wasAttributedTo <''' + agent_uri + '''> ;
+            OPTIONAL { ?e rdf:label ?t . }
+        } }
     '''
     entity_results = functions_db.db_query_secure(query)
 
@@ -2725,14 +2325,14 @@ def get_agent_was_attributed_to_svg(agent_uri):
 def get_agent_was_associated_with_svg(agent_uri):
     script = ''
     query = '''
-            PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX prov: <http://www.w3.org/ns/prov#>
-            SELECT DISTINCT ?a ?t
-            WHERE {
-                { ?a a prov:Activity .}
-                ?a prov:wasAssociatedWith <''' + agent_uri + '''> ;
-                OPTIONAL { ?a rdf:label ?t . }
-            }
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        SELECT DISTINCT ?a ?t
+        WHERE { GRAPH ?g {
+            { ?a a prov:Activity .}
+            ?a prov:wasAssociatedWith <''' + agent_uri + '''> ;
+            OPTIONAL { ?a rdf:label ?t . }
+        } }
     '''
     activity_results = functions_db.db_query_secure(query)
 
@@ -2873,39 +2473,6 @@ def get_agent_was_associated_with_svg(agent_uri):
     return script
 
 
-def get_agent_html(agent_uri):
-    agent_script = get_agent_details_svg(agent_uri)
-    if agent_script[0]:
-        #Agent (main)
-        script = agent_script[1]
-
-        #Agent wasAttributedTo
-        script += get_agent_was_attributed_to_svg(agent_uri)
-
-        #Agent wasAssociatedWith
-        script += get_agent_was_associated_with_svg(agent_uri)
-
-        html = '''
-            <h4>Neighbours view</h4>
-            <script src="/static/js/d3.min.js" charset="utf-8"></script>
-            <style>
-                svg {
-                    /*border: solid 1px #eeeeee;*/
-                    margin-left:75px;
-                }
-            </style>
-            <script>
-                ''' + script + '''
-            </script>
-        '''
-    else:
-        html = '''
-            <h4>''' + agent_script[1] + '''</h4>
-        '''
-
-    return html
-
-
 #
 #   Pages
 #
@@ -2934,13 +2501,26 @@ def create_report_formparts(form_parts_json_obj):
 
 
 def page_register_reporting_system():
-
-    #html = get_proms_html_header()
     html = '''
     <h1>Provenance Management Service</h1>
     <h2>Register a <em>Reporting System</em></h2>
     <h3 style="color:red; font-style:italic;">Coming!</h3>
     '''
-    #html += get_proms_html_footer()
-
     return html
+
+
+def replace_placeholder_uuids(original_turtle):
+    new_turtle = original_turtle
+    base_uri = settings.PROMS_INSTANCE_NAMESPACE_URI
+    if base_uri.endswith('/'):
+        base_uri = base_uri[:-1]
+    while 1:
+        pat = '<%s([^>]*)#([^>]*)>' % ('http://placeholder.org')
+        x = re.compile(pat)
+        m = re.search(x, new_turtle)
+        if not m:
+            break
+        new_uri = '<' + base_uri + m.group(1) + "#" + str(uuid.uuid4()) + '>'
+        original_uri = '<http://placeholder.org' + m.group(1) + '#' + m.group(2) + '>'
+        new_turtle = new_turtle.replace(original_uri, new_uri)
+    return new_turtle
