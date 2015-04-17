@@ -1,0 +1,361 @@
+<http://placeholder.org#f8de08f9-f71b-47c2-ac3b-f5e8ec779e0b>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Newman.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#6c157ed7-d106-4334-8ebe-516f562e4fe3>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/10_yrRP_hazard_map.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#5dce1205-6a38-4e1d-b932-6a0d64a199d5>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Karratha.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#43b8e801-ed7c-4c25-8b39-ece5f50fae76>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/workflow-version.txt"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#b4d5f925-5808-4eab-adfd-a01a55ba3da7>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Denham.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#56a6a0ad-e0a2-4b9b-9a81-814c7d501e20>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/tracks.zip"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#62ce55de-5bde-46e2-8fb3-9790b67d8fb8>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/tcrm.log-2"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#9e4bd17b-9a9e-4fb1-9d2e-074746c56001>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Carnarvon.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#683697d6-7996-47b4-af57-487f32ebda06>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/50_yrRP_hazard_map.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#e538b652-6e5d-442d-86a4-7dcbe003fdc0>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/vl.sh.log"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#e7ad78c0-195c-464a-bf46-5619a31396a4>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Paraburdoo.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#168be6e7-6f20-4afa-9661-8f4f1232665b>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/20_yrRP_hazard_map.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#33da970d-b571-47f0-9774-1d8232e77848>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Monkey%20Mia.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#dc96883a-07c1-46e5-a90c-7bf07a0985e9>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_La%20Grange.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#87578059-c420-485b-96a9-30c9d05cc044>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Jigalong.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#ffbee30f-6129-4ef0-ad99-44b34be3c17f>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/100_yrRP_hazard_map.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#ce272382-dc83-4eca-9e9a-3bd0fb69fbec>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "TCRM example"^^<http://www.w3.org/2001/XMLSchema#string> ;
+      <http://purl.org/dc/elements/1.1/created>
+              "2014-11-07T03:23:48+11:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+      <http://purl.org/dc/elements/1.1/description>
+              """The template allows for numerous fake events (generated from real events) to occur on a target area, allowing us to compute statistics about the likelihood, size, and patterns arising from generating thousands of years worth of events.
+
+
+Inputs:
+
+
+
+Outputs:
+
+	Track files for each cyclone
+
+	Statistics about risk areas"""^^<http://www.w3.org/2001/XMLSchema#string> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://vhirl-dev.csiro.au/scm/solutions/2"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#2d404591-bd3d-48de-acaf-8548384e94a8>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/windfields.zip"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#7598ed66-589e-4e20-9e40-53edb69b4777>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/5_yrRP_hazard_map.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#43c32d36-0030-4fe6-979f-28780ede5da2>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Derby.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#ffa899f7-ee2e-4404-9577-1fa03370f15a>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/tcrm.log-3"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#5f1e3ab3-da67-4229-b9c4-0f0ffbb4f8e4>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Beagle%20Bay.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#c080cea5-c6d0-4056-a660-d7093985a451>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Roebourne.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#30aecf3f-ac1f-4dc4-9a1f-96f037826eb5>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Yandeyarra.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#531975f5-30ab-4511-9492-cac3f805dacb>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/vl-download.sh"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#40abc448-1f13-488a-8726-81b772b207ec>
+      a       <http://promsns.org/def/proms#ExternalReport> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "Sample TCRM Job"^^<http://www.w3.org/2001/XMLSchema#string> ;
+      <http://promsns.org/def/proms#endingActivity>
+              <http://localhost:8088/secure/getJobObject.do?jobId=11> ;
+      <http://promsns.org/def/proms#nativeId>
+              "11"^^<http://www.w3.org/2001/XMLSchema#string> ;
+      <http://promsns.org/def/proms#reportingSystem>
+              <http://localhost:8088> ;
+      <http://promsns.org/def/proms#startingActivity>
+              <http://localhost:8088/secure/getJobObject.do?jobId=11> .
+
+<http://placeholder.org#8df7e1b2-e7ed-4119-b24d-a7c38efc9240>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Marble%20Bar.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#b98d4dfb-345f-4e42-821e-2b41152ee367>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/vl_script.py"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#e9b4632d-b459-4fb9-b8bf-4c7c9113df00>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/200_yrRP_hazard_map.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#641df18a-d72f-4879-89b2-f1ae0fb68f3c>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/tcrm.log-1"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#b03d4fb7-1e8b-4422-acac-93e09f243a2f>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/tcrm.log"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#d679fa65-7c52-48f3-b3d8-fca017f1086a>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/hazard.nc"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#97405df6-e401-4801-a412-f01f7ea728a6>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Point%20Samson.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#fdfffd35-b268-4f97-b8ad-6b5598f40904>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/1000_yrRP_hazard_map.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#9ff1a256-0768-4670-819d-bbac180f3439>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/2500_yrRP_hazard_map.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#a0ab79de-6ebe-40de-8b12-cb825bb806ff>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Exmouth.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#f381046a-72c6-4883-9775-1d51f4f42387>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/vl-download.sh"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#1986c897-214e-4ff5-a97f-475c20e0872a>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/vl_script.py"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#72bbf333-37d3-43c2-a0d0-bd2d8084ee87>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Onslow.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#2333e83b-20d9-4de4-81a0-15443aee0555>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/500_yrRP_hazard_map.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#ac1c13e3-09e9-4cd0-837a-343a8a2f5628>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/250_yrRP_hazard_map.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#667aaf73-927f-4096-a8af-1bfadb399c3b>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Port%20Hedland.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#dc16d393-4667-45b8-b8ad-0ae303a81f96>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/25_yrRP_hazard_map.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://localhost:8088/secure/getJobObject.do?jobId=11>
+      a       <http://www.w3.org/ns/prov#Activity> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "Sample TCRM Job"^^<http://www.w3.org/2001/XMLSchema#string> ;
+      <http://purl.org/dc/elements/1.1/description>
+              "Sample run of TCRM simulation"^^<http://www.w3.org/2001/XMLSchema#string> ;
+      <http://www.w3.org/ns/prov#endedAtTime>
+              "2015-04-15T16:09:45+10:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+      <http://www.w3.org/ns/prov#generated>
+              <http://placeholder.org#f8de08f9-f71b-47c2-ac3b-f5e8ec779e0b> , <http://placeholder.org#6c157ed7-d106-4334-8ebe-516f562e4fe3> , <http://placeholder.org#5dce1205-6a38-4e1d-b932-6a0d64a199d5> , <http://placeholder.org#43b8e801-ed7c-4c25-8b39-ece5f50fae76> , <http://placeholder.org#b4d5f925-5808-4eab-adfd-a01a55ba3da7> , <http://placeholder.org#56a6a0ad-e0a2-4b9b-9a81-814c7d501e20> , <http://placeholder.org#62ce55de-5bde-46e2-8fb3-9790b67d8fb8> , <http://placeholder.org#9e4bd17b-9a9e-4fb1-9d2e-074746c56001> , <http://placeholder.org#e538b652-6e5d-442d-86a4-7dcbe003fdc0> , <http://placeholder.org#683697d6-7996-47b4-af57-487f32ebda06> , <http://placeholder.org#168be6e7-6f20-4afa-9661-8f4f1232665b> , <http://placeholder.org#e7ad78c0-195c-464a-bf46-5619a31396a4> , <http://placeholder.org#33da970d-b571-47f0-9774-1d8232e77848> , <http://placeholder.org#dc96883a-07c1-46e5-a90c-7bf07a0985e9> , <http://placeholder.org#87578059-c420-485b-96a9-30c9d05cc044> , <http://placeholder.org#ffbee30f-6129-4ef0-ad99-44b34be3c17f> , <http://placeholder.org#2d404591-bd3d-48de-acaf-8548384e94a8> , <http://placeholder.org#7598ed66-589e-4e20-9e40-53edb69b4777> , <http://placeholder.org#ffa899f7-ee2e-4404-9577-1fa03370f15a> , <http://placeholder.org#43c32d36-0030-4fe6-979f-28780ede5da2> , <http://placeholder.org#5f1e3ab3-da67-4229-b9c4-0f0ffbb4f8e4> , <http://placeholder.org#c080cea5-c6d0-4056-a660-d7093985a451> , <http://placeholder.org#30aecf3f-ac1f-4dc4-9a1f-96f037826eb5> , <http://placeholder.org#531975f5-30ab-4511-9492-cac3f805dacb> , <http://placeholder.org#b98d4dfb-345f-4e42-821e-2b41152ee367> , <http://placeholder.org#8df7e1b2-e7ed-4119-b24d-a7c38efc9240> , <http://placeholder.org#641df18a-d72f-4879-89b2-f1ae0fb68f3c> , <http://placeholder.org#e9b4632d-b459-4fb9-b8bf-4c7c9113df00> , <http://placeholder.org#b03d4fb7-1e8b-4422-acac-93e09f243a2f> , <http://placeholder.org#d679fa65-7c52-48f3-b3d8-fca017f1086a> , <http://placeholder.org#9ff1a256-0768-4670-819d-bbac180f3439> , <http://placeholder.org#97405df6-e401-4801-a412-f01f7ea728a6> , <http://placeholder.org#fdfffd35-b268-4f97-b8ad-6b5598f40904> , <http://placeholder.org#a0ab79de-6ebe-40de-8b12-cb825bb806ff> , <http://placeholder.org#72bbf333-37d3-43c2-a0d0-bd2d8084ee87> , <http://placeholder.org#2333e83b-20d9-4de4-81a0-15443aee0555> , <http://placeholder.org#ac1c13e3-09e9-4cd0-837a-343a8a2f5628> , <http://placeholder.org#667aaf73-927f-4096-a8af-1bfadb399c3b> , <http://placeholder.org#dc16d393-4667-45b8-b8ad-0ae303a81f96> , <http://placeholder.org#4049c3ab-63dc-42c1-8dcd-e2335f785cfb> , <http://placeholder.org#52dd0de5-ae71-4acb-9ed0-5ef524793114> , <http://placeholder.org#9a374f7f-a0de-4efd-b7db-c8879265143c> ;
+      <http://www.w3.org/ns/prov#startedAtTime>
+              "2015-04-15T15:34:09+10:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+      <http://www.w3.org/ns/prov#used>
+              <http://placeholder.org#f381046a-72c6-4883-9775-1d51f4f42387> , <http://placeholder.org#1986c897-214e-4ff5-a97f-475c20e0872a> , <http://placeholder.org#ce272382-dc83-4eca-9e9a-3bd0fb69fbec> ;
+      <http://www.w3.org/ns/prov#wasAssociatedWith>
+              <mailto:everbloom@gmail.com> .
+
+<http://placeholder.org#4049c3ab-63dc-42c1-8dcd-e2335f785cfb>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Broome.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#52dd0de5-ae71-4acb-9ed0-5ef524793114>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/2000_yrRP_hazard_map.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#9a374f7f-a0de-4efd-b7db-c8879265143c>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=11&key=job-Tokyo-bt-everbloom_gmail_com-0000000011/ARI_curve_Dampier.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .

@@ -1,0 +1,241 @@
+<http://placeholder.org#a02cb325-40d5-482a-b3bd-fe6a9cf8d53c>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/Triangle_side_length.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#7cd90e03-396c-4de6-a86a-eb715495fbf4>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "ANUGA Busselton example"^^<http://www.w3.org/2001/XMLSchema#string> ;
+      <http://purl.org/dc/elements/1.1/created>
+              "2014-11-07T03:23:47+11:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+      <http://purl.org/dc/elements/1.1/description>
+              """This template contains a pre-canned event (a wave) entering on the WEST of the grid, heading east, designed for coastal simulations of the Busselton-Bunbury area.
+
+The implemented solver (Parallel finite volume method for hydrodynamic inundation modelling) is [described here](http://journal.austms.org.au/ojs/index.php/ANZIAMJ/article/view/153/)
+
+An overview of the solver is [available here](http://www.ga.gov.au/corporate_data/69370/Rec2009_036.pdf).
+
+Inputs:
+
+The template can be customised in a variety of ways
+
+	Xxxx
+
+	Yyyy
+
+	Zzzz
+
+And is paired with a DEM of the area in question.
+
+
+
+Outputs:
+
+	Screenshots of xxx
+
+	Custom ANUGA SSW (database) of the simulation"""^^<http://www.w3.org/2001/XMLSchema#string> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://vhirl-dev.csiro.au/scm/solutions/1"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#5c166690-caeb-4d47-a153-74901412c938>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/busselton_fixed_wave_stage_0.sww.json"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#a55abe8c-1f84-465f-80f2-8d0fd1edad6f>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/Elevation.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#e1c08158-5c50-41e2-80ec-463a4155b884>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/elevation"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#81c9105c-aa1b-4a02-9c40-53bab101c0d2>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/Max_speed.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#15d0c867-8805-419d-b8ed-daef5e71a428>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/busselton_fixed_wave_all_stages.sww.json"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#ae403d46-24ff-4cdf-bd32-ac951caab073>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/busselton.pts"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://localhost:8088/secure/getJobObject.do?jobId=10>
+      a       <http://www.w3.org/ns/prov#Activity> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "ANUGA Busselton Sample"^^<http://www.w3.org/2001/XMLSchema#string> ;
+      <http://purl.org/dc/elements/1.1/description>
+              "Sample Job running ANUGA analysis for Busselton"^^<http://www.w3.org/2001/XMLSchema#string> ;
+      <http://www.w3.org/ns/prov#endedAtTime>
+              "2015-04-15T16:04:45+10:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+      <http://www.w3.org/ns/prov#generated>
+              <http://placeholder.org#a02cb325-40d5-482a-b3bd-fe6a9cf8d53c> , <http://placeholder.org#084f03b4-7eee-4138-9b32-4d854352a310> , <http://placeholder.org#e75116a9-ad7d-4701-a85f-3a2204317c3c> , <http://placeholder.org#5c166690-caeb-4d47-a153-74901412c938> , <http://placeholder.org#a55abe8c-1f84-465f-80f2-8d0fd1edad6f> , <http://placeholder.org#54319604-23c6-4431-8121-f47daf3c8bf3> , <http://placeholder.org#e1c08158-5c50-41e2-80ec-463a4155b884> , <http://placeholder.org#81c9105c-aa1b-4a02-9c40-53bab101c0d2> , <http://placeholder.org#15d0c867-8805-419d-b8ed-daef5e71a428> , <http://placeholder.org#c5779e43-d749-42be-8b50-772644f382d2> , <http://placeholder.org#41f1a704-d2ac-4ba3-996b-007ff056d55e> , <http://placeholder.org#ae403d46-24ff-4cdf-bd32-ac951caab073> , <http://placeholder.org#155f43ee-4ceb-4aba-b4dc-20fbb44dcae5> , <http://placeholder.org#c9f62868-f600-441d-9cb9-ef2fa4c2a9d0> , <http://placeholder.org#91170bca-8c5d-4b5b-9024-087f3bf3023e> , <http://placeholder.org#945a22da-f4bd-4bf7-b4ea-a4859b3f69fb> , <http://placeholder.org#a6080067-debe-448a-8501-2e87a8b397e6> , <http://placeholder.org#26d907d6-09eb-4517-8a20-3d2138694aad> , <http://placeholder.org#c3251816-c1e0-48ae-a30f-ffb0ce3f5f56> , <http://placeholder.org#42566629-a1f4-43e6-9232-582c7ccbb9ee> , <http://placeholder.org#957019c3-7907-476a-ae25-519f4947cfb5> , <http://placeholder.org#cecea647-f201-475a-8246-ad94b04c471b> , <http://placeholder.org#59973577-8de4-4559-8692-51cbd25e1db8> ;
+      <http://www.w3.org/ns/prov#startedAtTime>
+              "2015-04-15T15:31:43+10:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+      <http://www.w3.org/ns/prov#used>
+              <http://placeholder.org#7cd90e03-396c-4de6-a86a-eb715495fbf4> , <http://placeholder.org#9262d51b-abaa-4674-91ec-c343bf0d78b5> , <http://placeholder.org#919550be-bca4-4ba8-9f98-105e396f17ea> ;
+      <http://www.w3.org/ns/prov#wasAssociatedWith>
+              <mailto:everbloom@gmail.com> .
+
+<http://placeholder.org#91170bca-8c5d-4b5b-9024-087f3bf3023e>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/Initial_speed.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#945a22da-f4bd-4bf7-b4ea-a4859b3f69fb>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/Friction.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#c3251816-c1e0-48ae-a30f-ffb0ce3f5f56>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/Initial_stage.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#26d907d6-09eb-4517-8a20-3d2138694aad>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/vl-download.sh"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#42566629-a1f4-43e6-9232-582c7ccbb9ee>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/busselton_fixed_wave.sww"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#59973577-8de4-4559-8692-51cbd25e1db8>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/vl_script.py"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#084f03b4-7eee-4138-9b32-4d854352a310>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/busselton.msh"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#9262d51b-abaa-4674-91ec-c343bf0d78b5>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/vl_script.py"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#e75116a9-ad7d-4701-a85f-3a2204317c3c>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/busselton.asc"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#54319604-23c6-4431-8121-f47daf3c8bf3>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/busselton.dem"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#919550be-bca4-4ba8-9f98-105e396f17ea>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/vl-download.sh"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#c5779e43-d749-42be-8b50-772644f382d2>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/Max_stage.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#41f1a704-d2ac-4ba3-996b-007ff056d55e>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/workflow-version.txt"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#155f43ee-4ceb-4aba-b4dc-20fbb44dcae5>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/Initial_depth.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#c9f62868-f600-441d-9cb9-ef2fa4c2a9d0>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/busselton_UTM.nc"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#a6080067-debe-448a-8501-2e87a8b397e6>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/busselton.prj"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#957019c3-7907-476a-ae25-519f4947cfb5>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/Max_depth.png"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+<http://placeholder.org#80805c07-810b-43ec-af4b-747df97c3961>
+      a       <http://promsns.org/def/proms#ExternalReport> ;
+      <http://www.w3.org/2000/01/rdf-schema#label>
+              "ANUGA Busselton Sample"^^<http://www.w3.org/2001/XMLSchema#string> ;
+      <http://promsns.org/def/proms#endingActivity>
+              <http://localhost:8088/secure/getJobObject.do?jobId=10> ;
+      <http://promsns.org/def/proms#nativeId>
+              "10"^^<http://www.w3.org/2001/XMLSchema#string> ;
+      <http://promsns.org/def/proms#reportingSystem>
+              <http://localhost:8088> ;
+      <http://promsns.org/def/proms#startingActivity>
+              <http://localhost:8088/secure/getJobObject.do?jobId=10> .
+
+<http://placeholder.org#cecea647-f201-475a-8246-ad94b04c471b>
+      a       <http://www.w3.org/ns/prov#Entity> ;
+      <http://www.w3.org/ns/dcat#downloadURL>
+              "http://localhost:8088/secure/jobFile.do?jobId=10&key=job-Tokyo-bt-everbloom_gmail_com-0000000010/vl.sh.log"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+      <http://www.w3.org/ns/prov#wasAttributedTo>
+              "mailto:everbloom@gmail.com"^^<http://www.w3.org/2001/XMLSchema#string> .
