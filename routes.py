@@ -249,8 +249,6 @@ def sparql():
         query_result = functions_db.db_query_secure(query);
         if query_result and 'results' in query_result:
             query_result = json.dumps(query_result['results']['bindings'])
-        else:
-            query_result = "No results found"
         return render_template('function_sparql.html',
                                query=query,
                                query_result=query_result);
