@@ -19,6 +19,19 @@
             </td></tr>
             <tr><th>Job ID:</th><td>{{REPORT['id']}}</td></tr>
         </table>
+        {% if REPORT['r_script'] %}
+            <h4>Neighbours view</h4>
+            <script src="/static/js/d3.min.js" charset="utf-8"></script>
+            <style>
+                svg {
+                    /*border: solid 1px #eeeeee;*/
+                    margin-left:75px;
+                }
+            </style>
+            <script>
+                {{REPORT['r_script'] | safe}}
+            </script>
+        {% endif %}
     {% elif REPORTS %}
         <h2>Reports Register</h2>
         {% if REPORTS|length == 0 %}

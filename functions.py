@@ -285,7 +285,7 @@ def get_reports_dict():
     return report_items
 
 
-def get_report_dict(report_uri):
+def get_report(report_uri):
     query = '''
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX proms: <http://promsns.org/def/proms#>
@@ -301,7 +301,11 @@ def get_report_dict(report_uri):
           ?sac prov:startedAtTime ?sat . }
         } }
     '''
-    report_detail = functions_db.db_query_secure(query)
+    return functions_db.db_query_secure(query)
+
+
+def get_report_dict(report_uri):
+    report_detail = get_report(report_uri)
     ret = {}
     # Check this
     if report_detail and 'results' in report_detail:
@@ -328,6 +332,11 @@ def get_report_dict(report_uri):
             if('sat' in report_detail['results']['bindings'][0]):
                 ret['sat'] = report_detail['results']['bindings'][index]['sat']['value']
             ret['uri'] = report_uri
+            """
+            svg_script = get_report_details_svg(report_uri)
+            if svg_script[0] == True:
+                ret['r_script'] = svg_script[1]
+            """
     return ret
 
 
@@ -376,8 +385,49 @@ def get_report_metadata(report_uri):
 
 
 #TODO: draw Neighbours view for Report
-def get_report_details_svg():
-    pass
+def get_report_details_svg(report_uri):
+    get_report_result = get_report(report_uri)
+    if get_report_result and 'results' in get_report_result:
+        if len(get_report_result['results']['bindings']) > 0:
+            script = '''
+                var svgContainer = d3.select("#container-content-2").append("svg")
+                                                    .attr("width", 700)
+                                                    .attr("height", 500);
+
+                // Report
+                var report = svgContainer.append("polygon")
+						.attr("stroke", "grey")
+						.attr("stroke-width", "1")
+						.attr("fill", "MediumVioletRed")
+						.attr("points", "250,146 390,146 390,227 370,247 250,247");
+
+                var reportName = svgContainer.append("text")
+						.attr("x", 320)
+						.attr("y", 170)
+						.text("Report")
+						.style("font-family", "Verdana")
+						.style("fill", "white")
+						.style("text-anchor", "middle");
+            '''
+
+        if get_report_result['results']['bindings'][0].get('l'):
+            title = get_report_result['results']['bindings'][0]['l']['value']
+            script += '''
+                var reportTitle = svgContainer.append("text")
+                                        .attr("x", 320)
+                                        .attr("y", 200)
+                                        .text("''' + title + '''")
+                                        .style("font-family", "Verdana")
+                                        .style("font-size", "12px")
+                                        .style("text-anchor", "middle");
+            '''
+
+
+            return [True, script]
+        else:
+            return [False, 'Not found']
+    else:
+        return [False, 'There was a fault']
 
 
 #TODO: remove hash from URI rewrite
@@ -475,7 +525,7 @@ def get_entity(entity_uri):
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         SELECT DISTINCT ?l ?c ?dl ?t ?v ?wat ?wat_name
         WHERE { GRAPH ?g {
-            <''' + entity_uri + '''> rdf:label ?l .
+            OPTIONAL { <''' + entity_uri + '''> rdf:label ?l . }
             OPTIONAL { <''' + entity_uri + '''> dc:created ?c . }
             OPTIONAL { <''' + entity_uri + '''> dcat:downloadURL ?dl . }
             { <''' + entity_uri + '''> a prov:Entity . }
@@ -495,7 +545,8 @@ def get_entity_dict(entity_uri):
     ret = {}
     if entity_detail and 'results' in entity_detail:
         if len(entity_detail['results']['bindings']) > 0:
-            ret['l'] = entity_detail['results']['bindings'][0]['l']['value']
+            if('l' in entity_detail['results']['bindings'][0]):
+                ret['l'] = entity_detail['results']['bindings'][0]['l']['value']
             if('c' in entity_detail['results']['bindings'][0]):
                 ret['c'] = entity_detail['results']['bindings'][0]['c']['value']
             if('dl' in entity_detail['results']['bindings'][0]):

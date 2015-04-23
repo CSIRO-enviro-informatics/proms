@@ -6,7 +6,9 @@
         <h2>An Entity</h2>
         <h3>URI: {{ENTITY['uri']}}</h3>
         <table class="lines">
+            {% if ENTITY['l'] %}
             <tr><th>Title:</th><td>{{ENTITY['l']}}</td></tr>
+            {% endif %}
             {% if ENTITY['c'] %}
             <tr><th>Created:</th><td>{{ENTITY['c']}}</td></tr>
             {% endif %}
