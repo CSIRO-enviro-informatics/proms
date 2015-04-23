@@ -246,12 +246,12 @@ def sparql():
     # Query submitted
     if request.method == 'POST':
         query = request.form['query']
-        query_result = functions_db.db_query_secure(query);
+        query_result = functions_db.db_query_secure(query)
         if query_result and 'results' in query_result:
             query_result = json.dumps(query_result['results']['bindings'])
         return render_template('function_sparql.html',
                                query=query,
-                               query_result=query_result);
+                               query_result=query_result)
     # No query, display form
     else:
         return render_template('function_sparql.html')
