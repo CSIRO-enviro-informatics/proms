@@ -7,7 +7,9 @@
         <h3>URI: {{ENTITY['uri']}}</h3>
         <table class="lines">
             <tr><th>Title:</th><td>{{ENTITY['l']}}</td></tr>
+            {% if ENTITY['c'] %}
             <tr><th>Created:</th><td>{{ENTITY['c']}}</td></tr>
+            {% endif %}
             {% if ENTITY['dl'] %}
             <tr><th>Download URL:</th><td><a href={{ENTITY['dl']}}>{{ENTITY['dl']}}</a></td></tr>
             {% endif %}

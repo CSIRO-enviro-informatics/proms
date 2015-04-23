@@ -424,20 +424,11 @@ def put_report(report_in_turtle):
             break
         if r_uri and r_nid:
             graph_name = '<' + r_uri + '>'
-            #graph_name = r_uri# + '#' +r_nid
-
         result = functions_db.db_insert_secure_named_graph(report_in_turtle, graph_name, True)
         if result[0]:
             return [True, 'OK']
         else:
             return [False, 'Error writing report to triplestore']
-        """
-        result = functions_db.db_insert_secure(report_in_turtle, True)
-        if result[0]:
-            return [True, 'OK']
-        else:
-            return [False, 'Error writing report to triplestore']
-        """
     else:
         return [False, conf_results['rule_results'][0]['fail_reasons']]
 
@@ -472,7 +463,10 @@ def get_entities_dict():
     return entity_items
 
 
-def get_entity_dict(entity_uri):
+def get_entity(entity_uri):
+    #TODO: landing page with view options:
+    #   wasDerivedFrom, wasGeneratedBy, inv. used, hadPrimarySource, wasAttributedTo, value
+    #get the report metadata from DB
     query = '''
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX dc: <http://purl.org/dc/elements/1.1/>
@@ -482,7 +476,7 @@ def get_entity_dict(entity_uri):
         SELECT DISTINCT ?l ?c ?dl ?t ?v ?wat ?wat_name
         WHERE { GRAPH ?g {
             <''' + entity_uri + '''> rdf:label ?l .
-            <''' + entity_uri + '''> dc:created ?c .
+            OPTIONAL { <''' + entity_uri + '''> dc:created ?c . }
             OPTIONAL { <''' + entity_uri + '''> dcat:downloadURL ?dl . }
             { <''' + entity_uri + '''> a prov:Entity . }
             UNION
@@ -493,12 +487,17 @@ def get_entity_dict(entity_uri):
             OPTIONAL { ?wat foaf:name ?wat_name . }
         } }
     '''
-    entity_detail = functions_db.db_query_secure(query)
+    return functions_db.db_query_secure(query)
+
+
+def get_entity_dict(entity_uri):
+    entity_detail = get_entity(entity_uri)
     ret = {}
     if entity_detail and 'results' in entity_detail:
         if len(entity_detail['results']['bindings']) > 0:
             ret['l'] = entity_detail['results']['bindings'][0]['l']['value']
-            ret['c'] = entity_detail['results']['bindings'][0]['c']['value']
+            if('c' in entity_detail['results']['bindings'][0]):
+                ret['c'] = entity_detail['results']['bindings'][0]['c']['value']
             if('dl' in entity_detail['results']['bindings'][0]):
                 ret['dl'] = entity_detail['results']['bindings'][0]['dl']['value']
             if('t' in entity_detail['results']['bindings'][0]):
@@ -518,29 +517,6 @@ def get_entity_dict(entity_uri):
                 ret['e_script'] = e_script
             ret['uri'] = entity_uri
     return ret
-
-
-#TODO: Only used by SVG method, make _dict call this as well
-def get_entity(entity_uri):
-    #TODO: landing page with view options:
-    #   wasDerivedFrom, wasGeneratedBy, inv. used, hadPrimarySource, wasAttributedTo, value
-    #get the report metadata from DB
-    query = '''
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-        SELECT DISTINCT ?t ?v ?wat ?wat_name
-        WHERE { GRAPH ?g {
-            { <''' + entity_uri + '''> a prov:Entity . }
-            UNION
-            { <''' + entity_uri + '''> a prov:Plan . }
-            OPTIONAL { <''' + entity_uri + '''> rdf:label ?t . }
-            OPTIONAL { <''' + entity_uri + '''> prov:value ?v . }
-            OPTIONAL { <''' + entity_uri + '''> prov:wasAttributedTo ?wat . }
-            OPTIONAL { ?wat foaf:name ?wat_name . }
-        } }
-    '''
-    return functions_db.db_query_secure(query)
 
 
 def get_entity_details_svg(entity_uri):
@@ -1102,7 +1078,7 @@ def get_activities_dict():
     return activity_items
 
 
-def get_activity_dict(activity_uri):
+def get_activity(activity_uri):
     query = '''
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
@@ -1123,7 +1099,11 @@ def get_activity_dict(activity_uri):
           OPTIONAL { ?waw foaf:name ?waw_name . }
         } }
     '''
-    activity_detail = functions_db.db_query_secure(query)
+    return functions_db.db_query_secure(query)
+
+
+def get_activity_dict(activity_uri):
+    activity_detail = get_activity(activity_uri)
     ret = {}
     if activity_detail and 'results' in activity_detail:
         if len(activity_detail['results']['bindings']) > 0:
@@ -1152,25 +1132,6 @@ def get_activity_dict(activity_uri):
                 ret['a_script'] = a_script
             ret['uri'] = activity_uri
     return ret
-
-
-#TODO: Only used by SVG method, make _dict call this as well
-def get_activity(activity_uri):
-    query = '''
-        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-        SELECT *
-        WHERE { GRAPH ?g {
-          <''' + activity_uri + '''> a prov:Activity .
-          <''' + activity_uri + '''> rdf:label ?t .
-          OPTIONAL { <''' + activity_uri + '''> prov:startedAtTime ?sat . }
-          OPTIONAL { <''' + activity_uri + '''> prov:endedAtTime ?eat . }
-          OPTIONAL { <''' + activity_uri + '''> prov:wasAssociatedWith ?waw . }
-          OPTIONAL { ?waw foaf:name ?waw_name . }
-        } }
-    '''
-    return functions_db.db_query_secure(query)
 
 
 def get_activity_details_svg(activity_uri):
@@ -1977,46 +1938,7 @@ def get_agents_dict():
     return agent_items
 
 
-#TODO: Only used by SVG method, make _dict call this as well
 def get_agent(agent_uri):
-    query = '''
-        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        SELECT DISTINCT (<''' + agent_uri + '''> AS ?ag) ?n ?ag2
-        WHERE { GRAPH ?g {
-            {
-                { ?e a prov:Entity . }
-                UNION
-                { ?e a prov:Plan . }
-                ?e prov:wasAttributedTo <''' + agent_uri + '''> .
-                OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
-                OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
-            }
-            UNION
-            {
-                ?e a prov:Activity .
-                ?e prov:wasAssociatedWith <''' + agent_uri + '''> .
-                OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
-                OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
-            }
-            UNION
-            {
-                ?aoo a prov:Agent .
-                ?aoo prov:actedOnBehalfOf <''' + agent_uri + '''> .
-                OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
-            }
-            UNION
-            {
-                <''' + agent_uri + '''> a prov:Agent .
-                OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
-                OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
-            }
-        } }
-        '''
-    return functions_db.db_query_secure(query)
-
-
-def get_agent_dict(agent_uri):
     query = '''
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -2051,7 +1973,11 @@ def get_agent_dict(agent_uri):
             }
         } }
         '''
-    agent_detail = functions_db.db_query_secure(query)
+    return functions_db.db_query_secure(query)
+
+
+def get_agent_dict(agent_uri):
+    agent_detail = get_agent(agent_uri)
     ret = {}
     if agent_detail and 'results' in agent_detail and len(agent_detail['results']['bindings']) > 0:
         if 'n' in agent_detail['results']['bindings'][0]:
