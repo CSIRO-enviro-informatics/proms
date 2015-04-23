@@ -684,7 +684,7 @@ def get_entity_activity_wgb_svg(entity_uri):
         wgb = entity_results['results']['bindings']
         if len(wgb) == 1:
             if wgb[0].get('t'):
-                title = wgb['bindings'][0]['t']['value']
+                title = wgb[0]['t']['value']
             else:
                 title = 'uri'
             uri_encoded = urllib.quote(wgb[0]['a']['value'])
