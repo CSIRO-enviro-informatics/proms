@@ -6,6 +6,7 @@
     <form action="/function/sparql/" method="post">
         <textarea name="query" id="query" style="width:500px; height:300px;">{% if query != '' %}{{query}}{% endif %}</textarea>
         <br />
+        <input type="hidden" name="form" value="true" />
         <input type="submit" value="Query PROMS" /><br />
         <!--<button id="query-proms">Query PROMS</button><br />-->
         <h4>Result</h4>

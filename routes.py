@@ -249,9 +249,12 @@ def sparql():
         query_result = functions_db.db_query_secure(query)
         if query_result and 'results' in query_result:
             query_result = json.dumps(query_result['results']['bindings'])
-        return render_template('function_sparql.html',
-                               query=query,
-                               query_result=query_result)
+        if 'form' in request.values and request.values['form'].lower() == 'true':
+            return render_template('function_sparql.html',
+                                   query=query,
+                                   query_result=query_result)
+        else:
+            return Response(query_result, status=200, mimetype="application/rdf+json")
     # No query, display form
     else:
         return render_template('function_sparql.html')

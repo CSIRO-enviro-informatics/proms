@@ -1,4 +1,5 @@
 import functions_db
+import functions_db
 import settings
 import json
 import cStringIO
@@ -79,8 +80,7 @@ def get_reportingsystem_dict(reportingsystem_uri):
     return ret
 
 
-def draw_report(n, uri, title, nativeId):
-    uri_encoded = urllib.quote(uri)
+def draw_report(n, uri, title, nativeId, drawArrow):
     y_offset = n * 130
     y1 = y_offset + 16
     y2 = y_offset + 16
@@ -88,14 +88,6 @@ def draw_report(n, uri, title, nativeId):
     y4 = y_offset + 117
     y5 = y_offset + 117
     y_label = y_offset + 40
-
-    ya1 = y_offset + 49
-    ya2 = y_offset + 49
-    ya3 = y_offset + 44
-    ya4 = y_offset + 50
-    ya5 = y_offset + 57
-    ya6 = y_offset + 51
-    ya7 = y_offset + 51
 
     svg = '''
         //Report
@@ -113,21 +105,46 @@ def draw_report(n, uri, title, nativeId):
                                 .style("font-family", "Verdana")
                                 .style("fill", "white")
                                 .style("text-anchor", "middle");
-
-        //Report N arrow
-        var reportNArrow = svgContainer.append("polygon")
-                                .style("stroke-width", "1")
-                                .attr("points", "250,''' + str(ya1) + ''' 192,''' + str(ya1) + ''' 192,''' + str(ya1-130) + ''' 190,''' + str(ya1-130) + ''' 190,''' + str(ya6) + ''' 250,''' + str(ya6) + ''' ");
-
-        //Report N title
-        var entityTitle = svgContainer.append('foreignObject')
-                                .attr('x', 250)
-                                .attr('y', ''' + str(y_offset + 47) + ''')
-                                .attr('width', 138)
-                                .attr('height', 95)
-                                .append("xhtml:body")
-                                .html('<div style="width:138px; color:white; font-size:smaller; background-color:MediumVioletRed;"><a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/report/?uri=''' + uri_encoded + '''">''' + title + '''</a><br />nativeId: ''' + nativeId + '''</div>')
     '''
+
+    if uri:
+        uri_encoded = urllib.quote(uri)
+        svg += '''
+            //Report N title
+            var entityTitle = svgContainer.append('foreignObject')
+                                    .attr('x', 250)
+                                    .attr('y', ''' + str(y_offset + 47) + ''')
+                                    .attr('width', 138)
+                                    .attr('height', 95)
+                                    .append("xhtml:body")
+                                    .html('<div style="width:138px; color:white; font-size:smaller; background-color:MediumVioletRed;"><a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/report/?uri=''' + uri_encoded + '''">''' + title + '''</a><br />nativeId: ''' + nativeId + '''</div>')
+            '''
+    else:
+        svg += '''
+            //Report N title
+            var reportTitle = svgContainer.append("text")
+                                            .attr("x", 320)
+                                            .attr("y", 200)
+                                            .text("''' + title + '''")
+                                            .style("font-family", "Verdana")
+                                            .style("font-size", "12px")
+                                            .style("text-anchor", "middle");
+        '''
+
+    if drawArrow:
+        ya1 = y_offset + 49
+        ya2 = y_offset + 49
+        ya3 = y_offset + 44
+        ya4 = y_offset + 50
+        ya5 = y_offset + 57
+        ya6 = y_offset + 51
+        ya7 = y_offset + 51
+        svg += '''
+            //Report N arrow
+            var reportNArrow = svgContainer.append("polygon")
+                                    .style("stroke-width", "1")
+                                    .attr("points", "250,''' + str(ya1) + ''' 192,''' + str(ya1) + ''' 192,''' + str(ya1-130) + ''' 190,''' + str(ya1-130) + ''' 190,''' + str(ya6) + ''' 250,''' + str(ya6) + ''' ");
+        '''
     return svg
 
 
@@ -207,7 +224,7 @@ def get_reportingsystem_reports_svg(reportingsystem_uri):
                     uri = report['r']['value']
                     title = report['t']['value']
                     jobId = report['job']['value']
-                    reports_script += draw_report(i, uri, title, jobId)
+                    reports_script += draw_report(i, uri, title, jobId, True)
                     i += 1
         else:
             #no reports
@@ -290,7 +307,7 @@ def get_report(report_uri):
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        SELECT ?rt ?l ?id ?rs ?rs_t ?sat
+        SELECT ?rt ?l ?id ?rs ?rs_t ?sac ?sac_t ?sat ?eac ?eac_t ?eat
         WHERE { GRAPH ?g {
           <''' + report_uri + '''> a ?rt .
           <''' + report_uri + '''> rdf:label ?l .
@@ -298,7 +315,11 @@ def get_report(report_uri):
           OPTIONAL { <''' + report_uri + '''> proms:reportingSystem ?rs .
           OPTIONAL { ?rs rdf:label ?rs_t . } }
           OPTIONAL { <''' + report_uri + '''> proms:startingActivity ?sac .
-          ?sac prov:startedAtTime ?sat . }
+          ?sac prov:startedAtTime ?sat .
+          ?sac rdf:label ?sac_t }
+          OPTIONAL { <''' + report_uri + '''> proms:endingActivity ?eac .
+          ?eac prov:endedAtTime ?eat .
+          ?eac rdf:label ?eac_t }
         } }
     '''
     return functions_db.db_query_secure(query)
@@ -391,43 +412,133 @@ def get_report_details_svg(report_uri):
         if len(get_report_result['results']['bindings']) > 0:
             script = '''
                 var svgContainer = d3.select("#container-content-2").append("svg")
-                                                    .attr("width", 700)
-                                                    .attr("height", 500);
-
-                // Report
-                var report = svgContainer.append("polygon")
-						.attr("stroke", "grey")
-						.attr("stroke-width", "1")
-						.attr("fill", "MediumVioletRed")
-						.attr("points", "250,146 390,146 390,227 370,247 250,247");
-
-                var reportName = svgContainer.append("text")
-						.attr("x", 320)
-						.attr("y", 170)
-						.text("Report")
-						.style("font-family", "Verdana")
-						.style("fill", "white")
-						.style("text-anchor", "middle");
+                                                        .attr("width", 700)
+                                                        .attr("height", 500);
             '''
+            title = ''
+            if get_report_result['results']['bindings'][0].get('l'):
+                title = get_report_result['results']['bindings'][0]['l']['value']
+            script += draw_report(1, None, title, None, False)
 
-        if get_report_result['results']['bindings'][0].get('l'):
-            title = get_report_result['results']['bindings'][0]['l']['value']
-            script += '''
-                var reportTitle = svgContainer.append("text")
-                                        .attr("x", 320)
-                                        .attr("y", 200)
-                                        .text("''' + title + '''")
-                                        .style("font-family", "Verdana")
-                                        .style("font-size", "12px")
-                                        .style("text-anchor", "middle");
-            '''
+            sac = None;
+            eac = None;
+            if get_report_result['results']['bindings'][0].get('sac'):
+                sac = get_report_result['results']['bindings'][0]['sac']['value']
 
+            if get_report_result['results']['bindings'][0].get('eac'):
+                eac = get_report_result['results']['bindings'][0]['sac']['value']
+
+            if sac != eac:
+                sac_title = "Starting Activity"
+                if get_report_result['results']['bindings'][0].get('sac_t'):
+                    sac_title = get_report_result['results']['bindings'][0]['sac_t']['value']
+                script += draw_activity(1, 1, sac, sac_title)
+
+                script += '''
+                    var activityWGBArrow = svgContainer.append("polygon")
+                                        .style("stroke-width", "1")
+                                        .attr("points", "250,220, 160,220, 160,215, 150,221, 160,228, 160,222, 250,222");
+                '''
+
+                eac_title = "Ending Activity"
+                if get_report_result['results']['bindings'][0].get('eac_t'):
+                    eac_title = get_report_result['results']['bindings'][0]['eac_t']['value']
+                script += draw_activity(2, 1, sac, eac_title)
+
+            else:
+                sac_title = "Activity"
+                if get_report_result['results']['bindings'][0].get('sac_t'):
+                    sac_title = get_report_result['results']['bindings'][0]['sac_t']['value']
+                script += draw_activity(1, 1, sac, sac_title)
+
+                script += '''
+                    var activityWGBArrow = svgContainer.append("polygon")
+                                        .style("stroke-width", "1")
+                                        .attr("points", "250,200, 160,200, 160,195, 150,201, 160,208, 160,202, 250,202");
+                '''
 
             return [True, script]
+
         else:
             return [False, 'Not found']
     else:
         return [False, 'There was a fault']
+
+
+# XXX XXX XXX
+def get_report_activity_wgb_svg(entity_uri):
+    script = ''
+    query = '''
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        SELECT ?a ?t
+        WHERE { GRAPH ?g {
+          ?a prov:generated <''' + entity_uri + '''> .
+          ?a rdf:label ?t .
+        } }
+    '''
+    entity_results = functions_db.db_query_secure(query)
+
+    if entity_results and 'results' in entity_results:
+        wgb = entity_results['results']['bindings']
+        if len(wgb) == 1:
+            if wgb[0].get('t'):
+                title = wgb[0]['t']['value']
+            else:
+                title = 'uri'
+            uri_encoded = urllib.quote(wgb[0]['a']['value'])
+
+            script += '''
+                //Activity (wasGeneratedBy)
+                var activityWGB = svgContainer.append("rect")
+                                        .attr("x", 1)
+                                        .attr("y", 200)
+                                        .attr("width", 150)
+                                        .attr("height", 100)
+                                        .attr("fill", "#cfceff")
+                                        .attr("stroke", "blue")
+                                        .attr("stroke-width", "1");
+
+                //Activity class name
+                var activityWGBName = svgContainer.append("text")
+                                        .attr("x", 75)
+                                        .attr("y", 230)
+                                        .text("Activity")
+                                        .style("font-family", "Verdana")
+                                        .style("text-anchor", "middle");
+
+                //Activity (wasGeneratedBy) arrow
+                var activityWGBArrow = svgContainer.append("polygon")
+                                        .style("stroke-width", "1")
+                                        .attr("points", "250,249, 160,249, 160,244, 150,250, 160,257, 160,251, 250,251");
+
+                //Activity (wasGeneratedBy) arrow name
+                var activityUsedArrowName = svgContainer.append("text")
+                                        .attr("x", 200)
+                                        .attr("y", 195)
+                                        .text("prov:wasGeneratedBy")
+                                        .style("font-family", "Verdana")
+                                        .style("font-size", "smaller")
+                                        .style("text-anchor", "middle");
+
+                //Activity title
+                title_html = '<div style="width: 147px; font-size:smaller; background-color:#cfceff;">' +
+                            '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/activity/?uri=''' + uri_encoded + '''">' +
+                            '         ''' + title + '''' +
+                            '     </a>' +
+                            '</div>';
+                var activityTitle = svgContainer.append('foreignObject')
+                                .attr('x', 2)
+                                .attr('y', 240)
+                                .attr('width', 147)
+                                .attr('height', 60)
+                                .append("xhtml:body")
+                                .html(title_html);
+            '''
+        else:
+            pass
+
+    return script
 
 
 #TODO: remove hash from URI rewrite
@@ -1183,6 +1294,61 @@ def get_activity_dict(activity_uri):
                 ret['a_script'] = a_script
             ret['uri'] = activity_uri
     return ret
+
+
+# TODO: X position is different depending on how it's used by Entity or Report
+def draw_activity(n, x, uri, title):
+    yOffset = n * 130 + 15
+    svg = '''
+            //Activity (wasGeneratedBy)
+            var activityWGB = svgContainer.append("rect")
+                                    .attr("x", ''' + str(x) + ''')
+                                    .attr("y", ''' + str(yOffset) + ''')
+                                    .attr("width", 150)
+                                    .attr("height", 100)
+                                    .attr("fill", "#cfceff")
+                                    .attr("stroke", "blue")
+                                    .attr("stroke-width", "1");
+
+            //Activity class name
+            var activityWGBName = svgContainer.append("text")
+                                    .attr("x", ''' + str(x + 74) + ''')
+                                    .attr("y", '''+ str(yOffset + 30) + ''')
+                                    .text("Activity")
+                                    .style("font-family", "Verdana")
+                                    .style("text-anchor", "middle");
+    '''
+
+    if uri:
+        uri_encoded = urllib.quote(uri)
+        svg += '''
+            //Activity title
+            title_html = '<div style="width: 147px; font-size:smaller; background-color:#cfceff;">' +
+                        '     <a href="''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/activity/?uri=''' + uri_encoded + '''">' +
+                        '         ''' + title + '''' +
+                        '     </a>' +
+                        '</div>';
+            var activityTitle = svgContainer.append('foreignObject')
+                            .attr('x', ''' + str(x + 1) + ''')
+                            .attr('y', ''' + str(yOffset + 50) + ''')
+                            .attr('width', 147)
+                            .attr('height', 60)
+                            .append("xhtml:body")
+                            .html(title_html);
+        '''
+    else:
+        svg += '''
+            //Activity title
+            var activityTitle = svgContainer.append('foreignObject')
+                                    .attr('x', ''' + str(x) + ''')
+                                    .attr('y', ''' + str(yOffset + 50) + ''')
+                                    .attr('width', 148)
+                                    .attr('height', 100)
+                                    .append("xhtml:body")
+                                    .html('<div style="width: 149px; font-size:smaller; background-color:#cfceff;">''' + title + '''</div>')
+        '''
+
+    return svg;
 
 
 def get_activity_details_svg(activity_uri):
