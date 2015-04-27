@@ -1,6 +1,6 @@
 @prefix : <http://placeholder.org#> .
 @prefix dc: <http://purl.org/dc/elements/1.1/> .
-@prefix proms: <http://promsns.org/ns/proms#> .
+@prefix proms: <http://promsns.org/def/proms#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
@@ -23,5 +23,5 @@
         ]
     ] ;
     dc:description "This is an example ReportingSystem given for demonstration purposes only"@en ;
-    dc:title "Example Reporting System"^^xsd:string
+    rdfs:label "Example Reporting System"^^xsd:string
 .
