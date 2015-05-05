@@ -1192,8 +1192,7 @@ def get_agent_details_svg(agent_dict):
         name = aLabel[-1]
     script = '''
         var aLabel = "''' + a_label + '''";
-        var aUri = "''' + a_uri + '''";
-        var agent = addAgent(310, 200, aLabel, aUri);
+        var agent = addAgent(310, 200, aLabel, "");
     '''
 
     #print actedOnBehalfOf, if it has one
