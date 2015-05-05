@@ -1267,16 +1267,16 @@ WHERE {
 def get_agent_was_associated_with_svg(agent_uri):
     script = ''
     query = '''
-        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        SELECT DISTINCT ?a ?t
-        WHERE {
-            GRAPH ?g {
-                { ?a a prov:Activity .}
-                ?a prov:wasAssociatedWith <''' + agent_uri + '''> ;
-                OPTIONAL { ?a rdf:label ?t . }
-            }
-        }
+PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+SELECT DISTINCT ?a ?t
+WHERE {
+    GRAPH ?g {
+        { ?a a prov:Activity .}
+        ?a prov:wasAssociatedWith <''' + agent_uri + '''> ;
+        OPTIONAL { ?a rdf:label ?t . }
+    }
+}
     '''
     activity_results = functions_db.db_query_secure(query)
 
