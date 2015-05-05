@@ -1,14 +1,15 @@
 .lined {
-    border: solid 2px black;
+    /* border: solid 2px black; */
     border-collapse: collapse;
 
     font-family: Verdana;
-    font-size: 12px;
+    font-size: 14px;
 }
 .lined th,
 .lined td {
-    border: solid 1px black;
+    /* border: solid 1px black; */
     padding: 3px;
+    text-align: left;
 }
 h4 {
     font-weight:bold;

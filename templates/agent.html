@@ -5,9 +5,18 @@
     {% if AGENT %}
         <h2>An Agent</h2>
         <h3>URI: {{AGENT['uri']}}</h3>
-        <table class="lines">
+        <table class="lined">
             <tr><th>Title:</th><td>{{AGENT['n']}}</td></tr>
         </table>
+        {% if AGENT['a_script'] %}
+            <h4>Neighbours view</h4>
+            <div id="neighbour_view"></div>
+            <script type="text/javascript" src="/static/js/raphael-min.js" charset="utf-8"></script>
+            <script type="text/javascript" src="/static/js/proms-svg.js" charset="utf-8"></script>
+            <script type="text/javascript">
+                {{AGENT['a_script'] | safe}}
+            </script>
+        {% endif %}
     {% elif AGENTS %}
         <h2>Agents Register</h2>
         {% if AGENTS|length == 0 %}

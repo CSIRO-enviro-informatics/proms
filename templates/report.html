@@ -6,7 +6,7 @@
         <h2>A Report</h2>
         <h3>URI: {{REPORT['uri']}}</h3>
         <h4><a class="definition" href={{REPORT['t']}}>{{REPORT['t_str']}}</a> Report</h4>
-        <table class="lines">
+        <table class="lined">
             <tr><th>Title:</th><td>{{REPORT['l']}}</td></tr>
             <tr><th>Reporting System:</th><td>
                 {% if REPORT['rs'] and REPORT['rs_t'] %}
@@ -21,13 +21,9 @@
         </table>
         {% if REPORT['r_script'] %}
             <h4>Neighbours view</h4>
-            <script src="/static/js/d3.min.js" charset="utf-8"></script>
-            <style>
-                svg {
-                    /*border: solid 1px #eeeeee;*/
-                    margin-left:75px;
-                }
-            </style>
+            <div id="neighbour_view"></div>
+            <script type="text/javascript" src="/static/js/raphael-min.js" charset="utf-8"></script>
+            <script type="text/javascript" src="/static/js/proms-svg.js" charset="utf-8"></script>
             <script>
                 {{REPORT['r_script'] | safe}}
             </script>

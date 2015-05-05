@@ -257,7 +257,9 @@ def sparql():
             return Response(query_result, status=200, mimetype="application/rdf+json")
     # No query, display form
     else:
-        return render_template('function_sparql.html')
+        query = request.args.get('query')
+        return render_template('function_sparql.html',
+                               query = query)
 
 
 @routes.route('/documentation', methods=['GET'])

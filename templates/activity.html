@@ -5,7 +5,7 @@
     {% if ACTIVITY %}
         <h2>An Activity</h2>
         <h3>URI: {{ACTIVITY['uri']}}</h3>
-        <table class="lines">
+        <table class="lined">
             <tr><th>Title:</th><td>{{ACTIVITY['l']}}</td></tr>
             {% if ACTIVITY['sat'] %}
             <tr><th>Started at:</th><td>{{ACTIVITY['sat']}}</td></tr>
@@ -26,6 +26,8 @@
         </table>
         {% if ACTIVITY['a_script'] %}
             <h4>Neighbours view</h4>
+            <div id="neighbour_view"></div>
+            <!--
             <script src="/static/js/d3.min.js" charset="utf-8"></script>
             <style>
                 svg {
@@ -33,6 +35,9 @@
                     margin-left:75px;
                 }
             </style>
+            -->
+            <script type="text/javascript" src="/static/js/raphael-min.js" charset="utf-8"></script>
+            <script type="text/javascript" src="/static/js/proms-svg.js" charset="utf-8"></script>
             <script>
                 {{ACTIVITY['a_script'] | safe}}
             </script>
