@@ -117,6 +117,8 @@ def report_doc(report_id, extension):
 
         # TODO: return turtle
         return 'report in turtle'
+    """
+    # TODO: Re-implement later
     else:
         # this code is the same as for /id/report/?url=X
         # TODO: de-duplicate this code
@@ -134,6 +136,7 @@ def report_doc(report_id, extension):
         html += functions.get_report_html(uri)
         html += functions.get_proms_html_footer()
         return Response(html, status=200, mimetype='text/html')
+    """
 
 
 @routes.route('/id/entity', methods=['GET'])
@@ -193,49 +196,7 @@ def agents():
 @routes.route('/function/pingback', methods=['GET', 'POST'])
 def pingback():
     if request.method == 'GET':
-        html = functions.get_proms_html_header()
-        html += '''
-        <h1>Provenance Management Service</h1>
-        <h2>Pingback Endpoint</h2>
-        <p style="font-style: italic;">Under development, November, 2014.</p>
-        <p>In future, other systems will be able to POST data to this endpoint to inform this PROMS server instance that a reference to one of the Entities listed here has been made in a provenance graph.</p>
-        <p>This is in accordance with the idea of "Forward provenance" as per <a href="http://www.w3.org/TR/2013/WD-prov-aq-20130312/">PROV-AQ: Provenance Access and Query, W3C Working Draft 12 March 2013</a></p>
-        <h3>A derived Entity</h3>
-        <pre>
-            @prefix prov: &lt;http://www.w3.org/ns/prov#&gt; .
-
-            &lt;their_entity_uri&gt;
-                a   prov:Entity ;
-                prov:wasDerivedFrom &lt;our_entity_uri&gt; ;
-            .
-        </pre>
-        <h4>Processing:</h4>
-        <ol>
-            <li>validate pingback graph</li>
-            <li>test dereferencing of &lt;their_entity_uri&gt; </li>
-            <li>insert</li>
-        </ol>
-
-        <h3>An Activity that used an Entity</h3>
-        <pre>
-            @prefix prov: &lt;http://www.w3.org/ns/prov#&gt; .
-
-            &lt;their_activity_uri&gt;
-                a   prov:Activity ;
-                prov:used &lt;our_entity_uri&gt; ;
-            .
-        </pre>
-        <h4>Processing:</h4>
-        <ol>
-            <li>validate pingback graph</li>
-            <li>test dereferencing of &lt;their_activity_uri&gt; </li>
-            <li>insert</li>
-        </ol>
-        '''
-
-        html += functions.get_proms_html_footer()
-        return Response(html, status=200, mimetype='text/html')
-
+        return render_template('pingback.html')
     #process a pingback
     if request.method == 'POST':
         pass

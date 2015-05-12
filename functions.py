@@ -1271,7 +1271,7 @@ PREFIX prov: <http://www.w3.org/ns/prov#>
 SELECT DISTINCT ?a ?t
 WHERE {
     GRAPH ?g {
-        { ?a a prov:Activity .}
+        { ?a a prov:Activity . }
         ?a prov:wasAssociatedWith <''' + agent_uri + '''> ;
         OPTIONAL { ?a rdf:label ?t . }
     }
