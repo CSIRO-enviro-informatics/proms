@@ -10,6 +10,11 @@ import json
 #
 #   All the routes in the API
 #
+@routes.app_errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
 @routes.route('/')
 def home():
     return render_template('index.html', PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
