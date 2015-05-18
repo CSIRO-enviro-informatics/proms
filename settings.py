@@ -1,5 +1,8 @@
 HOME_DIR = '/var/lib/proms/'
 STATIC_DIR = 'static/'
+LOGFILE = HOME_DIR + 'proms.log'
+PORT = 9000
+DEBUG = True
 
 #PROMS_INSTANCE_NAMESPACE_URI = 'http://butterfree-bu.nexus.csiro.au/proms/'
 PROMS_INSTANCE_NAMESPACE_URI = 'http://localhost:9000/'
@@ -13,5 +16,3 @@ FUSEKI_SECURE_USR = 'fusekiusr'
 FUSEKI_SECURE_PWD = 'fusekirocks'
 # Request Timeout in seconds
 FUSEKI_TIMEOUT = 5
-
-STARDOG_QUERY_URI = 'http://localhost:5820/proms/query'

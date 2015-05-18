@@ -23,15 +23,15 @@ app.register_blueprint(routes)
 
 #run the app
 if __name__ == '__main__':
-    logging.basicConfig(filename=settings.HOME_DIR + 'proms.log',
+    logging.basicConfig(filename=settings.LOGFILE,
                         level=logging.DEBUG,
                         datefmt='%Y-%m-%d %H:%M:%S',
                         format='%(asctime)s %(levelname)s %(message)s')
 
     app.run(host='0.0.0.0',
-            port=9000,
+            port=settings.PORT,
             threaded=True,
-            debug=True)
+            debug=settings.DEBUG)
 
 
 
