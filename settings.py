@@ -1,4 +1,4 @@
-HOME_DIR = '/var/lib/proms/'
+HOME_DIR = '/opt/PROMS/'
 STATIC_DIR = 'static/'
 LOGFILE = HOME_DIR + 'proms.log'
 PORT = 9000
