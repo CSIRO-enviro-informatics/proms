@@ -358,15 +358,17 @@ def get_report_details_svg(report_dict):
             var sacUri = "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/activity/?uri=" + sac_uri_encoded + '''";
             var sacLabel = "''' + sac_label + '''";
         '''
-        eac_uri = report_dict.get('eac')
-        eac_uri_encoded = urllib.quote(eac_uri)
-        eac_label = report_dict.get('eac_t', 'uri')
-        if sac_uri == eac_uri:
+        eac_uri = ''
+        if report_dict.get('eac'):
+            eac_uri = report_dict.get('eac')
+            eac_uri_encoded = urllib.quote(eac_uri)
+            eac_label = report_dict.get('eac_t', 'uri')
+        if sac_uri == eac_uri or eac_uri=='':
             script += '''
                 var activity = addActivity(50, 200, sacLabel, sacUri);
                 addLink(report, activity, "proms:startingActivity", TOP);
             '''
-        else:
+        elif eac_uri != '':
             script += '''
                 var eacUri = "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/activity/?uri=" + eac_uri_encoded + '''";
                 var eacLabel = "''' + eac_label + '''";
