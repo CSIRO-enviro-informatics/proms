@@ -506,7 +506,7 @@ def put_report(report_in_turtle):
         if result[0]:
             return [True, 'OK']
         else:
-            return [False, 'Error writing report to triplestore']
+            return [False, result[1]]
     else:
         return [False, conf_results['rule_results'][0]['fail_reasons']]
 

@@ -7,6 +7,7 @@ import settings
 import json
 
 
+
 #
 #   All the routes in the API
 #
@@ -225,7 +226,7 @@ def sparql():
     else:
         query = request.args.get('query')
         return render_template('function_sparql.html',
-                               query = query)
+                               query=query)
 
 
 @routes.route('/documentation', methods=['GET'])
