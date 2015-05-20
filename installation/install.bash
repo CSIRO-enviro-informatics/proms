@@ -59,5 +59,10 @@ then
 elif [ $DISTRIBUTION == 2 ]
 then
     echo "Installing PROMS for CentOS..."
-
+    sudo yum update
+    which git || sudo yum install -y git
+    which java || sudo yum install -y java
+    ./CentOS/install-fuseki.bash
+    ./CentOS/install-apache.bash
+    ./CentOS/install-proms.bash
 fi

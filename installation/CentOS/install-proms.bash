@@ -1,6 +1,6 @@
 #!/bin/bash
-sudo aptitude install -y git
-sudo aptitude install -y python-rdflib
+sudo yum install -y git
+sudo yum install -y python-rdflib
 sudo mkdir -p /opt/proms
 cd /opt/proms
 git clone https://stash.csiro.au/scm/eis/proms.git .
