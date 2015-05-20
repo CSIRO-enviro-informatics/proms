@@ -1,0 +1,32 @@
+PROMS Installation Instructions
+-------------------------------
+
+* Copy the installation to the destination machine and change directory to this directory.
+
+* Change the permissions for the installation script to allow execution, e.g:
+
+sudo chmod -R +x ./
+
+* Run the installation script.
+
+sudo ./install.bash
+
+* Change to the PROMS directory:
+
+cd /opt/proms
+
+* Modify the necessary settings in the file settings.py. by changing the base server URIs to match your server name
+  or URI. E.g:
+
+# Replace "proms.csiro.com" with your server name or IP address
+PROMS_INSTANCE_NAMESPACE_URI = 'http://proms.csiro.com/'
+FUSEKI_QUERY_URI = 'http://proms.csiro.com/fuseki/data/query'
+FUSEKI_UPDATE_URI = 'http:/proms.csiro.com/fuseki/data/update'
+FUSEKI_SECURE_QUERY_URI = 'http://proms.csiro.com/fuseki/data/query'
+FUSEKI_SECURE_UPDATE_URI = 'http://proms.csiro.com/fuseki/data/update'
+
+* Run PROMS (while still in the /opt/proms directory):
+
+sudo ./start.bash
+
+* Report any problems to nick.car@csiro.au
