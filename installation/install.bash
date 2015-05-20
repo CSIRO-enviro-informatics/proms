@@ -49,10 +49,10 @@ fi
 
 if [ $DISTRIBUTION == 1 ]
 then
-    echo "Installing PROMS for Ubuntu..."
+    echo "Installing PROMS for Ubuntu..."A
     sudo apt-get update
     which git || sudo aptitude install -y git
-    which java || sudo aptitude install -y java
+    which default-jre || sudo aptitude install -y default-jre
     ./Ubuntu/install-fuseki.bash
     ./Ubuntu/install-apache.bash
     ./Ubuntu/install-proms.bash

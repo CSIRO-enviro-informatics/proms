@@ -1,5 +1,5 @@
 #!/bin/bash
-# download Fuseki with Jena
+# downlaod Fuseki with Jena
 echo "downloading..."
 wget http://apache.mirror.serversaustralia.com.au/jena/binaries/jena-fuseki1-1.1.2-distribution.tar.gz -O fuseki.tar.gz
 sudo cp fuseki.tar.gz /opt
@@ -54,13 +54,15 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 EOL
 
 # create start and stop files
-touch start.bash
-echo "./fuseki-server --config=config-tdb-all.ttl > fuseki.log &" > start.bash
-chmod u+x start.bash
+cat >start.bash <<EOL
+./fuseki-server --config=config-tdb-all.ttl > fuseki.log &
+EOL
+sudo chmod u+x start.bash
 
-touch stop.bash
+cat >stop.bash <<EOL
 echo "kill -9 \`ps aux | grep fuseki | grep -v grep | awk '{print \$2}'\`" > stop.bash
-chmod u+x stop.bash
+EOL
+sudo chmod u+x stop.bash
 
 # set enviro vars
 echo "setting enviro vars..."
@@ -69,4 +71,4 @@ export FUSEKI_HOME=/opt/fuseki
 
 # start Fuseki
 echo "starting..."
-./start.bash
+sudo ./start.bash

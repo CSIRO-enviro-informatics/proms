@@ -1,4 +1,5 @@
 #!/bin/bash
+#sudo aptitude install -y libapache2-mod-proxy-html libxml2-dev
 sudo aptitude install -y apache2
 sudo aptitude install -y apache2-utils
 sudo htpasswd -c /etc/apache2/htpasswd fusekiusr
@@ -10,7 +11,6 @@ cat >/etc/apache2/sites-available/000-default.conf <<EOL
 
         ErrorLog ${APACHE_LOG_DIR}/error.log
         CustomLog ${APACHE_LOG_DIR}/access.log combined
-        #RewriteLog ${APACHE_LOG_DIR}/rewrite.log
 
         ProxyRequests Off
         <Proxy *>
@@ -60,7 +60,6 @@ cat >/etc/apache2/sites-available/000-default.conf <<EOL
 
         ProxyPass   /fusekitest   http://localhost:3030/
         ProxyPassReverse   /fusekitest   http://localhost:3030/
-
 
         ProxyPass   /   http://localhost:9000/
         ProxyPassReverse   /   http://localhost:9000/

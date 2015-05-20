@@ -18,4 +18,7 @@ cat >/opt/proms/stop.bash <<EOL
 sudo kill `ps aux | grep proms_server | grep -v "grep" | head -3 | awk '{print $2}'`
 EOL
 sudo chmod u+wx stop.bash
-#sudo ./start.bash
+echo
+echo "Please make you update the /opt/proms/settings.py file with the Fuseki password entered during installation"
+echo "Then launch PROMS with:"
+echo "    sudo /opt/proms/start.bash"
