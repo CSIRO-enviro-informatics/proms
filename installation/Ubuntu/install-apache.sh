@@ -3,34 +3,21 @@ sudo aptitude install -y apache2
 sudo aptitude install -y apache2-utils
 sudo htpasswd -c /etc/apache2/htpasswd fusekiusr
 
-cat >/etc/apache2/sites-available/000-default.conf <<EOL
+cat >/etc/apache2/sites-available/proms.conf <<EOL
 <VirtualHost *:80>
-        ServerAdmin webmaster@localhost
-        DocumentRoot /var/www/html
-
         ErrorLog ${APACHE_LOG_DIR}/error.log
         CustomLog ${APACHE_LOG_DIR}/access.log combined
 
         ProxyRequests Off
+        ProxyErrorOverride Off
+
         <Proxy *>
                 Order deny,allow
                 Allow from all
         </Proxy>
 
-        ProxyErrorOverride On
         ProxyPass   /fuseki/data/query   http://localhost:3030/data/query
         ProxyPassReverse   /fuseki/data/query   http://localhost:3030/data/query
-
-        <Location />
-                AuthType Basic
-                AuthName "Authentication Required"
-                AuthUserFile "/etc/apache2/htpasswd"
-                Require valid-user
-                #AuthBasicAuthoritative Off
-                SetEnv proxy-chain-auth On
-                Order allow,deny
-                Allow from all
-        </Location>
 
         <Location /fuseki/data/query>
                 AuthType Basic

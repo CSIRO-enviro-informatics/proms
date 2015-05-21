@@ -1,16 +1,5 @@
 from conformance.ruleset import RuleSet
 from conformance.rule import Rule
-import rdflib
-from rdflib import plugin
-from rdflib.parser import Parser
-
-plugin.register(
-    'sparql', rdflib.query.Processor,
-    'rdfextras.sparql.processor', 'Processor')
-plugin.register(
-    'text/turtle', Parser,
-    'rdflib.plugins.parsers.notation3', 'TurtleParser')
-
 
 
 class PromsReport(RuleSet):

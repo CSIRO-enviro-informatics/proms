@@ -52,6 +52,7 @@ then
     echo "Installing PROMS for Ubuntu..."A
     sudo apt-get update
     which git || sudo aptitude install -y git
+    which pip || sudo aptitude install -y python-pip
     which default-jre || sudo aptitude install -y default-jre
     ./Ubuntu/install-fuseki.sh
     ./Ubuntu/install-apache.sh
@@ -61,6 +62,7 @@ then
     echo "Installing PROMS for CentOS..."
     sudo yum update
     which git || sudo yum install -y git
+    which pip || sudo yum -y install python-pip
     which java || sudo yum install -y java
     ./CentOS/install-fuseki.sh
     ./CentOS/install-apache.sh

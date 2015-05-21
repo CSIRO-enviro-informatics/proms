@@ -1,14 +1,12 @@
 #!/bin/bash
 sudo aptitude install -y git
-sudo aptitude install -y python-rdflib
 sudo mkdir -p /opt/proms
 cd /opt/proms
 git clone https://stash.csiro.au/scm/eis/proms.git .
-sudo easy_install flask
-sudo easy_install rdflib
-sudo easy_install rdfextras
+sudo pip install flask
+sudo pip install rdflib==3.2.3
 # install watchdog to avoid issued with six.py requiring _winreg
-sudo easy_install watchdog
+sudo pip install watchdog
 cat >/opt/proms/start.sh <<EOL
 #!/bin/bash
 sudo python app.py proms_server &
