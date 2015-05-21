@@ -35,7 +35,7 @@ def db_insert(turtle, from_string=False):
 
     # SPARQL INSERT
     data = {'update': 'INSERT DATA { ' + g.serialize(format='nt') + ' }'}
-    r = requests.post(settings.FUSEKI_SECURE_UPDATE_URI, data=data)
+    r = requests.post(settings.FUSEKI_UPDATE_URI, data=data)
     try:
         if r.status_code != 200 and r.status_code != 201:
             return [False, r.text]
