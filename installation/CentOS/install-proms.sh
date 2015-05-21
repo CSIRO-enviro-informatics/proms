@@ -6,6 +6,7 @@ cd /opt/proms
 git clone https://stash.csiro.au/scm/eis/proms.git .
 sudo easy_install flask
 sudo easy_install rdflib
+sudo easy_install rdfextras
 #sudo easy_install SPARQLWrapper
 # install watchdog to avoid issued with six.py requiring _winreg
 sudo easy_install watchdog
