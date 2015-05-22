@@ -517,14 +517,16 @@ def get_entities_dict():
     query = '''
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX proms: <http://promsns.org/def/proms#>
         SELECT DISTINCT ?e ?l ?t
         WHERE {
             GRAPH ?g {
-                { ?e rdf:label ?l . }
                 { ?e a prov:Entity . }
                 UNION
                 { ?e a prov:Plan . }
-                OPTIONAL { ?s rdf:label ?t . }
+                UNION
+                { ?e a proms:ServiceEntity . }
+                OPTIONAL { ?e rdf:label ?l . }
             }
         }
         ORDER BY ?e
