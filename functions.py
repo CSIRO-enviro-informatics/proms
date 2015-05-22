@@ -557,15 +557,17 @@ def get_entity(entity_uri):
         WHERE {
             GRAPH ?g {
                 OPTIONAL { <''' + entity_uri + '''> rdf:label ?l . }
-                #OPTIONAL { <''' + entity_uri + '''> dc:created ?c . }
-                #OPTIONAL { <''' + entity_uri + '''> dcat:downloadURL ?dl . }
-                #{ <''' + entity_uri + '''> a prov:Entity . }
-                #UNION
-                #{ <''' + entity_uri + '''> a prov:Plan . }
-                #OPTIONAL { <''' + entity_uri + '''> rdf:label ?t . }
-                #OPTIONAL { <''' + entity_uri + '''> prov:value ?v . }
-                #OPTIONAL { <''' + entity_uri + '''> prov:wasAttributedTo ?wat . }
-                #OPTIONAL { ?wat foaf:name ?wat_name . }
+                OPTIONAL { <''' + entity_uri + '''> dc:created ?c . }
+                OPTIONAL { <''' + entity_uri + '''> dcat:downloadURL ?dl . }
+                OPTIONAL {
+                    { <''' + entity_uri + '''> a prov:Entity . }
+                    UNION
+                    { <''' + entity_uri + '''> a prov:Plan . }
+                }
+                OPTIONAL { <''' + entity_uri + '''> rdf:label ?t . }
+                OPTIONAL { <''' + entity_uri + '''> prov:value ?v . }
+                OPTIONAL { <''' + entity_uri + '''> prov:wasAttributedTo ?wat . }
+                OPTIONAL { ?wat foaf:name ?wat_name . }
             }
         }
     '''
