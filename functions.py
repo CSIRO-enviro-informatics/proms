@@ -557,15 +557,15 @@ def get_entity(entity_uri):
         WHERE {
             GRAPH ?g {
                 OPTIONAL { <''' + entity_uri + '''> rdf:label ?l . }
-                OPTIONAL { <''' + entity_uri + '''> dc:created ?c . }
-                OPTIONAL { <''' + entity_uri + '''> dcat:downloadURL ?dl . }
-                { <''' + entity_uri + '''> a prov:Entity . }
-                UNION
-                { <''' + entity_uri + '''> a prov:Plan . }
-                OPTIONAL { <''' + entity_uri + '''> rdf:label ?t . }
-                OPTIONAL { <''' + entity_uri + '''> prov:value ?v . }
-                OPTIONAL { <''' + entity_uri + '''> prov:wasAttributedTo ?wat . }
-                OPTIONAL { ?wat foaf:name ?wat_name . }
+                #OPTIONAL { <''' + entity_uri + '''> dc:created ?c . }
+                #OPTIONAL { <''' + entity_uri + '''> dcat:downloadURL ?dl . }
+                #{ <''' + entity_uri + '''> a prov:Entity . }
+                #UNION
+                #{ <''' + entity_uri + '''> a prov:Plan . }
+                #OPTIONAL { <''' + entity_uri + '''> rdf:label ?t . }
+                #OPTIONAL { <''' + entity_uri + '''> prov:value ?v . }
+                #OPTIONAL { <''' + entity_uri + '''> prov:wasAttributedTo ?wat . }
+                #OPTIONAL { ?wat foaf:name ?wat_name . }
             }
         }
     '''
@@ -605,11 +605,9 @@ def get_entity_dict(entity_uri):
 def get_entity_details_svg(entity_dict):
     # Draw Entity
     eLabel = entity_dict.get('l', 'uri')
-    eUri = entity_dict.get('uri', '')
     script = '''
             var eLabel = "''' + eLabel + '''";
-            var eUri = "''' + eUri + '''";
-            var entity = addEntity(380, 255, eLabel, eUri);
+            var entity = addEntity(380, 255, eLabel, "");
     '''
 
     # Draw value if it has one
@@ -703,9 +701,9 @@ WHERE {
             # TODO: Check query
             query_encoded = urllib.quote(query)
             script += '''
-                activityUsed1 = addActivity(555, 205, "", "");
-                activityUsed2 = addActivity(550, 200, "", "");
-                activityUsedN = addActivity(545, 195, "Multiple Activities, click to search", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "function/sparql/?query=" + query_encoded + '''");
+                activityUsed1 = addActivity(555, 215, "", "");
+                activityUsed2 = addActivity(550, 210, "", "");
+                activityUsedN = addActivity(545, 205, "Multiple Activities, click to search", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "function/sparql/?query=" + query_encoded + '''");
                 addLink(activityUsedN, entity, "prov:used", TOP);
             '''
         else:
