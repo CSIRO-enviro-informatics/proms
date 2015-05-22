@@ -4,7 +4,7 @@ sudo mkdir -p /opt/proms
 cd /opt/proms
 git clone https://stash.csiro.au/scm/eis/proms.git .
 sudo pip install flask
-sudo pip install rdflib==3.2.3
+sudo pip install rdflib
 # install watchdog to avoid issued with six.py requiring _winreg
 sudo pip install watchdog
 cat >/opt/proms/start.sh <<EOL
@@ -15,7 +15,7 @@ EOL
 sudo chmod u+wx start.sh
 cat >/opt/proms/stop.sh <<EOL
 #!/bin/bash
-sudo kill `ps aux | grep proms_server | grep -v "grep" | head -3 | awk '{print $2}'`
+sudo kill \`ps aux | grep proms_server | grep -v "grep" | head -3 | awk '{print \$2}'\`
 EOL
 sudo chmod u+wx stop.sh
 echo
