@@ -603,7 +603,6 @@ def get_entity_dict(entity_uri):
                 e_script += get_entity_activity_used_svg(entity_uri)
                 e_script += get_entity_entity_wdf_svg(entity_uri)
                 ret['e_script'] = e_script
-
     return ret
 
 def get_entity_details_svg(entity_dict):

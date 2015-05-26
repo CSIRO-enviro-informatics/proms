@@ -1,6 +1,7 @@
 HOME_DIR = '/opt/proms/'
 STATIC_DIR = 'static/'
 LOGFILE = HOME_DIR + 'proms.log'
+HOST = '0.0.0.0'
 PORT = 9000
 DEBUG = True
 
