@@ -5,6 +5,7 @@
     {% if AGENT %}
         <h2>An Agent</h2>
         <h3>URI: {{AGENT['uri']}}</h3>
+        <p><a href="">html</a> | <a href="{{request.path + "?uri=" + AGENT['uri_html'] + "&_format=text/turtle"}}">rdf/turtle</a></p>
         <table class="lined">
             <tr><th>Title:</th><td>{{AGENT['n']}}</td></tr>
         </table>

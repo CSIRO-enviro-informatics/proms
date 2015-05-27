@@ -68,7 +68,7 @@ def reports():
             if request.args.get('_format'):
                 if 'text/turtle' in request.args.get('_format') == 'text/turtle':
                     response = functions.get_report_rdf(uri)
-                    return Response(response, status=201, mimetype='text/plain')
+                    return Response(response, status=201, mimetype='text/turtle', headers={"Content-Disposition": "filename=Report.ttl"})
                 else:
                     return Response('Unknown format type', status=400, mimetype='text/plain')
             else:
@@ -164,7 +164,7 @@ def entities():
         if request.args.get('_format'):
             if 'text/turtle' in request.args.get('_format'):
                 response = functions.get_entity_rdf(uri)
-                return Response(response, status=201, mimetype='text/plain')
+                return Response(response, status=201, mimetype='text/turtle', headers={"Content-Disposition": "filename=Entity.ttl"})
             else:
                 return Response('Unknown format type', status=400, mimetype='text/plain')
         else:
@@ -192,7 +192,7 @@ def activities():
         if request.args.get('_format'):
             if 'text/turtle' in request.args.get('_format'):
                 response = functions.get_activity_rdf(uri)
-                return Response(response, status=201, mimetype='text/plain')
+                return Response(response, status=201, mimetype='text/turtle', headers={"Content-Disposition": "filename=Activity.ttl"})
             else:
                 return Response('Unknown format type', status=400, mimetype='text/plain')
         else:
@@ -220,7 +220,7 @@ def agents():
         if request.args.get('_format'):
             if 'text/turtle' in request.args.get('_format'):
                 response = functions.get_agent_rdf(uri)
-                return Response(response, status=201, mimetype='text/plain')
+                return Response(response, status=201, mimetype='text/turtle', headers={"Content-Disposition": "filename=Agent.ttl"})
             else:
                 return Response('Unknown format type', status=400, mimetype='text/plain')
         else:

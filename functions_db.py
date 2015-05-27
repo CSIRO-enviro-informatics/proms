@@ -12,7 +12,6 @@ def db_query(sparql_query):
     return json.loads(r.text)
 
 
-# TODO: move this to a POST query - there is an error in that I can only get GET to work for SELECT. INSERT POST ok
 def db_query_secure(sparql_query):
     auth = (settings.FUSEKI_SECURE_USR, settings.FUSEKI_SECURE_PWD)
     data = {'query': sparql_query, 'format': 'json'}

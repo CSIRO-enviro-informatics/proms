@@ -5,6 +5,7 @@
     {% if REPORT %}
         <h2>A Report</h2>
         <h3>URI: {{REPORT['uri']}}</h3>
+        <p><a href="">html</a> | <a href="{{request.path + "?uri=" + REPORT['uri_html'] + "&_format=text/turtle"}}">rdf/turtle</a></p>
         <h4><a class="definition" href={{REPORT['t']}}>{{REPORT['t_str']}}</a> Report</h4>
         <table class="lined">
             <tr><th>Title:</th><td>{{REPORT['l']}}</td></tr>

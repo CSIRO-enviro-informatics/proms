@@ -302,6 +302,7 @@ def get_report_dict(report_uri):
                 if('eac_t' in report_detail['results']['bindings'][0]):
                     ret['eac_t'] = report_detail['results']['bindings'][index]['eac_t']['value']
             ret['uri'] = report_uri
+            ret['uri_html'] = urllib.quote(report_uri)
             svg_script = get_report_details_svg(ret)
             if svg_script[0] == True:
                 ret['r_script'] = svg_script[1]
@@ -589,6 +590,7 @@ def get_entity_dict(entity_uri):
     if entity_detail and 'results' in entity_detail:
         if len(entity_detail['results']['bindings']) > 0:
             ret['uri'] = entity_uri
+            ret['uri_html'] = urllib.quote(entity_uri)
             if('l' in entity_detail['results']['bindings'][0]):
                 ret['l'] = entity_detail['results']['bindings'][0]['l']['value']
             if('c' in entity_detail['results']['bindings'][0]):
@@ -849,6 +851,7 @@ def get_activity_dict(activity_uri):
     if activity_detail and 'results' in activity_detail:
         if len(activity_detail['results']['bindings']) > 0:
             ret['uri'] = activity_uri
+            ret['uri_html'] = urllib.quote(activity_uri)
             ret['l'] = activity_detail['results']['bindings'][0]['l']['value']
             if 't' in activity_detail['results']['bindings'][0]:
                 ret['t'] = activity_detail['results']['bindings'][0]['t']['value']
@@ -1189,6 +1192,7 @@ def get_agent_dict(agent_uri):
     ret = {}
     if agent_detail and 'results' in agent_detail and len(agent_detail['results']['bindings']) > 0:
         ret['uri'] = agent_uri
+        ret['uri_html'] = urllib.quote(agent_uri)
         if 'n' in agent_detail['results']['bindings'][0]:
             ret['n'] = agent_detail['results']['bindings'][0]['n']['value']
         else:
