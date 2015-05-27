@@ -25,6 +25,14 @@ def db_query_secure(sparql_query):
         return [False, e.message]
 
 
+def db_query_secure_turtle(sparql_query):
+    data = {'query': sparql_query, 'format': 'text/turtle'}
+    auth = (settings.FUSEKI_SECURE_USR, settings.FUSEKI_SECURE_PWD)
+    headers = {'Accept': 'text/turtle'}
+    r = requests.post(settings.FUSEKI_QUERY_URI, data=data, auth=auth, headers=headers)
+    return r.text
+
+
 def db_insert(turtle, from_string=False):
     #convert the Turtle into N-Triples
     g = rdflib.Graph()

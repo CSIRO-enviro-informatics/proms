@@ -308,6 +308,13 @@ def get_report_dict(report_uri):
     return ret
 
 
+def get_report_rdf(report_uri):
+    query = '''
+        DESCRIBE * WHERE { GRAPH <''' + report_uri + '''> { ?s ?p ?o } }
+    '''
+    return functions_db.db_query_secure_turtle(query)
+
+
 #TODO: Check if this is used
 def get_report_metadata(report_uri):
     #TODO: landing page
@@ -605,6 +612,14 @@ def get_entity_dict(entity_uri):
                 ret['e_script'] = e_script
     return ret
 
+
+def get_entity_rdf(entity_uri):
+    query = '''
+        DESCRIBE <'''+ entity_uri + '''>
+    '''
+    return functions_db.db_query_secure_turtle(query)
+
+
 def get_entity_details_svg(entity_dict):
     # Draw Entity
     eLabel = entity_dict.get('l', 'uri')
@@ -858,6 +873,13 @@ def get_activity_dict(activity_uri):
                 a_script += get_activity_was_informed_by(activity_uri)
                 ret['a_script'] = a_script
     return ret
+
+
+def get_activity_rdf(activity_uri):
+    query = '''
+        DESCRIBE <''' + activity_uri + '''>
+    '''
+    return functions_db.db_query_secure_turtle(query)
 
 
 def get_activity_details_svg(activity_dict):
@@ -1181,6 +1203,14 @@ def get_agent_dict(agent_uri):
             a_script += get_agent_was_associated_with_svg(agent_uri)
             ret['a_script'] = a_script
     return ret
+
+
+def get_agent_rdf(agent_uri):
+    agent = '''@prefix prov:   <http://www.w3.org/ns/prov#> .
+<''' + agent_uri + '''>
+    a   prov:Agent;
+    '''
+    return agent
 
 
 def get_agent_details_svg(agent_dict):

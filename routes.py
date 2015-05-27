@@ -64,18 +64,27 @@ def reports():
     if request.method == 'GET':
         #single Report
         if request.args.get('uri'):
-            #unencode the uri QSA
             uri = urllib.unquote(request.args.get('uri'))
-            report = functions.get_report_dict(uri)
-            return render_template('report.html',
-                                   REPORT=report,
-                                   PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
+            if request.args.get('_format'):
+                if 'text/turtle' in request.args.get('_format') == 'text/turtle':
+                    response = functions.get_report_rdf(uri)
+                    return Response(response, status=201, mimetype='text/plain')
+                else:
+                    return Response('Unknown format type', status=400, mimetype='text/plain')
+            else:
+                report = functions.get_report_dict(uri)
+                return render_template('report.html',
+                                       REPORT=report,
+                                       PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
         #multiple Reports (register)
         else:
-            reports = functions.get_reports_dict()
-            return render_template('report.html',
-                                   REPORTS=reports,
-                                   PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
+            if request.args.get('_format'):
+                return Response('A specific report URI must be provided', status=400, mimetype='text/plain')
+            else:
+                reports = functions.get_reports_dict()
+                return render_template('report.html',
+                                       REPORTS=reports,
+                                       PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
 
     #process a posted Report
     if request.method == 'POST':
@@ -152,15 +161,25 @@ def entities():
     if request.args.get('uri'):
         #unencode the uri QSA
         uri = urllib.unquote(request.args.get('uri'))
-        entity = functions.get_entity_dict(uri)
-        return render_template('entity.html',
-                           ENTITY=entity)
+        if request.args.get('_format'):
+            if 'text/turtle' in request.args.get('_format'):
+                response = functions.get_entity_rdf(uri)
+                return Response(response, status=201, mimetype='text/plain')
+            else:
+                return Response('Unknown format type', status=400, mimetype='text/plain')
+        else:
+            entity = functions.get_entity_dict(uri)
+            return render_template('entity.html',
+                               ENTITY=entity)
     #multiple Entities (register)
     else:
-        entities = functions.get_entities_dict()
-        return render_template('entity.html',
-                           PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
-                           ENTITIES=entities)
+        if request.args.get('_format'):
+            return Response('A specific Entity URI must be provided', status=400, mimetype='text/plain')
+        else:
+            entities = functions.get_entities_dict()
+            return render_template('entity.html',
+                               PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                               ENTITIES=entities)
 
 
 @routes.route('/id/activity', methods=['GET'])
@@ -170,16 +189,26 @@ def activities():
     if request.args.get('uri'):
         #unencode the uri QSA
         uri = urllib.unquote(request.args.get('uri'))
-        activity = functions.get_activity_dict(uri)
-        return render_template('activity.html',
-                               PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
-                               ACTIVITY=activity)
+        if request.args.get('_format'):
+            if 'text/turtle' in request.args.get('_format'):
+                response = functions.get_activity_rdf(uri)
+                return Response(response, status=201, mimetype='text/plain')
+            else:
+                return Response('Unknown format type', status=400, mimetype='text/plain')
+        else:
+            activity = functions.get_activity_dict(uri)
+            return render_template('activity.html',
+                                   PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                                   ACTIVITY=activity)
     #multiple Activities (register)
     else:
-        activities = functions.get_activities_dict()
-        return render_template('activity.html',
-                               PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
-                               ACTIVITIES=activities)
+        if request.args.get('_format'):
+            return Response('A specific Entity URI must be provided', status=400, mimetype='text/plain')
+        else:
+            activities = functions.get_activities_dict()
+            return render_template('activity.html',
+                                   PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                                   ACTIVITIES=activities)
 
 
 @routes.route('/id/agent/', methods=['GET'])
@@ -188,15 +217,25 @@ def agents():
     if request.args.get('uri'):
         #unencode the uri QSA
         uri = urllib.unquote(request.args.get('uri'))
-        agent = functions.get_agent_dict(uri)
-        return render_template('agent.html',
-                               AGENT=agent)
+        if request.args.get('_format'):
+            if 'text/turtle' in request.args.get('_format'):
+                response = functions.get_agent_rdf(uri)
+                return Response(response, status=201, mimetype='text/plain')
+            else:
+                return Response('Unknown format type', status=400, mimetype='text/plain')
+        else:
+            agent = functions.get_agent_dict(uri)
+            return render_template('agent.html',
+                                   AGENT=agent)
     #multiple Agents (register)
     else:
-        agents = functions.get_agents_dict()
-        return render_template('agent.html',
-                               PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
-                               AGENTS=agents)
+        if request.args.get('_format'):
+            return Response('A specific Entity URI must be provided', status=400, mimetype='text/plain')
+        else:
+            agents = functions.get_agents_dict()
+            return render_template('agent.html',
+                                   PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                                   AGENTS=agents)
 
 
 @routes.route('/function/pingback', methods=['GET', 'POST'])
