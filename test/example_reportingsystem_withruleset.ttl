@@ -11,5 +11,10 @@
         prov:Agent ;
     rdfs:label "VHIRL default reporting system"^^xsd:string ;
     rdfs:comment "Default reporting system for VHIRL"^^xsd:string ;
-	proms:validation "top_level_filename_without_extension"^^xsd:string.
+	proms:validation "top_level_filename_without_extension_the_class_to_call_must_have_the_same_name"^^xsd:string.
+	
+#The proms validation file must:
+# inherit from StackedRuleSet
+# have a single top level class inheriting from stacked ruleset with the same name as the file
+# call the stacked ruleset base constructor
 	
