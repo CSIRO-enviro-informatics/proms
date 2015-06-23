@@ -1,0 +1,3 @@
+[submodule "rules_proms"]
+	path = rules_proms
+	url = https://woo392@stash.csiro.au/scm/eis/rules_proms.git
