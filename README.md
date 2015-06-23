@@ -8,7 +8,7 @@ PROMS Server may be installed as per instructions in the installation/ subfolder
 
 Features
 --------
-Please see the CAHGELOG.md file for version notes.
+Please see the CHANGELOG.md file for version notes.
 
 
 Support
