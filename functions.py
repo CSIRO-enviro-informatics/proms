@@ -2,14 +2,13 @@ import functions_db
 import settings
 import cStringIO
 from rdflib import Graph
-#import rules_proms
-from rulesets import proms
-from rulesets import reportingsystems
-#from rulesets import proms_report
-#from rulesets.rules_proms import proms_report
 import urllib
 import re
 import uuid
+from rules_proms.proms_basic_report_ruleset import PromsBasicReportValid
+from rules_proms.proms_internal_report_ruleset import PromsInternalReportValid
+from rules_proms.proms_external_report_ruleset import PromsExternalReportValid
+
 
 
 #
@@ -189,17 +188,17 @@ def put_reportingsystem(reportingsystem_in_turtle):
 
     #conformance
     #from rulesets import proms_report
-    conf_results = reportingsystems.ReportingSystems(g).get_result()
+    #conf_results = reportingsystems.ReportingSystems(g).get_result()
     #conf_results = proms_report.ReportingSystems(g).get_result()
 
-    if conf_results['rule_results'][0]['passed']:
-        result = functions_db.db_insert_secure(reportingsystem_in_turtle, True)
-        if result[0]:
-            return [True, 'OK']
-        else:
-            return [False, 'Error writing report to triplestore']
+    #if conf_results['rule_results'][0]['passed']:
+    result = functions_db.db_insert_secure(reportingsystem_in_turtle, True)
+    if result[0]:
+        return [True, 'OK']
     else:
-        return [False, conf_results['rule_results'][0]['fail_reasons']]
+        return [False, 'Error writing report to triplestore']
+    #else:
+    #    return [False, conf_results['rule_results'][0]['fail_reasons']]
 
 
 #
@@ -478,11 +477,31 @@ def put_report(report_in_turtle):
     except Exception as e:
         return [False, ['Could not parse input: ' + str(e)]]
 
-    #conformance
-    conf_results = proms.PromsReport(g).get_result()
-    #conf_results = proms_report.PromsReport(g).get_result()
+    report_type = ''
+    query = '''
+        PREFIX proms: <http://promsns.org/def/proms#>
+        SELECT DISTINCT ?type WHERE {
+                ?s a ?type .
+            FILTER (?type = proms:BasicReport || ?type = proms:InternalReport || ?type = proms:ExternalReport)
+        }
+    '''
+    qres = g.query(query)
+    if len(qres) == 1:
+        for row in qres:
+            if len(row) == 1:
+                report_type = row[0]
+                break
+    if 'BasicReport' in report_type:
+        pr = PromsBasicReportValid(g)
+    elif 'InternalReport' in report_type:
+        pr = PromsInternalReportValid(g)
+    elif 'ExternalReport' in report_type:
+        pr = PromsExternalReportValid(g)
+    else:
+        return [False, 'Unknown Report type (expecting "BasicReport", "InternalReport" or "ExternalReport")']
+    conf_results = pr.get_result()
 
-    if conf_results['rule_results'][0]['passed']:
+    if conf_results[0]['passed']:
         #Get Report URI
         query = '''
             PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
