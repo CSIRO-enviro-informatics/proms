@@ -501,7 +501,17 @@ def put_report(report_in_turtle):
         return [False, 'Unknown Report type (expecting "BasicReport", "InternalReport" or "ExternalReport")']
     conf_results = pr.get_result()
 
-    if conf_results[0]['passed']:
+
+    fail_reasons = []
+    for ruleset in conf_results:
+        if not ruleset['passed']:
+            for rule_result in ruleset['rule_results']:
+                if not rule_result['passed']:
+                    for reason in rule_result['fail_reasons']:
+                        fail_reasons.append(reason)
+
+    #if passed:
+    if len(fail_reasons) == 0:
         #Get Report URI
         query = '''
             PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
@@ -535,7 +545,7 @@ def put_report(report_in_turtle):
         else:
             return [False, result[1]]
     else:
-        return [False, conf_results['rule_results'][0]['fail_reasons']]
+        return [False, fail_reasons]
 
 #
 #   Entities
