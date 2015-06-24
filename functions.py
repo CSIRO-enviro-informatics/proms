@@ -43,11 +43,12 @@ def get_reportingsystem_dict(reportingsystem_uri):
         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
-        SELECT ?t ?fn ?o ?em ?ph ?add
+        SELECT ?t ?fn ?o ?em ?ph ?add ?v
         WHERE {
           <''' + reportingsystem_uri + '''> a proms:ReportingSystem .
           <''' + reportingsystem_uri + '''> rdf:label ?t .
           OPTIONAL { <''' + reportingsystem_uri + '''> proms:owner ?o . }
+          OPTIONAL { <''' + reportingsystem_uri + '''> proms:validation ?v . }
           OPTIONAL { ?o vcard:fn ?fn . }
           OPTIONAL { ?o vcard:hasEmail ?em . }
           OPTIONAL { ?o vcard:hasTelephone ?ph_1 . }
@@ -71,6 +72,8 @@ def get_reportingsystem_dict(reportingsystem_uri):
                 ret['ph'] = reportingsystem_detail['results']['bindings'][0]['ph']['value']
             if 'add' in reportingsystem_detail['results']['bindings'][0]:
                 ret['add'] = reportingsystem_detail['results']['bindings'][0]['add']['value']
+            if 'v' in reportingsystem_detail['results']['bindings'][0]:
+                ret['v'] = reportingsystem_detail['results']['bindings'][0]['v']['value']
             ret['uri'] = reportingsystem_uri
 
             svg_script = get_reportingsystem_details_svg(ret)
@@ -461,7 +464,6 @@ def get_report_activity_wgb_svg(entity_uri):
             '''
         else:
             pass
-
     return script
 
 
@@ -477,19 +479,24 @@ def put_report(report_in_turtle):
     except Exception as e:
         return [False, ['Could not parse input: ' + str(e)]]
 
+    # Report validation (Basic, Internal and External)
     report_type = ''
+    reporting_system = ''
     query = '''
         PREFIX proms: <http://promsns.org/def/proms#>
-        SELECT DISTINCT ?type WHERE {
-                ?s a ?type .
+        SELECT DISTINCT ?type ?rs WHERE {
+                ?r a ?type .
+                OPTIONAL { ?r proms:reportingSystem ?rs } .
             FILTER (?type = proms:BasicReport || ?type = proms:InternalReport || ?type = proms:ExternalReport)
         }
     '''
     qres = g.query(query)
     if len(qres) == 1:
         for row in qres:
-            if len(row) == 1:
+            if len(row) > 0:
                 report_type = row[0]
+                if len(row) == 2:
+                    reporting_system = row[1]
                 break
     if 'BasicReport' in report_type:
         pr = PromsBasicReportValid(g)
@@ -500,8 +507,6 @@ def put_report(report_in_turtle):
     else:
         return [False, 'Unknown Report type (expecting "BasicReport", "InternalReport" or "ExternalReport")']
     conf_results = pr.get_result()
-
-
     fail_reasons = []
     for ruleset in conf_results:
         if not ruleset['passed']:
@@ -510,7 +515,22 @@ def put_report(report_in_turtle):
                     for reason in rule_result['fail_reasons']:
                         fail_reasons.append(reason)
 
-    #if passed:
+    # Additional validation (if any, as defined in ReportingSystem)
+    rs_dict = get_reportingsystem_dict(reporting_system)
+    if 'v' in rs_dict:
+        validation_name = rs_dict['v']
+        validation_module = __import__('rules_proms.' + validation_name)
+        validation_module = getattr(validation_module, validation_name)
+        validation_method = getattr(validation_module, validation_name)
+        pr = validation_method(g)
+        conf_results = pr.get_result()
+        for ruleset in conf_results:
+            if not ruleset['passed']:
+                for rule_result in ruleset['rule_results']:
+                    if not rule_result['passed']:
+                        for reason in rule_result['fail_reasons']:
+                            fail_reasons.append(reason)
+
     if len(fail_reasons) == 0:
         #Get Report URI
         query = '''
@@ -546,6 +566,7 @@ def put_report(report_in_turtle):
             return [False, result[1]]
     else:
         return [False, fail_reasons]
+
 
 #
 #   Entities
