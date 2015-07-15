@@ -55,10 +55,14 @@ def db_insert(turtle, from_string=False):
 def db_insert_secure(turtle, from_string=False):
     #convert the Turtle into N-Triples
     g = rdflib.Graph()
-    if from_string:
-        g.parse(data=turtle, format='text/turtle')
-    else:
-        g.load(turtle, format='n3')
+    try:
+        if from_string:
+            g.parse(data=turtle, format='text/turtle')
+        else:
+            g.load(turtle, format='n3')
+    except Exception, e:
+        print e.message
+        return [False, e.message]
 
     # SPARQL INSERT
     data = {'update': 'INSERT DATA { ' + g.serialize(format='nt') + ' }'}

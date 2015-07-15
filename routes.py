@@ -238,6 +238,7 @@ def agents():
                                    AGENTS=agents)
 
 
+# Deprecated - XXX Remove
 @routes.route('/function/pingback', methods=['GET', 'POST'])
 def pingback():
     if request.method == 'GET':
@@ -245,6 +246,19 @@ def pingback():
     #process a pingback
     if request.method == 'POST':
         pass
+
+
+@routes.route('/function/receive_pingback', methods=['POST'])
+def receive_pingback():
+    if request.method == 'GET':
+        return render_template('pingback.html')
+    #process a pingback
+    if request.method == 'POST':
+        pingback_result = functions.register_pingback(request.data)
+        if pingback_result[0]:
+            return Response('OK', status=200)
+        else:
+            return Response(pingback_result[1], status=400, mimetype='text/plain')
 
 
 @routes.route('/function/sparql/', methods=['GET', 'POST'])
