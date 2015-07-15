@@ -1,3 +1,4 @@
+PROMS_LABEL = 'A PROMS Server'
 HOME_DIR = '/opt/proms/'
 STATIC_DIR = 'static/'
 LOGFILE = HOME_DIR + 'proms.log'
@@ -18,3 +19,13 @@ FUSEKI_SECURE_USR = 'fusekiusr'
 FUSEKI_SECURE_PWD = 'fusekirocks'
 # Request Timeout in seconds
 FUSEKI_TIMEOUT = 5
+
+# Pingback strategies to be tried (in order)
+PINGBACK_CONFIG = {
+	'pingback_strategies': ['known_stores', 'follow_linked_data']
+}
+# Comma separated list of known PROMS instances that receive pingback
+KNOWN_PROMS_INSTANCES = []
+
+DPN_BASE_URI = 'http://sample-dpn-instance.com'
+
