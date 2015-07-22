@@ -1,6 +1,7 @@
 import requests
 import settings
 import functions
+import urllib
 
 
 PINGBACK_LINK_ONLY_MESSAGE = 0
@@ -145,7 +146,7 @@ def known_stores(report_graph):
             for store in proms_stores:
                 if not store.endswith('\\') and not store.endswith('/'):
                     store += '/'
-                proms_entity_uri = store + 'id/entity?uri=' + entity_uri
+                proms_entity_uri = store + 'id/entity?uri=' + urllib.quote(entity_uri)
                 r = requests.get(proms_entity_uri)
                 # Success
                 if r.status_code == 200:
