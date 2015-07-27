@@ -516,11 +516,8 @@ def send_pingback(report_graph):
         for strategy in strategies:
             strategy_method = getattr(functions_pingback, strategy)
             strategy_successful = strategy_method(report_graph)
-            # TODO: Determine success, this will currently always be False
             if strategy_successful:
                 break
-            print "pause"
-            # TODO: Break if successful
 
 
 #TODO: remove hash from URI rewrite
