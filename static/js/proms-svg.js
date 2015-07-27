@@ -97,6 +97,16 @@ function addValue(x, y, title) {
 }
 
 
+function addLinkedActivity(x, y, title, uri) {
+	var activity = paper.rect(x, y, RECT_WIDTH, RECT_HEIGHT);
+	activity.attr({fill: "90-#006BFF-#00BFFF", stroke: "#000000", "stroke-width": 1});
+	addTextLabel(x + (RECT_WIDTH/2), y + (RECT_HEIGHT / 4), RECT_WIDTH, "Activity", null, 16, "bold", 1, "#000000");
+	addTextLabel(x + (RECT_WIDTH/2), y + (RECT_HEIGHT / 2), RECT_WIDTH, title, uri, 12, null, 2, "#000000");
+	activity.glow();
+	return activity;
+}
+
+
 function addLink(obj1, obj2, label, position) {
     bb1 = obj1.getBBox();
     bb2 = obj2.getBBox();
@@ -173,7 +183,8 @@ function addLink(obj1, obj2, label, position) {
 
 /*
     XXX Only draws connected links where the main object is on the left and
-    the objects to connect are in a row to the right (e.g. ReportingSystem).
+    the objects to connect are in a column to the right (e.g. ReportingSystem).
+    First connected object is in line with main object, others are below this.
 */
 function addConnectedLinks(baseObj, linkObjs, linkLabel) {
     // Arrow from first Report to ReportingSystem

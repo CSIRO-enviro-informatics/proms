@@ -18,12 +18,12 @@ from rules_proms.proms_reporting_system_ruleset import PromsReportingSystemValid
 #
 def get_reportingsystems_dict():
     query = '''
-        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX proms: <http://promsns.org/def/proms#>
         SELECT ?rs ?t
         WHERE {
           ?rs a proms:ReportingSystem .
-          ?rs rdf:label ?t .
+          ?rs rdfs:label ?t .
         }
     '''
     reportingsystems = functions_db.db_query_secure(query)
@@ -42,13 +42,13 @@ def get_reportingsystems_dict():
 
 def get_reportingsystem_dict(reportingsystem_uri):
     query = '''
-        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
         SELECT ?t ?fn ?o ?em ?ph ?add ?v
         WHERE {
           <''' + reportingsystem_uri + '''> a proms:ReportingSystem .
-          <''' + reportingsystem_uri + '''> rdf:label ?t .
+          <''' + reportingsystem_uri + '''> rdfs:label ?t .
           OPTIONAL { <''' + reportingsystem_uri + '''> proms:owner ?o . }
           OPTIONAL { <''' + reportingsystem_uri + '''> proms:validation ?v . }
           OPTIONAL { ?o vcard:fn ?fn . }
@@ -88,7 +88,7 @@ def get_reportingsystem_dict(reportingsystem_uri):
 
 def get_reports_for_rs_query(reportingsystem_uri):
     query = '''
-PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX proms: <http://promsns.org/def/proms#>
 SELECT  *
@@ -102,7 +102,7 @@ WHERE {
         UNION
         { ?r a proms:InternalReport }
         ?r proms:reportingSystem <''' + reportingsystem_uri + '''> .
-        ?r rdf:label ?t .
+        ?r rdfs:label ?t .
         ?r proms:nativeId ?job .
         ?r proms:endingActivity ?sat .
         ?sat prov:endedAtTime ?eat .
@@ -111,6 +111,7 @@ WHERE {
 ORDER BY DESC(?eat)
     '''
     return query
+
 
 #TODO: get ordering by Report --> Activity --> startedAtTime
 def get_reports_for_rs(reportingsystem_uri):
@@ -194,19 +195,12 @@ def put_reportingsystem(reportingsystem_in_turtle):
     # Validation
     conf_results = PromsReportingSystemValid(g).get_result()
     fail_reasons = []
-    """
-    for rule_result in conf_results['rule_results']:
-        if not rule_result['passed']:
-            for reason in rule_result['fail_reasons']:
-                fail_reasons.append(reason)
-    """
-
     for ruleset in conf_results:
         if not ruleset['passed']:
             for rule_result in ruleset['rule_results']:
                 if not rule_result['passed']:
-				    for reason in rule_result['fail_reasons']:
-					    fail_reasons.append(reason)
+                    for reason in rule_result['fail_reasons']:
+                        fail_reasons.append(reason)
 
     if len(fail_reasons) == 0:
         result = functions_db.db_insert_secure(reportingsystem_in_turtle, True)
@@ -223,7 +217,7 @@ def put_reportingsystem(reportingsystem_in_turtle):
 #
 def get_reports_dict():
     query = '''
-        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX proms: <http://promsns.org/def/proms#>
         SELECT DISTINCT ?r ?t
         WHERE {
@@ -233,7 +227,7 @@ def get_reports_dict():
                 { ?r a proms:ExternalReport . }
                 UNION
                 { ?r a proms:InternalReport . }
-                ?r rdf:label ?t
+                ?r rdfs:label ?t
             }
         }
         ORDER BY ?r
@@ -255,26 +249,26 @@ def get_reports_dict():
 
 def get_report(report_uri):
     query = '''
-        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
         SELECT ?rt ?l ?id ?rs ?rs_t ?sac ?sac_t ?sat ?eac ?eac_t ?eat
         WHERE {
             GRAPH ?g {
                 <''' + report_uri + '''> a ?rt .
-                <''' + report_uri + '''> rdf:label ?l .
+                <''' + report_uri + '''> rdfs:label ?l .
                 <''' + report_uri + '''> proms:nativeId ?id .
                 OPTIONAL { <''' + report_uri + '''> proms:reportingSystem ?rs } .
                 OPTIONAL { <''' + report_uri + '''> proms:startingActivity ?sac .
                     ?sac prov:startedAtTime ?sat .
-                    ?sac rdf:label ?sac_t
+                    ?sac rdfs:label ?sac_t
                 } .
                 OPTIONAL { <''' + report_uri + '''> proms:endingActivity ?eac .
                     ?eac prov:endedAtTime ?eat .
-                    ?eac rdf:label ?eac_t .
+                    ?eac rdfs:label ?eac_t .
                 } .
             }
-            OPTIONAL { ?rs rdf:label ?rs_t }
+            OPTIONAL { ?rs rdfs:label ?rs_t }
         }
     '''
     return functions_db.db_query_secure(query)
@@ -339,15 +333,15 @@ def get_report_metadata(report_uri):
     query = '''
         PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT ?rt ?t ?id ?rs ?rs_t ?sat
         WHERE {
             GRAPH ?g {
                 <''' + report_uri + '''> a ?rt .
-                <''' + report_uri + '''> rdf:label ?t .
+                <''' + report_uri + '''> rdfs:label ?t .
                 <''' + report_uri + '''> proms:nativeId ?id .
                 <''' + report_uri + '''> proms:reportingSystem ?rs .
-                ?rs rdf:label ?rs_t .
+                ?rs rdfs:label ?rs_t .
                 <''' + report_uri + '''> proms:startingActivity ?sac .
                 ?sac prov:startedAtTime ?sat .
             }
@@ -409,12 +403,12 @@ def get_report_activity_wgb_svg(entity_uri):
     script = ''
     query = '''
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT ?a ?t
         WHERE {
             GRAPH ?g {
                 ?a prov:generated <''' + entity_uri + '''> .
-                ?a rdf:label ?t .
+                ?a rdfs:label ?t .
             }
         }
     '''
@@ -597,8 +591,6 @@ def put_report(report_in_turtle):
     if len(fail_reasons) == 0:
         #Get Report URI
         query = '''
-            PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX proms: <http://promsns.org/def/proms#>
             SELECT  ?r ?job
             WHERE {
@@ -640,7 +632,7 @@ def put_report(report_in_turtle):
 def get_entities_dict():
     query = '''
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX proms: <http://promsns.org/def/proms#>
         SELECT DISTINCT ?e ?l
         WHERE {
@@ -650,7 +642,7 @@ def get_entities_dict():
                 { ?e a prov:Plan . }
                 UNION
                 { ?e a proms:ServiceEntity . }
-                OPTIONAL { ?e rdf:label ?l . }
+                OPTIONAL { ?e rdfs:label ?l . }
             }
         }
         ORDER BY ?e
@@ -674,7 +666,7 @@ def get_entity(entity_uri):
     #   wasDerivedFrom, wasGeneratedBy, inv. used, hadPrimarySource, wasAttributedTo, value
     #get the report metadata from DB
     query = '''
-        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX dc: <http://purl.org/dc/elements/1.1/>
         PREFIX dcat: <http://www.w3.org/ns/dcat#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -685,10 +677,10 @@ def get_entity(entity_uri):
                 { <''' + entity_uri + '''> a prov:Entity . }
                 UNION
                 { <''' + entity_uri + '''> a prov:Plan . }
-                OPTIONAL { <''' + entity_uri + '''> rdf:label ?l . }
+                OPTIONAL { <''' + entity_uri + '''> rdfs:label ?l . }
                 OPTIONAL { <''' + entity_uri + '''> dc:created ?c . }
                 OPTIONAL { <''' + entity_uri + '''> dcat:downloadURL ?dl . }
-                OPTIONAL { <''' + entity_uri + '''> rdf:label ?t . }
+                OPTIONAL { <''' + entity_uri + '''> rdfs:label ?t . }
                 OPTIONAL { <''' + entity_uri + '''> prov:value ?v . }
                 OPTIONAL { <''' + entity_uri + '''> prov:wasAttributedTo ?wat . }
                 OPTIONAL { ?wat foaf:name ?wat_name . }
@@ -773,12 +765,12 @@ def get_entity_activity_wgb_svg(entity_uri):
     script = ''
     query = '''
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT ?a ?t
         WHERE {
             GRAPH ?g {
                 ?a prov:generated <''' + entity_uri + '''> .
-                ?a rdf:label ?t .
+                ?a rdfs:label ?t .
             }
         }
     '''
@@ -806,12 +798,12 @@ def get_entity_activity_used_svg(entity_uri):
     script = ''
     query = '''
 PREFIX prov: <http://www.w3.org/ns/prov#>
-PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ?a ?t
 WHERE {
     GRAPH ?g {
         ?a prov:used <''' + entity_uri + '''> .
-        ?a rdf:label ?t .
+        ?a rdfs:label ?t .
     }
 }
     '''
@@ -858,7 +850,7 @@ def get_entity_entity_wdf_svg(entity_uri):
     script = ''
     query = '''
 PREFIX prov: <http://www.w3.org/ns/prov#>
-PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT ?e ?t
 WHERE {
     GRAPH ?g {
@@ -866,7 +858,7 @@ WHERE {
         UNION
         { <''' + entity_uri + '''> a prov:Plan . }
         <''' + entity_uri + '''> prov:wasDerivedFrom ?e .
-        ?e rdf:label ?t .
+        ?e rdfs:label ?t .
     }
 }
     '''
@@ -910,12 +902,12 @@ WHERE {
 def get_activities_dict():
     query = '''
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT DISTINCT ?a ?l
         WHERE {
             GRAPH ?g {
                 ?a a prov:Activity .
-                ?a rdf:label ?l
+                ?a rdfs:label ?l
             }
         }
         ORDER BY ?a
@@ -936,19 +928,19 @@ def get_activities_dict():
 def get_activity(activity_uri):
     query = '''
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         PREFIX proms: <http://promsns.org/def/proms#>
         SELECT DISTINCT ?l ?t ?sat ?eat ?waw ?r ?rt
         WHERE {
             GRAPH ?g {
                 <''' + activity_uri + '''> a prov:Activity .
-                <''' + activity_uri + '''> rdf:label ?l .
+                <''' + activity_uri + '''> rdfs:label ?l .
                 { ?r proms:startingActivity <''' + activity_uri + '''> . }
                 UNION
                 { ?r proms:endingActivity <''' + activity_uri + '''> . }
-                OPTIONAL { ?r rdf:label ?rt . }
-                OPTIONAL { <''' + activity_uri + '''> rdf:label ?t . }
+                OPTIONAL { ?r rdfs:label ?rt . }
+                OPTIONAL { <''' + activity_uri + '''> rdfs:label ?t . }
                 OPTIONAL { <''' + activity_uri + '''> prov:startedAtTime ?sat . }
                 OPTIONAL { <''' + activity_uri + '''> prov:endedAtTime ?eat . }
                 OPTIONAL { <''' + activity_uri + '''> prov:wasAssociatedWith ?waw . }
@@ -1030,12 +1022,12 @@ def get_activity_used_entities_svg(activity_uri):
     script = ''
     query = '''
 PREFIX prov: <http://www.w3.org/ns/prov#>
-PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT *
 WHERE {
     GRAPH ?g {
         <''' + activity_uri + '''> prov:used ?u .
-        OPTIONAL {?u rdf:label ?t .}
+        OPTIONAL {?u rdfs:label ?t .}
     }
 }
     '''
@@ -1099,14 +1091,14 @@ def get_activity_generated_entities_svg(activity_uri):
     script = ''
     query = '''
 PREFIX prov: <http://www.w3.org/ns/prov#>
-PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT *
 WHERE {
     GRAPH ?g {
         { <''' + activity_uri + '''> prov:generated ?u . }
         UNION
         { ?u prov:wasGeneratedBy <''' + activity_uri + '''> .}
-        OPTIONAL {?u rdf:label ?t .}
+        OPTIONAL {?u rdfs:label ?t .}
     }
 }
     '''
@@ -1173,13 +1165,13 @@ def get_activity_was_informed_by(activity_uri):
     script = ''
     query = '''
 PREFIX prov: <http://www.w3.org/ns/prov#>
-PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT *
 WHERE {
     GRAPH ?g {
         <''' + activity_uri + '''> a prov:Activity .
         <''' + activity_uri + '''> prov:wasInformedBy ?wif .
-        OPTIONAL { ?wif rdf:label ?t . }
+        OPTIONAL { ?wif rdfs:label ?t . }
     }
 }
     '''
@@ -1365,7 +1357,7 @@ def get_agent_details_svg(agent_dict):
 def get_agent_was_attributed_to_svg(agent_uri):
     script = ''
     query = '''
-PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
 SELECT DISTINCT ?e ?t
 WHERE {
@@ -1374,7 +1366,7 @@ WHERE {
         UNION
         { ?e a prov:Plan .}
         ?e prov:wasAttributedTo <''' + agent_uri + '''> ;
-        OPTIONAL { ?e rdf:label ?t . }
+        OPTIONAL { ?e rdfs:label ?t . }
     }
 }
     '''
@@ -1417,14 +1409,14 @@ WHERE {
 def get_agent_was_associated_with_svg(agent_uri):
     script = ''
     query = '''
-PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
 SELECT DISTINCT ?a ?t
 WHERE {
     GRAPH ?g {
         { ?a a prov:Activity . }
         ?a prov:wasAssociatedWith <''' + agent_uri + '''> ;
-        OPTIONAL { ?a rdf:label ?t . }
+        OPTIONAL { ?a rdfs:label ?t . }
     }
 }
     '''

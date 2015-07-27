@@ -38,7 +38,7 @@ def create_pingback_link_only_message(entity_uri):
         @prefix prov: <http://www.w3.org/ns/prov#> .
         @prefix dpn: <http://purl.org/dpn#> .
         @prefix dpn-proms: <http://promsns.org/def/dpn-proms#> .
-        @prefix : <http://''' + settings.DPN_BASE_URI + '''#> .
+        @prefix : <''' + settings.DPN_BASE_URI + '''#> .
 
         <''' + entity_uri + '''> a dpn:Dataset, prov:Entity .
 
