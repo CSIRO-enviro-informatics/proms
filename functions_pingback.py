@@ -13,6 +13,8 @@ pingback_message_type = PINGBACK_LINK_ONLY_MESSAGE
 
 
 def get_used_entities(report_graph):
+    """ Query all of the entities contained in a graph.
+    """
     # Get Used Entities
     query = '''
         PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -30,7 +32,8 @@ def get_used_entities(report_graph):
 
 # TODO: Deal with DPN_URI
 def create_pingback_link_only_message(entity_uri):
-    DPN_URI = 'http://dpn/'
+    """ Create a basic link-only pingback message.
+    """
     message = '''
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
         @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -58,8 +61,10 @@ def create_pingback_link_only_message(entity_uri):
     return message
 
 
-# TODO: Pass in placeholders
+# TODO: "Complete actedOnBehalfOf"
 def create_provenance_graph_transfer_message(report_graph, entity_uri, rs_uri, rs_label, rs_description):
+    """ Create a pingback message for the specified Entity that also contains the Report graph.
+    """
     message = '''
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
         @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -69,7 +74,7 @@ def create_provenance_graph_transfer_message(report_graph, entity_uri, rs_uri, r
         @prefix dpn: <http://purl.org/dpn#> .
 
         <''' + rs_uri + '''> a proms:ReportingSystem ;
-            prov:actedOnBehalfOf ...  .
+            prov:actedOnBehalfOf "Unknown"  .
 
         :   a proms:PingBackReport ;
             proms:reportingSystem :rs ;
@@ -85,8 +90,9 @@ def create_provenance_graph_transfer_message(report_graph, entity_uri, rs_uri, r
     return message
 
 
-# TODO: Pass in placeholders, add actual report
 def create_provenance_graph_transfer_plus_link(report_graph, entity_uri, rs_uri, rs_label, rs_description):
+    """ Create a pingback message for the specified Entity that contains the report graph as well as a link.
+    """
     message = create_provenance_graph_transfer_message(report_graph, entity_uri, rs_uri, rs_label, rs_description)
     # TODO: Add link
     message += '''
@@ -108,6 +114,8 @@ def create_provenance_graph_transfer_plus_link(report_graph, entity_uri, rs_uri,
 
 
 def create_pingback_message(entity_uri, report_graph):
+    """ Create a pingback for the specified Entity.
+    """
     if pingback_message_type == PINGBACK_LINK_ONLY_MESSAGE:
         return create_pingback_link_only_message(entity_uri)
     elif pingback_message_type == PINGBACK_PROV_GRAPH_TRANSFER or pingback_message_type == PINGBACK_PROV_GRAPH_TRANSFER_PLUS_LINK:
@@ -138,6 +146,8 @@ def create_pingback_message(entity_uri, report_graph):
 
 
 def known_stores(report_graph):
+    """ Send pingback for all Entities with the Report graph to known stores
+    """
     if settings.KNOWN_PROMS_INSTANCES and len(settings.KNOWN_PROMS_INSTANCES) > 0:
         proms_stores = settings.KNOWN_PROMS_INSTANCES
         entities = get_used_entities(report_graph)
@@ -162,6 +172,8 @@ def known_stores(report_graph):
 
 # TODO: What to do on success?
 def follow_linked_data(report_graph):
+    """ Send pingback for all Entities with the Report graph by following linked data
+    """
     entities = get_used_entities(report_graph)
     for row in entities:
         entity_uri = row[0]

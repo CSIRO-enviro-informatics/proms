@@ -6,6 +6,8 @@ import rdflib
 
 
 def db_query(sparql_query):
+    """ Make a non-secure SPARQL query
+    """
     data = {'query': sparql_query, 'format': 'json'}
     headers = {'Accept': 'application/json'}
     r = requests.post(settings.FUSEKI_QUERY_URI, data=data, headers=headers)
@@ -13,6 +15,8 @@ def db_query(sparql_query):
 
 
 def db_query_secure(sparql_query):
+    """ Make a secure SPARQL query
+    """
     auth = (settings.FUSEKI_SECURE_USR, settings.FUSEKI_SECURE_PWD)
     data = {'query': sparql_query, 'format': 'json'}
     headers = {'Accept': 'application/json'}
@@ -25,6 +29,8 @@ def db_query_secure(sparql_query):
 
 
 def db_query_secure_turtle(sparql_query):
+    """ Make a secure query in TURTLE format
+    """
     data = {'query': sparql_query, 'format': 'text/turtle'}
     auth = (settings.FUSEKI_SECURE_USR, settings.FUSEKI_SECURE_PWD)
     headers = {'Accept': 'text/turtle'}
@@ -33,6 +39,8 @@ def db_query_secure_turtle(sparql_query):
 
 
 def db_insert(turtle, from_string=False):
+    """ Make a non-secure insert into the DB
+    """
     #convert the Turtle into N-Triples
     g = rdflib.Graph()
     if from_string:
@@ -53,6 +61,8 @@ def db_insert(turtle, from_string=False):
 
 
 def db_insert_secure(turtle, from_string=False):
+    """ Make a secure insert into the DB
+    """
     #convert the Turtle into N-Triples
     g = rdflib.Graph()
     try:
@@ -79,6 +89,8 @@ def db_insert_secure(turtle, from_string=False):
 
 
 def db_insert_secure_named_graph(turtle, graph_uri, from_string=False):
+    """ Securely insert a named graph into the DB
+    """
     #convert the Turtle into N-Triples
     g = rdflib.Graph()
     if from_string:
@@ -98,13 +110,3 @@ def db_insert_secure_named_graph(turtle, graph_uri, from_string=False):
     except Exception, e:
         print e.message
         return [False, e.message]
-
-
-def get_values_from_sparql_results(results, vars):
-    ret = []
-    for triple in results['results']['bindings']:
-        row = []
-        for var in vars:
-            row.append(triple[var]['value'])
-        ret.append(row)
-    return ret
