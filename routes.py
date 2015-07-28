@@ -7,7 +7,6 @@ import settings
 import json
 
 
-
 #
 #   All the routes in the API
 #

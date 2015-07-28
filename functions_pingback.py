@@ -13,7 +13,7 @@ pingback_message_type = PINGBACK_LINK_ONLY_MESSAGE
 
 
 def get_used_entities(report_graph):
-    """ Query all of the entities contained in a graph.
+    """ Query all of the entities contained in a graph
     """
     # Get Used Entities
     query = '''
@@ -32,7 +32,7 @@ def get_used_entities(report_graph):
 
 # TODO: Deal with DPN_URI
 def create_pingback_link_only_message(entity_uri):
-    """ Create a basic link-only pingback message.
+    """ Create a basic link-only pingback message
     """
     message = '''
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -63,13 +63,13 @@ def create_pingback_link_only_message(entity_uri):
 
 # TODO: "Complete actedOnBehalfOf"
 def create_provenance_graph_transfer_message(report_graph, entity_uri, rs_uri, rs_label, rs_description):
-    """ Create a pingback message for the specified Entity that also contains the Report graph.
+    """ Create a pingback message for the specified Entity that also contains the Report graph
     """
     message = '''
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
         @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
         @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-        @prefix proms:   <http://promsns.org/def/proms#> .
+        @prefix proms: <http://promsns.org/def/proms#> .
         @prefix prov: <http://www.w3.org/ns/prov#> .
         @prefix dpn: <http://purl.org/dpn#> .
 
@@ -91,7 +91,7 @@ def create_provenance_graph_transfer_message(report_graph, entity_uri, rs_uri, r
 
 
 def create_provenance_graph_transfer_plus_link(report_graph, entity_uri, rs_uri, rs_label, rs_description):
-    """ Create a pingback message for the specified Entity that contains the report graph as well as a link.
+    """ Create a pingback message for the specified Entity that contains the report graph as well as a link
     """
     message = create_provenance_graph_transfer_message(report_graph, entity_uri, rs_uri, rs_label, rs_description)
     # TODO: Add link
@@ -114,7 +114,7 @@ def create_provenance_graph_transfer_plus_link(report_graph, entity_uri, rs_uri,
 
 
 def create_pingback_message(entity_uri, report_graph):
-    """ Create a pingback for the specified Entity.
+    """ Create a pingback for the specified Entity
     """
     if pingback_message_type == PINGBACK_LINK_ONLY_MESSAGE:
         return create_pingback_link_only_message(entity_uri)
@@ -170,7 +170,7 @@ def known_stores(report_graph):
         return [False, 'No PROMS instances could be found in settings (KNOWN_PROMS_INSTANCES)']
 
 
-# TODO: What to do on success?
+# TODO: Where to send on success?
 def follow_linked_data(report_graph):
     """ Send pingback for all Entities with the Report graph by following linked data
     """
@@ -193,6 +193,7 @@ To add a custom pingback method:
 Create a method in this file that takes the incoming report graph as an argument.
 For example:
 
+# Replace 'custom_pingback_method' with the name of your choosing
 def custom_pingback_method(report_graph):
     # Pingback method code here
 

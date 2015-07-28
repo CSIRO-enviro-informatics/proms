@@ -537,7 +537,7 @@ def put_report(report_in_turtle):
             graph_name = '<' + r_uri + '>'
 
         result = functions_db.db_insert_secure_named_graph(report_in_turtle, graph_name, True)
-        send_pingback(g)
+        #send_pingback(g)
 
         if result[0]:
             return [True, 'OK']
