@@ -260,10 +260,21 @@ def receive_pingback():
             return Response(pingback_result[1], status=400, mimetype='text/plain')
 
 
-@routes.route('/function/sparql/', methods=['GET', 'POST'])
+@routes.route('/function/sparql/', methods=['POST'])
 def sparql():
     # Query submitted
     if request.method == 'POST':
+        if len(request.args) == 0:
+            sd = functions.get_service_description(request)
+            if sd[0]:
+                if 'text/turtle' in request.headers['Content-Type']:
+                    return Response(sd[1], status=200, mimetype='text/turtle')
+                elif 'application/json' in request.headers['Content-Type']:
+                    return Response(sd[1], status=200, mimetype='application/json')
+                elif 'application/rdf' in request.headers['Content-Type']:
+                    return Response(sd[1], status=200, mimetype='application/rdf')
+            else:
+                return Response('Error retrieving service description', status=400, mimetype='text/plain')
         query = request.form['query']
         query_result = functions_db.db_query_secure(query)
         if query_result and 'results' in query_result:

@@ -1474,3 +1474,42 @@ def replace_placeholder_uuids(original_turtle):
         original_uri = '<http://placeholder.org' + m.group(1) + '#' + m.group(2) + '>'
         new_turtle = new_turtle.replace(original_uri, new_uri)
     return new_turtle
+
+
+def get_service_description(request):
+    sd_ttl = '''
+        @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix proms:  <http://promsns.org/def/proms#> .
+        @prefix sd:     <http://www.w3.org/ns/sparql-service-description#> .
+        @prefix sdf:    <http://www.w3.org/ns/formats/> .
+
+        proms:sparql    rdf:type        sd:Service ;
+                    sd:endpoint     proms:sparql ;
+                    sd:feature      sd:DereferencesURIs ,
+        sd:UnionDefaultGraph ;
+        sd:resultFormat    sdf:RDFa ,
+                   sdf:SPARQL_Results_JSON ,
+                   sdf:SPARQL_Results_XML ,
+                   sdf:Turtle ,
+                   sdf:N-Triples ,
+                   sdf:N3 ,
+                   sdf:RDF_XML ,
+                   sdf:SPARQL_Results_CSV ;
+        sd:supportedLanguage    sd:SPARQL10Query ;
+        sd:url  proms:sparql
+        .
+    '''
+    g = Graph()
+    try:
+        g.parse(cStringIO.StringIO(sd_ttl), format="n3")
+        output = ''
+        if 'text/turtle' in request.headers['Content-Type']:
+            output = g.serialize(format='turtle')
+        elif 'application/json' in request.headers['Content-Type']:
+            output = g.serialize(format='json-ld')
+        elif 'application/rdf' in request.headers['Content-Type']:
+            output = g.serialize(format='nt')
+        return [True, output]
+    except Exception as e:
+        print e
+        return [False, 'Could not parse service description: ' + str(e)]
