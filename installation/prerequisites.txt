@@ -1,0 +1,5 @@
+Prior to running the installation script, you must have:
+
+1. Java 8 installed
+2. Git installed
+3. PROMS Git repo (https://car587@stash.csiro.au/scm/eis/proms.git) clones, including subodules
