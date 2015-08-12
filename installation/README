@@ -1,21 +1,23 @@
 PROMS Installation Instructions
 -------------------------------
 
-* Copy the installation to the destination machine and change to the installation directory.
+1. Install Git 
 
-* Change the permissions for the installation scripts to allow execution, e.g:
+2. Clone the PROMS source code to the desired installation directory
+
+3. Change the permissions for the installation scripts to allow execution, e.g:
 
 sudo chmod -R +x ./
 
-* Run the installation script.
+4. Run the installation script.
 
 sudo ./install.bash
 
-* Change to the PROMS directory:
+5. Change to the PROMS directory:
 
 cd /opt/proms
 
-* Modify the necessary settings in the file settings.py. by changing the base server URIs to match your server name
+6. Modify the necessary settings in the file settings.py. by changing the base server URIs to match your server name
   or URI. E.g:
 
 # Replace "localhost" with your server name or IP address
@@ -25,8 +27,8 @@ FUSEKI_UPDATE_URI = 'http://localhost/fuseki/data/update'
 FUSEKI_SECURE_QUERY_URI = 'http://localhost/fuseki/data/query'
 FUSEKI_SECURE_UPDATE_URI = 'http://localhost/fuseki/data/update'
 
-* Run PROMS (while still in the /opt/proms directory):
+7. Run PROMS (while still in the /opt/proms directory):
 
 sudo ./start.bash
 
-* Report any problems to nick.car@csiro.au
+8. Report any problems to nick.car@csiro.au
