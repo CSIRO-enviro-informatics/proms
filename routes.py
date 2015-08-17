@@ -260,7 +260,7 @@ def receive_pingback():
             return Response(pingback_result[1], status=400, mimetype='text/plain')
 
 
-@routes.route('/function/sparql/', methods=['POST'])
+@routes.route('/function/sparql/', methods=['GET', 'POST'])
 def sparql():
     # Query submitted
     if request.method == 'POST':
