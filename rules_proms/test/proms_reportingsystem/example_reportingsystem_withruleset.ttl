@@ -1,0 +1,20 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix ns2: <http://purl.org/dc/elements/1.1/> .
+@prefix proms: <http://promsns.org/def/proms#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://vhirl-dev.csiro.au> a proms:ReportingSystem,
+        rdfs:Class,
+        prov:Agent ;
+    rdfs:label "VHIRL default reporting system"^^xsd:string ;
+    rdfs:comment "Default reporting system for VHIRL"^^xsd:string ;
+	proms:validation "top_level_filename_without_extension_the_class_to_call_must_have_the_same_name"^^xsd:string.
+	
+#The proms validation file must:
+# inherit from StackedRuleSet
+# have a single top level class inheriting from stacked ruleset with the same name as the file
+# call the stacked ruleset base constructor
+	
