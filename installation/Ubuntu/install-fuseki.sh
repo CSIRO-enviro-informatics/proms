@@ -6,9 +6,9 @@ sudo cp fuseki.tar.gz /opt
 cd /opt
 sudo tar -xzf fuseki.tar.gz
 echo "owning..."
-sudo chown -R ubuntu:ubuntu jena-fuseki1-1.1.2
+sudo chown -R ubuntu:ubuntu fuseki.tar.gz
 #sudo chown -R $SUDO_USER:$SUDO_USER jena-fuseki1-1.1.2
-sudo mv jena-fuseki1-1.1.2 fuseki
+sudo mv fuseki.tar.gz fuseki
 cd /opt/fuseki
 
 # make scripts executable
