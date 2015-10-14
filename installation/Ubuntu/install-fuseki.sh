@@ -4,16 +4,17 @@ echo "downloading..."
 wget http://apache.mirror.serversaustralia.com.au/jena/binaries/apache-jena-fuseki-2.3.0.tar.gz -O fuseki.tar.gz
 sudo cp fuseki.tar.gz /opt
 cd /opt
-sudo tar -xzf fuseki.tar.gz
+sudo mkdir -p fuseki
+sudo tar -C fuseki -xzf fuseki.tar.gz --strip 1
 echo "owning..."
-sudo chown -R ubuntu:ubuntu fuseki.tar.gz
+#sudo chown -R ubuntu:ubuntu fuseki.tar.gz
 #sudo chown -R $SUDO_USER:$SUDO_USER jena-fuseki1-1.1.2
 sudo mv fuseki.tar.gz fuseki
-cd /opt/fuseki
+cd fuseki
 
 # make scripts executable
 echo "making scripts..."
-chmod +x fuseki-server s-*
+chmod +x fuseki-server
 # create log file
 touch fuseki.log
 
