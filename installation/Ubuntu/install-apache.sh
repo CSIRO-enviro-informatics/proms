@@ -44,7 +44,7 @@ cat >/etc/apache2/sites-available/proms.conf <<EOL
                 Allow from all
         </Location>
 
-        ProxyPass   /fusekitest   http://localhost:3030/
+        ProxyPass   /fusekitest   http://localhost:9000/
         ProxyPassReverse   /fusekitest   http://localhost:3030/
 
         ProxyPass   /   http://localhost:9000/

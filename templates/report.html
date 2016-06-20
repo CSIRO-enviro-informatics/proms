@@ -46,6 +46,10 @@
                     {% if report['t'] -%}
                         ({{report['r_u']}})
                     {% endif %}
+
+                    {% if report['md5'] -%}
+                        --MD5:{{report['md5']}}
+                    {% endif %}
                 </li>
             {% endfor %}
             </ul>

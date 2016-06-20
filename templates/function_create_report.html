@@ -152,6 +152,7 @@
                         <input type="radio" name="agent-new-existing" value="new" /> New
                     </p>
 
+                    {%if agents|length>0%}
                     <div id="agent-existing-value" style="width:300px;">
                         <select name="agent" id="agent">
                             {% for key, value in agents.items() %}
@@ -159,6 +160,7 @@
                             {% endfor %}
                         </select>
                     </div>
+                    {%endif%}
                     <div id="agent-new-value" style="width:300px; display:none;">
                         <table class="layout">
                             <tr><td>Name:</td><td><input id="agent-name" name="agent-name" type="text" /></td></tr>
@@ -188,12 +190,13 @@
                 </th>
                 <td>
                     {{ select_rs }}
-
+                     {%if reportingsystems|length>0%}
                     <select name="reportingsystem" id="reportingsystem">
                         {% for key, value in reportingsystems.items() %}
                         <option value="{{ key }}">{{ value }}</option>
                         {% endfor %}
                     </select>
+                    {%endif%}
                 </td>
             </tr>
             <tr>

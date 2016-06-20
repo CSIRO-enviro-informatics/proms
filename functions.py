@@ -11,11 +11,16 @@ from rules_proms.proms_internal_report_ruleset import PromsInternalReportValid
 from rules_proms.proms_external_report_ruleset import PromsExternalReportValid
 from rules_proms.proms_reporting_system_ruleset import PromsReportingSystemValid
 
+from prom_db import PromDb
+
 
 
 #
 #   ReportingSystems
 #
+from unify_rdf import RDFUtil
+
+
 def get_reportingsystems_dict():
     """ Get all ReportingSystem details
     """
@@ -454,97 +459,106 @@ def put_report(report_in_turtle):
     #try to make a graph of the input text
     g = Graph()
     try:
-        g.parse(cStringIO.StringIO(report_in_turtle), format="n3")
-    except Exception as e:
-        return [False, ['Could not parse input: ' + str(e)]]
+        g_report = g.parse(cStringIO.StringIO(report_in_turtle), format="n3")
 
-    # Report validation (Basic, Internal and External)
-    report_type = ''
-    reporting_system = ''
-    query = '''
-        PREFIX proms: <http://promsns.org/def/proms#>
-        SELECT DISTINCT ?type ?rs WHERE {
-                ?r a ?type .
-                OPTIONAL { ?r proms:reportingSystem ?rs } .
-            FILTER (?type = proms:BasicReport || ?type = proms:InternalReport || ?type = proms:ExternalReport)
-        }
-    '''
-    result = g.query(query)
-    if len(result) == 1:
-        for row in result:
-            if len(row) > 0:
-                report_type = row[0]
-                if len(row) == 2:
-                    reporting_system = row[1]
-                break
-    if 'BasicReport' in report_type:
-        pr = PromsBasicReportValid(g)
-    elif 'InternalReport' in report_type:
-        pr = PromsInternalReportValid(g)
-    elif 'ExternalReport' in report_type:
-        pr = PromsExternalReportValid(g)
-    else:
-        return [False, 'Unknown Report type (expecting "BasicReport", "InternalReport" or "ExternalReport")']
-    conf_results = pr.get_result()
-    fail_reasons = []
-    for ruleset in conf_results:
-        if not ruleset['passed']:
-            for rule_result in ruleset['rule_results']:
-                if not rule_result['passed']:
-                    for reason in rule_result['fail_reasons']:
-                        fail_reasons.append(reason)
-
-    # Additional validation (if any, as defined in ReportingSystem)
-    if reporting_system != '':
-        rs_dict = get_reportingsystem_dict(reporting_system)
-        if 'v' in rs_dict:
-            validation_name = rs_dict['v']
-            validation_module = __import__('rules_proms.' + validation_name)
-            validation_module = getattr(validation_module, validation_name)
-            validation_method = getattr(validation_module, validation_name)
-            pr = validation_method(g)
-            conf_results = pr.get_result()
-            for ruleset in conf_results:
-                if not ruleset['passed']:
-                    for rule_result in ruleset['rule_results']:
-                        if not rule_result['passed']:
-                            for reason in rule_result['fail_reasons']:
-                                fail_reasons.append(reason)
-
-    if len(fail_reasons) == 0:
-        #Get Report URI
+        # Report validation (Basic, Internal and External)
+        report_type = ''
+        reporting_system = ''
         query = '''
             PREFIX proms: <http://promsns.org/def/proms#>
-            SELECT  ?r ?job
-            WHERE {
-              {?r a proms:Report}
-              UNION
-              {?r a proms:BasicReport}
-              UNION
-              {?r a proms:ExternalReport}
-              UNION
-              {?r a proms:InternalReport}
-              ?r proms:nativeId ?job .
+            SELECT DISTINCT ?type ?rs WHERE {
+                    ?r a ?type .
+                    OPTIONAL { ?r proms:reportingSystem ?rs } .
+                FILTER (?type = proms:BasicReport || ?type = proms:InternalReport || ?type = proms:ExternalReport)
             }
         '''
-        r_uri = ''
-        graph_name = ''
         result = g.query(query)
-        for row in result:
-            r_uri = row[0]
-            break
-        if r_uri:
-            graph_name = '<' + r_uri + '>'
-
-        result = functions_db.db_insert_secure_named_graph(report_in_turtle, graph_name, True)
-        #send_pingback(g)
-
-        if result[0]:
-            return [True, 'OK']
+        if len(result) == 1:
+            for row in result:
+                if len(row) > 0:
+                    report_type = row[0]
+                    if len(row) == 2:
+                        reporting_system = row[1]
+                    break
+        if 'BasicReport' in report_type:
+            pr = PromsBasicReportValid(g)
+        elif 'InternalReport' in report_type:
+            pr = PromsInternalReportValid(g)
+        elif 'ExternalReport' in report_type:
+            pr = PromsExternalReportValid(g)
         else:
-            return [False, result[1]]
-    else:
-        return [False, fail_reasons]
+            return [False, 'Unknown Report type (expecting "BasicReport", "InternalReport" or "ExternalReport")']
+        conf_results = pr.get_result()
+        fail_reasons = []
+        for ruleset in conf_results:
+            if not ruleset['passed']:
+                for rule_result in ruleset['rule_results']:
+                    if not rule_result['passed']:
+                        for reason in rule_result['fail_reasons']:
+                            fail_reasons.append(reason)
+
+        # Additional validation (if any, as defined in ReportingSystem)
+        if reporting_system != '':
+            rs_dict = get_reportingsystem_dict(reporting_system)
+            if 'v' in rs_dict:
+                validation_name = rs_dict['v']
+                validation_module = __import__('rules_proms.' + validation_name)
+                validation_module = getattr(validation_module, validation_name)
+                validation_method = getattr(validation_module, validation_name)
+                pr = validation_method(g)
+                conf_results = pr.get_result()
+                for ruleset in conf_results:
+                    if not ruleset['passed']:
+                        for rule_result in ruleset['rule_results']:
+                            if not rule_result['passed']:
+                                for reason in rule_result['fail_reasons']:
+                                    fail_reasons.append(reason)
+
+        if len(fail_reasons) == 0:
+            #Get Report URI
+            query = '''
+                PREFIX proms: <http://promsns.org/def/proms#>
+                SELECT  ?r ?job
+                WHERE {
+                  {?r a proms:Report}
+                  UNION
+                  {?r a proms:BasicReport}
+                  UNION
+                  {?r a proms:ExternalReport}
+                  UNION
+                  {?r a proms:InternalReport}
+                  ?r proms:nativeId ?job .
+                }
+            '''
+            r_uri = ''
+            graph_name = ''
+            result = g.query(query)
+            for row in result:
+                r_uri = row[0]
+                break
+            if r_uri:
+                graph_name = '<' + r_uri + '>'
+
+            #generate md5
+            util = RDFUtil()
+            n_quads1 = util.make_authorititive_serialisation_of_graph(g_report, r_uri)
+            mdkey = util.generate_md5(n_quads1)
+
+            db = PromDb()
+            db.add({"uri":r_uri,"md5":mdkey})
+
+            result = functions_db.db_insert_secure_named_graph(report_in_turtle, graph_name, True)
+            #send_pingback(g)
+
+            if result[0]:
+                return [True, 'OK']
+            else:
+                return [False, result[1]]
+        else:
+            return [False, fail_reasons]
+
+    except Exception as e:
+        return [False, ['Could not parse input: ' + str(e)]]
 
 
 #

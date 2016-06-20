@@ -2,6 +2,8 @@ import logging
 import settings
 from flask import Flask
 from routes import routes
+from api import api
+
 app = Flask(__name__)
 
 
@@ -19,6 +21,7 @@ app.url_map.converters['regex'] = RegexConverter
 
 #import the routes in routes.py
 app.register_blueprint(routes)
+app.register_blueprint(api)
 
 
 #run the app

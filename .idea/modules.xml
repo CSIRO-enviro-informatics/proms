@@ -3,7 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/proms.iml" filepath="$PROJECT_DIR$/.idea/proms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../proms-clients-python/.idea/proms-clients-python.iml" filepath="$PROJECT_DIR$/../proms-clients-python/.idea/proms-clients-python.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../proms-secure-testing/.idea/proms-secure-testing.iml" filepath="$PROJECT_DIR$/../proms-secure-testing/.idea/proms-secure-testing.iml" />
     </modules>
   </component>
 </project>
-

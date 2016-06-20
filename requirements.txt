@@ -1,3 +1,5 @@
 flask
 requests
 rdflib
+Flask-HTTPAuth
+rsa==3.1.2
