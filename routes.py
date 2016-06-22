@@ -89,17 +89,30 @@ def reports():
                 return Response('A specific report URI must be provided', status=400, mimetype='text/plain')
             else:
                 reports = functions.get_reports_dict()
-                md_db = PromDb()
-                md5keys = md_db.list()
+                prom_db = PromDb()
+                reportsindb = prom_db.list()
+                signed_reports = [x for x in reportsindb if x.has_key('creator')]
 
                 for report in reports:
-                    key_result = next((x for x in md5keys if x["uri"] == report["r_u"]),None)
+                    key_result = next((x for x in signed_reports if x["uri"] == report["r_u"]),None)
                     if key_result:
-                        print key_result['md5']
                         report["md5"] = key_result['md5']
+
+                #signed reports - Testing purpose
+                import signature
+                for signed_report in signed_reports:
+                    certified, status = signature.verifyReport(signed_report['uri'])
+                    if certified:
+                        signed_report['verified'] = True
+                    else:
+                        signed_report['verified'] = False
+                        signed_report['status'] = status
+
+
 
                 return render_template('report.html',
                                        REPORTS=reports,
+                                       SIGNED_REPORTS = signed_reports,
                                        PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
 
     #process a posted Report
@@ -333,16 +346,20 @@ def register_reporting_system():
     return Response(functions.page_register_reporting_system(), status=200, mimetype='text/html')
 
 
-@routes.route('/api/get_uri_bases')
-def getURIBases():
+@routes.route('/id/publickey')
+def listPublicKey():
+    usrs = User.list()
+    return render_template("publickeys.html",users = usrs)
 
-    return jsonify({
-                        "report_base_URI":settings.REPORT_BASE_URI,
-                        "reportingsystem_base_URI":settings.REPORTINGSYSTEM_BASE_URI,
-                        "entity_base_URI":settings.ENTITY_BASE_URI,
-                        "activity_base_URI":settings.ACTIVITY_BASE_URI,
-                        "agent_base_URI":settings.ENTITY_BASE_URI
+@routes.route('/id/publickey/<id>')
+def getPublicKey(id=None):
+    if id:
+        user = User.find(id)
+        return user.publickey
+    else:
+        return ''
 
-        })
+
+
 
 

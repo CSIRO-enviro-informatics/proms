@@ -5,10 +5,14 @@ from flask import Blueprint, Response, request, redirect, render_template, g, js
 from prom_db import PromDb
 from flask_httpauth import HTTPBasicAuth
 from user import User
+from user_db import UserDb
 import settings
 import functions
 import rsa
-from binascii import unhexlify
+from binascii import unhexlify,hexlify
+import functions_db
+from rdflib import Graph
+import cStringIO
 
 auth = HTTPBasicAuth()
 
@@ -31,9 +35,9 @@ def get_privatekey():
     privatekey =  usr.privatekey
     return privatekey
 
-@api.route('/api/signedreport/', methods=['POST'])
+@api.route('/api/verify_signed_report/', methods=['POST'])
 @auth.login_required
-def signedreport():
+def verifySignedReport():
 
         #decrpted the message encrypted by private key
         usr = g.user
@@ -41,21 +45,63 @@ def signedreport():
         pub_key = rsa.PublicKey.load_pkcs1(publickey) # retrieve back a key object
         report = request.form['report']
         signedreport = unhexlify(request.form['signedreport'])
+        report_id = request.form.get('report_id','')
         try:
             rsa.verify(report, signedreport, pub_key)
-            return  jsonify({"Verified":"Succeed"})
+            return jsonify({"Verified":True})
         except:
-            return jsonify({"Verified":"False"})
+            return jsonify({"Verified":False})
 
 
-        # if verified:
-        #     put_result = functions.put_report(report)
-        #     if put_result[0]:
-        #         return {"Status":"Succeed"}
-        #     else:
-        #         return {"Status":"Failed"}
-        # else:
-        #     return {"Error":"Failed to pass signature verification"}
+@api.route('/api/register_signed_report/', methods=['POST'])
+@auth.login_required
+def registerSignedReport():
+
+        #decrpted the message encrypted by private key
+        usr = g.user
+        publickey = usr.publickey
+        pub_key = rsa.PublicKey.load_pkcs1(publickey) # retrieve back a key object
+        report = request.form['report']
+        signedreport = unhexlify(request.form.get('signedreport',''))
+        report_id = request.form.get('report_id','')
+        try:
+            rsa.verify(report, signedreport, pub_key)
+            # Post to fusaki server
+            # rdf_g = Graph()
+            # try:
+            #     g_report = rdf_g.parse(cStringIO.StringIO(report), format="n3")
+            #     print g_report
+            # except:
+            #     pass
+            #
+            #
+            # result = functions_db.db_insert_secure_named_graph(report, report_id, True)
+            # #send_pingback(g)
+            #
+            # if result[0]:
+            #     db = PromDb()
+            #     db.add({"uri":report_id,
+            #             "creator":usr.id,
+            #             "signed_report":signedreport}
+            #     )
+
+            db = PromDb()
+            report_json = {
+                            "uri":report_id,
+                            "creator":usr.id,
+                            "report":report,
+                            "signed_report":hexlify(signedreport)
+                           }
+
+            db.add(report_json)
+            return {"Succeed":True}
+
+        except Exception as e:
+            print e.message
+            return jsonify({"Error":e.message})
+
+
+
 
 
 @api.route('/api/resource')
@@ -82,3 +128,15 @@ def verify_password(username_or_token, password):
             return False
 
     return True
+
+@api.route('/api/get_uri_bases')
+def getURIBases():
+
+    return jsonify({
+                        "report_base_URI":settings.REPORT_BASE_URI,
+                        "reportingsystem_base_URI":settings.REPORTINGSYSTEM_BASE_URI,
+                        "entity_base_URI":settings.ENTITY_BASE_URI,
+                        "activity_base_URI":settings.ACTIVITY_BASE_URI,
+                        "agent_base_URI":settings.ENTITY_BASE_URI
+
+        })

@@ -22,6 +22,23 @@ class User:
         self.id = userid
 
     @staticmethod
+    def list():
+        userdb = UserDb()
+        users_db = userdb.list()
+        users=[]
+        for user_db in users_db :
+            try:
+                user = User.convertedfromdb(user_db)
+                users.append(user.json())
+            except:
+                pass
+
+
+        return users
+
+
+
+    @staticmethod
     def find(userid):
         userdb = UserDb()
         user_db = userdb.find(userid)
@@ -30,7 +47,6 @@ class User:
             return user
         else:
             return None
-
 
     @staticmethod
     def convertedfromdb(db_user):
@@ -110,6 +126,13 @@ class User:
         signed_text = rsa.sign(message,priv_key,'SHA-1')
         print signed_text
         print rsa.verify(message, signed_text, pub_key)
+
+    def json(self):
+        result={}
+        result['id']= self.id
+        result['privatekey'] = self.privatekey
+        result['publickey'] = self.publickey
+        return result
 
 
 if __name__ == '__main__':

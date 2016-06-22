@@ -54,6 +54,38 @@
             {% endfor %}
             </ul>
         {% endif %}
+
+        {% if SIGNED_REPORTS|length == 0 %}
+            <p>No Reports found.</p>
+        {% else %}
+            <h2>Signed Reports</h2>
+            <ul>
+            {% for signed_report in SIGNED_REPORTS %}
+                 {% if signed_report['creator'] -%}
+                <li>
+                    {% if signed_report['uri'] -%}
+                        {{signed_report['uri']}}
+                    {% endif %}
+
+
+                    | {{signed_report['creator']}}  |
+
+
+                    {% if signed_report['signed_report'] -%}
+                       <span title="{{signed_report['signed_report']}}">Signature</span>
+                    {% endif %}
+                    |
+                     {% if signed_report['verified'] -%}
+                       Signature verified
+                     {%else%}
+                        Signature verify failed
+                    {% endif %}
+
+                </li>
+                {%endif%}
+            {% endfor %}
+            </ul>
+        {% endif %}
     {% else %}
         <p>No Report information found.</p>
     {% endif %}

@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Certified Users</h2>
+<table>
+    <tr><td>ID</td><td>Public Key</td></tr>
+
+{% for user in users%}
+    <tr>
+        <td> {{user['id']}}</td>
+        <td><a href="{{url_for('.getPublicKey',id=user['id'],_external=True)}}" >PKCS</a></td>
+    </tr>
+
+{% endfor%}
+</table>
+
+{%endblock%}
