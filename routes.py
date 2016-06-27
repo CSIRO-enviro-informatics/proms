@@ -341,9 +341,10 @@ def create_report_formparts(form_parts):
     return Response(functions.create_report_formparts(form_parts), status=200, mimetype='text/plain')
 
 
+# TODO: this is a stub
 @routes.route('/function/register_reporting_system', methods=['GET'])
 def register_reporting_system():
-    return Response(functions.page_register_reporting_system(), status=200, mimetype='text/html')
+    return render_template('function_register_reportingsystem.html')
 
 
 @routes.route('/id/publickey')
