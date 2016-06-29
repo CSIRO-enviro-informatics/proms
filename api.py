@@ -49,8 +49,8 @@ def newuser():
 @auth.login_required
 def get_privatekey():
     usr = g.user
-    uid = usr.id
-    privatekey =  usr.privatekey
+    uid = usr['id']
+    privatekey =  usr['privatekey']
     return privatekey
 
 @api.route('/api/verify_signed_report/', methods=['POST'])
@@ -59,7 +59,7 @@ def verifySignedReport():
 
         #decrpted the message encrypted by private key
         usr = g.user
-        publickey = usr.publickey
+        publickey = usr['publickey']
         pub_key = rsa.PublicKey.load_pkcs1(publickey) # retrieve back a key object
         report = request.form['report']
         signedreport = unhexlify(request.form['signedreport'])
@@ -77,7 +77,7 @@ def registerSignedReport():
 
         #decrpted the message encrypted by private key
         usr = g.user
-        publickey = usr.publickey
+        publickey = usr['publickey']
         pub_key = rsa.PublicKey.load_pkcs1(publickey) # retrieve back a key object
         report = request.form['report']
         signedreport = unhexlify(request.form.get('signedreport',''))
@@ -168,38 +168,39 @@ def registerSignedReport():
                 if r_uri:
                     graph_name = '<' + r_uri + '>'
 
-
-
-            result = functions_db.db_insert_secure_named_graph(report, report_id, True)
+            result = functions_db.db_insert_secure_named_graph(report, graph_name, True)
             #send_pingback(g)
 
             if result[0]:
                 db = PromDb()
                 report_json = {
                                 "uri":report_id,
-                                "creator":usr.id,
+                                "creator":usr["id"],
                                 "report":report,
                                 "signed_report":hexlify(signedreport)
                                }
 
                 db.add(report_json)
             return result
-
-
-            # db = PromDb()
-            # report_json = {
-            #                 "uri":report_id,
-            #                 "creator":usr.id,
-            #                 "report":report,
-            #                 "signed_report":hexlify(signedreport)
-            #                }
-            #
-            # db.add(report_json)
-            # return {"Succeed":True}
-
-        except :
+        except:
             e = sys.exc_info()[0]
             return jsonify({"Error":e})
+
+        # try:
+        #     rsa.verify(report, signedreport, pub_key)
+        #     db = PromDb()
+        #     report_json = {
+        #                     "uri":report_id,
+        #                     "creator":usr['id'],
+        #                     "report":report,
+        #                     "signed_report":hexlify(signedreport)
+        #                    }
+        #
+        #     db.add(report_json)
+        #     return {"Succeed":True}
+        # except :
+        #     e = sys.exc_info()[0]
+        #     return jsonify({"Error":e})
 
 
 

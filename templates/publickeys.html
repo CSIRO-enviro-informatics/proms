@@ -8,7 +8,7 @@
 {% for user in users%}
     <tr>
         <td> {{user['id']}}</td>
-        <td><a href="{{url_for('.getPublicKey',id=user['id'],_external=True)}}" >PKCS</a></td>
+        <td><a href="{{url_for('routes.getPublicKey',id=user['id'])}}" >PKCS</a></td>
     </tr>
 
 {% endfor%}

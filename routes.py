@@ -78,6 +78,18 @@ def reports():
                     return Response('Unknown format type', status=400, mimetype='text/plain')
             else:
                 report = functions.get_report_dict(uri)
+                import signature
+                prom_db = PromDb()
+                signed_report = prom_db.find(uri)
+
+                if signed_report:
+                    certified, status = signature.verifyReport(signed_report['uri'])
+                    if certified:
+                        report['verified'] = True
+                        report['signedby'] = signed_report['creator']
+                    else:
+                        report['verified'] = False
+                        report['status'] = status
 
 
                 return render_template('report.html',
@@ -92,14 +104,20 @@ def reports():
                 prom_db = PromDb()
                 reportsindb = prom_db.list()
                 signed_reports = [x for x in reportsindb if x.has_key('creator')]
-
+                import signature
                 for report in reports:
                     key_result = next((x for x in signed_reports if x["uri"] == report["r_u"]),None)
                     if key_result:
-                        report["md5"] = key_result['md5']
+                        certified, status = signature.verifyReport(key_result['uri'])
+                        if certified:
+                            report['verified'] = True
+                            report['signedby'] = key_result['creator']
+                        else:
+                            report['verified'] = False
+                            report['status'] = status
 
                 #signed reports - Testing purpose
-                import signature
+
                 for signed_report in signed_reports:
                     certified, status = signature.verifyReport(signed_report['uri'])
                     if certified:
