@@ -356,7 +356,7 @@ def listPublicKey():
 def getPublicKey(id=None):
     if id:
         user = User.find(id)
-        return user.publickey
+        return user['publickey']
     else:
         return ''
 

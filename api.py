@@ -13,6 +13,13 @@ from binascii import unhexlify,hexlify
 import functions_db
 from rdflib import Graph
 import cStringIO
+import sys
+from rules_proms.proms_basic_report_ruleset import PromsBasicReportValid
+from rules_proms.proms_internal_report_ruleset import PromsInternalReportValid
+from rules_proms.proms_external_report_ruleset import PromsExternalReportValid
+from rules_proms.proms_reporting_system_ruleset import PromsReportingSystemValid
+
+
 
 auth = HTTPBasicAuth()
 
@@ -26,6 +33,17 @@ api = Blueprint('api', __name__)
 @api.app_errorhandler(404)
 def page_not_found(e):
     return {"Error":e}
+
+
+@api.route('/api/newuser')
+def newuser():
+    userid = request.headers.get('user')
+    if userid:
+        user = User.new(userid)
+        return jsonify(user)
+    else:
+        return jsonify({"Error":"User id needs to be in HTTP Header"})
+
 
 @api.route('/api/privatekey')
 @auth.login_required
@@ -67,38 +85,121 @@ def registerSignedReport():
         try:
             rsa.verify(report, signedreport, pub_key)
             # Post to fusaki server
-            # rdf_g = Graph()
-            # try:
-            #     g_report = rdf_g.parse(cStringIO.StringIO(report), format="n3")
-            #     print g_report
-            # except:
-            #     pass
-            #
-            #
-            # result = functions_db.db_insert_secure_named_graph(report, report_id, True)
-            # #send_pingback(g)
-            #
-            # if result[0]:
-            #     db = PromDb()
-            #     db.add({"uri":report_id,
-            #             "creator":usr.id,
-            #             "signed_report":signedreport}
-            #     )
+            rdf_g = Graph()
 
-            db = PromDb()
-            report_json = {
-                            "uri":report_id,
-                            "creator":usr.id,
-                            "report":report,
-                            "signed_report":hexlify(signedreport)
-                           }
+            g_report = rdf_g.parse(cStringIO.StringIO(report), format="n3")
+            print g_report
 
-            db.add(report_json)
-            return {"Succeed":True}
+            # Report validation (Basic, Internal and External)
+            report_type = ''
+            reporting_system = ''
+            query = '''
+                PREFIX proms: <http://promsns.org/def/proms#>
+                SELECT DISTINCT ?type ?rs WHERE {
+                        ?r a ?type .
+                        OPTIONAL { ?r proms:reportingSystem ?rs } .
+                    FILTER (?type = proms:BasicReport || ?type = proms:InternalReport || ?type = proms:ExternalReport)
+                }
+            '''
+            result = g_report.query(query)
+            if len(result) == 1:
+                for row in result:
+                    if len(row) > 0:
+                        report_type = row[0]
+                        if len(row) == 2:
+                            reporting_system = row[1]
+                        break
+            if 'BasicReport' in report_type:
+                pr = PromsBasicReportValid(g_report)
+            elif 'InternalReport' in report_type:
+                pr = PromsInternalReportValid(g_report)
+            elif 'ExternalReport' in report_type:
+                pr = PromsExternalReportValid(g_report)
+            else:
+                return [False, 'Unknown Report type (expecting "BasicReport", "InternalReport" or "ExternalReport")']
+            conf_results = pr.get_result()
+            fail_reasons = []
+            for ruleset in conf_results:
+                if not ruleset['passed']:
+                    for rule_result in ruleset['rule_results']:
+                        if not rule_result['passed']:
+                            for reason in rule_result['fail_reasons']:
+                                fail_reasons.append(reason)
 
-        except Exception as e:
-            print e.message
-            return jsonify({"Error":e.message})
+            # Additional validation (if any, as defined in ReportingSystem)
+            if reporting_system != '':
+                rs_dict =functions.get_reportingsystem_dict(reporting_system)
+                if 'v' in rs_dict:
+                    validation_name = rs_dict['v']
+                    validation_module = __import__('rules_proms.' + validation_name)
+                    validation_module = getattr(validation_module, validation_name)
+                    validation_method = getattr(validation_module, validation_name)
+                    pr = validation_method(g)
+                    conf_results = pr.get_result()
+                    for ruleset in conf_results:
+                        if not ruleset['passed']:
+                            for rule_result in ruleset['rule_results']:
+                                if not rule_result['passed']:
+                                    for reason in rule_result['fail_reasons']:
+                                        fail_reasons.append(reason)
+
+            if len(fail_reasons) == 0:
+                #Get Report URI
+                query = '''
+                    PREFIX proms: <http://promsns.org/def/proms#>
+                    SELECT  ?r ?job
+                    WHERE {
+                      {?r a proms:Report}
+                      UNION
+                      {?r a proms:BasicReport}
+                      UNION
+                      {?r a proms:ExternalReport}
+                      UNION
+                      {?r a proms:InternalReport}
+                      ?r proms:nativeId ?job .
+                    }
+                '''
+                r_uri = ''
+                graph_name = ''
+                result = rdf_g.query(query)
+                for row in result:
+                    r_uri = row[0]
+                    break
+                if r_uri:
+                    graph_name = '<' + r_uri + '>'
+
+
+
+            result = functions_db.db_insert_secure_named_graph(report, report_id, True)
+            #send_pingback(g)
+
+            if result[0]:
+                db = PromDb()
+                report_json = {
+                                "uri":report_id,
+                                "creator":usr.id,
+                                "report":report,
+                                "signed_report":hexlify(signedreport)
+                               }
+
+                db.add(report_json)
+            return result
+
+
+            # db = PromDb()
+            # report_json = {
+            #                 "uri":report_id,
+            #                 "creator":usr.id,
+            #                 "report":report,
+            #                 "signed_report":hexlify(signedreport)
+            #                }
+            #
+            # db.add(report_json)
+            # return {"Succeed":True}
+
+        except :
+            e = sys.exc_info()[0]
+            return jsonify({"Error":e})
 
 
 
