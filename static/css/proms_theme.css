@@ -24,3 +24,9 @@ h4 {
 .layout td {
     border: none;
 }
+
+.verified_report {
+    background-image: url('/static/img/verified.png');
+    background-repeat: no-repeat;
+    background-position: 100% 0;
+}

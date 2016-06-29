@@ -3,8 +3,13 @@
 {% block content %}
     <h1>Provenance Management Service</h1>
     {% if REPORT %}
+    <div class="verified_report" >
         <h2>A Report</h2>
         <h3>URI: {{REPORT['uri']}}</h3>
+
+         {% if REPORT['verified'] -%}
+        <h3>Signed by {{REPORT['signedby']}} </h3>
+        {% endif %}
         <p><a href="">html</a> | <a href="{{request.path + "?uri=" + REPORT['uri_html'] + "&_format=text/turtle"}}">rdf/turtle</a></p>
         <h4><a class="definition" href={{REPORT['t']}}>{{REPORT['t_str']}}</a> Report</h4>
         <table class="lined">
@@ -29,6 +34,7 @@
                 {{REPORT['r_script'] | safe}}
             </script>
         {% endif %}
+    </div>
     {% elif REPORTS %}
         <h2>Reports Register</h2>
         {% if REPORTS|length == 0 %}
@@ -47,9 +53,10 @@
                         ({{report['r_u']}})
                     {% endif %}
 
-                    {% if report['md5'] -%}
-                        --MD5:{{report['md5']}}
+                     {% if report['verified'] -%}
+                       Signed by {{report['signedby']}}
                     {% endif %}
+
                 </li>
             {% endfor %}
             </ul>
