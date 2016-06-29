@@ -3,7 +3,7 @@
 {% block content %}
     <h1>Provenance Management Service</h1>
     {% if REPORT %}
-    <div class="verified_report" >
+    <div {% if REPORT['verified']%}class="verified_report" {%endif%} >
         <h2>A Report</h2>
         <h3>URI: {{REPORT['uri']}}</h3>
 
