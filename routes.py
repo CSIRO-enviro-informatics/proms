@@ -11,6 +11,8 @@ import functions_db
 import urllib
 import settings
 import json
+from collections import Counter
+import operator
 
 
 #
@@ -85,6 +87,12 @@ def reports():
                 if signed_report:
                     certified, status = signature.verifyReport(signed_report['uri'])
                     if certified:
+                        signed_original_content = signed_report['report']
+                        content_in_fuseki = functions.get_report_rdf(uri)
+
+                        words_signed = Counter(signed_original_content)
+                        words = Counter(content_in_fuseki)
+
                         report['verified'] = True
                         report['signedby'] = signed_report['creator']
                     else:
