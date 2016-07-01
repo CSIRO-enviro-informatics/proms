@@ -173,6 +173,8 @@ def registerSignedReport():
                     break
                 if r_uri:
                     graph_name = '<' + r_uri + '>'
+            else:
+                return jsonify({"status":False, "error":fail_reasons[0]})
             report_id = r_uri
             result = functions_db.db_insert_secure_named_graph(report, graph_name, True)
             #send_pingback(g)
@@ -190,7 +192,7 @@ def registerSignedReport():
             return jsonify({"status":result[0]})
         except:
             e = sys.exc_info()[0]
-            return jsonify({"Error":e})
+            return jsonify({"Error":e.message})
 
         # try:
         #     rsa.verify(report, signedreport, pub_key)
