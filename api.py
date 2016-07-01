@@ -30,8 +30,9 @@ api = Blueprint('api', __name__)
 #
 #   All the routes in the API
 #
-@api.app_errorhandler(404)
-def page_not_found(e):
+@api.app_errorhandler(Exception)
+def api_runtime_exception(e):
+    print e
     return {"Error":e}
 
 
@@ -81,6 +82,7 @@ def registerSignedReport():
         pub_key = rsa.PublicKey.load_pkcs1(publickey) # retrieve back a key object
         report = request.form['report']
         signedreport = unhexlify(request.form.get('signedreport',''))
+        #obsolete
         report_id = request.form.get('report_id','')
         try:
             rsa.verify(report, signedreport, pub_key)
@@ -167,7 +169,7 @@ def registerSignedReport():
                     break
                 if r_uri:
                     graph_name = '<' + r_uri + '>'
-
+            report_id = r_uri
             result = functions_db.db_insert_secure_named_graph(report, graph_name, True)
             #send_pingback(g)
 
@@ -181,7 +183,7 @@ def registerSignedReport():
                                }
 
                 db.add(report_json)
-            return result
+            return result[0]
         except:
             e = sys.exc_info()[0]
             return jsonify({"Error":e})
@@ -216,7 +218,8 @@ def get_resource():
 @api.route('/api/token')
 @auth.login_required
 def get_auth_token():
-    token = g.user.generate_auth_token()
+    user = User(g.user['id'])
+    token = user.generate_auth_token()
     return jsonify({ 'token': token.decode('ascii') })
 
 #todo complete user/password verification
