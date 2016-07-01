@@ -33,7 +33,11 @@ api = Blueprint('api', __name__)
 @api.app_errorhandler(Exception)
 def api_runtime_exception(e):
     print e
-    return {"Error":e}
+    return jsonify({"error":e.message})
+
+@api.route('/api/errortest')
+def error_test():
+    raise Exception("It is a test")
 
 
 @api.route('/api/newuser')
@@ -183,7 +187,7 @@ def registerSignedReport():
                                }
 
                 db.add(report_json)
-            return result[0]
+            return jsonify({"status":result[0]})
         except:
             e = sys.exc_info()[0]
             return jsonify({"Error":e})
