@@ -12,8 +12,7 @@ REPORTINGSYSTEM_BASE_URI="HTTP://REPORTING"
 
 if 'dev' in sys.argv or '--dev' in sys.argv:
     PROMS_LABEL = 'A PROMS Server'
-    #HOME_DIR = '/opt/proms/'
-    HOME_DIR = '/home/django/BA/proms/'
+    HOME_DIR = '/opt/proms/'
     STATIC_DIR = 'static/'
     LOGFILE = HOME_DIR + 'proms.log'
     HOST = '0.0.0.0'
@@ -21,7 +20,7 @@ if 'dev' in sys.argv or '--dev' in sys.argv:
     DEBUG = True
     MONGODB="127.0.0.1"
 
-    PROMS_INSTANCE_NAMESPACE_URI = 'http://localhost:9000/'
+    PROMS_INSTANCE_NAMESPACE_URI = 'http://proms-dev1-vc.it.csiro.au/'
 
     FUSEKI_QUERY_URI = 'http://localhost:3030/data/query'
     FUSEKI_UPDATE_URI = 'http://localhost:3030/data/update'
@@ -46,8 +45,8 @@ if 'dev' in sys.argv or '--dev' in sys.argv:
 
 else:
     PROMS_LABEL = 'A PROMS Server'
-    #HOME_DIR = '/opt/proms/'
-    HOME_DIR = '/home/django/BA/proms/'
+    HOME_DIR = '/opt/proms/'
+    #HOME_DIR = '/home/django/BA/proms/'
     STATIC_DIR = 'static/'
     LOGFILE = HOME_DIR + 'proms.log'
     HOST = '0.0.0.0'
@@ -55,7 +54,8 @@ else:
     DEBUG = True
     MONGODB="127.0.0.1"
 
-    PROMS_INSTANCE_NAMESPACE_URI = 'http://localhost/'
+    #PROMS_INSTANCE_NAMESPACE_URI = 'http://localhost/'
+    PROMS_INSTANCE_NAMESPACE_URI = 'http://proms-dev1-vc.it.csiro.au/'
 
     FUSEKI_QUERY_URI = 'http://localhost/fuseki/data/query'
     FUSEKI_UPDATE_URI = 'http://localhost/fuseki/data/update'

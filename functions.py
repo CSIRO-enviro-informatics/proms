@@ -347,7 +347,7 @@ def get_report_rdf(report_uri):
     """ Get Report details as RDF
     """
     query = '''
-        DESCRIBE * WHERE { GRAPH <''' + report_uri + '''> { ?s ?p ?o } }
+        DESCRIBE * WHERE { GRAPH <''' + report_uri + '''> { ?s ?p ?o } FILTER ( ?p != <http://promsns.org/def/proms#reportingSystem> ) }
     '''
     return functions_db.db_query_secure_turtle(query)
 
