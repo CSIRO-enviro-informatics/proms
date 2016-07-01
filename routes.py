@@ -89,9 +89,18 @@ def reports():
                     if certified:
                         signed_original_content = signed_report['report']
                         content_in_fuseki = functions.get_report_rdf(uri)
+                        from rdflib import Graph
+                        s_g = Graph().parse(data=signed_original_content, format='n3')
+                        o_g = Graph().parse(data=content_in_fuseki, format='n3')
+                        import graphcomparision
+                        n_quads1 = graphcomparision.make_authorititive_serialisation_of_graph(s_g, uri)
+                        n_quads2 = graphcomparision.make_authorititive_serialisation_of_graph(o_g, uri)
 
-                        words_signed = Counter(signed_original_content)
-                        words = Counter(content_in_fuseki)
+                        s_g_s = s_g.serialize(format='n3').strip()
+                        o_g_s = o_g.serialize(format='n3').strip()
+
+                        words_signed = Counter(n_quads1)
+                        words = Counter(n_quads2)
 
                         report['verified'] = True
                         report['signedby'] = signed_report['creator']
