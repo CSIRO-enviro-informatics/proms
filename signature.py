@@ -36,13 +36,30 @@ def verifyFuseki(report_uri):
                 user = user_db.find(userid)
                 publickey = user['publickey']
                 pub_key = rsa.PublicKey.load_pkcs1(publickey) # retrieve back a key object
-                # report = d_report['report']
-                report  =  functions.get_report_rdf(report_uri)
+                report_in_db = d_report['report']
+                report_from_fuseki  =  functions.get_report_rdf(report_uri)
                 signedreport = unhexlify(d_report['signed_report'])
 
-                rsa.verify(report, signedreport, pub_key)
+                from rdflib import Graph,compare
+                d_g = Graph().parse(data=report_in_db, format='n3')
+                f_g = Graph().parse(data=report_from_fuseki, format='n3')
+
+                # import graphcomparision
+                # n_quads1 = graphcomparision.make_authorititive_serialisation_of_graph(d_g, report_uri)
+                # n_quads2 = graphcomparision.make_authorititive_serialisation_of_graph(f_g, report_uri)
+
+                from rdflib import Graph,compare
+                # d_g_1 = Graph().parse(data=n_quads1, format='n3')
+                # f_g_2 = Graph().parse(data=n_quads2, format='n3')
+                same = compare.isomorphic(d_g,f_g)
+                print same
+
+
+
+                rsa.verify(report_in_db, signedreport, pub_key)
                 return True, 'Certified!'
             except Exception as e:
+                print e.message
                 return False, e.message
         else :
             return False, 'Report cannot be found!'
