@@ -3,3 +3,4 @@ requests
 rdflib
 Flask-HTTPAuth
 rsa==3.1.2
+pymongo==2.4
