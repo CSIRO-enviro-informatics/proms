@@ -20,7 +20,7 @@ if 'dev' in sys.argv or '--dev' in sys.argv:
     DEBUG = True
     MONGODB="127.0.0.1"
 
-    PROMS_INSTANCE_NAMESPACE_URI = 'http://proms-dev1-vc.it.csiro.au/'
+    PROMS_INSTANCE_NAMESPACE_URI = 'http://localhost:9000/'
 
     FUSEKI_QUERY_URI = 'http://localhost:3030/data/query'
     FUSEKI_UPDATE_URI = 'http://localhost:3030/data/update'

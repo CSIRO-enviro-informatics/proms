@@ -85,23 +85,8 @@ def reports():
                 signed_report = prom_db.find(uri)
 
                 if signed_report:
-                    certified, status = signature.verifyReport(signed_report['uri'])
+                    certified, status = signature.verifyFusekiReport(uri)
                     if certified:
-                        signed_original_content = signed_report['report']
-                        content_in_fuseki = functions.get_report_rdf(uri)
-                        from rdflib import Graph
-                        s_g = Graph().parse(data=signed_original_content, format='n3')
-                        o_g = Graph().parse(data=content_in_fuseki, format='n3')
-                        import graphcomparision
-                        n_quads1 = graphcomparision.make_authorititive_serialisation_of_graph(s_g, uri)
-                        n_quads2 = graphcomparision.make_authorititive_serialisation_of_graph(o_g, uri)
-
-                        s_g_s = s_g.serialize(format='n3').strip()
-                        o_g_s = o_g.serialize(format='n3').strip()
-
-                        words_signed = Counter(n_quads1)
-                        words = Counter(n_quads2)
-
                         report['verified'] = True
                         report['signedby'] = signed_report['creator']
                     else:
@@ -125,18 +110,12 @@ def reports():
                 for report in reports:
                     key_result = next((x for x in signed_reports if x["uri"] == report["r_u"]),None)
                     if key_result:
-                        certified, status = signature.verifyReport(key_result['uri'])
-                        if certified:
-                            report['verified'] = True
-                            report['signedby'] = key_result['creator']
-                        else:
-                            report['verified'] = False
-                            report['status'] = status
+                        report['signedby'] = key_result['creator']
 
                 #signed reports - Testing purpose
 
                 for signed_report in signed_reports:
-                    certified, status = signature.verifyReport(signed_report['uri'])
+                    certified, status = signature.verifyFusekiReport(signed_report['uri'])
                     if certified:
                         signed_report['verified'] = True
                     else:

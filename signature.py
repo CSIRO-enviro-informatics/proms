@@ -5,7 +5,7 @@ import rsa
 from binascii import unhexlify,hexlify
 import functions
 
-
+# Obsolete
 def verifyReport(report_uri):
         prom_db = PromDb()
         d_report = prom_db.find(report_uri)
@@ -26,7 +26,24 @@ def verifyReport(report_uri):
         else :
             return False, 'Report cannot be found!'
 
-def verifyFuseki(report_uri):
+def graphComparison(g1, g2):
+
+    in_first = []
+    in_second = []
+    for sub, pred, obj in g1:
+        in_first.append({sub + ' ' + pred + ' ' + obj})
+    for sub, pred, obj in g2:
+        in_second.append({sub + ' ' + pred + ' ' + obj})
+    diff_first = [x for x in in_first if x not in in_second]
+    diff_second = [x for x in in_second if x not in in_first]
+    difference = diff_first + diff_second
+    return diff_first, diff_second, difference
+
+
+
+
+
+def verifyFusekiReport(report_uri):
         prom_db = PromDb()
         d_report = prom_db.find(report_uri)
         if d_report:
@@ -40,30 +57,17 @@ def verifyFuseki(report_uri):
                 report_from_fuseki  =  functions.get_report_rdf(report_uri)
                 signedreport = unhexlify(d_report['signed_report'])
 
+                rsa.verify(report_in_db, signedreport, pub_key)
+
                 from rdflib import Graph,compare
                 d_g = Graph().parse(data=report_in_db, format='n3')
                 f_g = Graph().parse(data=report_from_fuseki, format='n3')
+                difference = graphComparison(d_g,f_g)
 
-                removetypesql= "DELETE { ?s ?p ?o } " \
-                               "INSERT { ?s ?p ?o2 } " \
-                               "WHERE { ?s ?p ?o . FILTER(datatype(?o) = xsd:dateTime) " \
-                               "BIND(STRDT(STR(?o), xsd:dateTime) AS ?o2)}"
-                # f_g.update(removetypesql)
-
-                # import graphcomparision
-                # n_quads1 = graphcomparision.make_authorititive_serialisation_of_graph(d_g, report_uri)
-                # n_quads2 = graphcomparision.make_authorititive_serialisation_of_graph(f_g, report_uri)
-
-                from rdflib import Graph,compare
-                # d_g_1 = Graph().parse(data=n_quads1, format='n3')
-                # f_g_2 = Graph().parse(data=n_quads2, format='n3')
-                same =  compare.isomorphic(d_g,f_g)
-                print same
-
-
-
-                rsa.verify(report_in_db, signedreport, pub_key)
-                return True, 'Certified!'
+                if len(difference[0])+len(difference[1])+len(difference[2])== 0:
+                    return True, 'Verification passed'
+                else:
+                    return False, difference
             except Exception as e:
                 print e.message
                 return False, e.message
