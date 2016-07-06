@@ -44,6 +44,12 @@ def verifyFuseki(report_uri):
                 d_g = Graph().parse(data=report_in_db, format='n3')
                 f_g = Graph().parse(data=report_from_fuseki, format='n3')
 
+                removetypesql= "DELETE { ?s ?p ?o } " \
+                               "INSERT { ?s ?p ?o2 } " \
+                               "WHERE { ?s ?p ?o . FILTER(datatype(?o) = xsd:dateTime) " \
+                               "BIND(STRDT(STR(?o), xsd:dateTime) AS ?o2)}"
+                # f_g.update(removetypesql)
+
                 # import graphcomparision
                 # n_quads1 = graphcomparision.make_authorititive_serialisation_of_graph(d_g, report_uri)
                 # n_quads2 = graphcomparision.make_authorititive_serialisation_of_graph(f_g, report_uri)
@@ -51,7 +57,7 @@ def verifyFuseki(report_uri):
                 from rdflib import Graph,compare
                 # d_g_1 = Graph().parse(data=n_quads1, format='n3')
                 # f_g_2 = Graph().parse(data=n_quads2, format='n3')
-                same = compare.isomorphic(d_g,f_g)
+                same =  compare.isomorphic(d_g,f_g)
                 print same
 
 
