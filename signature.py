@@ -26,6 +26,18 @@ def verifyReport(report_uri):
         else :
             return False, 'Report cannot be found!'
 
+def graphComparison(g1, g2):
+    in_first = []
+    in_second = []
+    for sub, pred, obj in g1:
+        in_first.append({sub + ' ' + pred + ' ' + obj})
+    for sub, pred, obj in g2:
+        in_second.append({sub + ' ' + pred + ' ' + obj})
+    diff_first = [x for x in in_first if x not in in_second]
+    diff_second = [x for x in in_second if x not in in_first]
+    difference = diff_first + diff_second
+    return diff_first, diff_second, difference 
+
 def verifyFuseki(report_uri):
         prom_db = PromDb()
         d_report = prom_db.find(report_uri)
@@ -43,6 +55,15 @@ def verifyFuseki(report_uri):
                 from rdflib import Graph,compare
                 d_g = Graph().parse(data=report_in_db, format='n3')
                 f_g = Graph().parse(data=report_from_fuseki, format='n3')
+
+                diff_first, diff_second, difference = graphComparison(d_g, f_g)
+                #print'Diff first : ' + str(diff_first)
+                #print'Diff second: ' + str(diff_second)
+                #print'Difference : ' + str(difference)
+                if len(difference)==0:
+                    print 'Graphs are same'
+                else:
+                    print 'Graphs are different'
 
                 # import graphcomparision
                 # n_quads1 = graphcomparision.make_authorititive_serialisation_of_graph(d_g, report_uri)
@@ -65,5 +86,5 @@ def verifyFuseki(report_uri):
             return False, 'Report cannot be found!'
 
 if __name__ == '__main__':
-    verifyFuseki("http://localhost:9000#bcb8f4ae-1e5f-4405-9cfd-87977cab8ad3")
+    verifyFuseki("http://localhost:9000#19f92331-eaf6-40a3-b0c3-291a45d98db9")
 
