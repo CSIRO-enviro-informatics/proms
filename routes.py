@@ -24,12 +24,16 @@ def page_not_found(e):
 
 @routes.route('/')
 def home():
-    return render_template('index.html', PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
+    return render_template('index.html',
+                           PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                           WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
 @routes.route('/id/')
 def ids():
-    return render_template('id.html', PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
+    return render_template('id.html',
+                           PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                           WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
 @routes.route('/id/reportingsystem/', methods=['GET', 'POST'])
@@ -38,14 +42,16 @@ def reportingsystem():
         if request.args.get('uri'):
             reportingsystem = functions.get_reportingsystem_dict(request.args.get('uri'))
             return render_template('reportingsystem.html',
-                                       REPORTINGSYSTEM=reportingsystem)
+                                   REPORTINGSYSTEM=reportingsystem,
+                                   WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
         else:
             #if 'text/html' in request.headers.get('Accept'):
                 reportingsystems=functions.get_reportingsystems_dict()
                 return render_template('reportingsystem.html',
                                        REPORTINGSYSTEMS=reportingsystems,
-                                       PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
+                                       PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                                       WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
             #else:
             #    if request.headers.get('rdf_object'):
             #        rdf_object = request.args.get('rdf_object')
@@ -95,7 +101,8 @@ def reports():
 
                 return render_template('report.html',
                                        REPORT=report,
-                                       PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
+                                       PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                                       WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
         #multiple Reports (register)
         else:
             if request.args.get('_format'):
@@ -126,7 +133,8 @@ def reports():
                 return render_template('report.html',
                                        REPORTS=reports,
                                        SIGNED_REPORTS = signed_reports,
-                                       PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
+                                       PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                                       WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
     #process a posted Report
     if request.method == 'POST':
@@ -212,7 +220,8 @@ def entities():
         else:
             entity = functions.get_entity_dict(uri)
             return render_template('entity.html',
-                               ENTITY=entity)
+                                   ENTITY=entity,
+                                   WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
     #multiple Entities (register)
     else:
         if request.args.get('_format'):
@@ -220,8 +229,9 @@ def entities():
         else:
             entities = functions.get_entities_dict()
             return render_template('entity.html',
-                               PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
-                               ENTITIES=entities)
+                                   PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                                   ENTITIES=entities,
+                                   WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
 @routes.route('/id/activity', methods=['GET'])
