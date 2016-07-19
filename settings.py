@@ -2,17 +2,16 @@ import sys
 
 SECRET_KEY = 'hello, proms'
 
-ENTITY_BASE_URI='HTTP://BASE'
-ACTIVITY_BASE_URI="HTTP://ACTIVITY"
-AGENT_BASE_URI = "HTTP://AGENT"
-REPORT_BASE_URI="HTTP://REPORT"
-REPORTINGSYSTEM_BASE_URI="HTTP://REPORTING"
+ENTITY_BASE_URI = 'http://localhost/entity'
+ACTIVITY_BASE_URI = "http://localhost/activity"
+AGENT_BASE_URI = "http://localhost/agent"
+REPORT_BASE_URI = "http://localhost/report"
+REPORTINGSYSTEM_BASE_URI = "http://localhost/reportingsystem"
 
-
+WEB_SUBFOLDER = ''
 
 if 'dev' in sys.argv or '--dev' in sys.argv:
     PROMS_LABEL = 'A PROMS Server'
-    #HOME_DIR = '/opt/proms/'
     HOME_DIR = '/home/django/BA/proms/'
     STATIC_DIR = 'static/'
     LOGFILE = HOME_DIR + 'proms.log'
@@ -46,7 +45,6 @@ if 'dev' in sys.argv or '--dev' in sys.argv:
 
 else:
     PROMS_LABEL = 'A PROMS Server'
-    #HOME_DIR = '/opt/proms/'
     HOME_DIR = '/home/django/BA/proms/'
     STATIC_DIR = 'static/'
     LOGFILE = HOME_DIR + 'proms.log'

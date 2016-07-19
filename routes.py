@@ -4,7 +4,6 @@ from flask_httpauth import HTTPBasicAuth
 from user import User
 auth = HTTPBasicAuth()
 
-
 routes = Blueprint('routes', __name__)
 import functions
 import functions_db
@@ -228,7 +227,8 @@ def activities():
             activity = functions.get_activity_dict(uri)
             return render_template('activity.html',
                                    PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
-                                   ACTIVITY=activity)
+                                   ACTIVITY=activity,
+                                   WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
     #multiple Activities (register)
     else:
         if request.args.get('_format'):
@@ -237,7 +237,8 @@ def activities():
             activities = functions.get_activities_dict()
             return render_template('activity.html',
                                    PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
-                                   ACTIVITIES=activities)
+                                   ACTIVITIES=activities,
+                                   WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
 @routes.route('/id/agent/', methods=['GET'])
@@ -255,7 +256,8 @@ def agents():
         else:
             agent = functions.get_agent_dict(uri)
             return render_template('agent.html',
-                                   AGENT=agent)
+                                   AGENT=agent,
+                                   WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
     #multiple Agents (register)
     else:
         if request.args.get('_format'):
@@ -264,14 +266,16 @@ def agents():
             agents = functions.get_agents_dict()
             return render_template('agent.html',
                                    PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
-                                   AGENTS=agents)
+                                   AGENTS=agents,
+                                   WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
 # Deprecated - XXX Remove
 @routes.route('/function/pingback', methods=['GET', 'POST'])
 def pingback():
     if request.method == 'GET':
-        return render_template('pingback.html')
+        return render_template('pingback.html',
+                               WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
     #process a pingback
     if request.method == 'POST':
         pass
@@ -280,7 +284,8 @@ def pingback():
 @routes.route('/function/receive_pingback', methods=['POST'])
 def receive_pingback():
     if request.method == 'GET':
-        return render_template('pingback.html')
+        return render_template('pingback.html',
+                               WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
     #process a pingback
     if request.method == 'POST':
         pingback_result = functions.register_pingback(request.data)
@@ -314,26 +319,31 @@ def sparql():
         if 'form' in request.values and request.values['form'].lower() == 'true':
             return render_template('function_sparql.html',
                                    query=query,
-                                   query_result=query_result)
+                                   query_result=query_result,
+                                   WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
         else:
             return Response(query_result, status=200, mimetype="application/rdf+json")
     # No query, display form
     else:
         query = request.args.get('query')
         return render_template('function_sparql.html',
-                               query=query)
+                               query=query,
+                               WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
 @routes.route('/documentation', methods=['GET'])
 def documentation():
-    return render_template('documentation.html', PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI)
+    return render_template('documentation.html',
+                           PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                           WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
 @routes.route('/function/create_report', methods=['GET'])
 def create_report():
     return render_template('function_create_report.html',
                            agents=functions.get_agents_dict(),
-                           reportingsystems=functions.get_reportingsystems_dict())
+                           reportingsystems=functions.get_reportingsystems_dict(),
+                           WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
 @routes.route('/function/create_report_formparts', methods=['POST'])
@@ -344,13 +354,17 @@ def create_report_formparts(form_parts):
 # TODO: this is a stub
 @routes.route('/function/register_reporting_system', methods=['GET'])
 def register_reporting_system():
-    return render_template('function_register_reportingsystem.html')
+    return render_template('function_register_reportingsystem.html',
+                           WEB_SUBFOLDER = settings.WEB_SUBFOLDER)
 
 
 @routes.route('/id/publickey')
 def listPublicKey():
     usrs = User.list()
-    return render_template("publickeys.html",users = usrs)
+    return render_template("publickeys.html",
+                           users=usrs,
+                           WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
+
 
 @routes.route('/id/publickey/<id>')
 def getPublicKey(id=None):
