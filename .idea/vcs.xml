@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="VcsDirectoryMappings">
-    <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../ba-datastore" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../ba-people" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../proms-clients-python" vcs="Git" />
-  </component>
-</project>
