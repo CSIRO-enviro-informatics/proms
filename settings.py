@@ -1,5 +1,6 @@
 import sys
 
+VERSION = '3.0.1'
 SECRET_KEY = 'hello, proms'
 
 ENTITY_BASE_URI = 'http://localhost/entity'
@@ -18,7 +19,7 @@ if 'dev' in sys.argv or '--dev' in sys.argv:
     HOST = '0.0.0.0'
     PORT = 9000
     DEBUG = True
-    MONGODB="127.0.0.1"
+    MONGODB = "127.0.0.1"
 
     PROMS_INSTANCE_NAMESPACE_URI = 'http://localhost:9000/'
 
@@ -51,7 +52,7 @@ else:
     HOST = '0.0.0.0'
     PORT = 9000
     DEBUG = True
-    MONGODB="127.0.0.1"
+    MONGODB = "127.0.0.1"
 
     #PROMS_INSTANCE_NAMESPACE_URI = 'http://localhost/'
     PROMS_INSTANCE_NAMESPACE_URI = 'http://proms-dev1-vc.it.csiro.au/'

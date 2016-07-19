@@ -355,18 +355,12 @@ def sparql():
                                WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
-@routes.route('/documentation', methods=['GET'])
-def documentation():
-    return render_template('documentation.html',
-                           PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
-                           WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
-
-
 @routes.route('/about', methods=['GET'])
 def about():
     return render_template('about.html',
                            PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
-                           WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
+                           WEB_SUBFOLDER=settings.WEB_SUBFOLDER,
+                           VERSION=settings.VERSION)
 
 
 @routes.route('/function/create_report', methods=['GET'])
