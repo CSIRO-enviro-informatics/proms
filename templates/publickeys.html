@@ -1,17 +1,17 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<h2>Certified Users</h2>
-<table>
-    <tr><td>ID</td><td>Public Key</td></tr>
+    <h1>PROMS Server</h1>
+    <h2>Certified Users</h2>
+    <table>
+        <tr><td>ID</td><td>Public Key</td></tr>
 
-{% for user in users%}
-    <tr>
-        <td> {{user['id']}}</td>
-        <td><a href="{{url_for('routes.getPublicKey',id=user['id'])}}" >PKCS</a></td>
-    </tr>
+    {% for user in users%}
+        <tr>
+            <td> {{user['id']}}</td>
+            <td><a href="{{url_for('routes.getPublicKey',id=user['id'])}}" >PKCS</a></td>
+        </tr>
 
-{% endfor%}
-</table>
-
+    {% endfor%}
+    </table>
 {%endblock%}
