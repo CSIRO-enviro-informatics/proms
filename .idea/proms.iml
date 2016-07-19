@@ -7,6 +7,7 @@
     <orderEntry type="module" module-name="proms-secure-testing" />
     <orderEntry type="module" module-name="proms-clients-python" />
     <orderEntry type="module" module-name="ba-datastore" />
+    <orderEntry type="module" module-name="ba-people" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />

@@ -44,7 +44,7 @@ class User:
         user_db = userdb.find(userid)
         if user_db:
             user = User.convertedfromdb(user_db)
-            return user
+            return user.json()
         else:
             return None
 
@@ -61,12 +61,12 @@ class User:
         user = User.find(userid)
         if user == None:
             user = User(userid)
-            user.rsa_keypairs()
+            user.generate_rsa_keypairs()
             db = UserDb()
             db.new(user)
-            return user
+            return  User.find(userid)
         else:
-            user
+            return user
 
 
     @staticmethod
@@ -102,13 +102,13 @@ class User:
         return user
 
     #RSA
-    def rsa_keypairs(self):
+    def generate_rsa_keypairs(self):
         (pub_key, priv_key) = rsa.key.newkeys(512)
         self.publickey = pub_key.save_pkcs1()
         self.privatekey = priv_key.save_pkcs1()
 
 
-    def get_rsa_keypairs(self):
+    def test_rsa_keypairs(self):
         #return a pair of public key objects
         (pub_key, priv_key) = rsa.key.newkeys(512)
 
@@ -139,4 +139,4 @@ if __name__ == '__main__':
     user = User.find("bai187")
     print user
 
-    user.get_rsa_keypairs()
+    user.test_rsa_keypairs()

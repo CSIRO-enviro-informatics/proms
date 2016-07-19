@@ -10,6 +10,8 @@ import functions_db
 import urllib
 import settings
 import json
+from collections import Counter
+import operator
 
 
 #
@@ -77,6 +79,18 @@ def reports():
                     return Response('Unknown format type', status=400, mimetype='text/plain')
             else:
                 report = functions.get_report_dict(uri)
+                import signature
+                prom_db = PromDb()
+                signed_report = prom_db.find(uri)
+
+                if signed_report:
+                    certified, status = signature.verifyFusekiReport(uri)
+                    if certified:
+                        report['verified'] = True
+                        report['signedby'] = signed_report['creator']
+                    else:
+                        report['verified'] = False
+                        report['status'] = status
 
 
                 return render_template('report.html',
@@ -91,16 +105,16 @@ def reports():
                 prom_db = PromDb()
                 reportsindb = prom_db.list()
                 signed_reports = [x for x in reportsindb if x.has_key('creator')]
-
+                import signature
                 for report in reports:
                     key_result = next((x for x in signed_reports if x["uri"] == report["r_u"]),None)
                     if key_result:
-                        report["md5"] = key_result['md5']
+                        report['signedby'] = key_result['creator']
 
                 #signed reports - Testing purpose
-                import signature
+
                 for signed_report in signed_reports:
-                    certified, status = signature.verifyReport(signed_report['uri'])
+                    certified, status = signature.verifyFusekiReport(signed_report['uri'])
                     if certified:
                         signed_report['verified'] = True
                     else:
@@ -370,7 +384,7 @@ def listPublicKey():
 def getPublicKey(id=None):
     if id:
         user = User.find(id)
-        return user.publickey
+        return user['publickey']
     else:
         return ''
 

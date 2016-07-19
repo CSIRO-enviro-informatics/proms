@@ -53,7 +53,8 @@ else:
     DEBUG = True
     MONGODB="127.0.0.1"
 
-    PROMS_INSTANCE_NAMESPACE_URI = 'http://localhost/'
+    #PROMS_INSTANCE_NAMESPACE_URI = 'http://localhost/'
+    PROMS_INSTANCE_NAMESPACE_URI = 'http://proms-dev1-vc.it.csiro.au/'
 
     FUSEKI_QUERY_URI = 'http://localhost/fuseki/data/query'
     FUSEKI_UPDATE_URI = 'http://localhost/fuseki/data/update'
