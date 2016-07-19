@@ -1,0 +1,135 @@
+body {
+	margin: 0 auto;
+	text-align: center;
+	background-color: #E0E0E0;
+}
+
+#container-logo {
+	margin: 0 auto;
+	text-align:left;
+	width:894px;
+	position:relative;
+	height:50px;
+}
+
+#container-content {
+	margin: 0 auto;
+	text-align:left;
+	width:894px;
+	background-color:white;
+}
+
+#container-content-2 {
+	padding: 20px;
+}
+
+h1 {
+  padding:0em 0px 0px 0px;
+  margin:0px 0px 0.2em 0px;
+  color:#01313c;
+  font-family:Verdana, Geneva, sans-serif;
+  font-size:3.2em;
+  font-weight:normal;
+  line-height:1.1;
+}
+
+h2, h3 {
+  font-family: Verdana, Geneva, sans-serif;
+  font-weight:normal;
+}
+
+h4, p, li {
+  font-family: Verdana, Arial, helvetica, sans-serif;
+  font-weight:normal;
+}
+
+p, li {
+  color: #000000;
+  font-size: 0.8em;
+  line-height: 1.5em;
+  padding: 0.2em 0 0.9em
+}
+
+p a,
+ul li a {
+  color: #0f4a84;
+}
+
+#footer {
+  border-top: solid 1px #eeeeee; /*#3A464F;*/
+  padding-top:5px;
+}
+
+#footer-external {
+        margin: 0 auto;
+        width:894px;
+	box-shadow: 0 0 10px -8px #CDCDCD inset, 0 10px 10px -8px #CDCDCD inset;
+	margin-top: -15px;
+	padding-top: 0px;
+}
+
+#footer-external-links {
+  list-style: none outside none;
+  font-size: 1em;
+  padding: 20px 0 0 2em;
+}
+#footer-external-links li {
+  display: inline;
+  margin: 0 5px 0 5px;
+  color: #666;
+}
+#footer-external-links li a {color: #0f4a84;}
+
+#navblue {
+  font-family: Verdana, Arial, helvetica, sans-serif;
+  font-weight:bold;
+  font-size:small;
+  margin: 0 10px 0 10px;
+}
+
+#navblue a {
+  color: #0f4a84;
+  padding: 3px 5px 3px 5px;
+  border-radius: 8px;
+  border: solid 2px none;
+}
+
+.figure {
+	text-align: center;
+}
+.caption {
+	font-size: small;
+}
+
+.definition {
+	font-style: italic;
+	text-decoration: none;
+	border-bottom: 1px dashed;
+}
+
+.lined {
+    /* border: solid 2px black; */
+    border-collapse: collapse;
+
+    font-family: Verdana;
+    font-size: 14px;
+}
+.lined th,
+.lined td {
+    /* border: solid 1px black; */
+    padding: 3px;
+    text-align: left;
+}
+h4 {
+    font-weight:bold;
+}
+
+.layout {
+    border-collapse: collapse;
+    border: none;
+}
+
+.layout th,
+.layout td {
+    border: none;
+}

@@ -2,11 +2,10 @@
 
 {% block content %}
     <h1>PROMS Server</h1>
-    <h2>Documentation for PROMS v3</h2>
-    <p style="font-style: italic;">Under development, November, 2014.</p>
+    <h2>Documentation for PROMS v3.x</h2>
     <h3>Overview</h3>
-    <p>PROMS v3 is a provenance storage system. It is an <a href="http://en.wikipedia.org/wiki/Application_programming_interface" class="definition">API</a> that wraps a graph database (see <a href="">database</a> below for more on this) used to store provenance traces.</p>
-    <p>It does a few things to ensure that the data coming in from <em><a href="#" class="definition" style="text-decoration:line-through;">Reporting Systems</a></em> is acceptable and useful, it:</p>
+    <p>PROMS v3 is a provenance information storage system. It is essentially an <a href="http://en.wikipedia.org/wiki/Application_programming_interface" class="definition">API</a> that wraps a graph database (see <a href="">database</a> below for more on this).</p>
+    <p>It does a few things to ensure that the data coming in from <em><a href="http://www.promsns.org/def/proms#ReportingSystem" class="definition">Reporting Systems</a></em> is acceptable and useful, it:</p>
     <ul>
         <li>validates incoming <a href="#" class="definition" style="text-decoration:line-through;">Reports</a> using the PROMS <a href="#" style="text-decoration:line-through;">Validation Criteria</a></li>
         <li>allows <a href="http://www.w3.org/standards/semanticweb/inference" class="definition">inference</a> to take place on <em>Reports</em></li>
@@ -33,7 +32,7 @@
         <li>
             <strong>Create a new <em>Report</em></strong>
             <ul>
-                <li>use the default <a href="{{ PROMS_INSTANCE_NAMESPACE_URI }}function/create_report"><em>Report</em> creation form</a></li>
+                <li>use the default <a href="{{ WEB_SUBFOLDER }}function/create_report"><em>Report</em> creation form</a></li>
                 <li>HTTP POST a pre-made <em>Report</em> in the <a class="definition" href="http://www.w3.org/TeamSubmission/turtle/">RDF turtle</a> format to {PROMS_INSTANCE_URI}/id/report/</li>
             </ul>
         </li>
@@ -48,17 +47,17 @@
             <strong>Browse <em>Reports</em> and their members</strong>
             <ul>
                 <li>browse and filter <em>Reports</em> and their components <em>Entities</em> &amp; <em>Activities</em></li>
-                <li><em>ReportingSystems</em> - <a href="{{ PROMS_INSTANCE_NAMESPACE_URI }}id/reportingsystem/">{PROMS_INSTANCE_URI}/id/reportingsystem/</a></li>
-                <li><em>Reports</em> - <a href="{{ PROMS_INSTANCE_NAMESPACE_URI }}id/report/">{PROMS_INSTANCE_URI}/id/report/</a></li>
-                <li><em>Entities</em> - <a href="{{ PROMS_INSTANCE_NAMESPACE_URI }}id/entity/">{PROMS_INSTANCE_URI}/id/entity/</a></li>
-                <li><em>Activities</em> - <a href="{{ PROMS_INSTANCE_NAMESPACE_URI }}id/activity/">{PROMS_INSTANCE_URI}/id/activity/</a></li>
-                <li><em>Agents</em> - <a href="{{ PROMS_INSTANCE_NAMESPACE_URI }}id/agent/">{PROMS_INSTANCE_URI}/id/agent/</a></li>
+                <li><em>ReportingSystems</em> - <a href="{{ WEB_SUBFOLDER }}id/reportingsystem/">{PROMS_INSTANCE_URI}/id/reportingsystem/</a></li>
+                <li><em>Reports</em> - <a href="{{ WEB_SUBFOLDER }}id/report/">{PROMS_INSTANCE_URI}/id/report/</a></li>
+                <li><em>Entities</em> - <a href="{{ WEB_SUBFOLDER }}id/entity/">{PROMS_INSTANCE_URI}/id/entity/</a></li>
+                <li><em>Activities</em> - <a href="{{ WEB_SUBFOLDER }}id/activity/">{PROMS_INSTANCE_URI}/id/activity/</a></li>
+                <li><em>Agents</em> - <a href="{{ WEB_SUBFOLDER }}id/agent/">{PROMS_INSTANCE_URI}/id/agent/</a></li>
             </ul>
         </li>
         <li>
             <strong>Search the database</strong> <em>(under development)</em>
             <ul>
-                <li>search the provenance data using PROM's SPARQL endpoint - <a href="/function/sparql">{PROMS_INSTANCE_URI}/function/sparql</a></li>
+                <li>search the provenance data using PROM's SPARQL endpoint - <a href="{{ WEB_SUBFOLDER }}/function/sparql">{PROMS_INSTANCE_URI}/function/sparql</a></li>
             </ul>
         </li>
     </ul>
@@ -71,7 +70,7 @@
         <p class="caption"><strong>Figure 1</strong>: PROMS v3 Structure</p>
     </div>
     <h3 id="resources">Resources</h3>
-    <p>Toolkits exist to generate PROMS <a class="definition" href="http://www.promsns.org/ns/proms#Report">Report</a>s that can then be lodged with this system.</p>
+    <p>Toolkits exist to generate PROMS <a class="definition" href="http://www.promsns.org/def/proms#Report">Report</a>s that can then be lodged with this system.</p>
     <table class="lined">
         <tr><th>Toolkit</th><th>Technologies</th><th>Location</th></tr>
         <tr><td>PROMS Java client</td><td>Java, Jena (a Java RDF system)</td><td><a href="https://stash.csiro.au/projects/EIS/repos/proms-clients-java">https://stash.csiro.au/projects/EIS/repos/proms-clients-java</a></td></tr>

@@ -362,6 +362,13 @@ def documentation():
                            WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
+@routes.route('/about', methods=['GET'])
+def about():
+    return render_template('about.html',
+                           PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                           WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
+
+
 @routes.route('/function/create_report', methods=['GET'])
 def create_report():
     return render_template('function_create_report.html',
