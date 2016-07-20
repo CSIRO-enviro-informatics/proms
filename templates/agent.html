@@ -25,7 +25,7 @@
         {% else %}
             <ul>
             {% for agent in AGENTS %}
-                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/agent?uri={{agent['ag']}}">
+                <li><a href="{{WEB_SUBFOLDER}}/id/agent/?uri={{agent['ag']}}">
                     {% if agent['n'] -%}
                         {{agent['n']}}
                     {% else %}

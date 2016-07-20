@@ -28,7 +28,7 @@
         {% else %}
             <ul>
             {% for reportingsystem in REPORTINGSYSTEMS %}
-                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/reportingsystem?uri={{reportingsystem['rs']}}">
+                <li><a href="{{WEB_SUBFOLDER}}/id/reportingsystem/?uri={{reportingsystem['rs']}}">
                     {% if reportingsystem['t'] -%}
                         {{reportingsystem['t']}}
                     {% else %}
