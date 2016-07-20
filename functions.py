@@ -156,7 +156,7 @@ def get_reportingsystem_reports_svg(reportingsystem_uri):
             x_pos = 350
             reports_script = '''
                 var reports = [];
-                var report0 = addReport(''' + str(x_pos) + ''', ''' + str(y_top) + ''', "''' + r1title + '''", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/report/?uri=" + r1uri_encoded + '''", "''' + r1jobId + '''");
+                var report0 = addReport(''' + str(x_pos) + ''', ''' + str(y_top) + ''', "''' + r1title + '''", "''' + settings.WEB_SUBFOLDER + "/id/report/?uri=" + r1uri_encoded + '''", "''' + r1jobId + '''");
                 reports.push(report0);
             '''
             if len(reports['results']['bindings']) > 1:
@@ -170,7 +170,7 @@ def get_reportingsystem_reports_svg(reportingsystem_uri):
                         query = get_reports_for_rs_query(reportingsystem_uri)
                         query_encoded = urllib.quote(query)
                         reports_script += '''
-                            var report = addReport(''' + str(x_pos) + ''', ''' + str(y_offset) + ''', "Multiple Reports, click to search", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "function/sparql/?query=" + query_encoded + '''");
+                            var report = addReport(''' + str(x_pos) + ''', ''' + str(y_offset) + ''', "Multiple Reports, click to search", "''' + settings.WEB_SUBFOLDER + "/function/sparql/?query=" + query_encoded + '''");
                             reports.push(report);
                         '''
                         break
@@ -179,7 +179,7 @@ def get_reportingsystem_reports_svg(reportingsystem_uri):
                     title = report['t']['value']
                     jobId = report['job']['value']
                     reports_script += '''
-                        var report = addReport(''' + str(x_pos) + ''', ''' + str(y_offset) + ''', "''' + title + '''", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/report/?uri=" + uri_encoded + '''", "''' + jobId + '''");
+                        var report = addReport(''' + str(x_pos) + ''', ''' + str(y_offset) + ''', "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/id/report/?uri=" + uri_encoded + '''", "''' + jobId + '''");
                         reports.push(report);
                     '''
                     i += 1
@@ -364,7 +364,7 @@ def get_report_details_svg(report_dict):
         rsLabel = report_dict.get('rs_t', 'uri')
         rsUri = report_dict.get('rs', '')
         if rsUri != '':
-            rsUri = settings.PROMS_INSTANCE_NAMESPACE_URI + "id/reportingsystem/?uri=" + rsUri
+            rsUri = settings.WEB_SUBFOLDER + "/id/reportingsystem/?uri=" + rsUri
         script += '''
             var rsLabel = "''' + rsLabel + '''";
             var rsUri = "''' + rsUri + '''";
@@ -376,7 +376,7 @@ def get_report_details_svg(report_dict):
         sac_uri_encoded = urllib.quote(sac_uri)
         sac_label = report_dict.get('sac_t', 'uri')
         script += '''
-            var sacUri = "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/activity/?uri=" + sac_uri_encoded + '''";
+            var sacUri = "''' + settings.WEB_SUBFOLDER + "/id/activity/?uri=" + sac_uri_encoded + '''";
             var sacLabel = "''' + sac_label + '''";
         '''
         eac_uri = ''
@@ -391,7 +391,7 @@ def get_report_details_svg(report_dict):
             '''
         elif eac_uri != '':
             script += '''
-                var eacUri = "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/activity/?uri=" + eac_uri_encoded + '''";
+                var eacUri = "''' + settings.WEB_SUBFOLDER + "/id/activity/?uri=" + eac_uri_encoded + '''";
                 var eacLabel = "''' + eac_label + '''";
                 var sacActivity = addActivity(50, 120, sacLabel, sacUri);
                 addLink(report, sacActivity, "proms:startingActivity", TOP);
@@ -700,7 +700,7 @@ def get_entity_details_svg(entity_dict):
             agent_name = agent_name[-1]
             script += '''
                 var agentLabel = "''' + agent_name + '''";
-                var agentUri = "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/agent/?uri=" + agent_uri_encoded + '''";
+                var agentUri = "''' + settings.WEB_SUBFOLDER + "/id/agent/?uri=" + agent_uri_encoded + '''";
                 var agent = addAgent(305, 5, agentLabel, agentUri);
                 addLink(entity, agent, "prov:wasAttributedTo", RIGHT);
             '''
@@ -732,7 +732,7 @@ def get_entity_activity_wgb_svg(entity_uri):
             uri_encoded = urllib.quote(wgb[0]['a']['value'])
             script += '''
                 var aLabel = "''' + title + '''";
-                var aUri = "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/activity/?uri=" + uri_encoded + '''";
+                var aUri = "''' + settings.WEB_SUBFOLDER + "/id/activity/?uri=" + uri_encoded + '''";
                 var activityWGB = addActivity(5, 205, aLabel, aUri);
                 addLink(entity, activityWGB, "prov:wasGeneratedBy", TOP);
             '''
@@ -766,7 +766,7 @@ WHERE {
             uri_encoded = urllib.quote(used[0]['a']['value'])
             script = '''
                 var aLabel = "''' + title + '''";
-                var aUri = "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/activity/?uri=" + uri_encoded + '''";
+                var aUri = "''' + settings.WEB_SUBFOLDER + "/id/activity/?uri=" + uri_encoded + '''";
                 var activityUsed = addActivity(555, 205, aLabel, aUri);
                 addLink(activityUsed, entity, "prov:used", TOP);
             '''
@@ -777,7 +777,7 @@ WHERE {
             script += '''
                 activityUsed1 = addActivity(555, 215, "", "");
                 activityUsed2 = addActivity(550, 210, "", "");
-                activityUsedN = addActivity(545, 205, "Multiple Activities, click to search", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "function/sparql/?query=" + query_encoded + '''");
+                activityUsedN = addActivity(545, 205, "Multiple Activities, click to search", "''' + settings.WEB_SUBFOLDER + "/function/sparql/?query=" + query_encoded + '''");
                 addLink(activityUsedN, entity, "prov:used", TOP);
             '''
         else:
@@ -823,7 +823,7 @@ WHERE {
                 title = 'uri'
             uri_encoded = urllib.quote(wdf[0]['e']['value'])
             script += '''
-                var entityWDF = addEntity(355, 440, "''' + title + '''", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "/id/entity/?uri=" + uri_encoded + '''");
+                var entityWDF = addEntity(355, 440, "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/id/entity/?uri=" + uri_encoded + '''");
                 drawLink(entityWDF, entity, "prov:wasDerivedFrom", TOP);
             '''
         elif len(wdf) > 1:
@@ -832,7 +832,7 @@ WHERE {
             script += '''
                 var entityWDF1 = addEntity(355, 440, "", "");
                 var entityWDF2 = addEntity(350, 435, "", "");
-                var entityWDFN = addEntity(345, 430, "Multiple Entities, click here to search", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "function/sparql/?query=" + query_encoded + '''");
+                var entityWDFN = addEntity(345, 430, "Multiple Entities, click here to search", "''' + settings.WEB_SUBFOLDER + "function/sparql/?query=" + query_encoded + '''");
                 drawLink(entityWDFN, entity, "prov:wasDerivedFrom", TOP);
             '''
         else:
@@ -970,7 +970,7 @@ def get_activity_details_svg(activity_dict):
             agent_name = agent_name[-1]
         script += '''
             var agentName = "''' + agent_name + '''";
-            var agentUri = "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/agent/?uri=" + agent_uri_encoded + '''";
+            var agentUri = "''' + settings.WEB_SUBFOLDER + "/id/agent/?uri=" + agent_uri_encoded + '''";
             var agent = addAgent(275, 5, agentName, agentUri);
             addLink(activity, agent, "prov:wasAssociatedWith", RIGHT);
         '''
@@ -1002,7 +1002,7 @@ WHERE {
                 title = 'uri'
             uri_encoded = urllib.quote(used['bindings'][0]['u']['value'])
             script += '''
-                var entityUsed1 = addEntity(105, 250, "''' + title + '''", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/entity/?uri=" + uri_encoded + '''");
+                var entityUsed1 = addEntity(105, 250, "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/id/entity/?uri=" + uri_encoded + '''");
                 addLink(activity, entityUsed1, "prov:used", TOP);
             '''
             # TODO: Loop this if 1-3 Entities
@@ -1014,7 +1014,7 @@ WHERE {
                 uri_encoded = urllib.quote(used['bindings'][1]['u']['value'])
 
                 script += '''
-                    var entityUsed2 = addEntity(105, 100, "''' + title + '''", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/entity/?uri=" + uri_encoded + '''");
+                    var entityUsed2 = addEntity(105, 100, "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/id/entity/?uri=" + uri_encoded + '''");
                     addLink(activity, entityUsed2, "prov:used", TOP);
                 '''
                 if len(used['bindings']) == 3:
@@ -1025,7 +1025,7 @@ WHERE {
                     uri_encoded = urllib.quote(used['bindings'][2]['u']['value'])
 
                     script += '''
-                        var entityUsed3 = addEntity(105, 400, "''' + title + '''", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/entity/?uri=" + uri_encoded + '''");
+                        var entityUsed3 = addEntity(105, 400, "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/id/entity/?uri=" + uri_encoded + '''");
                         addLink(activity, entityUsed3, "prov:used", RIGHT);
                     '''
                 elif len(used['bindings']) > 3:
@@ -1034,7 +1034,7 @@ WHERE {
                     script += '''
                         var entityUsed1 = addEntity(105, 260, "", "");
                         var entityUsed2 = addEntity(100, 255, "", "");
-                        var entityUsedN = addEntity(95, 250, "Multiple Entities, click here to search", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "function/sparql/?query=" + query_encoded + '''");
+                        var entityUsedN = addEntity(95, 250, "Multiple Entities, click here to search", "''' + settings.WEB_SUBFOLDER + "/function/sparql/?query=" + query_encoded + '''");
                         addLink(activity, entityUsedN, "prov:used", TOP);
                     '''
         else:
@@ -1076,7 +1076,7 @@ WHERE {
                 title = 'uri'
             uri_encoded = urllib.quote(gen['bindings'][0]['u']['value'])
             script += '''
-                var entityGen1 = addEntity(605, 250, "''' + title + '''", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/entity/?uri=" + uri_encoded + '''");
+                var entityGen1 = addEntity(605, 250, "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/id/entity/?uri=" + uri_encoded + '''");
                 addLink(activity, entityGen1, "prov:generated", TOP);
             '''
             # Could make a loop to 3
@@ -1088,7 +1088,7 @@ WHERE {
                 uri_encoded = urllib.quote(gen['bindings'][1]['u']['value'])
 
                 script += '''
-                    var entityGen2 = addEntity(605, 100, "''' + title + '''", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/entity/?uri=" + uri_encoded + '''");
+                    var entityGen2 = addEntity(605, 100, "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/id/entity/?uri=" + uri_encoded + '''");
                     addLink(activity, entityGen2, "prov:generated", TOP);
                 '''
                 if len(gen['bindings']) == 3:
@@ -1099,7 +1099,7 @@ WHERE {
                     uri_encoded = urllib.quote(gen['bindings'][2]['u']['value'])
 
                     script += '''
-                        var entityGen3 = addEntity(605, 400, "''' + title + '''", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/entity/?uri=" + uri_encoded + '''");
+                        var entityGen3 = addEntity(605, 400, "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/id/entity/?uri=" + uri_encoded + '''");
                         addLink(activity, entityGen3, "prov:generated", TOP);
                     '''
                 elif len(gen['bindings']) > 3:
@@ -1109,7 +1109,7 @@ WHERE {
                     script += '''
                         var entityGen1 = addEntity(615, 260, "", "");
                         var entityGen2 = addEntity(610, 255, "", "");
-                        var entityGenN = addEntity(605, 250, "Multiple Entities, click here to search", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "function/sparql/?query=" + query_encoded + '''");
+                        var entityGenN = addEntity(605, 250, "Multiple Entities, click here to search", "''' + settings.WEB_SUBFOLDER + "/function/sparql/?query=" + query_encoded + '''");
                         addLink(activity, entityGenN, "prov:generated", TOP);
                     '''
         else:
@@ -1151,7 +1151,7 @@ WHERE {
                 title = 'uri'
             uri_encoded = urllib.quote(wif['bindings'][0]['wif']['value'])
             script += '''
-                var activityWIB = addActivity(275, 399, "''' + title + '''", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/activity/?uri=" + uri_encoded + '''");
+                var activityWIB = addActivity(275, 399, "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/id/activity/?uri=" + uri_encoded + '''");
                 addLink(activity, activityWIB, "prov:wasInformedBy", RIGHT);
             '''
         # TODO: Check query
@@ -1160,7 +1160,7 @@ WHERE {
             script += '''
                 var activityWIB1 = addActivity(275, 399, "", "");
                 var activityWIB2 = addActivity(270, 394, "", "")
-                var activityWIBN = addActivity(2650, 389, "Multiple Activities, click here to search", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "function/sparql/?query=" + query_encoded + '''");
+                var activityWIBN = addActivity(2650, 389, "Multiple Activities, click here to search", "''' + settings.WEB_SUBFOLDER + "/function/sparql/?query=" + query_encoded + '''");
                 addLink(activity, activityWIBN, "prov:wasInformedBy", RIGHT);
             '''
         else:
@@ -1323,7 +1323,7 @@ def get_agent_details_svg(agent_dict):
             agent_name = agent_uri.split('/')
         agent_name = agent_name[-1]
         script += '''
-            var agentAOBO = addAgent(310, 5, "''' + agent_name + '''", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "id/agent/?uri=" + agent_uri_encoded + '''");
+            var agentAOBO = addAgent(310, 5, "''' + agent_name + '''", "''' + settings.WEB_SUBFOLDER + "/id/agent/?uri=" + agent_uri_encoded + '''");
             addLink(agent, agentWOBO, "prov:actedOnBehalfOf", RIGHT);
         '''
     return [True, script]
@@ -1359,7 +1359,7 @@ WHERE {
             uri_encoded = urllib.quote(wat['bindings'][0]['e']['value'])
             script += '''
                 entityLabel = "''' + title + '''";
-                entityUri = "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/entity/?uri=''' + uri_encoded + '''";
+                entityUri = "''' + settings.WEB_SUBFOLDER + '''/id/entity/?uri=''' + uri_encoded + '''";
                 var entityWAT = addEntity(385, 430, entityLabel, entityUri);
                 addLink(entity, entityWAT, "prov:wasAttributedTo", RIGHT);
             '''
@@ -1369,7 +1369,7 @@ WHERE {
             script += '''
                 var entityWAT1 = addEntity(395, 440, "", "");
                 var entityWAT2 = addEntity(390, 435, "", "");
-                var entityWATN = addEntity(385, 430, "Multiple Entities, click here to search", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "function/sparql/?query=" + query_encoded + '''");
+                var entityWATN = addEntity(385, 430, "Multiple Entities, click here to search", "''' + settings.WEB_SUBFOLDER + "/function/sparql/?query=" + query_encoded + '''");
                 addLink(agent, entityWATN, "prov:wasAttributedTo", RIGHT);
             '''
         else:
@@ -1411,7 +1411,7 @@ WHERE {
             uri_encoded = urllib.quote(waw['bindings'][0]['a']['value'])
             script += '''
                 activityLabel = "''' + title + '''";
-                activityUri = "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/activity/?uri=''' + uri_encoded + '''";
+                activityUri = "''' + settings.WEB_SUBFOLDER + '''/id/activity/?uri=''' + uri_encoded + '''";
                 var activityWAW = addActivity(5, 200, activityLabel, activityUri);
                 addLink(agent, activityWAW, "prov:wasAssociatedWith", TOP);
             '''
@@ -1421,7 +1421,7 @@ WHERE {
             script += '''
                 var activityWAW1 = addActivity(15, 210, "", "");
                 var activityWAW2 = addActivity(10, 205, "", "");
-                var activityWAWN = addActivity(5, 200, "Multiple Activities, click here to search", "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + "function/sparql/?query=" + query_encoded + '''");
+                var activityWAWN = addActivity(5, 200, "Multiple Activities, click here to search", "''' + settings.WEB_SUBFOLDER + "/function/sparql/?query=" + query_encoded + '''");
                 addLink(agent, activityWAWN, "prov:wasAssociatedWith", TOP);
             '''
         else:
