@@ -609,6 +609,7 @@ def get_entity(entity_uri):
         PREFIX dc: <http://purl.org/dc/elements/1.1/>
         PREFIX dcat: <http://www.w3.org/ns/dcat#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         SELECT DISTINCT ?l ?c ?dl ?t ?v ?wat ?wat_name
         WHERE {
@@ -616,6 +617,8 @@ def get_entity(entity_uri):
                 { <''' + entity_uri + '''> a prov:Entity . }
                 UNION
                 { <''' + entity_uri + '''> a prov:Plan . }
+                UNION
+                { <''' + entity_uri + '''> a proms:ServiceEntity . }
                 OPTIONAL { <''' + entity_uri + '''> rdfs:label ?l . }
                 OPTIONAL { <''' + entity_uri + '''> dc:created ?c . }
                 OPTIONAL { <''' + entity_uri + '''> dcat:downloadURL ?dl . }
