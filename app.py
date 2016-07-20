@@ -29,7 +29,7 @@ if __name__ == '__main__':
     logging.basicConfig(filename=settings.LOGFILE,
                         level=logging.ERROR,
                         datefmt='%Y-%m-%d %H:%M:%S',
-                        format='%(asctime)s %(levelname)s %(message)s')
+                        format='%(asctime)s %(levelname)s %(filename)s:%(lineno)s %(message)s')
 
     app.run(host=settings.HOST,
             port=settings.PORT,
