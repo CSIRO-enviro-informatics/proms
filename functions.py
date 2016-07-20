@@ -1471,23 +1471,82 @@ def page_register_reporting_system():
     return html
 
 
-def replace_placeholder_uuids(original_turtle):
-    """ Replace any placholder URIs ('http://placeholder.org') with a generated URI
+def replace_uri(g, initial_uri, replacement_uri):
     """
-    new_turtle = original_turtle
-    base_uri = settings.PROMS_INSTANCE_NAMESPACE_URI
-    if base_uri.endswith('/'):
-        base_uri = base_uri[:-1]
-    while 1:
-        pat = '<%s([^>]*)#([^>]*)>' % ('http://placeholder.org')
-        x = re.compile(pat)
-        m = re.search(x, new_turtle)
-        if not m:
-            break
-        new_uri = '<' + base_uri + m.group(1) + "#" + str(uuid.uuid4()) + '>'
-        original_uri = '<http://placeholder.org' + m.group(1) + '#' + m.group(2) + '>'
-        new_turtle = new_turtle.replace(original_uri, new_uri)
-    return new_turtle
+    Replaces a given URI for all subjects or objects (not predicates) in a given graph
+
+    :param g: the graph to replace URIs in
+    :param initial_uri: the URI to replace
+    :param replacement_uri: the replacement URI
+    :return: the altered graph g
+    """
+    # replace all subjects
+    u = '''
+        DELETE {
+            ?s ?p ?o .
+        }
+        INSERT {
+            <''' + replacement_uri + '''> ?p ?o .
+        }
+        WHERE {
+            ?s ?p ?o .
+            FILTER (STR(?s) = "''' + initial_uri + '''")
+            # Nick: this really seems to need to be a FILTER, not a subgraph match i.e. <> ?p ?o . Don't know why.
+        }
+    '''
+    g.update(u)
+
+    # replace all objects
+    u = '''
+        DELETE {
+            ?s ?p ?o .
+        }
+        INSERT {
+            ?s ?p <''' + replacement_uri + '''> .
+        }
+        WHERE {
+            ?s ?p ?o .
+            FILTER (STR(?o) = "''' + initial_uri + '''")
+        }
+    '''
+    g.update(u)
+
+    # there are no predicates to place (no placeholder relations)
+    return g
+
+
+def replace_placeholder_uuids(original_turtle):
+    """ Replace any placholder URIs ('http://placeholder.org') with URIs from settings.py specific to the RDF type
+    """
+    g = Graph().parse(data=original_turtle, format='turtle')
+    # Reporting Systems
+    q = '''
+    PREFIX proms: <http://promsns.org/def/proms#>
+    SELECT ?s
+    WHERE {
+        ?s a proms:ReportingSystem .
+    }
+    '''
+    for row in g.query(q):
+        replace_uri(g, str(row[0]), settings.REPORTINGSYSTEM_BASE_URI + '/' + str(row[0]).split('#')[1])
+
+    # Reports
+    q = '''
+    PREFIX proms: <http://promsns.org/def/proms#>
+    SELECT ?s
+    WHERE {
+        { ?s a proms:BasicReport . }
+        UNION
+        { ?s a proms:ExternalReport . }
+        UNION
+        { ?s a proms:InternalReport . }
+    }
+    '''
+    for row in g.query(q):
+        replace_uri(g, str(row[0]), settings.REPORTINGSYSTEM_BASE_URI + '/' + str(row[0]).split('#')[1])
+
+    return g.serialize(format='turtle')
+
 
 
 def get_service_description(request):
