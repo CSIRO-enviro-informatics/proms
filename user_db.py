@@ -5,7 +5,7 @@ import settings
 class UserDb:
 
     def __init__(self):
-        self.mongo =  pymongo.Connection(settings.MONGODB)
+        self.mongo =  pymongo.MongoClient(settings.MONGODB)
         self.mongo_db = self.mongo['prov']
         self.user = self.mongo_db['user']
 

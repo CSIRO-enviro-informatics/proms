@@ -3,7 +3,7 @@ import settings
 
 class PromDb:
     def __init__(self):
-        self.mongo =  pymongo.Connection(settings.MONGODB)
+        self.mongo =  pymongo.MongoClient(settings.MONGODB)
         self.mongo_db = self.mongo['prov']
         self.report = self.mongo_db['report']
 

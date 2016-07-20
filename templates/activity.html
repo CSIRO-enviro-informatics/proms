@@ -19,17 +19,17 @@
             {% endif %}
             {% if ACTIVITY['r'] %}
                 {% if ACTIVITY['rt'] %}
-                    <tr><th>Report:</th><td><a href={{PROMS_INSTANCE_NAMESPACE_URI}}id/report/?uri={{ACTIVITY['r']}}>{{ACTIVITY['rt']}}</a></td></tr>
+                    <tr><th>Report:</th><td><a href={{WEB_SUBFOLDER}}/id/report/?uri={{ACTIVITY['r']}}>{{ACTIVITY['rt']}}</a></td></tr>
                 {% else %}
-                    <tr><th>Report:</th><td><a href={{PROMS_INSTANCE_NAMESPACE_URI}}id/report/?uri={{ACTIVITY['r']}}>{{ACTIVITY['r_u']}}</a></td></tr>
+                    <tr><th>Report:</th><td><a href={{WEB_SUBFOLDER}}/id/report/?uri={{ACTIVITY['r']}}>{{ACTIVITY['r_u']}}</a></td></tr>
                 {% endif %}
             {% endif %}
         </table>
         {% if ACTIVITY['a_script'] %}
             <h4>Neighbours view</h4>
             <div id="neighbour_view"></div>
-            <script type="text/javascript" src="/static/js/raphael-min.js" charset="utf-8"></script>
-            <script type="text/javascript" src="/static/js/proms-svg.js" charset="utf-8"></script>
+            <script type="text/javascript" src="{{WEB_SUBFOLDER}}/static/js/raphael-min.js" charset="utf-8"></script>
+            <script type="text/javascript" src="{{WEB_SUBFOLDER}}/static/js/proms-svg.js" charset="utf-8"></script>
             <script>
                 {{ACTIVITY['a_script'] | safe}}
             </script>
@@ -41,7 +41,7 @@
         {% else %}
             <ul>
             {% for activity in ACTIVITIES %}
-                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/activity?uri={{activity['a']}}">
+                <li><a href="{{WEB_SUBFOLDER}}/id/activity/?uri={{activity['a']}}">
                     {% if activity['l'] -%}
                         {{activity['l']}}
                     {% else %}

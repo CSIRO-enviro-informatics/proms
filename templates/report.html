@@ -23,9 +23,9 @@
             <tr><th>Title:</th><td>{{REPORT['l']}}</td></tr>
             <tr><th>Reporting System:</th><td>
                 {% if REPORT['rs'] and REPORT['rs_t'] %}
-                <a href={{PROMS_INSTANCE_NAMESPACE_URI}}id/reportingsystem/?uri={{REPORT['rs']}}>{{REPORT['rs_t']}}</a>
+                <a href={{WEB_SUBFOLDER}}/id/reportingsystem/?uri={{REPORT['rs']}}>{{REPORT['rs_t']}}</a>
                 {% elif REPORT['rs'] %}
-                <a href={{PROMS_INSTANCE_NAMESPACE_URI}}id/reportingsystem/?uri={{REPORT['rs']}}>{{REPORT['rs_u']}}</a>
+                <a href={{WEB_SUBFOLDER}}/id/reportingsystem/?uri={{REPORT['rs']}}>{{REPORT['rs_u']}}</a>
                 {% else %}
                 No ReportingSystem Registered
                 {% endif %}
@@ -35,8 +35,8 @@
         {% if REPORT['r_script'] %}
             <h4>Neighbours view</h4>
             <div id="neighbour_view"></div>
-            <script type="text/javascript" src="/static/js/raphael-min.js" charset="utf-8"></script>
-            <script type="text/javascript" src="/static/js/proms-svg.js" charset="utf-8"></script>
+            <script type="text/javascript" src="{{WEB_SUBFOLDER}}/static/js/raphael-min.js" charset="utf-8"></script>
+            <script type="text/javascript" src="{{WEB_SUBFOLDER}}/static/js/proms-svg.js" charset="utf-8"></script>
             <script>
                 {{REPORT['r_script'] | safe}}
             </script>
@@ -49,7 +49,7 @@
         {% else %}
             <ul>
             {% for report in REPORTS %}
-                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/report?uri={{report['r']}}">
+                <li><a href="{{WEB_SUBFOLDER}}/id/report/?uri={{report['r']}}">
                     {% if report['t'] -%}
                         {{report['t']}}
                     {% else %}

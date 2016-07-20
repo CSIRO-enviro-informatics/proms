@@ -20,8 +20,8 @@
         {% if ENTITY['e_script'] %}
             <h4>Neighbours view</h4>
             <div id="neighbour_view"></div>
-            <script type="text/javascript" src="/static/js/raphael-min.js" charset="utf-8"></script>
-            <script type="text/javascript" src="/static/js/proms-svg.js" charset="utf-8"></script>
+            <script type="text/javascript" src="{{WEB_SUBFOLDER}}/static/js/raphael-min.js" charset="utf-8"></script>
+            <script type="text/javascript" src="{{WEB_SUBFOLDER}}/static/js/proms-svg.js" charset="utf-8"></script>
             <script type="text/javascript">
                 {{ENTITY['e_script'] | safe}}
             </script>
@@ -33,7 +33,7 @@
         {% else %}
             <ul>
             {% for entity in ENTITIES %}
-                <li><a href="{{PROMS_INSTANCE_NAMESPACE_URI}}id/entity?uri={{entity['e']}}">
+                <li><a href="{{WEB_SUBFOLDER}}/id/entity/?uri={{entity['e']}}">
                     {% if entity['l'] -%}
                         {{entity['l']}}
                     {% else %}
