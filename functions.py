@@ -1531,7 +1531,7 @@ def replace_placeholder_uuids(original_turtle):
     }
     '''
     for row in g.query(q):
-        replace_uri(g, str(row[0]), settings.REPORTINGSYSTEM_BASE_URI + '/' + str(row[0]).split('#')[1])
+        replace_uri(g, str(row[0]), settings.REPORTINGSYSTEM_BASE_URI + '/' + str(uuid.uuid4()))
 
     # Reports
     q = '''
@@ -1546,7 +1546,7 @@ def replace_placeholder_uuids(original_turtle):
     }
     '''
     for row in g.query(q):
-        replace_uri(g, str(row[0]), settings.REPORTINGSYSTEM_BASE_URI + '/' + str(row[0]).split('#')[1])
+        replace_uri(g, str(row[0]), settings.REPORT_BASE_URI + '/' + str(uuid.uuid4()))
 
     return g.serialize(format='turtle')
 
