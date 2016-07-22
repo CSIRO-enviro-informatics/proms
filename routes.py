@@ -319,40 +319,136 @@ def receive_pingback():
             return Response(pingback_result[1], status=400, mimetype='text/plain')
 
 
-@routes.route('/function/sparql/', methods=['GET', 'POST'])
+@routes.route('/function/sparql', methods=['GET', 'POST'])
 def sparql():
     # Query submitted
     if request.method == 'POST':
-        if len(request.args) == 0:
-            sd = functions.get_service_description(request)
-            if sd[0]:
-                if 'text/turtle' in request.headers['Content-Type']:
-                    return Response(sd[1], status=200, mimetype='text/turtle')
-                elif 'application/json' in request.headers['Content-Type']:
-                    return Response(sd[1], status=200, mimetype='application/json')
-                elif 'application/rdf' in request.headers['Content-Type']:
-                    return Response(sd[1], status=200, mimetype='application/rdf')
+        '''
+        Pass on the SPARQL query to the underlying system PROMS is using (Fuseki etc.)
+        '''
+        if request.content_type == 'application/x-www-form-urlencoded':
+            '''
+            https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-via-post-urlencoded
+
+            2.1.2 query via POST with URL-encoded parameters
+
+            Protocol clients may send protocol requests via the HTTP POST method by URL encoding the parameters. When
+            using this method, clients must URL percent encode all parameters and include them as parameters within the
+            request body via the application/x-www-form-urlencoded media type with the name given above. Parameters must
+            be separated with the ampersand (&) character. Clients may include the parameters in any order. The content
+            type header of the HTTP request must be set to application/x-www-form-urlencoded.
+            '''
+            if request.form.get('query') is None:
+                return Response(
+                    'Your POST request to PROMS\' SPARQL endpoint must contain a \'query\' parameter if form posting is used.',
+                    status=400,
+                    mimetype="text/plain")
             else:
-                return Response('Error retrieving service description', status=400, mimetype='text/plain')
-        query = request.form['query']
+                query = request.form.get('query')
+        elif request.content_type == 'application/sparql-query':
+            '''
+            https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-via-post-direct
+
+            2.1.3 query via POST directly
+
+            Protocol clients may send protocol requests via the HTTP POST method by including the query directly and
+            unencoded as the HTTP request message body. When using this approach, clients must include the SPARQL query
+            string, unencoded, and nothing else as the message body of the request. Clients must set the content type
+            header of the HTTP request to application/sparql-query. Clients may include the optional default-graph-uri
+            and named-graph-uri parameters as HTTP query string parameters in the request URI. Note that UTF-8 is the
+            only valid charset here.
+            '''
+            query = request.data  # get the raw request
+            if query is None:
+                return Response(
+                    'Your POST request to PROMS\' SPARQL endpoint must contain the query in plain text in the POST body if the Content-Type \'application/sparql-query\' is used.',
+                    status=400,
+                    mimetype="text/plain")
+
+        # sorry, we only return JSON results. See the service description!
         query_result = functions_db.db_query_secure(query)
+
         if query_result and 'results' in query_result:
             query_result = json.dumps(query_result['results']['bindings'])
         else:
             query_result = json.dumps(query_result)
+
+        # resond to a form or with a raw result
         if 'form' in request.values and request.values['form'].lower() == 'true':
             return render_template('function_sparql.html',
                                    query=query,
                                    query_result=query_result,
                                    WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
         else:
-            return Response(query_result, status=200, mimetype="application/rdf+json")
+            return Response(json.dumps(query_result), status=200, mimetype="application/sparql-results+json")
     # No query, display form
-    else:
-        query = request.args.get('query')
-        return render_template('function_sparql.html',
-                               query=query,
-                               WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
+    else:  # GET
+        if request.args.get('query') is not None:
+            # SPARQL GET request
+            '''
+            https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-via-get
+
+            2.1.1 query via GET
+
+            Protocol clients may send protocol requests via the HTTP GET method. When using the GET method, clients must
+            URL percent encode all parameters and include them as query parameter strings with the names given above.
+
+            HTTP query string parameters must be separated with the ampersand (&) character. Clients may include the
+            query string parameters in any order.
+
+            The HTTP request MUST NOT include a message body.
+            '''
+            # following check invalid due to higher order if/else
+            # if request.args.get('query') is None:
+            #     return Response(
+            #         'Your GET request to PROMS\' SPARQL endpoint must contain a \'query\' query string argument.',
+            #         status=400,
+            #         mimetype="text/plain")
+            query = request.args.get('query')
+            print query
+            query_result = functions_db.db_query_secure(query)
+            print query_result
+            return Response(json.dumps(query_result), status=200, mimetype="application/sparql-results+json")
+        else:
+            # SPARQL Service Description
+            '''
+            https://www.w3.org/TR/sparql11-service-description/#accessing
+
+            SPARQL services made available via the SPARQL Protocol should return a service description document at the
+            service endpoint when dereferenced using the HTTP GET operation without any query parameter strings provided.
+            This service description must be made available in an RDF serialization, may be embedded in (X)HTML by way of
+            RDFa, and should use content negotiation if available in other RDF representations.
+            '''
+            best = request.accept_mimetypes.best_match([
+                'text/turtle',
+                'text/n3',
+                'application/rdf+json',
+                'application/rdf+xml',
+                'text/html'
+            ])
+            if best != 'text/html':
+                if best == "text/n3":
+                    return Response(functions.get_sparql_service_description('n3'),
+                                    status=200,
+                                    mimetype='text/n3')
+                elif best == "application/json":
+                    return Response(functions.get_sparql_service_description('json-ld'),
+                                    status=200,
+                                    mimetype='application/json')
+                elif best == "application/rdf+xml":
+                    return Response(functions.get_sparql_service_description('xml'),
+                                    status=200,
+                                    mimetype='application/rdf+xml')
+                else:  # turtle
+                    return Response(functions.get_sparql_service_description('turtle'),
+                                    status=200,
+                                    mimetype='text/turtle')
+            else:  #text/html
+                # show the SPARQL query form
+                query = request.args.get('query')
+                return render_template('function_sparql.html',
+                                       query=query,
+                                       WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
 @routes.route('/about', methods=['GET'])

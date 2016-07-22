@@ -5,7 +5,7 @@ import json
 import rdflib
 
 
-def db_query(sparql_query):
+def db_query(sparql_query, format_mimetype='application/json'):
     """ Make a non-secure SPARQL query
     """
     data = {'query': sparql_query, 'format': 'json'}
@@ -14,12 +14,15 @@ def db_query(sparql_query):
     return json.loads(r.text)
 
 
-def db_query_secure(sparql_query):
+def db_query_secure(sparql_query, format_mimetype='application/sparql-results+json'):
     """ Make a secure SPARQL query
     """
     auth = (settings.FUSEKI_SECURE_USR, settings.FUSEKI_SECURE_PWD)
-    data = {'query': sparql_query, 'format': 'json'}
-    headers = {'Accept': 'application/json'}
+    data = {'query': sparql_query}
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': format_mimetype
+    }
     r = requests.post(settings.FUSEKI_SECURE_QUERY_URI, auth=auth, data=data, headers=headers)
     try:
         return json.loads(r.text)
