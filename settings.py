@@ -1,6 +1,5 @@
 import sys
 
-VERSION = '3.0.1'
 SECRET_KEY = 'hello, proms'
 
 ENTITY_BASE_URI = 'http://localhost/entity'
