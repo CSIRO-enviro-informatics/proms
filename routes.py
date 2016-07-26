@@ -453,10 +453,13 @@ def sparql():
 
 @routes.route('/about', methods=['GET'])
 def about():
+    import subprocess
+    version = subprocess.check_output(["git", "describe"]).rstrip().replace('v', '').split('-')[0]
+
     return render_template('about.html',
                            PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
                            WEB_SUBFOLDER=settings.WEB_SUBFOLDER,
-                           VERSION=settings.VERSION)
+                           VERSION=version)
 
 
 @routes.route('/function/create_report', methods=['GET'])
