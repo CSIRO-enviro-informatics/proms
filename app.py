@@ -17,7 +17,7 @@ class RegexConverter(BaseConverter):
 
 #regex paths
 app.url_map.converters['regex'] = RegexConverter
-
+app.url_map.strict_slashes = True
 
 #import the routes in routes.py
 app.register_blueprint(routes)
