@@ -453,7 +453,7 @@ def sparql():
 
 @routes.route('/about', methods=['GET'])
 def about():
-	import subprocess
+    import subprocess
     version = subprocess.check_output(["git", "describe"]).rstrip().replace('v', '').split('-')[0]
 
     return render_template('about.html',
