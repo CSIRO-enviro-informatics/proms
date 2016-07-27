@@ -13,6 +13,8 @@ from rules_proms.proms_reporting_system_ruleset import PromsReportingSystemValid
 
 from prom_db import PromDb
 
+from proms_pingback_testing.pingbacks.strategies import strategy_functions
+
 
 
 #
@@ -440,6 +442,21 @@ def register_pingback(data):
 def send_pingback(report_graph):
     """ Send all pingbacks for the provided Report
     """
+    if hasattr(settings, 'PINGBACK_STRATEGIES') and settings.PINGBACK_STRATEGIES:
+        for strategy in settings.PINGBACK_STRATEGIES:
+            if hasattr(strategy_functions, 'try_strategy_' + str(strategy)):
+                strategy_method = getattr(strategy_functions, 'try_strategy_' + str(strategy))
+                print 'Attempting pingback strategy ' + str(strategy)
+                pingback_result = strategy_method(report_graph)
+                if 'pingback_attempt' in pingback_result:
+                    attempt = pingback_result['pingback_attempt']
+                    print 'Attempted pingbacks: ' + str(attempt)
+                    if 'pingback_successful' in pingback_result:
+                        successful = pingback_result['pingback_successful']
+                        print 'Successful pingbacks: ' + str(successful)
+                else:
+                    print 'No pingbacks were attempted.'
+    """
     # Pingback strategy preferences
     if settings.PINGBACK_CONFIG and 'pingback_strategies' in settings.PINGBACK_CONFIG:
         strategies = settings.PINGBACK_CONFIG['pingback_strategies']
@@ -448,6 +465,7 @@ def send_pingback(report_graph):
             strategy_successful = strategy_method(report_graph)
             if strategy_successful:
                 break
+    """
 
 
 def put_report(report_in_turtle):
@@ -548,10 +566,10 @@ def put_report(report_in_turtle):
             db.add({"uri":r_uri,"md5":mdkey})
 
             result = functions_db.db_insert_secure_named_graph(report_in_turtle, graph_name, True)
-            #send_pingback(g)
+            send_pingback(g)
 
             if result[0]:
-                return [True, 'OK']
+                return [True, r_uri]
             else:
                 return [False, result[1]]
         else:

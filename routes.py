@@ -144,7 +144,11 @@ def reports():
             #check report conformance and insert if ok, reporting all errors
             put_result = functions.put_report(request.data)
             if put_result[0]:
-                return Response('Inserted', status=201, mimetype='text/plain')
+                report_uri = put_result[1]
+                link_header_content = '<' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/report/?uri=' + report_uri + '>; rel=http://promsns.org/def/proms#Report'
+                headers = {'Content-Type': 'text/uri-list'}
+                headers['Link'] = link_header_content
+                return Response(report_uri, status=201, headers=headers)
             else:
                 return Response('Insert failed for the following reasons:\n\n' + '\n'.join(put_result[1]), status=400, mimetype='text/plain')
         else:
@@ -302,7 +306,7 @@ def pingback():
                                WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
     #process a pingback
     if request.method == 'POST':
-        pass
+        return Response(status=204)
 
 
 @routes.route('/function/receive_pingback', methods=['POST'])
