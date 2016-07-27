@@ -1,10 +1,8 @@
 import functions_db
-import functions_pingback
 import settings
 import cStringIO
 from rdflib import Graph
 import urllib
-import re
 import uuid
 from rules_proms.proms_basic_report_ruleset import PromsBasicReportValid
 from rules_proms.proms_internal_report_ruleset import PromsInternalReportValid
@@ -13,7 +11,7 @@ from rules_proms.proms_reporting_system_ruleset import PromsReportingSystemValid
 
 from prom_db import PromDb
 
-from proms_pingback_testing.pingbacks.strategies import strategy_functions
+#from proms_pingback_testing.pingbacks.strategies import strategy_functions
 
 
 
@@ -566,7 +564,7 @@ def put_report(report_in_turtle):
             db.add({"uri":r_uri,"md5":mdkey})
 
             result = functions_db.db_insert_secure_named_graph(report_in_turtle, graph_name, True)
-            send_pingback(g)
+            #send_pingback(g)
 
             if result[0]:
                 return [True, r_uri]
