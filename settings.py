@@ -66,7 +66,7 @@ else:
 
     # Pingback settings
     ENTITY_STATE_STORE = HOME_DIR + 'pingbacks/status_recorder/entities.json'
-    PINGBACK_STRATEGIES = [1, 2, 3, 4, 5]
+    PINGBACK_STRATEGIES = []
     KNOWN_PROVENANCE_STORES = [
         '',
     ]
