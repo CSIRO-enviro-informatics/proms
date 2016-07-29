@@ -1,0 +1,85 @@
+@prefix : <http://example.com/default#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix proms: <http://promsns.org/def/proms#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rep: <http://example.com/report#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rep: <http://example.com/report#> .
+
+rep:123abc a proms:ExternalReport .
+
+:a_1 a prov:Activity ;
+    rdfs:label "Activity 1" ;
+    prov:used <http://broken_link.com/resource/1> , 
+		<http://promsns.org/> , 
+		<http://broken_link.com/resource/1> ,
+		<http://broken_link.com/resource/4> ,
+		<http://promsns.org/eg/entity-server/id/dataset/001> ,
+		<http://promsns.org/eg/entity-server/id/dataset/002> ,
+		<http://promsns.org/eg/entity-server/id/dataset/003> ,
+		<http://promsns.org/eg/entity-server/id/dataset/004> ,
+		<http://promsns.org/eg/entity-server/id/dataset/005> ,
+		<http://promsns.org/eg/entity-server/id/dataset/006> ;
+	prov:generated <http://example.com/resource/5>
+.
+
+<http://broken_link.com/resource/1> a prov:Entity ;
+	rdfs:label "Test Entity 1"^^xsd:string ;
+	rdfs:comment "Does not dereference, no prov resource given"^^xsd:string 
+.
+
+<http://promsns.org/> a prov:Entity ;
+	rdfs:label "Test Entity 2"^^xsd:string ;
+	rdfs:comment "Does dereference, no RDF, no prov resource given"^^xsd:string 
+.
+
+<http://broken_link.com/resource/2> a prov:Entity ;
+	rdfs:label "Test Entity 3"^^xsd:string ;
+	rdfs:comment "Does not dereference, proms:pingback resource given, pingbacks not accepted"^^xsd:string ;
+	prov:pingback <http://broken_link.com/resource/3>
+.
+
+<http://broken_link.com/resource/4> a prov:Entity ;
+	rdfs:label "Test Entity 4"^^xsd:string ;
+	rdfs:comment "Does not dereference, proms:pingback resource given, pingbacks not accepted"^^xsd:string ;
+	prov:pingback <http://broken_link.com/resource/4>
+.
+
+<http://example.com/resource/5> a prov:Entity ;
+	rdfs:label "Test Entity 5"^^xsd:string ;
+	rdfs:comment "A generated Entity. Should be ignored by the Entity Selector"^^xsd:string
+.
+
+<http://promsns.org/eg/entity-server/id/dataset/001> a prov:Entity ;
+	rdfs:label "Test Entity 6"^^xsd:string ;
+	rdfs:comment "No pingback or provenance properties"^^xsd:string 
+.
+
+<http://promsns.org/eg/entity-server/id/dataset/002> a prov:Entity ;
+	rdfs:label "Test Entity 7"^^xsd:string ;
+	rdfs:comment "has_provenance property only"^^xsd:string 
+.
+
+<http://promsns.org/eg/entity-server/id/dataset/003> a prov:Entity ;
+	rdfs:label "Test Entity 8"^^xsd:string ;
+	rdfs:comment "has_query_service property only"^^xsd:string 
+.
+
+<http://promsns.org/eg/entity-server/id/dataset/004> a prov:Entity ;
+	rdfs:label "Test Entity 9"^^xsd:string ;
+	rdfs:comment "pingback property only"^^xsd:string 
+.
+
+<http://promsns.org/eg/entity-server/id/dataset/005> a prov:Entity ;
+	rdfs:label "Test Entity 10"^^xsd:string ;
+	rdfs:comment "has_provenance, has_query_service & pingback properties"^^xsd:string 
+.
+
+<http://promsns.org/eg/entity-server/id/dataset/006> a prov:Entity ;
+	rdfs:label "Test Entity 11"^^xsd:string ;
+	rdfs:comment "Has a dcat:CatalogRecord with a prov:pingback property"^^xsd:string 
+.

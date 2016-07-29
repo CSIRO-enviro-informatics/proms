@@ -33,18 +33,17 @@ if 'dev' in sys.argv or '--dev' in sys.argv:
     # Request Timeout in seconds
     FUSEKI_TIMEOUT = 5
 
-    # Pingback strategies to be tried (in order)
-    PINGBACK_CONFIG = {
-        'pingback_strategies': ['known_stores', 'follow_linked_data']
-    }
-    # Comma separated list of known PROMS instances that receive pingback
-    KNOWN_PROMS_INSTANCES = []
-
-    DPN_BASE_URI = 'http://sample-dpn-instance.com'
+    # Pingback settings
+    ENTITY_STATE_STORE = HOME_DIR + 'pingbacks/status_recorder/entities.json'
+    PINGBACK_STRATEGIES = [1, 2, 3, 4, 5]
+    KNOWN_PROVENANCE_STORES = [
+        '',
+    ]
 
 else:
     PROMS_LABEL = 'A PROMS Server'
-    HOME_DIR = 'c:/work/proms/'
+    HOME_DIR = '/opt/proms/'
+    STATIC_DIR = 'static/'
     LOGFILE = HOME_DIR + 'proms.log'
     HOST = '0.0.0.0'
     PORT = 9000
@@ -65,12 +64,10 @@ else:
     # Request Timeout in seconds
     FUSEKI_TIMEOUT = 5
 
-    # Pingback strategies to be tried (in order)
-    PINGBACK_CONFIG = {
-        'pingback_strategies': ['known_stores', 'follow_linked_data']
-    }
-    # Comma separated list of known PROMS instances that receive pingback
-    KNOWN_PROMS_INSTANCES = []
-
-    DPN_BASE_URI = 'http://localhost'
+    # Pingback settings
+    ENTITY_STATE_STORE = HOME_DIR + 'pingbacks/status_recorder/entities.json'
+    PINGBACK_STRATEGIES = [1, 2, 3, 4, 5]
+    KNOWN_PROVENANCE_STORES = [
+        '',
+    ]
 

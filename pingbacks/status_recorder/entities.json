@@ -1,0 +1,17 @@
+[
+    {
+        "dereferencable": false, 
+        "first_attempt_time": "2015-11-04T18:37:01.455000", 
+        "last_attempt_time": null, 
+        "pingback_endpoints": [
+            "http://example.com", 
+            "http://example.org/ping"
+        ], 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": true, 
+        "strategies": [], 
+        "uri": "http://test.com/dataset/3"
+    }
+]

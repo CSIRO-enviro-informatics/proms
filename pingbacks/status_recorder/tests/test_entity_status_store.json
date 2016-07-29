@@ -1,0 +1,35 @@
+[
+    {
+        "dereferencable": false, 
+        "first_attempt": "2016-06-02T14:37:14.734000", 
+        "last_attempt": null, 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://test.com/dataset/1"
+    }, 
+    {
+        "dereferencable": true, 
+        "first_attempt": "2016-06-02T14:37:14.734000", 
+        "last_attempt": null, 
+        "pingback_endpoints": "http://test.com/api/pingback", 
+        "pingback_received": true, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": [
+            "http://test.com/api/pingback", 
+            "http://test.com/api/pingback2"
+        ], 
+        "rdf_metadata": true, 
+        "strategies": [
+            1, 
+            2, 
+            3
+        ], 
+        "uri": "http://test.com/dataset/2"
+    }
+]
