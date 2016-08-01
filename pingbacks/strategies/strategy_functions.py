@@ -8,7 +8,7 @@ def get_graph(ttl_file_path):
     return g
 
 
-# Strategy 1
+# Strategy 1: Given Pingback
 def get_pingback_endpoints_via_given(g, entity_uri):
     pingback_endpoints = []
     q = '''
@@ -24,7 +24,7 @@ def get_pingback_endpoints_via_given(g, entity_uri):
     return pingback_endpoints
 
 
-# Endpoint Direct
+# Strategy 1: Given Pingback
 def try_strategy_1(g, excluded_entities=[]):
     # Get the URIs of the Entities for pingbacks
     entities = cs_functions.get_entities_for_pingbacks(g)
@@ -66,7 +66,7 @@ def try_strategy_1(g, excluded_entities=[]):
     }
 
 
-# Strategy 2
+# Strategy 2: Given Provenance
 def get_has_query_service_endpoints_via_given(g, entity_uri):
     provenance_endpoints = []
     q = '''
@@ -82,7 +82,7 @@ def get_has_query_service_endpoints_via_given(g, entity_uri):
     return provenance_endpoints
 
 
-# Endpoint Direct Discovery
+# Strategy 2: Given Provenance
 def try_strategy_2(g, excluded_entities=[]):
     # Get the URIs of the Entities for pingbacks
     entities = cs_functions.get_entities_for_pingbacks(g)
@@ -129,7 +129,7 @@ def try_strategy_2(g, excluded_entities=[]):
     }
 
 
-# Known Provenance Stores
+# Strategy 3: Known Provenance Stores
 def try_strategy_3(g, excluded_entities=[]):
     # Get the URIs of the Entities for pingbacks
     entities = cs_functions.get_entities_for_pingbacks(g)
@@ -153,9 +153,7 @@ def try_strategy_3(g, excluded_entities=[]):
     }
 
 
-#
-#   Strategies 4 & 5
-#
+# Strategies 4 & 5
 def is_dereferencable(entity_uri):
     import requests
     from requests import exceptions
@@ -171,6 +169,7 @@ def is_dereferencable(entity_uri):
         return [False, 'Could not dereference URI']
 
 
+# Strategies 4 & 5
 def has_valid_rdf_meatadata(rdf_metadata, content_type_header):
     # test header. Must find one of three known RDF serialisations
     if 'text/turtle' in content_type_header:
@@ -191,7 +190,7 @@ def has_valid_rdf_meatadata(rdf_metadata, content_type_header):
             return [False, 'RDF format ' + format + ' indicated in header but unable to parse RDF data to graph. Error: ' + e.message]
 
 
-# Strategy 4
+# Strategy 4: Pingback Lookup
 def get_pingback_endpoints_via_lookup(g, entity_uri):
     pingback_endpoints = []
 
@@ -251,7 +250,7 @@ def get_pingback_endpoints_via_lookup(g, entity_uri):
     return pingback_endpoints
 
 
-# Endpoint Lookup
+# Strategy 4: Pingback Lookup
 def try_strategy_4(g, excluded_entities=[]):
     # Get the URIs of the Entities for pingbacks
     entities = cs_functions.get_entities_for_pingbacks(g)
@@ -296,9 +295,7 @@ def try_strategy_4(g, excluded_entities=[]):
     }
 
 
-#
-#   Strategy 5
-#
+# Strategy 5: Provenance Lookup
 def get_has_query_service_endpoints_via_lookup(g, entity_uri):
     has_query_service_endpoints = []
 
@@ -393,7 +390,8 @@ def try_strategy_5(g, excluded_entities=[]):
     }
 
 
-# Data Provider Node Direct
+# Strategy 6: Data Provider Node Given
+# not described in paper yet
 def try_strategy_6(g, excluded_entities=[]):
     # Get the URIs of the Entities for pingbacks
     entities = cs_functions.get_entities_for_pingbacks(g)
@@ -403,7 +401,8 @@ def try_strategy_6(g, excluded_entities=[]):
         entities.remove(entity)
 
 
-# Data Provider Node Lookup
+# Strategy 6: Data Provider Node Lookup
+# not described in paper yet
 def try_strategy_7(g, excluded_entities=[]):
     # Get the URIs of the Entities for pingbacks
     entities = cs_functions.get_entities_for_pingbacks(g)
