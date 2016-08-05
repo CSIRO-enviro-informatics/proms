@@ -466,9 +466,9 @@ def put_report(report_in_turtle):
         query = '''
             PREFIX proms: <http://promsns.org/def/proms#>
             SELECT DISTINCT ?type ?rs WHERE {
-                    ?r a ?type .
-                    OPTIONAL { ?r proms:reportingSystem ?rs } .
-                FILTER (?type = proms:BasicReport || ?type = proms:InternalReport || ?type = proms:ExternalReport)
+                ?r a ?type .
+                OPTIONAL { ?r proms:reportingSystem ?rs } .
+                FILTER (?type = proms:BasicReport || ?type = proms:ExternalReport || ?type = proms:InternalReport)
             }
         '''
         result = g.query(query)
@@ -486,7 +486,7 @@ def put_report(report_in_turtle):
         elif 'ExternalReport' in report_type:
             pr = PromsExternalReportValid(g)
         else:
-            return [False, ['Unknown Report type (expecting "BasicReport", "InternalReport" or "ExternalReport")']]
+            return [False, ['Unknown Report type (expecting "proms:BasicReport", "proms:ExternalReport" or "proms:InternalReport")']]
         conf_results = pr.get_result()
         fail_reasons = []
         for ruleset in conf_results:
@@ -544,7 +544,7 @@ def put_report(report_in_turtle):
             mdkey = util.generate_md5(n_quads1)
 
             db = PromDb()
-            db.add({"uri":r_uri,"md5":mdkey})
+            db.add({"uri": r_uri, "md5": mdkey})
 
             result = functions_db.db_insert_secure_named_graph(report_in_turtle, graph_name, True)
             send_pingback(g)
@@ -552,7 +552,7 @@ def put_report(report_in_turtle):
             if result[0]:
                 return [True, r_uri]
             else:
-                return [False, result[1]]
+                return [False, [result[1]]]
         else:
             return [False, fail_reasons]
 

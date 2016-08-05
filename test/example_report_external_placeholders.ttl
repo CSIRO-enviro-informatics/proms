@@ -9,7 +9,9 @@
     proms:jobId "123456"^^xsd:string ;
     proms:startingActivity :a0001 ;
     proms:endingActivity :a0001 ;
-    proms:reportingSystem <{{REPORTING_SYSTEM_URI}}> .
+    proms:reportingSystem <{{REPORTING_SYSTEM_URI}}> ;
+    prov:generatedAtTime "{{GENERATED_AT_TIME}}"^^xsd:dateTime ;
+.
 
 :a0001 a prov:Activity ;
     rdfs:label "Entity Types Test Activity"^^xsd:string ;
