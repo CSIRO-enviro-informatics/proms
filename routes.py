@@ -150,7 +150,7 @@ def reports():
                 headers['Link'] = link_header_content
                 return Response(report_uri, status=201, headers=headers)
             else:
-                return Response('Insert failed for the following reasons:\n\n' + '\n'.join(put_result[1]), status=400, mimetype='text/plain')
+                return Response('Report insert failed for the following reasons:\n\n' + '\n'.join(put_result[1]), status=400, mimetype='text/plain')
         else:
             return Response('Only turtle documents allowed', status=400, mimetype='text/plain')
 

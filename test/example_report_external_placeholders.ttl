@@ -1,0 +1,38 @@
+@prefix proms: <http://promsns.org/def/proms#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://placeholder.org#> .
+
+:report a proms:ExternalReport ;
+    rdfs:label "Example External Report"^^xsd:string ;
+    proms:jobId "123456"^^xsd:string ;
+    proms:startingActivity :a0001 ;
+    proms:endingActivity :a0001 ;
+    proms:reportingSystem <{{REPORTING_SYSTEM_URI}}> .
+
+:a0001 a prov:Activity ;
+    rdfs:label "Entity Types Test Activity"^^xsd:string ;
+    prov:endedAtTime "2014-20-27T11:20:04+10:00"^^xsd:dateTime ;
+    prov:startedAtTime "2014-20-26T11:20:04+10:00"^^xsd:dateTime ;
+    prov:used :e0001, :e0002, <http://datarepo.example.org/dataset/21> ;
+    prov:generated <http://datarepo.example.org/dataset/42>, :e0003 ;
+    prov:wasAssociatedWith <http://example.org/id/person/car587> .
+
+:e0001 a prov:Entity ;
+    rdfs:label "An input Entity"^^xsd:string ;
+    prov:value "3.1415926"^^xsd:decimal .
+
+:e0002 a prov:Plan ;
+    rdfs:label "Entity 0002"^^xsd:string ;
+    prov:value "First do A, then B, then C."^^xsd:string .
+
+<http://datarepo.example.org/dataset/21> a prov:Entity ;
+    rdfs:label "Dataset 21"^^xsd:string .
+
+<http://datarepo.example.org/dataset/42> a prov:Entity ;
+    rdfs:label "Dataset 42"^^xsd:string  .
+
+:e0003 a prov:Entity ;
+    rdfs:label "An output Entity"^^xsd:string ;
+    prov:value "200"^^xsd:integer .

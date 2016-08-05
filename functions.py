@@ -486,7 +486,7 @@ def put_report(report_in_turtle):
         elif 'ExternalReport' in report_type:
             pr = PromsExternalReportValid(g)
         else:
-            return [False, 'Unknown Report type (expecting "BasicReport", "InternalReport" or "ExternalReport")']
+            return [False, ['Unknown Report type (expecting "BasicReport", "InternalReport" or "ExternalReport")']]
         conf_results = pr.get_result()
         fail_reasons = []
         for ruleset in conf_results:
