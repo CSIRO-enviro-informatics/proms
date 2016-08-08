@@ -102,7 +102,7 @@ def db_insert_secure_named_graph(turtle, graph_uri, from_string=False):
         g.load(turtle, format='n3')
 
     # SPARQL INSERT
-    data = {'update': 'INSERT DATA { GRAPH ' + graph_uri + ' { ' + g.serialize(format='nt') + ' } }', format: 'json'}
+    data = {'update': 'INSERT DATA { GRAPH <' + graph_uri + '> { ' + g.serialize(format='nt') + ' } }', format: 'json'}
     auth = (settings.FUSEKI_SECURE_USR, settings.FUSEKI_SECURE_PWD)
     headers = {'Accept': 'text/turtle'}
     try:
