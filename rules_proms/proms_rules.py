@@ -13,6 +13,7 @@ has_report = '''
         }
         '''
 
+
 has_generatedAtTime = '''
         PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -26,6 +27,7 @@ has_generatedAtTime = '''
             ?s prov:generatedAtTime ?t .
         }
         '''
+
 
 has_label = '''
 		PREFIX proms: <http://promsns.org/def/proms#>
@@ -41,6 +43,7 @@ has_label = '''
         }
 		'''
 
+
 reporting_system_has_label = '''
 		PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -50,6 +53,7 @@ reporting_system_has_label = '''
             ?s  rdfs:label     ?t .
         }
 		'''
+
 
 reporting_system_has_validation = '''
 		PREFIX proms: <http://promsns.org/def/proms#>
@@ -75,6 +79,7 @@ has_nativeId = '''
         }
 		'''
 
+
 has_reportingSystem = '''
         PREFIX proms: <http://promsns.org/def/proms#>
         ASK
@@ -87,6 +92,7 @@ has_reportingSystem = '''
             ?s  proms:reportingSystem  ?rs .
         }
 		'''
+
 
 get_reportingSystem = '''
         PREFIX proms: <http://promsns.org/def/proms#>
@@ -101,6 +107,7 @@ get_reportingSystem = '''
         }
 		'''
 
+
 ## is the reporting system registered on the server?
 ## needs .format(id of reporting system)
 def has_registered_reportingSystem(name):
@@ -110,6 +117,7 @@ def has_registered_reportingSystem(name):
 	WHERE {<''' + name + '''> a proms:ReportingSystem.
         }
 	''')
+
 
 has_startingActivity = '''
 		PREFIX proms: <http://promsns.org/def/proms#>

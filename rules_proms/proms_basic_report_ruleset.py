@@ -1,16 +1,13 @@
 __author__ = 'ayr016'
 import sys
-
-sys.path.insert(0, ".\\rules_templates")
-sys.path.insert(0, "..\\proms")
-
 from rules_templates import StackedRuleSet
 from rules_templates import Rule
 import proms_rules as proms_rules
-
 from proms_report_ruleset import PromsReportValid
-import settings
 from functions_db import *
+sys.path.insert(0, ".\\rules_templates")
+sys.path.insert(0, "..\\proms")
+
 
 class PromsBasicReportValid(StackedRuleSet):
 	def __init__(self, graph, report_register_uri=None):
@@ -82,6 +79,7 @@ class HasLabel(Rule):
 					  self.components_failed_count,
 					  self.failed_components)
 
+
 class HasGeneratedAtTime(Rule):
 	"Checks a graph has datetime indicating when the report was generated - separate from the activities"
 	def __init__(self, report_graph):
@@ -117,6 +115,7 @@ class HasGeneratedAtTime(Rule):
 					  self.components_total_count,
 					  self.components_failed_count,
 					  self.failed_components)
+
 
 class HasReportingSystem(Rule):
 	"Checks that there is a URI for a reporting system, registered on this instance"
@@ -183,6 +182,7 @@ class HasReportingSystem(Rule):
 				return (reportingSystem in text, reportingSystem, text)
 		else:
 			return (False, "(not specified)", text)
+
 
 class HasNativeId(Rule):
 	"""
