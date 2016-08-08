@@ -5,7 +5,6 @@
     {% if REPORT %}
     <div {% if REPORT['verified']%}class="verified_report" {%endif%} >
         <h2>A Report</h2>
-        <h3>URI: {{REPORT['uri']}}</h3>
 
          {% if REPORT['verified'] -%}
           <h3>Signed by {{REPORT['signedby']}}</h3>
@@ -20,6 +19,7 @@
         <p><a href="">html</a> | <a href="{{request.path + "?uri=" + REPORT['uri_html'] + "&_format=text/turtle"}}">rdf/turtle</a></p>
         <h4><a class="definition" href={{REPORT['t']}}>{{REPORT['t_str']}}</a> Report</h4>
         <table class="lined">
+            <tr><th>URI:</th><td><a href="{{REPORT['uri']}}">{{REPORT['uri']}}</a></td></tr>
             <tr><th>Title:</th><td>{{REPORT['l']}}</td></tr>
             <tr><th>Reporting System:</th><td>
                 {% if REPORT['rs'] and REPORT['rs_t'] %}
