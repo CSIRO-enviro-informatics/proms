@@ -1,4 +1,5 @@
 import settings
+from rdflib import URIRef
 from pingbacks.candidate_selector import cs_functions
 
 
@@ -140,11 +141,26 @@ def try_strategy_3(g, excluded_entities=[]):
 
     successful_pingbacks = []
     for entity in entities:
-        for known_store in settings.KNOWN_PROVENANCE_STORES:
-            if known_store != '':
-                result = send_pingback(known_store, entity, further_links=[])
-                if result[0]:
-                    successful_pingbacks.append(entity)
+        # make all the PROV-AQ links for each entity
+        further_links = [
+            {
+                'resource': entity,
+                'rel': 'has_query_service',
+                'anchor': settings.PROMS_INSTANCE_NAMESPACE_URI + '/function/sparql'
+            },
+            {
+                'resource': entity,
+                'rel': 'has_provenance',
+                'anchor': settings.ENTITY_BASE_URI + '/?uri=' + entity
+            }
+        ]
+        for known_store_pingback_endpoints in settings.KNOWN_PROVENANCE_STORE_PINGBACK_ENDPOINTS:
+            if known_store_pingback_endpoints != '':
+                #result = send_provaq_pingback(known_store_pingback_endpoints, None, further_links)
+                proms_pingback_msg = generate_proms_msg_from_report(g, entities, known_store_pingback_endpoints)
+                result1 = send_proms_pingback(known_store_pingback_endpoints, proms_pingback_msg)
+                #if result[0]:
+                #    successful_pingbacks.append(entity)
 
     # return the list of entities for which pingbacks were attempted and entities for which pingbacks were successful
     return {
@@ -413,6 +429,12 @@ def try_strategy_7(g, excluded_entities=[]):
 
 
 def is_a_uri(uri_candidate):
+    """
+    Validates a string as a URI
+
+    :param uri_candidate: string
+    :return: True or False
+    """
     import re
     # https://gist.github.com/dperini/729294
     URL_REGEX = re.compile(
@@ -453,57 +475,124 @@ def is_a_uri(uri_candidate):
     return re.match(URL_REGEX, uri_candidate)
 
 
-def send_pingback(pingback_endpoint, uri_list, further_links=None):
+def make_link_headers(further_links):
     """
-    Generates and posts a pingback message
+    Makes the slightly tircky HTTP Link header, if any
 
-    Messages formulated according to http://www.w3.org/TR/prov-aq/#provenance-pingback, specifically Examples 12, 13 & 14
-    :param pingback_endpoint: a URI, to where the pingback is sent
+    :param further_links: a list of dicts with 'resource', 'rel', & 'anchor' properties, all URIs
+    :return: a string
+    """
+    link_header_content = ''
+    count = 0
+    for further_link in further_links:
+        if not is_a_uri(further_link['anchor']):
+            raise PingbackFormulationError('Every anchor in a further_links array must be a valid URI')
+        else:
+            link_header_content += '<' + further_link['resource'] + '>; ' +\
+                                'rel="http://www.w3.org/ns/prov#' + further_link['rel'] + '"; ' +\
+                                'anchor="' + further_link['anchor'] + '",'
+        count += 1
+    return link_header_content[:-1]  # remove last ','
+
+
+def send_provaq_pingback(pingback_target_uri, uri_list=None, further_links=None):
+    """
+    Generates and posts a PROV-AQ pingback message
+
+    Messages formulated according to http://www.w3.org/TR/prov-aq/#provenance-pingback, specifically examples 12, 13 & 14
+    :param pingback_target_uri: a URI, to where the pingback is sent
     :param uri_list: a list object of URIs
     :param further_links: a list of dicts with 'resource', 'rel', & 'anchor' properties, all URIs
     :return: True or an error message
     """
     import requests
-    import errors
 
     headers = {'Content-Type': 'text/uri-list'}
 
     # if further links is set, iterate through them and create appropriate Link headers
     if further_links is not None:
-        link_header_content = ''
-        for further_link in further_links:
-            if further_link['resource'] not in uri_list:
-                raise errors.PingbackFormulationError('Each resource in a futher_links array must also appear in the url-list message')
-            elif not is_a_uri(further_link['anchor']):
-                raise errors.PingbackFormulationError('Every anchor in a further_links array must be a valid URI')
-            else:
-                link_header_content += '<' + further_link['resource'] + '>;' +\
-                                       'rel="http://www.w3.org/ns/prov#' + further_link['rel'] + '";' +\
-                                       'anchor="' + further_link['anchor'] + '",'
-        headers['Link'] = link_header_content[:-1]  # remove last ','
+        headers['Link'] = make_link_headers(further_links)
+
+    # join the URIs into a string for the message body
+    if uri_list is not None:
+        body = '\n'.join(uri_list)  # the standard says CRLF (\r\n), not just \n
+    else:
+        # if we have no URIs, set the body to None and set a Content-Length header of zero
+        body = None
+        headers['Content-Length'] = '0'
 
     # send the post, as per http://www.w3.org/TR/prov-aq/
-    r = None
     try:
-        r = requests.post(pingback_endpoint, data='\r\n'.join(uri_list), headers=headers)  # the standard says CRLF (\r\n), not just \n
-        return [r.status_code == 204]
-    except Exception:
-        message = 'Error sending pingback'
-        if not r == None:
-            message = r.text
-        return [False, message]
+        r = requests.post(pingback_target_uri, data=body, headers=headers)
+        result = (r.status_code == 204)
+        if result:
+            return [True]
+        else:
+            return [False, r.content]
+    except Exception, e:
+        print e.message
+        return [False, e.message]
 
 
-def send_bundle(pingback_endpoint, provenance_bundle):
+def send_proms_pingback(pingback_target_uri, payload, mimetype='text/turtle'):
+    """
+    Generates and posts a PROMS pingback message
+
+    :param pingback_target_uri: a URI, to where the pingback is sent
+    :param payload: an RDF file, in one of the allowed formats and conformant with the PROMS pingback message spec
+    :param mimetype: the mimetype of the RDF file being sent
+    :return: True or an error message
+    """
     import requests
-    headers = {'Content-Type': 'text/turtle'}
-    r = None
+
+    headers = {'Content-Type': mimetype}
+
+    # send the post
     try:
-        r = requests.post(pingback_endpoint, data='\r\n'.join(provenance_bundle),
-                          headers=headers)  # the standard says CRLF (\r\n), not just \n
-        return [r.status_code == 204]
-    except Exception:
-        message = 'Error sending pingback bundle'
-        if not r == None:
-            message = r.text
-        return [False, message]
+        r = requests.post(pingback_target_uri, data=payload, headers=headers)
+        result = (r.status_code == 201)
+        if result:
+            return [True, r.content]
+        else:
+            return [False, r.content]
+    except Exception, e:
+        print e.message
+        return [False, e.message]
+
+
+def generate_proms_msg_from_report(report_graph, entities_uris, pingback_target_uri, report_type='External'):
+    if report_type == 'Basic':
+        # we can't generate a Pingback message from a Basic report as there are no Entities defined
+        raise PingbackFormulationError('A PROMS Pingback message cannot be generated from a PROMS Basic Report')
+    elif report_type == 'External':
+        # PROMS pingback message requirements (rules) from http://promsns.org/pingbacks/validator/about
+
+        # For R1: assume that the Report from PROMS is already valid according to PROV-O
+
+        # For R2: add a prov:pingback <pingback_target_uri> for each Entity being pingbacked for
+        for entity_uri in entities_uris:
+            report_graph.add((URIRef(entity_uri), URIRef('http://www.w3.org/ns/prov#pingback'), URIRef(pingback_target_uri)))
+
+        # For R3: check that each Entity being pingbacked for is prov:used by the sole Activity
+        # No need to check for any other conditions as the sole Actvity in an External Report is guarenteed
+        for entity_uri in entities_uris:
+            a = report_graph.query('''
+                                PREFIX prov: <http://www.w3.org/ns/prov#>
+                                ASK
+                                WHERE {
+                                    ?a  a prov:Activity ;
+                                        prov:used <''' + entity_uri + '''>
+                                }
+                                ''')
+            if not a:
+                raise PingbackFormulationError('The Entity <' + entity_uri + '> is not prov:used by the Enternal Report\'s prov:Activity as required by PROMS pingback message rule R2 (see http://promsns.org/pingbacks/validator/about)')
+
+        return report_graph.serialize(format='turtle')
+    else:  # Internal
+        print 'Internal'
+
+
+class PingbackFormulationError(Exception):
+    def __init__(self, *args):
+        # *args is used to get a list of the parameters passed in
+        self.args = [a for a in args]

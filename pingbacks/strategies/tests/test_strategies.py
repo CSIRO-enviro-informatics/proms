@@ -206,7 +206,7 @@ def test_strategy_2(ttl_file_path):
 if __name__ == "__main__":
     logging.basicConfig()
     '''
-    TEST_ENTITY_STATUS_STORE = settings.HOME_DIR + 'strategies/tests/test_entity_state_store.json'
+    TEST_ENTITY_STATUS_STORE = settings.HOME_DIR + 'strategies/test/test_entity_state_store.json'
     TEST_ENTITIES = [
         'http://broken_link.com/resource/1',
         'http://promsns.org/',
