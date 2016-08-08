@@ -1,7 +1,7 @@
 import sys
 import requests
 import imp
-settings = imp.load_source('', '/opt/proms/settings.py')
+settings = imp.load_source('', 'c:/work/proms/settings.py')
 
 """
 # python script_post_rs.py {RS_TURTLE_FILE}

@@ -6,7 +6,7 @@
 
 :report a proms:ExternalReport ;
     rdfs:label "Example External Report"^^xsd:string ;
-    proms:jobId "123456"^^xsd:string ;
+    proms:nativeId "123456"^^xsd:string ;
     proms:startingActivity :a0001 ;
     proms:endingActivity :a0001 ;
     proms:reportingSystem <{{REPORTING_SYSTEM_URI}}> ;

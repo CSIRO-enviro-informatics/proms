@@ -64,7 +64,12 @@ def reportingsystem():
         if 'text/turtle' in request.headers['Content-Type']:
             put_result = functions.put_reportingsystem(request.data)
             if put_result[0]:
-                return Response('Inserted: ' + put_result[1], status=201, mimetype='text/plain')
+                reportingsystem_uri = put_result[1]
+                link_header_content = '<' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem/?uri=' + reportingsystem_uri + '>; rel=http://promsns.org/def/proms#ReportingSystem'
+                headers = {}
+                headers['Content-Type'] = 'text/uri-list'
+                headers['Link'] = link_header_content
+                return Response(reportingsystem_uri, status=201, headers=headers)
             else:
                 return Response('Insert failed for the following reasons:\n\n' + '\n'.join(put_result[1]), status=400, mimetype='text/plain')
         else:
@@ -74,7 +79,7 @@ def reportingsystem():
 @routes.route('/id/report/', methods=['GET', 'POST'])
 def reports():
     if request.method == 'GET':
-        #single Report
+        # single Report
         if request.args.get('uri'):
             uri = urllib.unquote(request.args.get('uri'))
             if request.args.get('_format'):
@@ -85,6 +90,8 @@ def reports():
                     return Response('Unknown format type', status=400, mimetype='text/plain')
             else:
                 report = functions.get_report_dict(uri)
+                # TODO: v3.2
+                '''
                 import signature
                 prom_db = PromDb()
                 signed_report = prom_db.find(uri)
@@ -97,18 +104,19 @@ def reports():
                     else:
                         report['verified'] = False
                         report['status'] = status
-
-
+                '''
                 return render_template('report.html',
                                        REPORT=report,
                                        PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
                                        WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
-        #multiple Reports (register)
+        # multiple Reports (register)
         else:
             if request.args.get('_format'):
                 return Response('A specific report URI must be provided', status=400, mimetype='text/plain')
             else:
                 reports = functions.get_reports_dict()
+                # TODO: v3.2
+                '''
                 prom_db = PromDb()
                 reportsindb = prom_db.list()
                 signed_reports = [x for x in reportsindb if x.has_key('creator')]
@@ -127,26 +135,26 @@ def reports():
                     else:
                         signed_report['verified'] = False
                         signed_report['status'] = status
-
-
+                '''
 
                 return render_template('report.html',
                                        REPORTS=reports,
-                                       SIGNED_REPORTS = signed_reports,
+                                       #SIGNED_REPORTS=signed_reports,
                                        PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
                                        WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
-    #process a posted Report
+    # process a posted Report
     if request.method == 'POST':
-        #read the incoming report
-        #only accept turtle POSTS
+        # read the incoming report
+        # only accept turtle POSTS
         if 'text/turtle' in request.headers['Content-Type']:
-            #check report conformance and insert if ok, reporting all errors
+            # check report conformance and insert if ok, reporting all errors
             put_result = functions.put_report(request.data)
             if put_result[0]:
                 report_uri = put_result[1]
                 link_header_content = '<' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/report/?uri=' + report_uri + '>; rel=http://promsns.org/def/proms#Report'
-                headers = {'Content-Type': 'text/uri-list'}
+                headers = {}
+                headers['Content-Type'] = 'text/uri-list'
                 headers['Link'] = link_header_content
                 return Response(report_uri, status=201, headers=headers)
             else:

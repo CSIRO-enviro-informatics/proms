@@ -554,7 +554,6 @@ def put_report(report_in_turtle):
             db.add({"uri": graph_name, "md5": mdkey})
             """
             result = functions_db.db_insert_secure_named_graph(report_in_turtle, graph_name, True)
-            print 'about to pingback'
             send_pingback(g)
 
             if result[0]:
@@ -1568,7 +1567,6 @@ def replace_placeholder_uuids(original_turtle):
     }
     '''
     for row in g.query(q):
-        print row[0]
         replace_uri(g, str(row[0]), settings.ACTIVITY_BASE_URI + '/' + report_uuid + str(row[0]).split('#')[1])
 
     q = '''
@@ -1582,7 +1580,6 @@ def replace_placeholder_uuids(original_turtle):
     }
     '''
     for row in g.query(q):
-        print row[0]
         replace_uri(g, str(row[0]), settings.ENTITY_BASE_URI + '/' + report_uuid + str(row[0]).split('#')[1])
 
     return g.serialize(format='turtle')
