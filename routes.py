@@ -306,29 +306,42 @@ def agents():
                                    WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
-# Deprecated - XXX Remove
-@routes.route('/function/pingback', methods=['GET', 'POST'])
+
+@routes.route('/function/pingback', methods=['POST'])
 def pingback():
-    if request.method == 'GET':
-        return render_template('pingback.html',
-                               WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
-    #process a pingback
-    if request.method == 'POST':
-        return Response(status=204)
+    """
+    React to incoming pingback messages
 
+    :return: 204 if PROV-AQ successful, 201 if PROMS successfull, else 400 or 500 + msg
+    """
+    import pingbacks.handle_incoming.hi_functions as hi
 
-@routes.route('/function/receive_pingback', methods=['POST'])
-def receive_pingback():
-    if request.method == 'GET':
-        return render_template('pingback.html',
-                               WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
-    #process a pingback
-    if request.method == 'POST':
-        pingback_result = functions.register_pingback(request.data)
-        if pingback_result[0]:
-            return Response('OK', status=200)
+    # work out if it's a PROV-AQ message or a PROMS message
+    if hi.is_provaq_msg(request):
+        insert = hi.register_provaq_pingback(request)
+        if insert[0]:
+            return Response('', status=204)
         else:
-            return Response(pingback_result[1], status=400, mimetype='text/plain')
+            return Response('PROV-AQ pingback message not handled. ' + insert[1],
+                            status=400,
+                            mimetype='text/plain')
+    elif hi.is_proms_msg(hi.register_provaq_pingback(request)):
+        insert = hi.register_proms_pingback(request)
+        if insert[0]:
+            return Response('Created ' + insert[1] + ' triples.', status=201)
+        else:
+            return Response('PROMS pingback message not handled. ' + insert[1],
+                            status=400,
+                            mimetype='text/plain')
+    else:
+        # message not understood
+        return Response('Pingback message not understood. Not recognised as PROV-AQ or PROMS msg.', status=400, mimetype='text/plain')
+
+    pingback_result = functions.register_pingback(request.data)
+    if pingback_result[0]:
+        return Response('OK', status=200)
+    else:
+        return Response(pingback_result[1], status=400, mimetype='text/plain')
 
 
 @routes.route('/function/sparql', methods=['GET', 'POST'])
