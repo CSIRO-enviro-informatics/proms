@@ -4,9 +4,9 @@
     <h1>PROMS Server</h1>
     {% if ENTITY %}
         <h2>An Entity</h2>
-        <h3>URI: {{ENTITY['uri']}}</h3>
         <p><a href="">html</a> | <a href="{{request.path + "?uri=" + ENTITY['uri_html'] + "&_format=text/turtle"}}">rdf/turtle</a></p>
         <table class="lined">
+            <tr><th>URI:</th><td><a href="{{ENTITY['uri']}}">{{ENTITY['uri']}}</a></td></tr>
             {% if ENTITY['l'] %}
             <tr><th>Title:</th><td>{{ENTITY['l']}}</td></tr>
             {% endif %}
