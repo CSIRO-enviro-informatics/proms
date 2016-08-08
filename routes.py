@@ -47,7 +47,7 @@ def reportingsystem():
 
         else:
             #if 'text/html' in request.headers.get('Accept'):
-                reportingsystems=functions.get_reportingsystems_dict()
+                reportingsystems = functions.get_reportingsystems_dict()
                 return render_template('reportingsystem.html',
                                        REPORTINGSYSTEMS=reportingsystems,
                                        PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,

@@ -4,8 +4,8 @@
     <h1>PROMS Server</h1>
     {% if REPORTINGSYSTEM %}
         <h2>A ReportingSystem</h2>
-        <h3>URI: {{REPORTINGSYSTEM['uri']}}</h3>
         <table class="lined">
+            <tr><th>URI:</th><td>URI: <a href="{{REPORTINGSYSTEM['uri']}}">{{REPORTINGSYSTEM['uri']}}</a></td></tr>
             <tr><th>Title:</th><td>{{REPORTINGSYSTEM['t']}}</td></tr>
             {% if REPORTINGSYSTEM['o'] %}
                 <tr><th>Owner:</th><td>{{REPORTINGSYSTEM['o']}}</td></tr>

@@ -189,7 +189,8 @@ def get_reportingsystem_reports_svg(reportingsystem_uri):
     else:
         #we have a fault
         reports_script = '''
-            var reportUsedFaultText = addReport(550, 200, "There is a fault with retrieving Reports that may have used this ReportingSystem", "");
+            //var reportUsedFaultText = addReport(550, 200, "There is a fault with retrieving Reports that may have used this ReportingSystem", "");
+            var reportUsedFaultText = addReport(550, 0, "No Reports for this RS", "");
         '''
     return reports_script
 
