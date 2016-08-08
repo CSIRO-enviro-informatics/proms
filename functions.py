@@ -220,7 +220,20 @@ def put_reportingsystem(reportingsystem_in_turtle):
     if len(fail_reasons) == 0:
         result = functions_db.db_insert_secure(reportingsystem_in_turtle, True)
         if result[0]:
-            return [True, 'OK']
+            query = '''
+                PREFIX proms: <http://promsns.org/def/proms#>
+                SELECT  ?r
+                WHERE {
+                  ?r a proms:ReportingSystem .
+                }
+            '''
+            graph_name = ''
+            result = g.query(query)
+            for row in result:
+                # we can assume there is a valid graph name since ReportingSystem RuleSets have been passed
+                graph_name = row[0]
+                break
+            return [True, graph_name]
         else:
             return [False, 'Error writing report to triplestore']
     else:
@@ -512,45 +525,40 @@ def put_report(report_in_turtle):
                             if not rule_result['passed']:
                                 for reason in rule_result['fail_reasons']:
                                     fail_reasons.append(reason)
-
         if len(fail_reasons) == 0:
-            #Get Report URI
+            # Get Report URI to make named graph
             query = '''
                 PREFIX proms: <http://promsns.org/def/proms#>
-                SELECT  ?r ?job
+                SELECT  ?r
                 WHERE {
-                  {?r a proms:Report}
-                  UNION
                   {?r a proms:BasicReport}
                   UNION
                   {?r a proms:ExternalReport}
                   UNION
                   {?r a proms:InternalReport}
-                  ?r proms:nativeId ?job .
                 }
             '''
-            r_uri = ''
             graph_name = ''
             result = g.query(query)
             for row in result:
-                r_uri = row[0]
+                # we can assume there is a valid graph name since Report RuleSets have been passed
+                graph_name = row[0]
                 break
-            if r_uri:
-                graph_name = '<' + r_uri + '>'
-
+            """ Future 3.2 release
             #generate md5
             util = RDFUtil()
-            n_quads1 = util.make_authorititive_serialisation_of_graph(g_report, r_uri)
+            n_quads1 = util.make_authorititive_serialisation_of_graph(g, graph_name)
             mdkey = util.generate_md5(n_quads1)
 
             db = PromDb()
-            db.add({"uri": r_uri, "md5": mdkey})
-
+            db.add({"uri": graph_name, "md5": mdkey})
+            """
             result = functions_db.db_insert_secure_named_graph(report_in_turtle, graph_name, True)
+            print 'about to pingback'
             send_pingback(g)
 
             if result[0]:
-                return [True, r_uri]
+                return [True, graph_name]
             else:
                 return [False, [result[1]]]
         else:
@@ -708,6 +716,7 @@ def get_entity_details_svg(entity_dict):
             '''
     return [True, script]
 
+
 def get_entity_activity_wgb_svg(entity_uri):
     """ Get all prov:wasGeneratedBy Activities for an Entity
     """
@@ -741,6 +750,7 @@ def get_entity_activity_wgb_svg(entity_uri):
         else:
             pass
     return script
+
 
 def get_entity_activity_used_svg(entity_uri):
     """ Construct SVG code for the prov:used Activities of an Entity
@@ -1532,7 +1542,8 @@ def replace_placeholder_uuids(original_turtle):
     for row in g.query(q):
         replace_uri(g, str(row[0]), settings.REPORTINGSYSTEM_BASE_URI + '/' + str(uuid.uuid4()))
 
-    # Reports
+    #
+    report_uuid = str(uuid.uuid4())
     q = '''
     PREFIX proms: <http://promsns.org/def/proms#>
     SELECT ?s
@@ -1545,7 +1556,34 @@ def replace_placeholder_uuids(original_turtle):
     }
     '''
     for row in g.query(q):
-        replace_uri(g, str(row[0]), settings.REPORT_BASE_URI + '/' + str(uuid.uuid4()))
+        replace_uri(g, str(row[0]), settings.REPORT_BASE_URI + '/' + report_uuid)
+
+    # find all the Activity and locally-defined (hash) Entity URIs and replace them too
+    q = '''
+    PREFIX prov: <http://www.w3.org/ns/prov#>
+    SELECT ?s
+    WHERE {
+        ?s a prov:Activity .
+        FILTER (STRSTARTS(STR(?s), "http://placeholder.org"))
+    }
+    '''
+    for row in g.query(q):
+        print row[0]
+        replace_uri(g, str(row[0]), settings.ACTIVITY_BASE_URI + '/' + report_uuid + str(row[0]).split('#')[1])
+
+    q = '''
+    PREFIX prov: <http://www.w3.org/ns/prov#>
+    SELECT ?s
+    WHERE {
+        {?s a prov:Entity . }
+        UNION
+        {?s a prov:Plan . }
+        FILTER (STRSTARTS(STR(?s), "http://placeholder.org"))
+    }
+    '''
+    for row in g.query(q):
+        print row[0]
+        replace_uri(g, str(row[0]), settings.ENTITY_BASE_URI + '/' + report_uuid + str(row[0]).split('#')[1])
 
     return g.serialize(format='turtle')
 
