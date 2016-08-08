@@ -69,7 +69,7 @@ cycle = re.compile('.*-c[34][0-9].*') # constraints 30-49
 type_constraints = re.compile('.*-c50.*') # constraint 50 only
 impossibility = re.compile('.*-c5[1-6].*') # constraints 51-56
 
-response = urllib2.urlopen('https://dvcs.w3.org/hg/prov/raw-file/default/testcases/rdf-tests.txt')
+response = urllib2.urlopen('https://dvcs.w3.org/hg/prov/raw-file/default/testcases/rdf-test.txt')
 html = response.read()
 failreport = []
 passreport = []  # https://dvcs.w3.org/hg/prov/raw-file/default/testcases/process.html should report both sets

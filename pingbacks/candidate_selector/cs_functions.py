@@ -1,4 +1,5 @@
 import requests
+import settings
 
 
 def get_report_uri_base(g):
@@ -59,8 +60,6 @@ def get_entities_for_pingbacks(g):
             { ?e a prov:Collection . }
             UNION
             { ?e a prov:Plan . }
-            UNION
-            { ?e a <http://promsns.org/def/proms#ServiceEntity> . }
 
             ?e  rdfs:label  ?el .
 
@@ -69,13 +68,10 @@ def get_entities_for_pingbacks(g):
             # Criteria 2
             MINUS {?e prov:wasGeneratedBy ?a .}
             # Criteria 3
-            MINUS {?e prov:wasDerivedFrom ?e2 .}'''
-    if base_uri != '':
-        q += '''
+            MINUS {?e prov:wasDerivedFrom ?e2 .}
             # Criteria 4
-            FILTER regex(STR(?e), "^((?!''' + get_report_uri_base(g) + ''').)*$", "i")
-        '''
-    q+='''
+            # no externally-defined Entities can use the ENTITY_BASE_URI of the PROMS Server
+            FILTER regex(STR(?e), "^((?!''' + settings.ENTITY_BASE_URI + ''').)*$", "i")
         }
         ORDER BY ASC(?el)
     '''

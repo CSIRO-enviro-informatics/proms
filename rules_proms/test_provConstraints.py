@@ -94,7 +94,7 @@ class TestProvConstraints(TestCase):
 							  .format(format_rule_results(rule_result_set=r)))
 
 	def test_w3set(self):
-		"""Run tests from 'https://dvcs.w3.org/hg/prov and check against their expected result.
+		"""Run test from 'https://dvcs.w3.org/hg/prov and check against their expected result.
 		Note this takes a very long time (about 20 minutes) to run, and longer in Nose.
 		:return:
 		"""
@@ -110,7 +110,7 @@ class TestProvConstraints(TestCase):
 		impossibility = re.compile('.*-c5[1-6].*') # constraints 51-56
 
 
-		response = urllib2.urlopen('https://dvcs.w3.org/hg/prov/raw-file/default/testcases/rdf-tests.txt')
+		response = urllib2.urlopen('https://dvcs.w3.org/hg/prov/raw-file/default/testcases/rdf-test.txt')
 		html = response.read()
 		failreport=[]
 
@@ -170,7 +170,7 @@ class TestProvConstraints(TestCase):
 			failreport.append((line, format_rule_results(rule_result_set=r)))
 
 		if len(failreport) is not 0:
-			self.fail(str(len(failreport)) + " of " + str(issuecounter) + " tests failed. \n" + str(failreport))
+			self.fail(str(len(failreport)) + " of " + str(issuecounter) + " test failed. \n" + str(failreport))
 
 
 

@@ -21,7 +21,7 @@ class Rule:
         :param name: (string) the English version of the rule name
         :param business_definition: (string) the business definition of the rule
         :param functional_definition: (string) the functional (pseudocode) definition of the rule
-        :param component_name: (string) the name of the component this rule tests
+        :param component_name: (string) the name of the component this rule test
         :param instance_parameters: (array of objects) parameters needed by the rule to operate, e.g. sessions, variables etc.
         :return:
         """

@@ -4,7 +4,7 @@ import proms_rules as proms_rules
 
 class PromsReportValid(RuleSet):
 	"""
-	tests http://promsns.org/def/proms#Report
+	test http://promsns.org/def/proms#Report
 	The key result here is that there must be a super-class of Basic/Internal/External
 	"""
 

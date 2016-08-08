@@ -136,7 +136,7 @@ def test_update_entity_status():
 
 
 if __name__ == "__main__":
-    TEST_ENTITY_STATUS_STORE = settings.HOME_DIR + 'status_recorder/tests/test_entity_status_store.json'
+    TEST_ENTITY_STATUS_STORE = settings.HOME_DIR + 'status_recorder/test/test_entity_status_store.json'
 
     print test_create_entity_status()
     print test_load_entity_status()

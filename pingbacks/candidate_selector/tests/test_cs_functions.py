@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
     '''
     # test the Report used for strategy testing
-    g = Graph().parse(source='../../strategies/tests/test-proms-report-external.ttl', format='turtle')
+    g = Graph().parse(source='../../strategies/test/test-proms-report-external.ttl', format='turtle')
     import pprint
     pprint.pprint(cs_functions.get_entities_for_pingbacks(g))
     '''
