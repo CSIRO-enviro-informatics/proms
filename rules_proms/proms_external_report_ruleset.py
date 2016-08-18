@@ -15,7 +15,7 @@ class PromsExternalReportValid(StackedRuleSet):
         ruleset_name = 'PROMS External Report'
         rules_results = []
         if report_register_uri is None:
-            report_register_uri = settings.FUSEKI_QUERY_URI
+            report_register_uri = settings.SPARQL_QUERY_URI
 
         dependencies=[]
         r = PromsReportValid(graph).get_result()

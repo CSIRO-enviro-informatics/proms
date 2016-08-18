@@ -1185,6 +1185,7 @@ WHERE {
         '''
     return script
 
+
 #
 #   Agents
 #
@@ -1290,7 +1291,7 @@ def get_agent_dict(agent_uri):
             ret['ag2'] = agent_detail['results']['bindings'][0]['ag2']['value']
         # TODO: Re-enable when it's more than just the Person being displayed
         svg_script = get_agent_details_svg(ret)
-        if svg_script[0] == True:
+        if svg_script[0]:
             a_script = svg_script[1]
             a_script += get_agent_was_attributed_to_svg(agent_uri)
             a_script += get_agent_was_associated_with_svg(agent_uri)

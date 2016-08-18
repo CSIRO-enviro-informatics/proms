@@ -21,7 +21,7 @@ class vhirl_report(StackedRuleSet):
         ruleset_name = 'VHIRL Report'
         rules_results = []
         if report_register_uri is None:
-            report_register_uri = settings.FUSEKI_QUERY_URI
+            report_register_uri = settings.SPARQL_QUERY_URI
 
         dependencies=[]
 
