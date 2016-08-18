@@ -548,7 +548,7 @@ wasAssociatedWith_ordering1 = '''
 		?start c:precedes ?inv .
 	}
 	WHERE {
-		?ag a prov:Agent .
+		?ag a prov:Person .
 		?act a prov:Activity .
 		?act prov:qualifiedAssociation ?assoc .
 		?assoc prov:agent ?ag .
@@ -567,7 +567,7 @@ wasAssociatedWith_ordering2 = '''
 		?gen c:precedes ?end .
 	}
 	WHERE {
-		?ag a prov:Agent .
+		?ag a prov:Person .
 		?act a prov:Activity .
 		?act prov:qualifiedAssociation ?assoc .
 		?assoc prov:agent ?ag .
@@ -586,7 +586,7 @@ wasAssociatedWith_ordering3 = '''
 		?start c:precedes ?end .
 	}
 	WHERE {
-		?ag a prov:Agent .
+		?ag a prov:Person .
 		?act a prov:Activity .
 		?act prov:qualifiedAssociation ?assoc .
 		?assoc prov:agent ?ag .
@@ -605,7 +605,7 @@ wasAssociatedWith_ordering4 = '''
 		?start c:precedes ?end .
 	}
 	WHERE {
-		?ag a prov:Agent .
+		?ag a prov:Person .
 		?act a prov:Activity .
 		?act prov:qualifiedAssociation ?assoc .
 		?assoc prov:agent ?ag .
@@ -623,7 +623,7 @@ wasAttributedTo_ordering1 = '''
 	   ?gen1 c:precedes ?gen2 .
 	}
 	WHERE {
-		?ag a prov:Agent .
+		?ag a prov:Person .
 		?e a prov:Entity .
 		?e prov:qualifiedAttribution ?attr .
 		?attr prov:agent ?ag .
@@ -640,7 +640,7 @@ wasAttributedTo_ordering2 = '''
 	   ?start c:precedes ?gen .
 	}
 	WHERE {
-		?ag a prov:Agent .
+		?ag a prov:Person .
 		?e a prov:Entity .
 		?e prov:qualifiedAttribution ?attr .
 		?attr prov:agent ?ag .
@@ -657,8 +657,8 @@ actedOnBehalfOf_ordering1 = '''
 	   ?gen c:precedes ?inv .
 	}
 	WHERE {
-		?ag1 a prov:Agent .
-		?ag2 a prov:Agent .
+		?ag1 a prov:Person .
+		?ag2 a prov:Person .
 		?ag2 prov:qualifiedDelegation ?del .
 		?del prov:agent ?ag1 .
 		?ag1 prov:qualifiedGeneration ?gen .
@@ -674,8 +674,8 @@ actedOnBehalfOf_ordering2 = '''
 	   ?start c:precedes ?end .
 	}
 	WHERE {
-		?ag1 a prov:Agent .
-		?ag2 a prov:Agent .
+		?ag1 a prov:Person .
+		?ag2 a prov:Person .
 		?ag2 prov:qualifiedDelegation ?del .
 		?del prov:agent ?ag1 .
 		?ag1 prov:qualifiedStart ?start .
@@ -842,7 +842,7 @@ impossible_object_property_overlap = '''
 		?x a ?class1 .
 		?x a ?class2 .
 		FILTER ( ?class1 != ?class2 &&
-				?class1 IN (prov:Entity, prov:Activity, prov:Agent) &&
+				?class1 IN (prov:Entity, prov:Activity, prov:Person) &&
 				?class2 IN (prov:Usage,
 							prov:Generation,
 							prov:Invalidation,

@@ -22,9 +22,9 @@
     </style>
     <script>
 
-/*        var Agent;
+/*        var Person;
 
-        Agent = function (label, uri, givenName, familyName, mbox) {
+        Person = function (label, uri, givenName, familyName, mbox) {
         this.label = label;
         this.givenName = givenName;
         this.familyName = familyName;
@@ -38,13 +38,13 @@
         }
         };
 
-        Agent.prototype.makeGraph = function() {
+        Person.prototype.makeGraph = function() {
 
             //this.g = $rdf.graph();
                 this.g = new $rdf.graph();
 
 //        this.g.add($rdf.sym(this.uri), FOAF('name'), "Albert Bloggs");
-            this.g.add($rdf.sym(this.uri), RDF('type'), PROV('Agent'));
+            this.g.add($rdf.sym(this.uri), RDF('type'), PROV('Person'));
             this.g.add($rdf.sym(this.uri), RDF('type'), PROV('Person'));
 
             this.g.add($rdf.sym(this.uri), FOAF('familyName'), this.familyName);
@@ -54,7 +54,7 @@
             return this.g;
             };
 
-        Agent.prototype.get_graph = function () {
+        Person.prototype.get_graph = function () {
         if (!this.g) {
             this.makeGraph();
 
@@ -62,7 +62,7 @@
             }
         };
 
-        Agent.prototype.serialize_graph = function() {
+        Person.prototype.serialize_graph = function() {
             window.alert("test");
             Custg = Custodian.get_graph();
             var triples = new $rdf.Serializer(Custg).toN3(Custg);
@@ -87,8 +87,8 @@
                 event.preventDefault();
                 // TODO: validate fields
 
-                var Custodian = new Agent('GA Agent', null, $('#agent-fname').val(), $('#agent-lname').val(), $('#agent-email').val());
-                //var Custodian = new Agent("some text", null, 'wilma', 'flinstone', 'wf@email.com');
+                var Custodian = new Person('GA Person', null, $('#agent-fname').val(), $('#agent-lname').val(), $('#agent-email').val());
+                //var Custodian = new Person("some text", null, 'wilma', 'flinstone', 'wf@email.com');
 
                 //var RepSys = new ReportingSystem('some label', null, 'some comment', Custodian);
                 var RepSys = new ReportingSystem($('#system-label').val(), $('#system-uri').val(), $('#system-comment').val(), Custodian);

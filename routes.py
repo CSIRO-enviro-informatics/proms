@@ -40,16 +40,16 @@ def ids():
 def reportingsystem():
     if request.method == 'GET':
         if request.args.get('uri'):
-            reportingsystem = functions.get_reportingsystem_dict(request.args.get('uri'))
+            rs = functions.get_reportingsystem_dict(request.args.get('uri'))
             return render_template('reportingsystem.html',
-                                   REPORTINGSYSTEM=reportingsystem,
+                                   REPORTINGSYSTEM=rs,
                                    WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
         else:
             #if 'text/html' in request.headers.get('Accept'):
-                reportingsystems = functions.get_reportingsystems_dict()
+                rs = functions.get_reportingsystems_dict()
                 return render_template('reportingsystem.html',
-                                       REPORTINGSYSTEMS=reportingsystems,
+                                       REPORTINGSYSTEMS=rs,
                                        PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
                                        WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
             #else:
@@ -57,10 +57,10 @@ def reportingsystem():
             #        rdf_object = request.args.get('rdf_object')
             #        return Response(json.dumps(rdf_object), status_code=200, mimetype="application/rdf+json")
 
-    #process a posted Report
+    # process a posted ReportingSystem
     if request.method == 'POST':
-        #read the incoming report
-        #only accept turtle POSTS
+        # read the incoming report
+        # only accept turtle POSTS
         if 'text/turtle' in request.headers['Content-Type']:
             put_result = functions.put_reportingsystem(request.data)
             if put_result[0]:
@@ -279,14 +279,14 @@ def activities():
 
 @routes.route('/id/agent/', methods=['GET'])
 def agents():
-    #single Agent
+    #single Person
     if request.args.get('uri'):
         #unencode the uri QSA
         uri = urllib.unquote(request.args.get('uri'))
         if request.args.get('_format'):
             if 'text/turtle' in request.args.get('_format'):
                 response = functions.get_agent_rdf(uri)
-                return Response(response, status=201, mimetype='text/turtle', headers={"Content-Disposition": "filename=Agent.ttl"})
+                return Response(response, status=201, mimetype='text/turtle', headers={"Content-Disposition": "filename=Person.ttl"})
             else:
                 return Response('Unknown format type', status=400, mimetype='text/plain')
         else:
@@ -304,7 +304,6 @@ def agents():
                                    PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
                                    AGENTS=agents,
                                    WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
-
 
 
 @routes.route('/function/pingback', methods=['POST'])
@@ -504,7 +503,7 @@ def create_report_formparts(form_parts):
 @routes.route('/function/register_reporting_system', methods=['GET'])
 def register_reporting_system():
     return render_template('function_register_reportingsystem.html',
-                           WEB_SUBFOLDER = settings.WEB_SUBFOLDER)
+                           WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
 @routes.route('/id/publickey')

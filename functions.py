@@ -698,7 +698,7 @@ def get_entity_details_svg(entity_dict):
             addLink(entity, value, "prov:value", RIGHT);
         '''
 
-    # Draw Agent (if one exists)
+    # Draw Person (if one exists)
     if entity_dict.get('wat'):
         agent_uri = entity_dict.get('wat')
         agent_uri_encoded = urllib.quote(agent_uri)
@@ -969,7 +969,7 @@ def get_activity_details_svg(activity_dict):
             var aLabel = "''' + aLabel + '''";
             var activity = addActivity(275, 200, aLabel, "");
     '''
-    # print its Agent, if it has one
+    # print its Person, if it has one
     if activity_dict.get('waw'):
         agent_uri = activity_dict.get('waw', '')
         agent_uri_encoded = urllib.quote(agent_uri)
@@ -1189,7 +1189,7 @@ WHERE {
 #   Agents
 #
 def get_agents_dict():
-    """ Get all Agent details
+    """ Get all Person details
     """
     query = '''
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
@@ -1212,7 +1212,7 @@ def get_agents_dict():
                 }
                 UNION
                 {
-                    ?ag1 a prov:Agent .
+                    ?ag1 a prov:Person .
                     ?ag1 prov:actedOnBehalfOf ?ag .
                     OPTIONAL{ ?ag foaf:name ?n . }
                 }
@@ -1233,7 +1233,7 @@ def get_agents_dict():
 
 
 def get_agent(agent_uri):
-    """ Get Agent details (JSON)
+    """ Get Person details (JSON)
     """
     query = '''
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
@@ -1258,13 +1258,13 @@ def get_agent(agent_uri):
                 }
                 UNION
                 {
-                    ?aoo a prov:Agent .
+                    ?aoo a prov:Person .
                     ?aoo prov:actedOnBehalfOf <''' + agent_uri + '''> .
                     OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
                 }
                 UNION
                 {
-                    <''' + agent_uri + '''> a prov:Agent .
+                    <''' + agent_uri + '''> a prov:Person .
                     OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
                     OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
                 }
@@ -1275,7 +1275,7 @@ def get_agent(agent_uri):
 
 
 def get_agent_dict(agent_uri):
-    """ Get Agent details (dict)
+    """ Get Person details (dict)
     """
     agent_detail = get_agent(agent_uri)
     ret = {}
@@ -1288,7 +1288,7 @@ def get_agent_dict(agent_uri):
             ret['n'] = agent_uri
         if 'ag2' in agent_detail['results']['bindings'][0]:
             ret['ag2'] = agent_detail['results']['bindings'][0]['ag2']['value']
-        # TODO: Re-enable when it's more than just the Agent being displayed
+        # TODO: Re-enable when it's more than just the Person being displayed
         svg_script = get_agent_details_svg(ret)
         if svg_script[0] == True:
             a_script = svg_script[1]
@@ -1299,17 +1299,17 @@ def get_agent_dict(agent_uri):
 
 
 def get_agent_rdf(agent_uri):
-    """ Get Agent details as RDF
+    """ Get Person details as RDF
     """
     agent = '''@prefix prov:   <http://www.w3.org/ns/prov#> .
 <''' + agent_uri + '''>
-    a   prov:Agent;
+    a   prov:Person;
     '''
     return agent
 
 
 def get_agent_details_svg(agent_dict):
-    """ Construct the SVG code for an Agent
+    """ Construct the SVG code for an Person
     """
     a_uri = agent_dict.get('uri');
     if agent_dict.get('n'):
@@ -1342,7 +1342,7 @@ def get_agent_details_svg(agent_dict):
 
 
 def get_agent_was_attributed_to_svg(agent_uri):
-    """ Construct the SVG code for the prov:wasAttributedTo Entities of an Agent
+    """ Construct the SVG code for the prov:wasAttributedTo Entities of an Person
     """
     script = ''
     query = '''
@@ -1396,7 +1396,7 @@ WHERE {
 
 
 def get_agent_was_associated_with_svg(agent_uri):
-    """ Construct the SVG code for the prov:wasAssociatedWith Activities of an Agent
+    """ Construct the SVG code for the prov:wasAssociatedWith Activities of an Person
     """
     script = ''
     query = '''
@@ -1442,7 +1442,7 @@ WHERE {
     else:
         #we have a fault
         script += '''
-            var activityUsedFaultText = addActivity(5, 200, "There is a fault with retrieving Activities that may be associated with this Agent", "");
+            var activityUsedFaultText = addActivity(5, 200, "There is a fault with retrieving Activities that may be associated with this Person", "");
         '''
     return script
 
@@ -1452,8 +1452,8 @@ WHERE {
 #
 
 
-#TODO: add create Agent with details option
-#TODO: add links to Basic & External docco
+# TODO: add create Person with details option
+# TODO: add links to Basic & External docco
 
 
 def create_report_formparts(form_parts_json_obj):
