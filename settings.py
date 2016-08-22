@@ -6,11 +6,11 @@
 #   particular classes of objects in incoming ReportingSystems and Reports. E.g.: an incoming Report with the
 #   declaration of <http://placeholder.org#abc123> a proms:ExternalReport ; will see that triple changed to
 #   <{REPORT_BASE_URI}> a proms:ExternalReport ;
-ENTITY_BASE_URI = 'http://localhost/id/entity'
-ACTIVITY_BASE_URI = "http://localhost/id/activity"
-AGENT_BASE_URI = "http://localhost/id/agent"
-REPORT_BASE_URI = "http://localhost/id/report"
-REPORTINGSYSTEM_BASE_URI = "http://localhost/id/reportingsystem"
+ENTITY_BASE_URI = 'http://localhost:9000/id/entity'
+ACTIVITY_BASE_URI = "http://localhost:9000/id/activity"
+AGENT_BASE_URI = "http://localhost:9000/id/agent"
+REPORT_BASE_URI = "http://localhost:9000/id/report"
+REPORTINGSYSTEM_BASE_URI = "http://localhost:9000/id/reportingsystem"
 
 #   If this instance of PROMS Server is installed at a location other than the root of a domain, e.g. at
 #   http://example.org/service/proms rather than at http://example.org, then this variable needs to be set to the
