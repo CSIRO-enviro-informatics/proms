@@ -1,10 +1,5 @@
-from flask import Blueprint, Response, request, redirect, render_template, g, jsonify
-from prom_db import PromDb
+from flask import Blueprint, Response, request, redirect, render_template
 from flask_httpauth import HTTPBasicAuth
-from user import User
-auth = HTTPBasicAuth()
-
-routes = Blueprint('routes', __name__)
 import functions
 import functions_db
 import urllib
@@ -12,6 +7,10 @@ import settings
 import json
 from collections import Counter
 import operator
+from prom_db import PromDb
+from user import User
+auth = HTTPBasicAuth()
+routes = Blueprint('routes', __name__)
 
 
 #
