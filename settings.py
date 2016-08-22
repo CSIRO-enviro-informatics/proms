@@ -24,11 +24,11 @@ WEB_SUBFOLDER = ''  # starting slash, no trailing slash
 #   http://proms.example.org
 #
 #   To ensure HTML links work across all pages in PROMS Server, seperate out the web subfolder (see above)
-PROMS_INSTANCE_NAMESPACE_URI = 'http://localhost:9000' + WEB_SUBFOLDER
+PROMS_INSTANCE_NAMESPACE_URI = 'http://proms-dev.vhirl.net' + WEB_SUBFOLDER
 
 #   This is the location at which PROMS Server is installed on your file system. For Windows this could be something
 #   like 'c:/work/proms/', for Linux it could be '/opt/proms/' or '/var/www/proms/'
-HOME_DIR = 'c:/work/proms/'  # must end in a slash. Use forward slashes only, even in Windows
+HOME_DIR = '/opt/proms/'  # must end in a slash. Use forward slashes only, even in Windows
 
 #   The directory in which the static content of PROMS Server is stored. Usually 'static/'
 STATIC_DIR = 'static/'
@@ -85,6 +85,9 @@ SPARQL_AUTH_USR = ''  # Ensure this matches any triplestore proxying settings (i
 SPARQL_AUTH_PWD = ''  # Ensure this matches any triplestore proxying settings (install-apache.sh)
 SPARQL_TIMEOUT = 5  # Request Timeout in seconds
 
+# How many Results (Reports, ReportingSystems, Entities, Activities and Agents) to display on a single page 
+# Removing this setting will disable pagination
+RESULTS_PER_PAGE = 20
 
 #
 #   PROMS Server v3.1 Pingbacks settings

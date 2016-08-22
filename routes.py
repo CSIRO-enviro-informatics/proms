@@ -35,8 +35,9 @@ def ids():
                            WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
+@routes.route('/id/reportingsystem/page/<int:page>', methods=['GET'])
 @routes.route('/id/reportingsystem/', methods=['GET', 'POST'])
-def reportingsystem():
+def reportingsystem(page=0):
     if request.method == 'GET':
         if request.args.get('uri'):
             rs = functions.get_reportingsystem_dict(request.args.get('uri'))
@@ -46,11 +47,18 @@ def reportingsystem():
 
         else:
             #if 'text/html' in request.headers.get('Accept'):
-                rs = functions.get_reportingsystems_dict()
+                rs_count = functions.get_reportingsystems_count()
+                rs = functions.get_reportingsystems_dict(page)
+                results_per_page = None
+                if hasattr(settings, 'RESULTS_PER_PAGE'):
+                    results_per_page = settings.RESULTS_PER_PAGE
                 return render_template('reportingsystem.html',
                                        REPORTINGSYSTEMS=rs,
                                        PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
-                                       WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
+                                       WEB_SUBFOLDER=settings.WEB_SUBFOLDER,
+                                       RESULTS_PER_PAGE=results_per_page,
+                                       RESULTS_COUNT = rs_count,
+                                       CURRENT_PAGE=page)
             #else:
             #    if request.headers.get('rdf_object'):
             #        rdf_object = request.args.get('rdf_object')
@@ -75,8 +83,9 @@ def reportingsystem():
             return Response('Only turtle documents allowed', status=400, mimetype='text/plain')
 
 
+@routes.route('/id/report/page/<int:page>', methods=['GET'])
 @routes.route('/id/report/', methods=['GET', 'POST'])
-def reports():
+def reports(page=0):
     if request.method == 'GET':
         # single Report
         if request.args.get('uri'):
@@ -113,7 +122,11 @@ def reports():
             if request.args.get('_format'):
                 return Response('A specific report URI must be provided', status=400, mimetype='text/plain')
             else:
-                reports = functions.get_reports_dict()
+                reports_count = functions.get_reports_count()
+                reports = functions.get_reports_dict(page)
+                results_per_page = None
+                if hasattr(settings, 'RESULTS_PER_PAGE'):
+                    results_per_page = settings.RESULTS_PER_PAGE
                 # TODO: v3.2
                 '''
                 prom_db = PromDb()
@@ -140,7 +153,10 @@ def reports():
                                        REPORTS=reports,
                                        #SIGNED_REPORTS=signed_reports,
                                        PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
-                                       WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
+                                       WEB_SUBFOLDER=settings.WEB_SUBFOLDER,
+                                       RESULTS_PER_PAGE=results_per_page,
+                                       RESULTS_COUNT = reports_count,
+                                       CURRENT_PAGE=page)
 
     # process a posted Report
     if request.method == 'POST':
@@ -215,9 +231,10 @@ def report_doc(report_id, extension):
     """
 
 
+@routes.route('/id/entity/page/<int:page>', methods=['GET'])
 @routes.route('/id/entity', methods=['GET'])
 @routes.route('/id/entity/', methods=['GET'])
-def entities():
+def entities(page=0):
     #single Entity
     if request.args.get('uri'):
         #unencode the uri QSA
@@ -238,16 +255,24 @@ def entities():
         if request.args.get('_format'):
             return Response('A specific Entity URI must be provided', status=400, mimetype='text/plain')
         else:
-            entities = functions.get_entities_dict()
+            entities_count = functions.get_entities_count()
+            entities = functions.get_entities_dict(page)
+            results_per_page = None
+            if hasattr(settings, 'RESULTS_PER_PAGE'):
+                results_per_page = settings.RESULTS_PER_PAGE
             return render_template('entity.html',
                                    PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
                                    ENTITIES=entities,
-                                   WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
+                                   WEB_SUBFOLDER=settings.WEB_SUBFOLDER,
+                                   RESULTS_PER_PAGE=results_per_page,
+                                   RESULTS_COUNT = entities_count,
+                                   CURRENT_PAGE=page)
 
 
+@routes.route('/id/activity/page/<int:page>', methods=['GET'])
 @routes.route('/id/activity', methods=['GET'])
 @routes.route('/id/activity/', methods=['GET'])
-def activities():
+def activities(page=0):
     #single Activity
     if request.args.get('uri'):
         #unencode the uri QSA
@@ -269,15 +294,23 @@ def activities():
         if request.args.get('_format'):
             return Response('A specific Entity URI must be provided', status=400, mimetype='text/plain')
         else:
-            activities = functions.get_activities_dict()
+            activities_count = functions.get_activities_count()
+            activities = functions.get_activities_dict(page)
+            results_per_page = None
+            if hasattr(settings, 'RESULTS_PER_PAGE'):
+                results_per_page = settings.RESULTS_PER_PAGE
             return render_template('activity.html',
                                    PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
                                    ACTIVITIES=activities,
-                                   WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
+                                   WEB_SUBFOLDER=settings.WEB_SUBFOLDER,
+                                   RESULTS_PER_PAGE=results_per_page,
+                                   RESULTS_COUNT = activities_count,
+                                   CURRENT_PAGE=page)
 
 
+@routes.route('/id/agent/page/<int:page>', methods=['GET'])
 @routes.route('/id/agent/', methods=['GET'])
-def agents():
+def agents(page=0):
     #single Person
     if request.args.get('uri'):
         #unencode the uri QSA
@@ -298,11 +331,18 @@ def agents():
         if request.args.get('_format'):
             return Response('A specific Entity URI must be provided', status=400, mimetype='text/plain')
         else:
-            agents = functions.get_agents_dict()
+            agents_count = functions.get_agents_count()
+            agents = functions.get_agents_dict(page)
+            results_per_page = None
+            if hasattr(settings, 'RESULTS_PER_PAGE'):
+                results_per_page = settings.RESULTS_PER_PAGE
             return render_template('agent.html',
                                    PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
                                    AGENTS=agents,
-                                   WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
+                                   WEB_SUBFOLDER=settings.WEB_SUBFOLDER,
+                                   RESULTS_PER_PAGE=results_per_page,
+                                   RESULTS_COUNT = agents_count,
+                                   CURRENT_PAGE=page)
 
 
 @routes.route('/function/pingback', methods=['POST'])

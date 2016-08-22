@@ -16,7 +16,7 @@ from pingbacks.strategies import strategy_functions
 from unify_rdf import RDFUtil
 
 
-def get_reportingsystems_dict():
+def get_reportingsystems_dict(page):
     """ Get all ReportingSystem details
     """
     query = '''
@@ -27,8 +27,12 @@ def get_reportingsystems_dict():
           ?rs a proms:ReportingSystem .
           ?rs rdfs:label ?t .
         }
-    '''
-    reportingsystems = functions_db.query(query)
+        '''
+    if hasattr(settings, 'RESULTS_PER_PAGE'):
+        query += \
+            'LIMIT ' + str(settings.RESULTS_PER_PAGE) + \
+            'OFFSET ' + str(page * settings.RESULTS_PER_PAGE)
+    reportingsystems = functions_db.db_query_secure(query)
     reportingsystem_items = []
     # Check if nothing is returned
     if reportingsystems and 'results' in reportingsystems:
@@ -40,6 +44,28 @@ def get_reportingsystems_dict():
                 ret['t'] = str(reportingsystem['t']['value'])
             reportingsystem_items.append(ret)
     return reportingsystem_items
+
+
+def get_reportingsystems_count():
+    """ Get a count of all ReportingSystems
+    """
+    count = 0
+    query = '''
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX proms: <http://promsns.org/def/proms#>
+        SELECT (COUNT(*) AS ?count) {
+            SELECT ?rs
+            WHERE {
+              ?rs a proms:ReportingSystem .
+            }
+        }
+    '''
+    rs_count = functions_db.db_query_secure(query)
+    # Check if nothing is returned
+    if rs_count and 'results' in rs_count:
+        if len(rs_count['results']['bindings']) > 0:
+            count = rs_count['results']['bindings'][0]['count']['value']
+    return int(count)
 
 
 def get_reportingsystem_dict(reportingsystem_uri):
@@ -231,7 +257,7 @@ def put_reportingsystem(reportingsystem_in_turtle):
 #
 #   Reports
 #
-def get_reports_dict():
+def get_reports_dict(page):
     """ Get details of all Reports
     """
     query = '''
@@ -249,8 +275,13 @@ def get_reports_dict():
             }
         }
         ORDER BY ?r
-    '''
-    reports = functions_db.query(query)
+        '''
+    if hasattr(settings, 'RESULTS_PER_PAGE'):
+        query += \
+            'LIMIT ' + str(settings.RESULTS_PER_PAGE) + \
+            'OFFSET ' + str(page * settings.RESULTS_PER_PAGE)
+
+    reports = functions_db.db_query_secure(query)
 
     report_items = []
     # Check if nothing is returned
@@ -263,6 +294,35 @@ def get_reports_dict():
                 ret['t'] = str(report['t']['value'])
             report_items.append(ret)
     return report_items
+
+
+def get_reports_count():
+    """ Get a count of all Reports
+    """
+    count = 0
+    query = '''
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX proms: <http://promsns.org/def/proms#>
+        SELECT (COUNT(*) AS ?count) {
+            SELECT DISTINCT ?r ?t
+            WHERE {
+                GRAPH ?g {
+                    { ?r a proms:BasicReport . }
+                    UNION
+                    { ?r a proms:ExternalReport . }
+                    UNION
+                    { ?r a proms:InternalReport . }
+                    ?r rdfs:label ?t
+                }
+            }
+        }
+    '''
+    reports_count = functions_db.db_query_secure(query)
+    # Check if nothing is returned
+    if reports_count and 'results' in reports_count:
+        if len(reports_count['results']['bindings']) > 0:
+            count = reports_count['results']['bindings'][0]['count']['value']
+    return int(count)
 
 
 def get_report(report_uri):
@@ -509,7 +569,7 @@ def put_report(report_in_turtle):
 #
 #   Entities
 #
-def get_entities_dict():
+def get_entities_dict(page):
     """ Get details for all Entities
     """
     query = '''
@@ -529,7 +589,11 @@ def get_entities_dict():
         }
         ORDER BY ?e
     '''
-    entities = functions_db.query(query)
+    if hasattr(settings, 'RESULTS_PER_PAGE'):
+        query += \
+            'LIMIT ' + str(settings.RESULTS_PER_PAGE) + \
+            'OFFSET ' + str(page * settings.RESULTS_PER_PAGE)
+    entities = functions_db.db_query_secure(query)
     entity_items = []
     # Check if nothing is returned
     if entities and 'results' in entities:
@@ -541,6 +605,36 @@ def get_entities_dict():
                 ret['l'] = str(entity['l']['value'])
             entity_items.append(ret)
     return entity_items
+
+
+def get_entities_count():
+    """ Get a count of all Entities
+    """
+    count = 0
+    query = '''
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX proms: <http://promsns.org/def/proms#>
+        SELECT(COUNT(*) AS ?count) {
+            SELECT DISTINCT ?e ?l
+            WHERE {
+                GRAPH ?g {
+                    { ?e a prov:Entity . }
+                    UNION
+                    { ?e a prov:Plan . }
+                    UNION
+                    { ?e a proms:ServiceEntity . }
+                    OPTIONAL { ?e rdfs:label ?l . }
+                }
+            }
+        }
+    '''
+    entities_count = functions_db.db_query_secure(query)
+    # Check if nothing is returned
+    if entities_count and 'results' in entities_count:
+        if len(entities_count['results']['bindings']) > 0:
+            count = entities_count['results']['bindings'][0]['count']['value']
+    return int(count)
 
 
 def get_entity(entity_uri):
@@ -799,7 +893,7 @@ WHERE {
 #
 #   Activities
 #
-def get_activities_dict():
+def get_activities_dict(page):
     """ Get details of all Activities
     """
     query = '''
@@ -814,7 +908,11 @@ def get_activities_dict():
         }
         ORDER BY ?a
     '''
-    activities = functions_db.query(query)
+    if hasattr(settings, 'RESULTS_PER_PAGE'):
+        query += \
+            'LIMIT ' + str(settings.RESULTS_PER_PAGE) + \
+            'OFFSET ' + str(page * settings.RESULTS_PER_PAGE)
+    activities = functions_db.db_query_secure(query)
     activity_items = []
     if activities and 'results' in activities:
         for activity in activities['results']['bindings']:
@@ -825,6 +923,31 @@ def get_activities_dict():
                 ret['l'] = str(activity['l']['value'])
             activity_items.append(ret)
     return activity_items
+
+
+def get_activities_count():
+    """ Get a count of all Activities
+    """
+    count = 0
+    query = '''
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        SELECT(COUNT(*) AS ?count) {
+            SELECT DISTINCT ?a ?l
+            WHERE {
+                GRAPH ?g {
+                    ?a a prov:Activity .
+                    ?a rdfs:label ?l
+                }
+            }
+        }
+    '''
+    activities_count = functions_db.db_query_secure(query)
+    # Check if nothing is returned
+    if activities_count and 'results' in activities_count:
+        if len(activities_count['results']['bindings']) > 0:
+            count = activities_count['results']['bindings'][0]['count']['value']
+    return int(count)
 
 
 def get_activity(activity_uri):
@@ -1127,7 +1250,7 @@ WHERE {
 #
 #   Agents
 #
-def get_agents_dict():
+def get_agents_dict(page):
     """ Get all Person details
     """
     query = '''
@@ -1157,8 +1280,13 @@ def get_agents_dict():
                 }
             }
         }
+        ORDER BY ?ag
         '''
-    agents = functions_db.query(query)
+    if hasattr(settings, 'RESULTS_PER_PAGE'):
+        query += \
+            'LIMIT ' + str(settings.RESULTS_PER_PAGE) + \
+            'OFFSET ' + str(page * settings.RESULTS_PER_PAGE)
+    agents = functions_db.db_query_secure(query)
     agent_items = []
     if agents and 'results' in agents:
         for agent in agents['results']['bindings']:
@@ -1169,6 +1297,48 @@ def get_agents_dict():
                 ret['n'] = str(agent['n']['value'])
             agent_items.append(ret)
     return agent_items
+
+
+def get_agents_count():
+    """ Get a count of all Agents
+    """
+    count = 0
+    query = '''
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        SELECT(COUNT(*) AS ?count) {
+            SELECT DISTINCT ?ag ?n
+            WHERE {
+                GRAPH ?g {
+                    {
+                        { ?e a prov:Entity . }
+                        UNION
+                        { ?e a prov:Plan . }
+                        ?e prov:wasAttributedTo ?ag .
+                        OPTIONAL{ ?ag foaf:name ?n . }
+                    }
+                    UNION
+                    {
+                        ?a a prov:Activity .
+                        ?a prov:wasAssociatedWith ?ag .
+                        OPTIONAL{ ?ag foaf:name ?n . }
+                    }
+                    UNION
+                    {
+                        ?ag1 a prov:Person .
+                        ?ag1 prov:actedOnBehalfOf ?ag .
+                        OPTIONAL{ ?ag foaf:name ?n . }
+                    }
+                }
+            }
+        }
+    '''
+    agents_count = functions_db.db_query_secure(query)
+    # Check if nothing is returned
+    if agents_count and 'results' in agents_count:
+        if len(agents_count['results']['bindings']) > 0:
+            count = agents_count['results']['bindings'][0]['count']['value']
+    return int(count)
 
 
 def get_agent(agent_uri):

@@ -67,6 +67,15 @@
                 </li>
             {% endfor %}
             </ul>
+            {% include 'pagination.html' %}
+            {#
+            {% if CURRENT_PAGE > 0 %}
+                <a href="{{WEB_SUBFOLDER}}/{{url_for('routes.reports',page=CURRENT_PAGE-1)}}">&lt; Prev</a>
+            {% endif %}
+            {% if ((CURRENT_PAGE+1)*RESULTS_PER_PAGE)<=RESULTS_COUNT %}
+                <a href="{{WEB_SUBFOLDER}}/id/report/page/{{CURRENT_PAGE+1}}">Next &gt;</a>
+            {% endif %}
+            #}
         {% endif %}
      {#
         {% if SIGNED_REPORTS|length == 0 %}
