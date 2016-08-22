@@ -1,7 +1,6 @@
 import settings
 import requests
 import json
-import rdflib
 
 
 def query(sparql_query, format_mimetype='application/sparql-results+json'):
@@ -31,29 +30,13 @@ def query_turtle(sparql_query):
     return r.text
 
 
-def insert(g):
-    """ Make a secure insert into the DB
-    """
-    # SPARQL INSERT
-    data = {'update': 'INSERT DATA { ' + g.serialize(format='nt') + ' }'}
-    auth = (settings.SPARQL_AUTH_USR, settings.SPARQL_AUTH_PWD)
-    #headers = {'Accept': 'application/json'}
-    r = requests.post(settings.SPARQL_UPDATE_URI, data=data, auth=auth)
-    try:
-        if r.status_code != 200 and r.status_code != 201:
-            return [False, r.text]
-        return [True, r.text]
-    except Exception, e:
-        print e.message
-        return [False, e.message]
-
-
-# TODO: repalce insert & insert_named_graph with one with a default param, graph_uri == None
-def insert_named_graph(g, graph_uri):
+def insert(g, named_graph_uri=None):
     """ Securely insert a named graph into the DB
     """
-    # SPARQL INSERT
-    data = {'update': 'INSERT DATA { GRAPH <' + graph_uri + '> { ' + g.serialize(format='nt') + ' } }', format: 'json'}
+    if named_graph_uri:
+        data = {'update': 'INSERT DATA { GRAPH <' + named_graph_uri + '> { ' + g.serialize(format='nt') + ' } }'}
+    else:  # insert into default graph
+        data = {'update': 'INSERT DATA { ' + g.serialize(format='nt') + ' }'}
     auth = (settings.SPARQL_AUTH_USR, settings.SPARQL_AUTH_PWD)
     headers = {'Accept': 'text/turtle'}
     try:

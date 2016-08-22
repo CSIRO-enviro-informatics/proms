@@ -173,7 +173,7 @@ def registerSignedReport():
             else:
                 return jsonify({"status":False, "error":fail_reasons[0]})
             report_id = r_uri
-            result = functions_db.insert_named_graph(report, graph_name, True)
+            result = functions_db.insert(report, graph_name, True)
             #send_pingback(g)
 
             if result[0]:

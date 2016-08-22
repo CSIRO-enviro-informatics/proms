@@ -429,7 +429,7 @@ def register_pingback(data):
                 prov:used <''' + row[0] + '''> ;
                 proms:provenaceQueryUri <''' + row[1] + '''>^^xsd:anyUri .
             '''
-            db_result = functions_db.insert(query, True)
+            db_result = functions_db.insert(query)
             if not db_result[0]:
                 return [False, 'Problem storing received pingback: ' + db_result[1]]
     return [True]
@@ -495,7 +495,7 @@ def put_report(report_in_turtle):
                     }
                 ''')
                 for row in result:
-                    insert = functions_db.insert_named_graph(g, row[0])  # graph_name
+                    insert = functions_db.insert(g, row[0])  # graph_name
                     if insert[0]:
                         # only attempt a pingback if insert successful
                         #send_pingback(g)
