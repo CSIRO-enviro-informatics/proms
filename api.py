@@ -14,10 +14,7 @@ import functions_db
 from rdflib import Graph
 import cStringIO
 import sys
-from rules_proms.proms_basic_report_ruleset import PromsBasicReportValid
-from rules_proms.proms_internal_report_ruleset import PromsInternalReportValid
-from rules_proms.proms_external_report_ruleset import PromsExternalReportValid
-from rules_proms.proms_reporting_system_ruleset import PromsReportingSystemValid
+from proms_rulesets.rulesets.reports import BasicReport, ExternalReport, InternalReport
 
 
 
@@ -116,11 +113,11 @@ def registerSignedReport():
                             reporting_system = row[1]
                         break
             if 'BasicReport' in report_type:
-                pr = PromsBasicReportValid(g_report)
-            elif 'InternalReport' in report_type:
-                pr = PromsInternalReportValid(g_report)
+                pr = BasicReport(g)
             elif 'ExternalReport' in report_type:
-                pr = PromsExternalReportValid(g_report)
+                pr = ExternalReport(g)
+            elif 'InternalReport' in report_type:
+                pr = InternalReport(g)
             else:
                 return [False, 'Unknown Report type (expecting "BasicReport", "InternalReport" or "ExternalReport")']
             conf_results = pr.get_result()
@@ -176,7 +173,7 @@ def registerSignedReport():
             else:
                 return jsonify({"status":False, "error":fail_reasons[0]})
             report_id = r_uri
-            result = functions_db.db_insert_secure_named_graph(report, graph_name, True)
+            result = functions_db.insert_named_graph(report, graph_name, True)
             #send_pingback(g)
 
             if result[0]:

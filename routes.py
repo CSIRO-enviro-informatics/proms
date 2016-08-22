@@ -144,13 +144,13 @@ def reports():
 
     # process a posted Report
     if request.method == 'POST':
-        # read the incoming report
-        # only accept turtle POSTS
+        print 'POST'
+        # read the incoming report, only accept turtle POSTS
         if 'text/turtle' in request.headers['Content-Type']:
             # check report conformance and insert if ok, reporting all errors
             put_result = functions.put_report(request.data)
             if put_result[0]:
-                report_uri = put_result[1]
+                report_uri = put_result[1][0]
                 link_header_content = '<' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/report/?uri=' + report_uri + '>; rel=http://promsns.org/def/proms#Report'
                 headers = {}
                 headers['Content-Type'] = 'text/uri-list'
@@ -389,7 +389,7 @@ def sparql():
                     mimetype="text/plain")
 
         # sorry, we only return JSON results. See the service description!
-        query_result = functions_db.db_query_secure(query)
+        query_result = functions_db.query(query)
 
         if query_result and 'results' in query_result:
             query_result = json.dumps(query_result['results']['bindings'])
@@ -429,7 +429,7 @@ def sparql():
             #         mimetype="text/plain")
             query = request.args.get('query')
             print query
-            query_result = functions_db.db_query_secure(query)
+            query_result = functions_db.query(query)
             print query_result
             return Response(json.dumps(query_result), status=200, mimetype="application/sparql-results+json")
         else:

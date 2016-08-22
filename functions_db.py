@@ -1,20 +1,10 @@
 import settings
-
 import requests
 import json
 import rdflib
 
 
-def db_query(sparql_query):
-    """ Make a non-secure SPARQL query
-    """
-    data = {'query': sparql_query, 'format': 'json'}
-    headers = {'Accept': 'application/sparql-results+json'}
-    r = requests.post(settings.SPARQL_QUERY_URI, data=data, headers=headers)
-    return json.loads(r.text)
-
-
-def db_query_secure(sparql_query, format_mimetype='application/sparql-results+json'):
+def query(sparql_query, format_mimetype='application/sparql-results+json'):
     """ Make a secure SPARQL query
     """
     auth = (settings.SPARQL_AUTH_USR, settings.SPARQL_AUTH_PWD)
@@ -31,7 +21,7 @@ def db_query_secure(sparql_query, format_mimetype='application/sparql-results+js
         return [False, e.message]
 
 
-def db_query_secure_turtle(sparql_query):
+def query_turtle(sparql_query):
     """ Make a secure query in TURTLE format
     """
     data = {'query': sparql_query, 'format': 'text/turtle'}
@@ -41,32 +31,10 @@ def db_query_secure_turtle(sparql_query):
     return r.text
 
 
-def db_insert(turtle, from_string=False):
-    """ Make a non-secure insert into the DB
-    """
-    #convert the Turtle into N-Triples
-    g = rdflib.Graph()
-    if from_string:
-        g.parse(data=turtle, format='text/turtle')
-    else:
-        g.load(turtle, format='n3')
-
-    # SPARQL INSERT
-    data = {'update': 'INSERT DATA { ' + g.serialize(format='nt') + ' }'}
-    r = requests.post(settings.SPARQL_UPDATE_URI, data=data)
-    try:
-        if r.status_code != 200 and r.status_code != 201:
-            return [False, r.text]
-        return [True, r.text]
-    except Exception, e:
-        print e.message
-        return [False, e.message]
-
-
-def db_insert_secure(turtle, from_string=False):
+def insert_secure(turtle, from_string=False):
     """ Make a secure insert into the DB
     """
-    #convert the Turtle into N-Triples
+    # convert the Turtle into N-Triples
     g = rdflib.Graph()
     try:
         if from_string:
@@ -91,16 +59,9 @@ def db_insert_secure(turtle, from_string=False):
         return [False, e.message]
 
 
-def db_insert_secure_named_graph(turtle, graph_uri, from_string=False):
+def insert_named_graph(g, graph_uri):
     """ Securely insert a named graph into the DB
     """
-    #convert the Turtle into N-Triples
-    g = rdflib.Graph()
-    if from_string:
-        g.parse(data=turtle, format='text/turtle')
-    else:
-        g.load(turtle, format='n3')
-
     # SPARQL INSERT
     data = {'update': 'INSERT DATA { GRAPH <' + graph_uri + '> { ' + g.serialize(format='nt') + ' } }', format: 'json'}
     auth = (settings.SPARQL_AUTH_USR, settings.SPARQL_AUTH_PWD)
