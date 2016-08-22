@@ -63,7 +63,7 @@ def reportingsystem():
         if 'text/turtle' in request.headers['Content-Type']:
             put_result = functions.put_reportingsystem(request.data)
             if put_result[0]:
-                reportingsystem_uri = put_result[1]
+                reportingsystem_uri = put_result[1][0]
                 link_header_content = '<' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem/?uri=' + reportingsystem_uri + '>; rel=http://promsns.org/def/proms#ReportingSystem'
                 headers = {}
                 headers['Content-Type'] = 'text/uri-list'
