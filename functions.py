@@ -32,7 +32,7 @@ def get_reportingsystems_dict(page):
         query += \
             'LIMIT ' + str(settings.RESULTS_PER_PAGE) + \
             'OFFSET ' + str(page * settings.RESULTS_PER_PAGE)
-    reportingsystems = functions_db.db_query_secure(query)
+    reportingsystems = functions_db.query(query)
     reportingsystem_items = []
     # Check if nothing is returned
     if reportingsystems and 'results' in reportingsystems:
@@ -60,7 +60,7 @@ def get_reportingsystems_count():
             }
         }
     '''
-    rs_count = functions_db.db_query_secure(query)
+    rs_count = functions_db.query(query)
     # Check if nothing is returned
     if rs_count and 'results' in rs_count:
         if len(rs_count['results']['bindings']) > 0:
@@ -281,7 +281,7 @@ def get_reports_dict(page):
             'LIMIT ' + str(settings.RESULTS_PER_PAGE) + \
             'OFFSET ' + str(page * settings.RESULTS_PER_PAGE)
 
-    reports = functions_db.db_query_secure(query)
+    reports = functions_db.query(query)
 
     report_items = []
     # Check if nothing is returned
@@ -317,7 +317,7 @@ def get_reports_count():
             }
         }
     '''
-    reports_count = functions_db.db_query_secure(query)
+    reports_count = functions_db.query(query)
     # Check if nothing is returned
     if reports_count and 'results' in reports_count:
         if len(reports_count['results']['bindings']) > 0:
@@ -593,7 +593,7 @@ def get_entities_dict(page):
         query += \
             'LIMIT ' + str(settings.RESULTS_PER_PAGE) + \
             'OFFSET ' + str(page * settings.RESULTS_PER_PAGE)
-    entities = functions_db.db_query_secure(query)
+    entities = functions_db.query(query)
     entity_items = []
     # Check if nothing is returned
     if entities and 'results' in entities:
@@ -629,7 +629,7 @@ def get_entities_count():
             }
         }
     '''
-    entities_count = functions_db.db_query_secure(query)
+    entities_count = functions_db.query(query)
     # Check if nothing is returned
     if entities_count and 'results' in entities_count:
         if len(entities_count['results']['bindings']) > 0:
@@ -912,7 +912,7 @@ def get_activities_dict(page):
         query += \
             'LIMIT ' + str(settings.RESULTS_PER_PAGE) + \
             'OFFSET ' + str(page * settings.RESULTS_PER_PAGE)
-    activities = functions_db.db_query_secure(query)
+    activities = functions_db.query(query)
     activity_items = []
     if activities and 'results' in activities:
         for activity in activities['results']['bindings']:
@@ -942,7 +942,7 @@ def get_activities_count():
             }
         }
     '''
-    activities_count = functions_db.db_query_secure(query)
+    activities_count = functions_db.query(query)
     # Check if nothing is returned
     if activities_count and 'results' in activities_count:
         if len(activities_count['results']['bindings']) > 0:
@@ -1286,7 +1286,7 @@ def get_agents_dict(page):
         query += \
             'LIMIT ' + str(settings.RESULTS_PER_PAGE) + \
             'OFFSET ' + str(page * settings.RESULTS_PER_PAGE)
-    agents = functions_db.db_query_secure(query)
+    agents = functions_db.query(query)
     agent_items = []
     if agents and 'results' in agents:
         for agent in agents['results']['bindings']:
@@ -1333,7 +1333,7 @@ def get_agents_count():
             }
         }
     '''
-    agents_count = functions_db.db_query_secure(query)
+    agents_count = functions_db.query(query)
     # Check if nothing is returned
     if agents_count and 'results' in agents_count:
         if len(agents_count['results']['bindings']) > 0:
