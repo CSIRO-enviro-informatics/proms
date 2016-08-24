@@ -87,7 +87,7 @@
                 event.preventDefault();
                 // TODO: validate fields
 
-                var Custodian = new Agent('GA Agent', null, $('#agent-fname').val(), $('#agent-lname').val(), $('#agent-email').val());
+                var Custodian = new Agent('GA Agent', "http://pid.geoscience.au/person/"+$('#agent-lname').val(), $('#agent-fname').val(), $('#agent-lname').val(), $('#agent-email').val());
                 //var Custodian = new Agent("some text", null, 'wilma', 'flinstone', 'wf@email.com');
 
                 //var RepSys = new ReportingSystem('some label', null, 'some comment', Custodian);

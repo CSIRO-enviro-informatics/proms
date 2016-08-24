@@ -93,7 +93,7 @@ function ReportingSystem(label, uri, comment, actedOnBehalfOf) {
             var ag = new $rdf.graph;
             ag = this.actedOnBehalfOf.get_graph();
 
-            this.g.add($rdf.sym(this.uri), PROV('actedOnBehalfOf'), this.actedOnBehalfOf.uri);
+            this.g.add($rdf.sym(this.uri), PROV('actedOnBehalfOf'), $rdf.sym(this.actedOnBehalfOf.uri));
 
             // HACK AROUND
 

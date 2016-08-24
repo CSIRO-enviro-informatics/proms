@@ -503,7 +503,11 @@ def create_report_formparts(form_parts):
 # TODO: this is a stub
 @routes.route('/function/register_reporting_system', methods=['GET'])
 def register_reporting_system():
+    agents_list = functions.get_agents_dict()
+    import pprint
+    pprint.pprint(agents_list)
     return render_template('function_register_reportingsystem.html',
+                           agents=agents_list,
                            WEB_SUBFOLDER = settings.WEB_SUBFOLDER)
 
 

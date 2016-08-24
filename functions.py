@@ -1191,6 +1191,34 @@ WHERE {
 def get_agents_dict():
     """ Get all Agent details
     """
+    #query = '''
+    #    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+    #    PREFIX prov: <http://www.w3.org/ns/prov#>
+    #    SELECT DISTINCT ?ag ?n
+    #    WHERE {
+    #        GRAPH ?g {
+    #            {
+    #                { ?e a prov:Entity . }
+    #                UNION
+    #                { ?e a prov:Plan . }
+    #                ?e prov:wasAttributedTo ?ag .
+    #                OPTIONAL{ ?ag foaf:familyName ?n . }
+    #            }
+    #            UNION
+    #            {
+    #                ?a a prov:Activity .
+    #                ?a prov:wasAssociatedWith ?ag .
+    #                OPTIONAL{ ?ag foaf:familyName ?n . }
+    #            }
+    #            UNION
+    #            {
+    #                ?ag1 a prov:Agent .
+    #                ?ag1 prov:actedOnBehalfOf ?ag .
+    #                OPTIONAL{ ?ag foaf:familyName ?n . }
+    #            }
+    #        }
+    #    }
+    #    '''
     query = '''
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -1198,27 +1226,13 @@ def get_agents_dict():
         WHERE {
             GRAPH ?g {
                 {
-                    { ?e a prov:Entity . }
-                    UNION
-                    { ?e a prov:Plan . }
-                    ?e prov:wasAttributedTo ?ag .
-                    OPTIONAL{ ?ag foaf:name ?n . }
+                    ?ag foaf:familyName ?n .
                 }
-                UNION
-                {
-                    ?a a prov:Activity .
-                    ?a prov:wasAssociatedWith ?ag .
-                    OPTIONAL{ ?ag foaf:name ?n . }
-                }
-                UNION
-                {
-                    ?ag1 a prov:Agent .
-                    ?ag1 prov:actedOnBehalfOf ?ag .
-                    OPTIONAL{ ?ag foaf:name ?n . }
-                }
+
             }
         }
         '''
+
     agents = functions_db.db_query_secure(query)
     agent_items = []
     if agents and 'results' in agents:
