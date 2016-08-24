@@ -1,2 +1,0 @@
-test_proms_report_01,True,
-test_proms_report_02,False,"No nativeId"

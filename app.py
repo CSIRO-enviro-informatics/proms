@@ -3,11 +3,9 @@ import settings
 from flask import Flask
 from routes import routes
 from api import api
+from werkzeug.routing import BaseConverter
 
 app = Flask(__name__)
-
-
-from werkzeug.routing import BaseConverter
 
 
 class RegexConverter(BaseConverter):
@@ -15,16 +13,15 @@ class RegexConverter(BaseConverter):
         super(RegexConverter, self).__init__(url_map)
         self.regex = items[0]
 
-#regex paths
+# regex paths
 app.url_map.converters['regex'] = RegexConverter
 app.url_map.strict_slashes = True
 
-#import the routes in routes.py
+# import the routes in routes.py
 app.register_blueprint(routes)
 app.register_blueprint(api)
 
-
-#run the app
+# run the app
 if __name__ == '__main__':
     logging.basicConfig(filename=settings.LOGFILE,
                         level=logging.ERROR,

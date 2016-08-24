@@ -1,7 +1,7 @@
 #!/bin/bash
 # downlaod Fuseki with Jena
 echo "downloading..."
-wget http://apache.mirror.serversaustralia.com.au/jena/binaries/apache-jena-fuseki-2.3.1.tar.gz -O fuseki.tar.gz
+wget http://apache.mirror.serversaustralia.com.au/jena/binaries/apache-jena-fuseki-2.4.0.tar.gz -O fuseki.tar.gz
 sudo cp fuseki.tar.gz /opt
 cd /opt
 sudo mkdir -p fuseki

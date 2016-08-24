@@ -1,10 +1,5 @@
-from flask import Blueprint, Response, request, redirect, render_template, g, jsonify
-from prom_db import PromDb
+from flask import Blueprint, Response, request, redirect, render_template
 from flask_httpauth import HTTPBasicAuth
-from user import User
-auth = HTTPBasicAuth()
-
-routes = Blueprint('routes', __name__)
 import functions
 import functions_db
 import urllib
@@ -12,6 +7,10 @@ import settings
 import json
 from collections import Counter
 import operator
+from prom_db import PromDb
+from user import User
+auth = HTTPBasicAuth()
+routes = Blueprint('routes', __name__)
 
 
 #
@@ -40,16 +39,16 @@ def ids():
 def reportingsystem():
     if request.method == 'GET':
         if request.args.get('uri'):
-            reportingsystem = functions.get_reportingsystem_dict(request.args.get('uri'))
+            rs = functions.get_reportingsystem_dict(request.args.get('uri'))
             return render_template('reportingsystem.html',
-                                   REPORTINGSYSTEM=reportingsystem,
+                                   REPORTINGSYSTEM=rs,
                                    WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
         else:
             #if 'text/html' in request.headers.get('Accept'):
-                reportingsystems = functions.get_reportingsystems_dict()
+                rs = functions.get_reportingsystems_dict()
                 return render_template('reportingsystem.html',
-                                       REPORTINGSYSTEMS=reportingsystems,
+                                       REPORTINGSYSTEMS=rs,
                                        PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
                                        WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
             #else:
@@ -57,14 +56,14 @@ def reportingsystem():
             #        rdf_object = request.args.get('rdf_object')
             #        return Response(json.dumps(rdf_object), status_code=200, mimetype="application/rdf+json")
 
-    #process a posted Report
+    # process a posted ReportingSystem
     if request.method == 'POST':
-        #read the incoming report
-        #only accept turtle POSTS
+        # read the incoming report
+        # only accept turtle POSTS
         if 'text/turtle' in request.headers['Content-Type']:
             put_result = functions.put_reportingsystem(request.data)
             if put_result[0]:
-                reportingsystem_uri = put_result[1]
+                reportingsystem_uri = put_result[1][0]
                 link_header_content = '<' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem/?uri=' + reportingsystem_uri + '>; rel=http://promsns.org/def/proms#ReportingSystem'
                 headers = {}
                 headers['Content-Type'] = 'text/uri-list'
@@ -145,13 +144,13 @@ def reports():
 
     # process a posted Report
     if request.method == 'POST':
-        # read the incoming report
-        # only accept turtle POSTS
+        print 'POST'
+        # read the incoming report, only accept turtle POSTS
         if 'text/turtle' in request.headers['Content-Type']:
             # check report conformance and insert if ok, reporting all errors
             put_result = functions.put_report(request.data)
             if put_result[0]:
-                report_uri = put_result[1]
+                report_uri = put_result[1][0]
                 link_header_content = '<' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/report/?uri=' + report_uri + '>; rel=http://promsns.org/def/proms#Report'
                 headers = {}
                 headers['Content-Type'] = 'text/uri-list'
@@ -279,14 +278,14 @@ def activities():
 
 @routes.route('/id/agent/', methods=['GET'])
 def agents():
-    #single Agent
+    #single Person
     if request.args.get('uri'):
         #unencode the uri QSA
         uri = urllib.unquote(request.args.get('uri'))
         if request.args.get('_format'):
             if 'text/turtle' in request.args.get('_format'):
                 response = functions.get_agent_rdf(uri)
-                return Response(response, status=201, mimetype='text/turtle', headers={"Content-Disposition": "filename=Agent.ttl"})
+                return Response(response, status=201, mimetype='text/turtle', headers={"Content-Disposition": "filename=Person.ttl"})
             else:
                 return Response('Unknown format type', status=400, mimetype='text/plain')
         else:
@@ -304,7 +303,6 @@ def agents():
                                    PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
                                    AGENTS=agents,
                                    WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
-
 
 
 @routes.route('/function/pingback', methods=['POST'])
@@ -391,7 +389,7 @@ def sparql():
                     mimetype="text/plain")
 
         # sorry, we only return JSON results. See the service description!
-        query_result = functions_db.db_query_secure(query)
+        query_result = functions_db.query(query)
 
         if query_result and 'results' in query_result:
             query_result = json.dumps(query_result['results']['bindings'])
@@ -431,7 +429,7 @@ def sparql():
             #         mimetype="text/plain")
             query = request.args.get('query')
             print query
-            query_result = functions_db.db_query_secure(query)
+            query_result = functions_db.query(query)
             print query_result
             return Response(json.dumps(query_result), status=200, mimetype="application/sparql-results+json")
         else:
@@ -507,6 +505,7 @@ def register_reporting_system():
     import pprint
     pprint.pprint(agents_list)
     return render_template('function_register_reportingsystem.html',
+
                            agents=agents_list,
                            WEB_SUBFOLDER = settings.WEB_SUBFOLDER)
 

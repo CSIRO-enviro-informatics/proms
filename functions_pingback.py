@@ -55,7 +55,7 @@ def create_pingback_link_only_message(entity_uri):
 
         :my_proms    a dpn-proms:PromsServiceInterface ;
             rdfs:subClassOf dpn:ProvenanceServiceInterface ;
-            rdfs:label "''' + settings.PROMS_LABEL + '''"^^xsd:string ;
+            rdfs:label "A PROMS Server"^^xsd:string ;
             dpn-proms:provenanceQueryUri "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/entity?uri=''' + entity_uri + '''"^^xsd:anyUri .
     '''
     return message
@@ -107,7 +107,7 @@ def create_provenance_graph_transfer_plus_link(report_graph, entity_uri, rs_uri,
 
         :my_proms    a dpn-proms:PromsServiceInterface ;
             rdfs:subClassOf dpn:ProvenanceServiceInterface ;
-            rdfs:label "''' + settings.PROMS_LABEL + '''"^^xsd:string ;
+            rdfs:label "A PROMS Server"^^xsd:string ;
             dpn-proms:provenanceQueryUri "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/entity?uri=''' + entity_uri + '''"^^xsd:anyUri .
     '''
     return message

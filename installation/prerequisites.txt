@@ -1,5 +1,11 @@
 Prior to running the installation script, you must have:
 
-1. Java 8 installed
-2. Git installed
-3. PROMS Git repo (https://stash.csiro.au/scm/eis/proms.git) cloned
+1. Java 8
+    * see install-java.sh in the subfolder
+2. Git
+3. Python modules:
+    * flask
+    * flask_httpauth
+    * rdflib
+    * rdflib-jsonld
+    * watchdog

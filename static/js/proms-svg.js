@@ -1,6 +1,6 @@
 // Dimensions
-var RECT_WIDTH = 150
-var RECT_HEIGHT = 100
+var RECT_WIDTH = 150;
+var RECT_HEIGHT = 100;
 var ELLIPSE_RX = 90;
 var ELLIPSE_RY = 60;
 
@@ -80,7 +80,7 @@ function addAgent(x, y, title, uri) {
 		" L " + x + "," + (y+20);
 	var agent = paper.path(pathStr);
 	agent.attr({fill: "90-#DF7401-#FE9A2E", stroke: "#000000", "stroke-width": 1});
-	addTextLabel(x + (RECT_WIDTH/2), y + (RECT_HEIGHT / 4), RECT_WIDTH, "Agent", null, 16, "bold", 1, "#000000");
+	addTextLabel(x + (RECT_WIDTH/2), y + (RECT_HEIGHT / 4), RECT_WIDTH, "Person", null, 16, "bold", 1, "#000000");
 	addTextLabel(x + (RECT_WIDTH/2), y + (RECT_HEIGHT / 2), RECT_WIDTH, title, uri, 12, null, 2, "#000000");
     agent.glow();
 	return agent;

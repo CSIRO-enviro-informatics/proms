@@ -223,11 +223,11 @@ Outputs:
 <http://placeholder.org#80805c07-810b-43ec-af4b-747df97c3961>
       a       <http://promsns.org/def/proms#ExternalReport> ;
       <http://www.w3.org/2000/01/rdf-schema#label>
-              "ANUGA Busselton Sample"^^<http://www.w3.org/2001/XMLSchema#string> ;
+              "Nick Local Test"^^<http://www.w3.org/2001/XMLSchema#string> ;
       <http://promsns.org/def/proms#endingActivity>
               <http://localhost:8088/secure/getJobObject.do?jobId=10> ;
       <http://promsns.org/def/proms#nativeId>
-              "10"^^<http://www.w3.org/2001/XMLSchema#string> ;
+              "nickLocalTest"^^<http://www.w3.org/2001/XMLSchema#string> ;
       <http://promsns.org/def/proms#reportingSystem>
               <http://localhost:8088> ;
       <http://promsns.org/def/proms#startingActivity>
