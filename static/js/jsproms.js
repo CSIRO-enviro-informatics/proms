@@ -11,7 +11,7 @@ var PROMS = $rdf.Namespace('http://promsns.org/def/proms#');
 
 
 // Build Person
-function Person(label, uri, givenName, familyName, mbox) {
+function Agent(label, uri, givenName, familyName, mbox) {
     this.label = label;
     this.givenName = givenName;
     this.familyName = familyName;
@@ -23,7 +23,6 @@ function Person(label, uri, givenName, familyName, mbox) {
     else {
         this.uri = 'http://placeholder.org#';
     }
-
     this.makeGraph = function () {
         this.g = new $rdf.graph();
         //this.g.add($rdf.sym(this.uri), RDF('type'), PROV('Person')); -- redundant
@@ -70,8 +69,8 @@ function ReportingSystem(label, uri, comment, actedOnBehalfOf) {
     this.makeGraph = function () {
         this.g = new $rdf.graph();
 
-        //this.g.add($rdf.sym(this.uri), RDF('type'), OWL('Class')); -- redundant
-        //this.g.add($rdf.sym(this.uri), RDF('type'), PROV('Person')); -- redundant
+        //this.g.add($rdf.sym(this.uri), RDF('type'), OWL('Class'));
+        //his.g.add($rdf.sym(this.uri), RDF('type'), PROV('Person'));
         this.g.add($rdf.sym(this.uri), RDF('type'), PROMS('ReportingSystem'));
 
         this.g.add($rdf.sym(this.uri), RDFS('label'), $rdf.lit(this.label, 'en', XSD('string')));
@@ -81,7 +80,7 @@ function ReportingSystem(label, uri, comment, actedOnBehalfOf) {
             var ag = new $rdf.graph;
             ag = this.actedOnBehalfOf.get_graph();
 
-            this.g.add($rdf.sym(this.uri), PROV('actedOnBehalfOf'), $rdf.sym(this.actedOnBehalfOf.uri));
+            this.g.add($rdf.sym(this.uri), PROV('actedOnBehalfOf'), this.actedOnBehalfOf.uri);
 
             // HACK AROUND
             //this.g.add($rdf.sym(this.actedOnBehalfOf.uri), RDF('type'), PROV('Person')); -- redundant

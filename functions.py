@@ -1161,17 +1161,12 @@ def get_agents_dict():
     query = '''
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        SELECT DISTINCT ?ag ?n
+        SELECT DISTINCT ?ag ?n ?fn
         WHERE {
-            GRAPH ?g {
                 {
 
                     ?ag foaf:familyName ?n .
-                    { ?e a prov:Entity . }
-                    UNION
-                    { ?e a prov:Plan . }
-                    ?e prov:wasAttributedTo ?ag .
-                    OPTIONAL{ ?ag foaf:name ?n . }
+    				?ag foaf:givenName ?fn .
                 }
                 UNION
                 {
@@ -1184,15 +1179,12 @@ def get_agents_dict():
                     ?ag1 a prov:Person .
                     ?ag1 prov:actedOnBehalfOf ?ag .
                     OPTIONAL{ ?ag foaf:name ?n . }
-
                 }
-
-            }
         }
         '''
 
 
-#    agents = functions_db.db_query_secure(query)
+#   agents = functions_db.db_query_secure(query)
     agents = functions_db.query(query)
 
     agent_items = []

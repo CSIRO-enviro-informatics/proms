@@ -20,56 +20,11 @@
             text-decoration: underline;
         }
     </style>
+
+
+
+
     <script>
-
-/*        var Person;
-
-        Person = function (label, uri, givenName, familyName, mbox) {
-        this.label = label;
-        this.givenName = givenName;
-        this.familyName = familyName;
-        this.mbox = mbox;
-        if (uri) {
-            this.uri = uri;
-        }
-        // TODO: Fix up the uri
-        else {
-            this.uri = 'http://placeholder.org#';
-        }
-        };
-
-        Person.prototype.makeGraph = function() {
-
-            //this.g = $rdf.graph();
-                this.g = new $rdf.graph();
-
-//        this.g.add($rdf.sym(this.uri), FOAF('name'), "Albert Bloggs");
-            this.g.add($rdf.sym(this.uri), RDF('type'), PROV('Person'));
-            this.g.add($rdf.sym(this.uri), RDF('type'), PROV('Person'));
-
-            this.g.add($rdf.sym(this.uri), FOAF('familyName'), this.familyName);
-            this.g.add($rdf.sym(this.uri), FOAF('givenName'), this.givenName);
-            this.g.add($rdf.sym(this.uri), FOAF('mbox'), this.mbox);
-
-            return this.g;
-            };
-
-        Person.prototype.get_graph = function () {
-        if (!this.g) {
-            this.makeGraph();
-
-            return this.g;
-            }
-        };
-
-        Person.prototype.serialize_graph = function() {
-            window.alert("test");
-            Custg = Custodian.get_graph();
-            var triples = new $rdf.Serializer(Custg).toN3(Custg);
-
-            return triples;
-        };
-*/
         var entityInputCounter = 0;
         var entityOutputCounter = 0;
         $(function() {
@@ -90,12 +45,10 @@
                 var Custodian = new Agent('GA Agent', "http://pid.geoscience.au/person/"+$('#agent-lname').val(), $('#agent-fname').val(), $('#agent-lname').val(), $('#agent-email').val());
                 //var Custodian = new Agent("some text", null, 'wilma', 'flinstone', 'wf@email.com');
 
-
                 //var RepSys = new ReportingSystem('some label', null, 'some comment', Custodian);
                 var RepSys = new ReportingSystem($('#system-label').val(), $('#system-uri').val(), $('#system-comment').val(), Custodian);
                 var RSgraph = RepSys.get_graph();
                 var triples = new $rdf.Serializer(RSgraph).toN3(RSgraph);
-
 
                 // Post to Proms
                 $.ajax({
@@ -128,7 +81,7 @@
             return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
         }
     </script>
-    <form id="register-system" action="/function/register_system" method="post">
+    <form id="register-system" action="/function/register_reporting_system" method="post">
         <table class="lined" style="width:860px;">
             <tr><td colspan="2"><h3>Agent</h3></td></tr>
             <tr>
