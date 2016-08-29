@@ -1195,6 +1195,8 @@ def get_agents_dict():
             ret['ag_u'] = str(agent['ag']['value'])
             if agent.get('n'):
                 ret['n'] = str(agent['n']['value'])
+            if agent.get('fn'):
+                ret['fn'] = str(agent['fn']['value'])
             agent_items.append(ret)
     return agent_items
 

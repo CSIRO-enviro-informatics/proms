@@ -21,18 +21,16 @@
         }
     </style>
 
-
-
-
     <script>
         var entityInputCounter = 0;
         var entityOutputCounter = 0;
         $(function() {
             $('input[name=agent-new-existing]').change(function () {
-                if ($('input[name=agent-new-existing]:checked', '#create-report').val() == "existing") {
+                if ($('input[name=agent-new-existing]:checked', '#register-system').val() == "existing") {
                     $('#agent-existing-value').show();
                     $('#agent-new-value').hide();
                 } else {
+                    console.log(" testing here ");
                     $('#agent-existing-value').hide();
                     $('#agent-new-value').show();
                 }
@@ -97,8 +95,9 @@
                     {%if agents|length>0%}
                     <div id="agent-existing-value" style="width:300px;">
                         <select name="agent" id="agent">
-                            {% for key, value in agents.items() %}
-                            <option value="{{ key }}">{{ value }}</option>
+                            {% for agent_item in agents %}
+
+                                        <option value="{{ agent_item.ag_u }}">{{ agent_item.n + " " + agent_item.fn}}</option>
                             {% endfor %}
                         </select>
                     </div>
