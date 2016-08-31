@@ -28,7 +28,7 @@ PROMS_INSTANCE_NAMESPACE_URI = 'http://localhost:9000' + WEB_SUBFOLDER
 
 #   This is the location at which PROMS Server is installed on your file system. For Windows this could be something
 #   like 'c:/work/proms/', for Linux it could be '/opt/proms/' or '/var/www/proms/'
-HOME_DIR = '/Users/laura/PycharmProjects/proms/'  # must end in a slash. Use forward slashes only, even in Windows
+HOME_DIR = 'c:/work/proms/'  # must end in a slash. Use forward slashes only, even in Windows
 
 #   The directory in which the static content of PROMS Server is stored. Usually 'static/'
 STATIC_DIR = 'static/'
