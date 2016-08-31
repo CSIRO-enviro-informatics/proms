@@ -69,8 +69,6 @@ function ReportingSystem(label, uri, comment, actedOnBehalfOf) {
     this.makeGraph = function () {
         this.g = new $rdf.graph();
 
-        //this.g.add($rdf.sym(this.uri), RDF('type'), OWL('Class'));
-        //his.g.add($rdf.sym(this.uri), RDF('type'), PROV('Person'));
         this.g.add($rdf.sym(this.uri), RDF('type'), PROMS('ReportingSystem'));
 
         this.g.add($rdf.sym(this.uri), RDFS('label'), $rdf.lit(this.label, 'en', XSD('string')));

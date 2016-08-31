@@ -1161,12 +1161,13 @@ def get_agents_dict():
     query = '''
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        SELECT DISTINCT ?ag ?n ?fn
+        SELECT DISTINCT ?ag ?n ?fn ?em
         WHERE {
                 {
 
                     ?ag foaf:familyName ?n .
     				?ag foaf:givenName ?fn .
+    				?ag foaf:mbox ?em .
                 }
                 UNION
                 {
@@ -1197,6 +1198,8 @@ def get_agents_dict():
                 ret['n'] = str(agent['n']['value'])
             if agent.get('fn'):
                 ret['fn'] = str(agent['fn']['value'])
+            if agent.get('em'):
+                ret['em'] = str(agent['em']['value'])
             agent_items.append(ret)
     return agent_items
 

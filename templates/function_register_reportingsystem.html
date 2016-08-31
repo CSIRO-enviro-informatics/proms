@@ -22,6 +22,10 @@
     </style>
 
     <script>
+        var allAgents = {{ agents|tojson }};
+    </script>
+
+    <script>
         var entityInputCounter = 0;
         var entityOutputCounter = 0;
         $(function() {
@@ -30,7 +34,6 @@
                     $('#agent-existing-value').show();
                     $('#agent-new-value').hide();
                 } else {
-                    console.log(" testing here ");
                     $('#agent-existing-value').hide();
                     $('#agent-new-value').show();
                 }
@@ -40,11 +43,44 @@
                 event.preventDefault();
                 // TODO: validate fields
 
-                var Custodian = new Agent('GA Agent', "http://pid.geoscience.au/person/"+$('#agent-lname').val(), $('#agent-fname').val(), $('#agent-lname').val(), $('#agent-email').val());
+                // For new Agent, Check if new Agent already in system
+
+                if ($('input[name=agent-new-existing]:checked', '#register-system').val() == "new") {
+
+                    for (agent_it in allAgents) {
+                        var agent_in_db = allAgents[agent_it];
+                        if (agent_in_db["n"] == $('#agent-lname').val() && agent_in_db["em"] == $('#agent-email').val()) {
+                            alert("Agent: " + agent_in_db["fn"] + " " + agent_in_db["n"] + " has previously registered. Please use the selection list");
+
+                        }
+                        else {
+                            var Custodian = new Agent('GA Agent', "http://pid.geoscience.au/person/" + $('#agent-lname').val()+"."+ $('#agent-fname').val(), $('#agent-fname').val(), $('#agent-lname').val(), $('#agent-email').val());
+
+
+
+                            var RepSys = new ReportingSystem($('#system-label').val(), $('#system-uri').val(), $('#system-comment').val(), Custodian.uri);
+
+                        }
+                    }
+                }
+                else {
+
+                    // For existing agents, find their URI
+
+                    for (agent_it in allAgents) {
+                        var agent_in_db = allAgents[agent_it];
+                        if (agent_in_db["n"] == $('#agent :selected').val()) {
+                            var agent_url = agent_in_db["ag_u"];
+                            console.log(agent_url);
+                        }
+                    }
+
+                }
+                //}
                 //var Custodian = new Agent("some text", null, 'wilma', 'flinstone', 'wf@email.com');
+                var RepSys = new ReportingSystem($('#system-label').val(), $('#system-uri').val(), $('#system-comment').val(), agent_url);
 
                 //var RepSys = new ReportingSystem('some label', null, 'some comment', Custodian);
-                var RepSys = new ReportingSystem($('#system-label').val(), $('#system-uri').val(), $('#system-comment').val(), Custodian);
                 var RSgraph = RepSys.get_graph();
                 var triples = new $rdf.Serializer(RSgraph).toN3(RSgraph);
 
@@ -96,8 +132,8 @@
                     <div id="agent-existing-value" style="width:300px;">
                         <select name="agent" id="agent">
                             {% for agent_item in agents %}
-
-                                        <option value="{{ agent_item.ag_u }}">{{ agent_item.n + " " + agent_item.fn}}</option>
+                                {%  set existing_email = agent_item.ag_u %}
+                                <option value="{{ agent_item.ag_u }}">{{ agent_item.n + " " + agent_item.fn}}</option>
                             {% endfor %}
                         </select>
                     </div>
