@@ -43,6 +43,10 @@
                 event.preventDefault();
                 // TODO: validate fields
 
+
+                var postRegRequest = false;
+                var foundAgent = false;
+
                 // For new Agent, Check if new Agent already in system
 
                 if ($('input[name=agent-new-existing]:checked', '#register-system').val() == "new") {
@@ -51,59 +55,58 @@
                         var agent_in_db = allAgents[agent_it];
                         if (agent_in_db["n"] == $('#agent-lname').val() && agent_in_db["em"] == $('#agent-email').val()) {
                             alert("Agent: " + agent_in_db["fn"] + " " + agent_in_db["n"] + " has previously registered. Please use the selection list");
-
+                            postRegRequest = false;
+                            foundAgent = true;
                         }
-                        else {
-                            var Custodian = new Agent('GA Agent', "http://pid.geoscience.au/person/" + $('#agent-lname').val()+"."+ $('#agent-fname').val(), $('#agent-fname').val(), $('#agent-lname').val(), $('#agent-email').val());
-
-
-
-                            var RepSys = new ReportingSystem($('#system-label').val(), $('#system-uri').val(), $('#system-comment').val(), Custodian.uri);
-
-                        }
+                    }
+                    if (foundAgent === false) {
+                        var Custodian = new Agent('GA Agent', "http://pid.geoscience.au/person/" + $('#agent-lname').val() + "." + $('#agent-fname').val(), $('#agent-fname').val(), $('#agent-lname').val(), $('#agent-email').val());
+                        var RepSys = new ReportingSystem($('#system-label').val(), $('#system-uri').val(), $('#system-comment').val(), Custodian);
+                        postRegRequest = true;
                     }
                 }
                 else {
 
-                    // For existing agents, find their URI
+                    // For existing agents, find their info
 
                     for (agent_it in allAgents) {
                         var agent_in_db = allAgents[agent_it];
-                        if (agent_in_db["n"] == $('#agent :selected').val()) {
-                            var agent_url = agent_in_db["ag_u"];
-                            console.log(agent_url);
+                        if (agent_in_db["ag_u"] == $('#agent :selected').val()) {
+                            var Custodian = new Agent('GA Agent', "http://pid.geoscience.au/person/" + agent_in_db["n"] +"."+ agent_in_db["fn"] , agent_in_db["fn"] , agent_in_db["n"] , agent_in_db["em"] );
                         }
                     }
+                    var RepSys = new ReportingSystem($('#system-label').val(), $('#system-uri').val(), $('#system-comment').val(), Custodian);
+                    postRegRequest = true;
 
                 }
                 //}
                 //var Custodian = new Agent("some text", null, 'wilma', 'flinstone', 'wf@email.com');
-                var RepSys = new ReportingSystem($('#system-label').val(), $('#system-uri').val(), $('#system-comment').val(), agent_url);
-
                 //var RepSys = new ReportingSystem('some label', null, 'some comment', Custodian);
-                var RSgraph = RepSys.get_graph();
-                var triples = new $rdf.Serializer(RSgraph).toN3(RSgraph);
 
-                // Post to Proms
-                $.ajax({
-                    type: 'POST',
-                    datatype: 'text',
-                    //url: '/id/reportingsystem/',
-                    url: '/id/reportingsystem/',
-                    data: triples,
-                    headers: {'Content-Type': 'text/turtle'},
-                    success : function(response) {
-                        alert("success: " +response);
-                    },
-                    error : function(response) {
-                        alert("error: " +response);
-                    }
-                });
+                if (postRegRequest === true) {
+                    var RSgraph = RepSys.get_graph();
+                    var triples = new $rdf.Serializer(RSgraph).toN3(RSgraph);
 
+                    // Post to Proms
+                    $.ajax({
+                        type: 'POST',
+                        datatype: 'text',
+                        //url: '/id/reportingsystem/',
+                        url: '/id/reportingsystem/',
+                        data: triples,
+                        headers: {'Content-Type': 'text/turtle'},
+                        success: function (response) {
+                            alert("success: " + response);
+                        },
+                        error: function (response) {
+                            alert("error: " + response);
+                        }
+                    });
 
+                    $('#generated-results').text(triples);
+                    $('#generated-results').show();
+                }
 
-                $('#generated-results').text(triples);
-                $('#generated-results').show();
             });
 
         });
