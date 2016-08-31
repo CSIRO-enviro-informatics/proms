@@ -53,14 +53,14 @@
 
                     for (agent_it in allAgents) {
                         var agent_in_db = allAgents[agent_it];
-                        if (agent_in_db["n"] == $('#agent-lname').val() && agent_in_db["em"] == $('#agent-email').val()) {
+                        if (agent_in_db["n"] == $('#agent-lname').val() && agent_in_db["em"] == $('#agent-email').val().toLowerCase()) {
                             alert("Agent: " + agent_in_db["fn"] + " " + agent_in_db["n"] + " has previously registered. Please use the selection list");
                             postRegRequest = false;
                             foundAgent = true;
                         }
                     }
                     if (foundAgent === false) {
-                        var Custodian = new Agent('GA Agent', "http://pid.geoscience.au/person/" + $('#agent-lname').val() + "." + $('#agent-fname').val(), $('#agent-fname').val(), $('#agent-lname').val(), $('#agent-email').val());
+                        var Custodian = new Agent('GA Agent', "http://pid.geoscience.au/person/" + $('#agent-lname').val() + "." + $('#agent-fname').val(), $('#agent-fname').val(), $('#agent-lname').val(), $('#agent-email').val().toLowerCase());
                         var RepSys = new ReportingSystem($('#system-label').val(), $('#system-uri').val(), $('#system-comment').val(), Custodian);
                         postRegRequest = true;
                     }
