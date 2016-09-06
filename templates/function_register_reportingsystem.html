@@ -61,7 +61,6 @@
                     }
                     if (foundAgent === false) {
                         var Custodian = new Agent('GA Agent', "http://pid.geoscience.au/person/" + $('#agent-lname').val() + "." + $('#agent-fname').val(), $('#agent-fname').val(), $('#agent-lname').val(), $('#agent-email').val().toLowerCase());
-                        var RepSys = new ReportingSystem($('#system-label').val(), $('#system-uri').val(), $('#system-comment').val(), Custodian);
                         postRegRequest = true;
                     }
                 }
@@ -75,15 +74,23 @@
                             var Custodian = new Agent('GA Agent', "http://pid.geoscience.au/person/" + agent_in_db["n"] +"."+ agent_in_db["fn"] , agent_in_db["fn"] , agent_in_db["n"] , agent_in_db["em"] );
                         }
                     }
-                    var RepSys = new ReportingSystem($('#system-label').val(), $('#system-uri').val(), $('#system-comment').val(), Custodian);
                     postRegRequest = true;
 
                 }
+
+
+
+
+
+
                 //}
                 //var Custodian = new Agent("some text", null, 'wilma', 'flinstone', 'wf@email.com');
                 //var RepSys = new ReportingSystem('some label', null, 'some comment', Custodian);
 
+
+
                 if (postRegRequest === true) {
+                    var RepSys = new ReportingSystem($('#system-label').val(), $('#system-uri').val(), $('#system-comment').val(), Custodian);
                     var RSgraph = RepSys.get_graph();
                     var triples = new $rdf.Serializer(RSgraph).toN3(RSgraph);
 
@@ -96,15 +103,18 @@
                         data: triples,
                         headers: {'Content-Type': 'text/turtle'},
                         success: function (response) {
-                            alert("success: " + response);
+                            alert("Reporting system registered with ID: \n" + response);
                         },
                         error: function (response) {
-                            alert("error: " + response);
+                            alert("Problem registering reporting system: \n" + response);
                         }
                     });
 
-                    $('#generated-results').text(triples);
-                    $('#generated-results').show();
+
+
+
+                    //$('#generated-results').text(textboxtext);
+                    //$('#generated-results').show();
                 }
 
             });
@@ -153,11 +163,14 @@
             <tr><td colspan="2"><h3>Reporting System</h3></td></tr>
 
             <tr><th>Name:<br /><span style="font-size:small; font-weight:normal;">A simple name for the <em>Reporting System</em>. </span></th>
-                <td><input type="text" name="system-label" id="system-label" /></td></tr>
-            <tr>
+                <td><input type="text" name="system-label" id="system-label" /></td>
+                <td><input type="hidden" name="system-uri" id="system-uri" value="http://pid.geoscience.gov.au/reportingsystem/"/></td>
+            </tr>
+ <!--           <tr>
                 <th>Reporting System URI:<br /><span style="font-size:small; font-weight:normal;">A valid link for the <em>Reporting System</em>. </span></th>
                 <td><input type="text" name="system-uri" id="system-uri" /></td>
-            </tr>
+
+            </tr>-->
             <tr>
                 <th>Reporting System Description:<br /><span style="font-size:small; font-weight:normal;">A simple description for the <em>Activity</em>.</span></th>
                 <td><textarea name="system-comment" id="system-comment" style="width:230px;"></textarea></td>
