@@ -155,8 +155,8 @@
                     {%if agents|length>0%}
                     <div id="agent-existing-value" style="width:300px;">
                         <select name="agent" id="agent">
-                            {% for key, value in agents.items() %}
-                            <option value="{{ key }}">{{ value }}</option>
+                            {% for agent_item in agents %}
+                                <option value="{{ agent_item.ag_u }}">{{ agent_item.n + " " + agent_item.fn}}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -191,11 +191,12 @@
                 <td>
                     {{ select_rs }}
                      {%if reportingsystems|length>0%}
-                    <select name="reportingsystem" id="reportingsystem">
-                        {% for key, value in reportingsystems.items() %}
-                        <option value="{{ key }}">{{ value }}</option>
-                        {% endfor %}
-                    </select>
+                        <select name="reportingsystem" id="reportingsystem">
+
+                            {% for reportingsystem in reportingsystems  %}
+                                <option value="{{ reportingsystem.rs_u }}">{{ reportingsystem.t }}</option>
+                            {% endfor %}
+                        </select>
                     {%endif%}
                 </td>
             </tr>

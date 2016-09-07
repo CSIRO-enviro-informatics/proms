@@ -145,7 +145,6 @@
                     <div id="agent-existing-value" style="width:300px;">
                         <select name="agent" id="agent">
                             {% for agent_item in agents %}
-                                {%  set existing_email = agent_item.ag_u %}
                                 <option value="{{ agent_item.ag_u }}">{{ agent_item.n + " " + agent_item.fn}}</option>
                             {% endfor %}
                         </select>

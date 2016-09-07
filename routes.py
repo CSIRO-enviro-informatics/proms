@@ -487,9 +487,13 @@ def about():
 
 @routes.route('/function/create_report', methods=['GET'])
 def create_report():
+    reportingsystems = functions.get_reportingsystems_dict()
+
+    import pprint
+    pprint.pprint("test " + str(reportingsystems))
     return render_template('function_create_report.html',
                            agents=functions.get_agents_dict(),
-                           reportingsystems=functions.get_reportingsystems_dict(),
+                           reportingsystems=reportingsystems,
                            WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
@@ -499,11 +503,9 @@ def create_report_formparts(form_parts):
 
 
 # TODO: this is a stub
-@routes.route('/function/register_reporting_system', methods=['GET'])
+@routes.route('/function/register_reportingsystem', methods=['GET'])
 def register_reporting_system():
     agents = functions.get_agents_dict()
-    import pprint
-    pprint.pprint("here" + str(agents))
     return render_template('function_register_reportingsystem.html',
                            agents=agents,
                            WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
