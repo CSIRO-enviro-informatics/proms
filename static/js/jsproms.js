@@ -75,18 +75,13 @@ function ReportingSystem(label, uri, comment, actedOnBehalfOf) {
         this.g.add($rdf.sym(this.uri), RDFS('comment'), $rdf.lit(this.comment, 'en', XSD('string')));
 
         if (this.actedOnBehalfOf) {
+             // get graph of person, add it to this graph
             var ag = new $rdf.graph;
             ag = this.actedOnBehalfOf.get_graph();
 
             this.g.add($rdf.sym(this.uri), PROV('actedOnBehalfOf'), this.actedOnBehalfOf.uri);
+            this.g.add(ag);
 
-            // HACK AROUND
-            //this.g.add($rdf.sym(this.actedOnBehalfOf.uri), RDF('type'), PROV('Person')); -- redundant
-            this.g.add($rdf.sym(this.actedOnBehalfOf.uri), RDF('type'), PROV('Person'));
-
-            this.g.add($rdf.sym(this.actedOnBehalfOf.uri), FOAF('familyName'), this.actedOnBehalfOf.familyName);
-            this.g.add($rdf.sym(this.actedOnBehalfOf.uri), FOAF('givenName'), this.actedOnBehalfOf.givenName);
-            this.g.add($rdf.sym(this.actedOnBehalfOf.uri), FOAF('mbox'), this.actedOnBehalfOf.mbox);
         }
     };
 
