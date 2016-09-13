@@ -73,6 +73,38 @@
                 alert($(this).attr('name'));
             });
 
+
+            //
+            // Declare reporting system
+            //
+
+
+
+
+            //
+            // Input datasets
+            //
+
+
+            //
+            // Created Entities
+            //
+
+            //
+            // Activities
+            //
+
+
+
+            //
+            // Create report
+            //
+
+
+
+
+
+
             $('#generate-report').click(function(event) {
                 event.preventDefault();
                 //validate fields
@@ -263,6 +295,27 @@
                         </table>
                     </div>
                     -->
+                </td>
+            </tr>
+            <tr><td colspan="2"><h3></h3></td></tr>
+            <tr>
+                <th>
+                    Entity Generated:<br />
+                    <span style="font-size:small; font-weight:normal;">Add details about entity (dataset, report, etc) created</span>
+                </th>
+                <td valign="top">
+                    <table class="entity layout" id="entity-outputs">
+                        <tr id="entity-output-row-01">
+                            <td><input type="text" class="entity-output" name="entity-output-01" id="entity-ouput-01" /></td>
+                            <td><span class="entity-output-delete" id="entity-output-delete-01">delete</span></td>
+                        </tr>
+                        <tr id="entity-output-row-add">
+                            <td></td>
+                            <td><span class="entity-output-add">add another</span></td>
+                            <td></td>
+                        </tr>
+                    </table>
+
                 </td>
             </tr>
             <tr>
