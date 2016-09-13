@@ -70,7 +70,15 @@
 
             $('body').on('change', 'input.entity-used-new-existing', function (event) {
                 //TODO: complete new/existing Entity selection
-                alert($(this).attr('name'));
+                //alert($(this).attr('name'));
+                if ($('input[name=entity-used-new-existing]:checked', '#create-report').val() == "existing") {
+                    $('#agent-existing-value').show();
+                    $('#agent-new-value').hide();
+                } else {
+                    $('#agent-existing-value').hide();
+                    $('#agent-new-value').show();
+                }
+
             });
 
 
@@ -263,7 +271,24 @@
                     <table class="entity layout" id="entity-inputs">
                         <tr id="entity-input-row-01">
                             <td>
-                                <input type="radio" class="entity-used-new-existing" name="entity-01-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>
+                                <input type="radio" class="entity-used-new-existing" name="entity-01-new-existing" value="existing" checked="checked" /> Existing
+                            </td>
+                            <td>
+                                {%if agents|length>0%}
+                                <div id="agent-existing-value" style="width:300px;">
+                                <select name="agent" id="agent">
+                                    {% for agent_item in agents %}
+                                        <option value="{{ agent_item.ag_u }}">{{ agent_item.n + " " + agent_item.fn}}</option>
+                                     {% endfor %}
+                                    </select>
+                                </div>
+                                {%endif%}
+                            </td>
+                        <td></td>
+                        </tr>
+                    <tr><td><strong>or</strong></td></tr>
+                        <tr id="entity-input-row-02">
+                            <td>
                                 <input type="radio" class="entity-used-new-existing" name="entity-01-new-existing" value="new" /> New
                             </td>
                             <td><input type="text" class="entity-input" name="entity-input-01" id="entity-input-01" /></td>
@@ -274,6 +299,14 @@
                             <td></td>
                             <td><span class="entity-input-add">add another</span></td>
                         </tr>
+                        <tr id="entity-existing-value">
+
+                        </tr>
+                        <tr id="entity-new-value">
+
+                        </tr>
+
+
                     </table>
 
                     <!--

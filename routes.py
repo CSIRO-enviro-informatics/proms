@@ -488,11 +488,11 @@ def about():
 @routes.route('/function/create_report', methods=['GET'])
 def create_report():
     reportingsystems = functions.get_reportingsystems_dict()
-
     import pprint
     pprint.pprint("test " + str(reportingsystems))
     return render_template('function_create_report.html',
                            agents=functions.get_agents_dict(),
+                           entities=functions.get_entities_dict(),
                            reportingsystems=reportingsystems,
                            WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
