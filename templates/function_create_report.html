@@ -18,6 +18,9 @@
         }
     </style>
     <script>
+        var allAgents = {{ agents|tojson }};
+    </script>
+    <script>
         var entityInputCounter = 0;
         var entityOutputCounter = 0;
         $(function() {
@@ -58,7 +61,7 @@
                 entityInputCounter = entityInputCounter + 1;
                 number_inc_str = pad(entityInputCounter + 1, 2);
                 console.log(number_inc_str);
-                $('#entity-input-row-add').before('<tr id="entity-input-row-' + number_inc_str + '">' +
+                $('#entity-input-row-add').after('<tr id="entity-input-row-' + number_inc_str + '">' +
                                                         '<td>' +
                                                         '    <input type="radio" class="entity-used-new-existing" name="entity-' + number_inc_str + '-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>' +
                                                         '    <input type="radio" class="entity-used-new-existing" name="entity-' + number_inc_str + '-new-existing" value="new" /> New' +
@@ -68,10 +71,41 @@
                                                   '</tr>');
             });
 
-            $('body').on('change', 'input.entity-used-new-existing', function (event) {
+
+            $('#add').click(function(){
+                //var toAdd gets the value of the input field
+                if ($('input[id=entity-used-new-existing]:checked', '#create-report').val() == "existing") {
+                    console.log("$('#entity :selected').val() "+ $('#entity :selected').val() );
+                    for (agent_it in allAgents) {
+                        var agent_in_db = allAgents[agent_it];
+                        if (agent_in_db["ag_u"] == $('#entity :selected').val()) {
+                            var toAdd = $('#entity :selected').val();
+                        }
+                    }
+                }
+                else {
+                    var toAdd = $('#entity-01-uri').val();
+                }
+
+                //Append list item in its own div with a class of item into the list div
+                //It also changes the cursor on hover of the appended item
+                $('.list').append('<div class="item">' + toAdd + '</div>');
+                //fade in clear button when the add button is clicked
+
+
+                //Clear input field when add button is pressed
+                $('select').val('');
+                //$('input').val('');
+
+                $('#entity-01-uri').val('');
+
+            });
+
+            //$('body').on('change', 'input.entity-used-new-existing', function (event) {
+            $('input[id=entity-used-new-existing]').change(function () {
                 //TODO: complete new/existing Entity selection
                 //alert($(this).attr('name'));
-                if ($('input[name=entity-used-new-existing]:checked', '#create-report').val() == "existing") {
+                if ($('input[id=entity-used-new-existing]:checked', '#create-report').val() == "existing") {
                     $('#entity-existing-value').show();
                     $('#entity-new-value').hide();
                 } else {
@@ -269,12 +303,13 @@
                     Entity Used:<br />
                     <span style="font-size:small; font-weight:normal;">Choose from the list of <em>Entities</em> known to this PROMS instance or add in your own details</span>
                 </th>
+
                 <td valign="top">
                     <table class="entity layout" id="entity-inputs">
                         <tr id="entity-input-row-01">
                             <td>
-                                <input type="radio" class="entity-used-new-existing" name="entity-used-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>
-                                <input type="radio" class="entity-used-new-existing" name="entity-used-new-existing" value="new" /> New
+                                <input type="radio" id="entity-used-new-existing" name="entity-01-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>
+                                <input type="radio" id="entity-used-new-existing" name="entity-01-new-existing" value="new" /> New
                             </td>
                             <td></td>
                             <td></td>
@@ -290,7 +325,7 @@
                             <td>
                                 {%if agents|length>0%}
                                     <div id="entity-existing-value" style="width:300px;">
-                                        <select name="agent" id="agent">
+                                        <select name="entity" id="entity">
                                         {% for agent_item in agents %}
                                             <option value="{{ agent_item.ag_u }}">{{ agent_item.n + " " + agent_item.fn}}</option>
                                         {% endfor %}
@@ -309,38 +344,35 @@
                             <td></td>
                             <td></td>
                         </tr>
+<!--
                         <tr>
                             <td><span class="entity-input-add">add another</span></td>
                             <td></td>
                             <td><span class="entity-input-delete" id="entity-input-delete-01">delete</span></td>
 
                         </tr>
+-->
+                        <tr>
+                            <td><button type="button" id="add" class="btn btn-info">Add</button></td>
+                            <td><button type="button" id="clear" title="Clear checked items" class="btn btn-default">clear</button></td>
+		                    <td><button type="button" id="delete" id="entity-input-delete" title="Delete" class="btn btn-default">Delete</button></td>
+
+                        </tr>
+
+                            <br/><br/>
+                        <tr>
+                            <td><div class="list"></div></td>
+		                    <td></td>
+                            <td></td>
+                        </tr>
+
                     </table>
 
-                    <!--
 
-                    <td><input type="text" class="entity-input" name="entity-input-01" id="entity-input-01" /></td>
-
-                    <p>
-                        <input type="radio" name="entity-01-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>
-                        <input type="radio" name="entity-01-new-existing" value="new" /> New
-                    </p>
-
-                    <div id="entity-01-existing-value" style="width:300px;">
-                        <select name="entity-01" id="entity-01">
-                        ''' + get_entities_dropdown(get_entities()[1]) + '''
-                        </select>
-                    </div>
-                    <div id="entity-01-new-value" style="width:300px; display:none;">
-                        <table class="layout">
-                            <tr><td>Title:</td><td><input id="entity-01-title" name="entity-01-title" type="text" /></td></tr>
-                            <tr><td>URI:</td><td><input id="entity-01-uri" name="entity-01-uri" type="text" /></td></tr>
-                            <tr><td>Value:</td><td><input id="entity-01-value" name="entity-01-value" type="text" /></td></tr>
-                        </table>
-                    </div>
-                    -->
                 </td>
             </tr>
+
+
             <tr><td colspan="2"><h3></h3></td></tr>
             <tr>
                 <th>
