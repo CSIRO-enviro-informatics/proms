@@ -72,11 +72,11 @@
                 //TODO: complete new/existing Entity selection
                 //alert($(this).attr('name'));
                 if ($('input[name=entity-used-new-existing]:checked', '#create-report').val() == "existing") {
-                    $('#agent-existing-value').show();
-                    $('#agent-new-value').hide();
+                    $('#entity-existing-value').show();
+                    $('#entity-new-value').hide();
                 } else {
-                    $('#agent-existing-value').hide();
-                    $('#agent-new-value').show();
+                    $('#entity-existing-value').hide();
+                    $('#entity-new-value').show();
                 }
 
             });
@@ -262,6 +262,8 @@
                 <td><input type="text" name="activity-endedAtTime" id="activity-endedAtTime" /></td>
             </tr>
             <tr><td colspan="2"><h3>Entities</h3></td></tr>
+
+
             <tr>
                 <th>
                     Entity Used:<br />
@@ -271,45 +273,54 @@
                     <table class="entity layout" id="entity-inputs">
                         <tr id="entity-input-row-01">
                             <td>
-                                <input type="radio" class="entity-used-new-existing" name="entity-01-new-existing" value="existing" checked="checked" /> Existing
+                                <input type="radio" class="entity-used-new-existing" name="entity-used-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>
+                                <input type="radio" class="entity-used-new-existing" name="entity-used-new-existing" value="new" /> New
                             </td>
-                            <td>
-                                {%if agents|length>0%}
-                                <div id="agent-existing-value" style="width:300px;">
-                                <select name="agent" id="agent">
-                                    {% for agent_item in agents %}
-                                        <option value="{{ agent_item.ag_u }}">{{ agent_item.n + " " + agent_item.fn}}</option>
-                                     {% endfor %}
-                                    </select>
-                                </div>
-                                {%endif%}
-                            </td>
-                        <td></td>
-                        </tr>
-                    <tr><td><strong>or</strong></td></tr>
-                        <tr id="entity-input-row-02">
-                            <td>
-                                <input type="radio" class="entity-used-new-existing" name="entity-01-new-existing" value="new" /> New
-                            </td>
-                            <td><input type="text" class="entity-input" name="entity-input-01" id="entity-input-01" /></td>
-                            <td><span class="entity-input-delete" id="entity-input-delete-01">delete</span></td>
+                            <td></td>
+                            <td></td>
+                            <!--<td><span class="entity-input-delete" id="entity-input-delete-01">delete</span></td>-->
                         </tr>
                         <tr id="entity-input-row-add">
                             <td></td>
                             <td></td>
+                            <td></td>
+                            <!--<td><span class="entity-input-add">add another</span></td> -->
+                        </tr>
+                        <tr>
+                            <td>
+                                {%if agents|length>0%}
+                                    <div id="entity-existing-value" style="width:300px;">
+                                        <select name="agent" id="agent">
+                                        {% for agent_item in agents %}
+                                            <option value="{{ agent_item.ag_u }}">{{ agent_item.n + " " + agent_item.fn}}</option>
+                                        {% endfor %}
+                                        </select>
+                                    </div>
+                                {%endif%}
+                                 <div id="entity-new-value" style="width:300px; display:none;">
+                                    <table class="layout">
+                                        <tr><td>Title:</td><td><input id="entity-01-title" name="entity-01-title" type="text" /></td></tr>
+                                        <tr><td>URI:</td><td><input id="entity-01-uri" name="entity-01-uri" type="text" /></td></tr>
+                                        <tr><td>Value:</td><td><input id="entity-01-value" name="entity-01-value" type="text" /></td></tr>
+                                    </table>
+                                </div>
+
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
                             <td><span class="entity-input-add">add another</span></td>
-                        </tr>
-                        <tr id="entity-existing-value">
+                            <td></td>
+                            <td><span class="entity-input-delete" id="entity-input-delete-01">delete</span></td>
 
                         </tr>
-                        <tr id="entity-new-value">
-
-                        </tr>
-
-
                     </table>
 
                     <!--
+
+                    <td><input type="text" class="entity-input" name="entity-input-01" id="entity-input-01" /></td>
+
                     <p>
                         <input type="radio" name="entity-01-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>
                         <input type="radio" name="entity-01-new-existing" value="new" /> New
