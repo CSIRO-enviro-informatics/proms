@@ -46,62 +46,48 @@
               lang:'en'
             });
 
-            //Entity Inputs
-            $('body').on('click', '.entity-input-delete', function (event) {
-                //get this number
-                number_str = this.id.substr(this.id.lastIndexOf('-')+1, this.id.lastIndexOf('-')+2);
-
-                //delete the row
-                $('#entity-input-row-' + number_str).remove();
-            });
-
-            $('body').on('click', '.entity-input-add', function (event) {
-                //get the largest entity-input number
-                //increment the number
-                entityInputCounter = entityInputCounter + 1;
-                number_inc_str = pad(entityInputCounter + 1, 2);
-                console.log(number_inc_str);
-                $('#entity-input-row-add').after('<tr id="entity-input-row-' + number_inc_str + '">' +
-                                                        '<td>' +
-                                                        '    <input type="radio" class="entity-used-new-existing" name="entity-' + number_inc_str + '-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>' +
-                                                        '    <input type="radio" class="entity-used-new-existing" name="entity-' + number_inc_str + '-new-existing" value="new" /> New' +
-                                                        '</td>' +
-                                                  '     <td><input type="text" class="entity-input" name="entity-input-' + number_inc_str + '" id="entity-input-' + number_inc_str + '" /></td>'+
-                                                  '     <td><span class="entity-input-delete" id="entity-input-delete-' + number_inc_str + '">delete</span></td>'+
-                                                  '</tr>');
-            });
+            var entity_parts_json_str = '[]';
+            var entity_parts_json_obj = JSON.parse(entity_parts_json_str);
+            var entity_item_number = 0;
 
 
             $('#add').click(function(){
-                //var toAdd gets the value of the input field
+
+                Object.keys(entity_parts_json_obj).length;
+
                 if ($('input[id=entity-used-new-existing]:checked', '#create-report').val() == "existing") {
-                    console.log("$('#entity :selected').val() "+ $('#entity :selected').val() );
                     for (agent_it in allAgents) {
                         var agent_in_db = allAgents[agent_it];
                         if (agent_in_db["ag_u"] == $('#entity :selected').val()) {
                             var toAdd = $('#entity :selected').val();
+                            entity_parts_json_obj.push({"title":"test1", "uri":$('#entity :selected').val(), "value": "value"});
                         }
                     }
                 }
                 else {
-                    var toAdd = $('#entity-01-uri').val();
+                    var toAdd = $('#entity-uri').val();
+                    entity_parts_json_obj.push({"title":$('#entity-title').val(), "uri":$('#entity-uri').val(), "value": $('#entity-value').val()});
                 }
 
-                //Append list item in its own div with a class of item into the list div
-                //It also changes the cursor on hover of the appended item
-                $('.list').append('<div class="item">' + toAdd + '</div>');
-                //fade in clear button when the add button is clicked
-
-
-                //Clear input field when add button is pressed
-                $('select').val('');
-                //$('input').val('');
-
-                $('#entity-01-uri').val('');
+                $('.list').append('<div class="item" id="entity_item_number">' + toAdd +'</div> ');
+                entity_item_number +=1;
+                $('#entity-inputs').val('');
+                console.log("adding " + JSON.stringify(entity_parts_json_obj));
 
             });
+            $(document).on("click", ".item", function(event) {
+                //console.log("here " +$(event.target).text());
+                for (var i = 0; i < entity_parts_json_obj.length; i++) {
+                    if ($(event.target).text() == entity_parts_json_obj[i]["uri"]) {
+                        //console.log("tell me about it  " + entity_parts_json_obj[i]["uri"]);
+                        entity_parts_json_obj.splice(i, 1);
+                    }
+                }
+                $(this).remove();
+                entity_item_number = JSON.stringify(entity_parts_json_obj).length;
+                //console.log("removing " + JSON.stringify(entity_parts_json_obj));
+            });
 
-            //$('body').on('change', 'input.entity-used-new-existing', function (event) {
             $('input[id=entity-used-new-existing]').change(function () {
                 //TODO: complete new/existing Entity selection
                 //alert($(this).attr('name'));
@@ -334,9 +320,9 @@
                                 {%endif%}
                                  <div id="entity-new-value" style="width:300px; display:none;">
                                     <table class="layout">
-                                        <tr><td>Title:</td><td><input id="entity-01-title" name="entity-01-title" type="text" /></td></tr>
-                                        <tr><td>URI:</td><td><input id="entity-01-uri" name="entity-01-uri" type="text" /></td></tr>
-                                        <tr><td>Value:</td><td><input id="entity-01-value" name="entity-01-value" type="text" /></td></tr>
+                                        <tr><td>Title:</td><td><input id="entity-title" name="entity-title" type="text" /></td></tr>
+                                        <tr><td>URI:</td><td><input id="entity-uri" name="entity-uri" type="text" /></td></tr>
+                                        <tr><td>Value:</td><td><input id="entity-value" name="entity-value" type="text" /></td></tr>
                                     </table>
                                 </div>
 
@@ -354,14 +340,13 @@
 -->
                         <tr>
                             <td><button type="button" id="add" class="btn btn-info">Add</button></td>
-                            <td><button type="button" id="clear" title="Clear checked items" class="btn btn-default">clear</button></td>
-		                    <td><button type="button" id="delete" id="entity-input-delete" title="Delete" class="btn btn-default">Delete</button></td>
-
+                            <td></td>
+                            <td></td>
                         </tr>
 
                             <br/><br/>
                         <tr>
-                            <td><div class="list"></div></td>
+                            <td><div class="list"  id="entity-list"></div></td>
 		                    <td></td>
                             <td></td>
                         </tr>
