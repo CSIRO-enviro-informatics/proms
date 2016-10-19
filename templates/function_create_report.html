@@ -7,6 +7,8 @@
     <script src="/static/js/jquery.min.js" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"/ >
     <script src="/static/js/jquery.datetimepicker.js"></script>
+    <script src="/static/js/rdflib.js"></script>
+    <script src="/static/js/jsproms.js"></script>
     <style>
         .entity-input-delete,
         .entity-output-delete,
@@ -19,6 +21,8 @@
     </style>
     <script>
         var allAgents = {{ agents|tojson }};
+        var allReportingSystems = {{  reportingsystems|tojson }};
+        var allEntities = {{  entities|tojson }};
     </script>
     <script>
         var entityInputCounter = 0;
@@ -46,6 +50,11 @@
               lang:'en'
             });
 
+
+            //
+            // Input Entities
+            //
+
             var entity_parts_json_str = '[]';
             var entity_parts_json_obj = JSON.parse(entity_parts_json_str);
             var entity_item_number = 0;
@@ -56,36 +65,84 @@
                 Object.keys(entity_parts_json_obj).length;
 
                 if ($('input[id=entity-used-new-existing]:checked', '#create-report').val() == "existing") {
-                    for (agent_it in allAgents) {
-                        var agent_in_db = allAgents[agent_it];
-                        if (agent_in_db["ag_u"] == $('#entity :selected').val()) {
+                    for (entity_it in allEntities) {
+                        var entity_in_db = allEntities[entity_it];
+                        if (entity_in_db["e_u"] == $('#entity :selected').val()) {
                             var toAdd = $('#entity :selected').val();
-                            entity_parts_json_obj.push({"title":"test1", "uri":$('#entity :selected').val(), "value": "value"});
+                            entity_parts_json_obj.push({"label":"test1", "uri":$('#entity :selected').val(), "value": "value"});
+                            console.log("test here " +entity_parts_json_obj[0]['uri']);
                         }
                     }
                 }
                 else {
                     var toAdd = $('#entity-uri').val();
-                    entity_parts_json_obj.push({"title":$('#entity-title').val(), "uri":$('#entity-uri').val(), "value": $('#entity-value').val()});
+                    entity_parts_json_obj.push({"label":$('#entity-title').val(), "uri":$('#entity-uri').val(), "value": $('#entity-value').val()});
+                    console.log("test here " +entity_parts_json_obj[0]['uri']);
                 }
 
                 $('.list').append('<div class="item" id="entity_item_number">' + toAdd +'</div> ');
                 entity_item_number +=1;
                 $('#entity-inputs').val('');
-                console.log("adding " + JSON.stringify(entity_parts_json_obj));
+                //console.log("adding " + JSON.stringify(entity_parts_json_obj));
+
+                entity_item_number = entity_parts_json_obj.length;
+                for (var i=0; i<entity_item_number; i++){
+                    console.log("rightyo  test " + entity_item_number +" "+ entity_parts_json_obj[i]['uri']);
+                }
 
             });
             $(document).on("click", ".item", function(event) {
                 //console.log("here " +$(event.target).text());
                 for (var i = 0; i < entity_parts_json_obj.length; i++) {
                     if ($(event.target).text() == entity_parts_json_obj[i]["uri"]) {
-                        //console.log("tell me about it  " + entity_parts_json_obj[i]["uri"]);
+                        console.log("tell me about it  " + entity_parts_json_obj[i]['uri']);
                         entity_parts_json_obj.splice(i, 1);
                     }
                 }
                 $(this).remove();
                 entity_item_number = JSON.stringify(entity_parts_json_obj).length;
                 //console.log("removing " + JSON.stringify(entity_parts_json_obj));
+
+
+
+
+            });
+
+            //
+            // Generated Entities
+            //
+
+            var entity_out_json_str = '[]';
+            var entity_out_json_obj = JSON.parse(entity_out_json_str);
+            var entity_out_number = 0;
+
+
+            $('#add2').click(function(){
+
+                //Object.keys(entity_parts_json_obj).length;
+
+
+                var toAdd2 = $('#entity-out-uri').val();
+                entity_out_json_obj.push({"label":$('#entity-out-title').val(), "uri":$('#entity-out-uri').val(), "value": $('#entity-out-value').val()});
+
+
+                $('.list2').append('<div class="item" id="entity_item_number">' + toAdd2 +'</div> ');
+                entity_out_number +=1;
+                //$('#entity-inputs').val('');
+                console.log("adding " + JSON.stringify(entity_out_json_obj));
+
+            });
+            $(document).on("click", ".item", function(event) {
+                //console.log("here " +$(event.target).text());
+                for (var i = 0; i < entity_out_json_obj.length; i++) {
+                    if ($(event.target).text() == entity_out_json_obj[i]["uri"]) {
+                        //console.log("tell me about it  " + entity_out_json_obj[i]["uri"]);
+                        entity_out_json_obj.splice(i, 1);
+                    }
+                }
+                $(this).remove();
+                entity_out_number = JSON.stringify(entity_out_json_obj).length;
+                //console.log("removing " + JSON.stringify(entity_out_json_obj));
             });
 
             $('input[id=entity-used-new-existing]').change(function () {
@@ -101,59 +158,152 @@
 
             });
 
-
-            //
-            // Declare reporting system
-            //
-
-
-
-
-            //
-            // Input datasets
-            //
-
-
-            //
-            // Created Entities
-            //
-
-            //
-            // Activities
-            //
-
-
-
-            //
-            // Create report
-            //
-
-
-
-
-
+            //  Button is pressed
 
             $('#generate-report').click(function(event) {
                 event.preventDefault();
                 //validate fields
 
-                //construct the JSON object from form fields
-                var form_parts_json_obj = new Object();
-                form_parts_json_obj.agent_new_existing = $('input[name=agent-new-existing]:checked', '#create-report').val();
-                form_parts_json_obj.agent = $('#agent').val();
-                form_parts_json_obj.agent_name = $('#agent-name').val();
-                form_parts_json_obj.agent_uri = $('#agent-uri').val();
-                form_parts_json_obj.agent_email = $('#agent-email').val();
-                form_parts_json_obj.report_type = $('#report-type').val();
-                form_parts_json_obj.report_title = $('#report-title').val();
-                form_parts_json_obj.report_reportingsystem = $('#report-reportingsystem').val();
-                form_parts_json_obj.report_nativeId = $('#report-nativeId').val();
-                form_parts_json_obj.activity_title = $('#activity-title').val();
-                form_parts_json_obj.activity_description = $('#activity-description').val();
-                form_parts_json_obj.activity_startedAtTime = $('#activity-startedAtTime').val();
-                form_parts_json_obj.activity_endedAtTime = $('#activity-endedAtTime').val();
 
-                console.log(form_parts_json_obj);
+                var usedEntityArray = new Array();
+
+                entity_item_number = entity_parts_json_obj.length;
+                for (var i=0; i<entity_item_number; i++){
+                    console.log("main part test " + entity_item_number +" "+ entity_parts_json_obj[i]['uri']);
+                    var entityObject = new Entity(entity_parts_json_obj[i]['label'], entity_parts_json_obj[i]['uri'],entity_parts_json_obj[i]['value']);
+                    usedEntityArray.push(entityObject);
+                }
+
+                var genEntityArray = new Array();
+                entity_gen_number = entity_out_json_obj.length;
+                for (var i=0; i<entity_gen_number; i++) {
+                    console.log("main out test " + entity_gen_number +" "+ entity_out_json_obj[i]['uri']);
+                    var entityGenObject = new Entity(entity_out_json_obj[i]['label'], entity_out_json_obj[i]['uri'],entity_out_json_obj[i]['value']);
+                    genEntityArray.push(entityGenObject);
+                }
+
+
+                var postRegRequest = false;
+                var foundAgent = false;
+
+                // For new Agent, Check if new Agent already in system
+
+                if ($('input[name=agent-new-existing]:checked', '#create-report').val() == "new") {
+                    for (agent_it in allAgents) {
+                        var agent_in_db = allAgents[agent_it];
+                        if (agent_in_db["n"] == $('#agent-lname').val() && agent_in_db["em"] == $('#agent-email').val().toLowerCase()) {
+                            alert("Agent: " + agent_in_db["fn"] + " " + agent_in_db["n"] + " has previously registered. Please use the selection list");
+                            postRegRequest = false;
+                            foundAgent = true;
+                        }
+                    }
+                    if (foundAgent === false) {
+                        var Custodian = new Agent('GA Agent', "http://pid.geoscience.au/person/" + $('#agent-lname').val() + "." + $('#agent-fname').val(), $('#agent-fname').val(), $('#agent-lname').val(), $('#agent-email').val().toLowerCase());
+                        postRegRequest = true;
+                    }
+                }
+                else {
+                    // For existing agents, find their info
+                    for (agent_it in allAgents) {
+                        var agent_in_db = allAgents[agent_it];
+                        if (agent_in_db["ag_u"] == $('#agent :selected').val()) {
+                            var Custodian = new Agent('GA Agent', "http://pid.geoscience.au/person/" + agent_in_db["n"] +"."+ agent_in_db["fn"] , agent_in_db["fn"] , agent_in_db["n"] , agent_in_db["em"] );
+                        }
+                    }
+                    postRegRequest = true;
+                }
+
+                // Find Reporting System
+
+                var reportingSystemURI
+                for (rs in allReportingSystems) {
+                    var rs_in_db = allReportingSystems[rs];
+                    if (rs_in_db["rs_u"] == $('#reportingsystem :selected').val()) {
+                        reportingSystemURI = rs_in_db["rs_u"];
+                    }
+                }
+
+
+                // Create Activity Object
+
+                //var ActivityObject = new Activity($('#activity-title').val(), $('#activity-startedAtTime'), $('#activity-endedAtTime'), null, Custodian, $('#activity-description'), createdEntity, generatedEntity);
+
+                // Create Report Object
+
+                //createdEntity[0] = new Entity("Entity 1", "http://pid.geoscience.gov.au/entity/entity1", "Value1");
+                //generatedEntity[0] = new Entity("Entity 2", "http://pid.geoscience.gov.au/entity/entity2", "Value2");
+
+
+                //var EntityIn = new Entity('Entity1', 'http://pid.geoscience.gov.au/entity/entity1', 'Value1');
+                //var EntityOut = new Entity('Entity2', 'http://pid.geoscience.gov.au/entity/entity2', 'Value2');
+                //var AnotherTest = new Entity('Entity1', 'http://pid.geoscience.gov.au/entity/entity1', 'Value1');
+                //var entityTest2 = new Entity('entity2', 'http://pid/entiyt/entity2', 'value2');
+                //var entityTest = new Entity('Entity2', 'http://pid.geoscience.gov.au/entity/entity2','Comment2');
+
+                //var ActivityObject = new Activity("Activity title", $('#activity-startedAtTime'), $('#activity-endedAtTime'), "nothing here", Custodian, "activity description", createdEntity, generatedEntity);
+                //var ActivityObject = new Activity("Activity title", $('#activity-startedAtTime'), $('#activity-endedAtTime'), "nothing here", Custodian, "activity description", EntityObject, EntityObject2);
+                //console.log("testing activity " + $('#activity-startedAtTime').val() +" " + $('#activity-endedAtTime').val());
+                //console.log("testing time " + started + "  " +ended);
+
+                //var startedTime =  '2016-09-20 13:00:08+10:00';
+                //var endedTime = '2016-09-20 14:00:08+10:00';
+
+
+                //
+                // Timey Wimey stuff
+                //
+
+                var started = $('#activity-startedAtTime').val();
+                var ended = $('#activity-endedAtTime').val();
+                var now = new Date();
+                var generatedTime = now.dateFormat("Y-m-d H:i:s" +get_time_zone_offset());
+
+
+
+
+
+                //var ActivityObject = new Activity('Activity title', startedTime, endedTime, 'nothing here', Custodian, 'activity description', AnotherTest, entityTest, null, null);
+                //var activitytest = new Activity('label', '2016-09-20 13:00:08+10:00', '2016-09-20 13:00:08+10:00', 'http://pid.test', Custodian, 'comment', AnotherTest, entityTest);
+                //var activitytest = new Activity($('#activity-title').val(), startedTime, endedTime, 'http://pid.test', Custodian, $('#activity-description').val(), AnotherTest, entityTest);
+
+                //var ReportObject = new Report($('#report-title'), reportingSystemURI, $('#report-nativeId'), ActivityObject, null, $('#report-type'));
+                //var entityGraph = entityTest.get_graph();
+                //var entityGraph = EntityIn.get_graph();
+                //var agentGraph = Custodian.get_graph();
+                //var ActivityGraph = activitytest.get_graph();
+
+                //var triples = new $rdf.Serializer(agentGraph).toN3(agentGraph);
+                //var triples = new $rdf.Serializer(entityGraph).toN3(entityGraph);
+                //var triples = new $rdf.Serializer(ActivityGraph).toN3(ActivityGraph);
+
+
+
+
+                var activityURL = 'http://pid.geoscience.gov.au/activity/' + $('#activity-title').val();
+
+                var activityObject = new Activity($('#activity-title').val(), started, ended, activityURL, Custodian, $('#activity-description').val(), usedEntityArray, genEntityArray);
+                var ReportObject = new Report($('#report-title').val(), reportingSystemURI, $('#report-nativeID').val(), activityObject, null, $('#report-type :selected').val(), generatedTime);
+                var ReportGraph = ReportObject.get_graph();
+
+                var triples = new $rdf.Serializer(ReportGraph).toN3(ReportGraph);
+
+
+                // Post to Proms
+                    $.ajax({
+                        type: 'POST',
+                        datatype: 'text',
+                        //url: '/id/reportingsystem/',
+                        url: '/id/report/',
+                        data: triples,
+                        headers: {'Content-Type': 'text/turtle'},
+                        success: function (response) {
+                            alert("Report submitted with ID: \n" + response);
+                        },
+                        error: function (response) {
+                            alert("Problem submitting report: \n" + response);
+                        }
+                    });
+
 
                 //post the JSON object to PROMS to convert it into Turtle
                 /*
@@ -167,7 +317,7 @@
                 */
 
                 //show the results to the user
-                $('#generated-results').text("This is text");
+                $('#generated-results').text(triples);
                 $('#generated-results').show();
             });
         });
@@ -203,7 +353,7 @@
             <tr><td colspan="2"><h3>Agent</h3></td></tr>
             <tr>
                 <th style="width:300px;">
-                    Reporter:<br />
+                    Custodian:<br />
                     <span style="font-size:small; font-weight:normal;">Choose from the list of people or add in your details</span>
                 </th>
                 <td valign="top" style="width:560px;">
@@ -211,7 +361,6 @@
                         <input type="radio" name="agent-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>
                         <input type="radio" name="agent-new-existing" value="new" /> New
                     </p>
-
                     {%if agents|length>0%}
                     <div id="agent-existing-value" style="width:300px;">
                         <select name="agent" id="agent">
@@ -223,8 +372,8 @@
                     {%endif%}
                     <div id="agent-new-value" style="width:300px; display:none;">
                         <table class="layout">
-                            <tr><td>Name:</td><td><input id="agent-name" name="agent-name" type="text" /></td></tr>
-                            <tr><td>URI:</td><td><input id="agent-uri" name="agent-uri" type="text" /></td></tr>
+                            <tr><td>First Name:</td><td><input id="agent-fname" name="agent-fname" type="text" /></td></tr>
+                            <tr><td>Last Name:</td><td><input id="agent-lname" name="agent-lname" type="text" /></td></tr>
                             <tr><td>Email:</td><td><input id="agent-email" name="agent-email" type="text" /></td></tr>
                         </table>
                     </div>
@@ -232,8 +381,7 @@
             </tr>
             <tr><td colspan="2"><h3>Report</h3></td></tr>
             <tr>
-                <th>activity-endedAtTime
-                    Report Type:<br />
+                <th>Report Type:<br />
                     <span style="font-size:small; font-weight:normal;">Only <a href="http://www.promsns.org/ns/proms#BasicReport" class="definition">Basic</a> and <a href="http://www.promsns.org/ns/proms#ExternalReport" class="definition">External</a> <em>Reports</em> are allowed using this form.</span></th>
                 <td valign="top">
                     <select name="report-type" id="report-type">
@@ -246,7 +394,7 @@
             <tr>
                 <th>
                     Reporting System:<br />
-                    <span style="font-size:small; font-weight:normal;">You must have already registered a <a href="http://www.promsns.org/ns/proms#ReportingSystem" class="definition">Reporting System</a> for this <em>Report</em>. See the <a style="text-decoration:line-through;" href="/function/register_reporting_system">Reporting System registration</a> page.</span>
+                    <span style="font-size:small; font-weight:normal;">You must have already registered a <a href="http://www.promsns.org/ns/proms#ReportingSystem" class="definition">Reporting System</a> for this <em>Report</em>. See the <a href="/function/register_reportingsystem">Reporting System registration</a> page.</span>
                 </th>
                 <td>
                     {{ select_rs }}
@@ -309,11 +457,11 @@
                         </tr>
                         <tr>
                             <td>
-                                {%if agents|length>0%}
+                                {%if entities|length>0%}
                                     <div id="entity-existing-value" style="width:300px;">
                                         <select name="entity" id="entity">
-                                        {% for agent_item in agents %}
-                                            <option value="{{ agent_item.ag_u }}">{{ agent_item.n + " " + agent_item.fn}}</option>
+                                        {% for entity_item in entities %}
+                                            <option value="{{ entity_item.e_u }}">{{ entity_item.l}}</option>
                                         {% endfor %}
                                         </select>
                                     </div>
@@ -366,24 +514,43 @@
                 </th>
                 <td valign="top">
                     <table class="entity layout" id="entity-outputs">
-                        <tr id="entity-output-row-01">
-                            <td><input type="text" class="entity-output" name="entity-output-01" id="entity-ouput-01" /></td>
-                            <td><span class="entity-output-delete" id="entity-output-delete-01">delete</span></td>
-                        </tr>
-                        <tr id="entity-output-row-add">
+
+                        <tr>
+                            <td>
+                                 <div id="entity-out-value" style="width:300px;">
+                                    <table class="layout">
+                                        <tr><td>Title:</td><td><input id="entity-out-title" name="entity-out-title" type="text" /></td></tr>
+                                        <tr><td>URI:</td><td><input id="entity-out-uri" name="entity-out-uri" type="text" /></td></tr>
+                                        <tr><td>Value:</td><td><input id="entity-out-value" name="entity-out-value" type="text" /></td></tr>
+                                    </table>
+                                </div>
+
+                            </td>
                             <td></td>
-                            <td><span class="entity-output-add">add another</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><button type="button" id="add2" class="btn btn-info">Add</button></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+
+                            <br/><br/>
+                        <tr>
+                            <td><div class="list2"  id="entity-list2"></div></td>
+		                    <td></td>
                             <td></td>
                         </tr>
                     </table>
 
                 </td>
             </tr>
+
             <tr>
                 <th colspan="3" style="text-align:right;">
                     <br />
                     <button id="generate-report">Generate Report</button><br />
-                    <textarea id="generated-results" style="display:none; width:840px;"></textarea>
+                    <textarea id="generated-results" style="display:none; width:840px; height: 500px;"></textarea>
                     <button id="generate-report" style="display:none;">Store Report Here</button>
                 </th>
             </tr>

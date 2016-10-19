@@ -81,7 +81,7 @@
 
 
 
-
+                var entityTest2 = new Entity('entity2', 'http://pid/entiyt/entity2', 'value2');
 
                 //}
                 //var Custodian = new Agent("some text", null, 'wilma', 'flinstone', 'wf@email.com');
@@ -90,7 +90,7 @@
 
 
                 if (postRegRequest === true) {
-                    var RepSys = new ReportingSystem($('#system-label').val(), $('#system-uri').val(), $('#system-comment').val(), Custodian);
+                    var RepSys = new ReportingSystem($('#system-label').val(), $('#system-uri').val(), $('#system-comment').val(), Custodian, entityTest2);
                     var RSgraph = RepSys.get_graph();
                     var triples = new $rdf.Serializer(RSgraph).toN3(RSgraph);
 
