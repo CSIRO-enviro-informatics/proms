@@ -2,8 +2,7 @@
 
 {% block content %}
     <h2>Create a <em>Report</em></h2>
-    <p>This page allows someone toget_entities create a provenance <a class="definition" href="http://www.promsns.org/ns/proms#Report">Report</a> which can then be lodged with this instance of PROMS or downloaded for use elsewhere. Given that there are tools for creating complex <em>Reports</em> for a series of programming environments (see <a href="/documentation#resources">Documentation &gt; Resources</a>, this page is limited to creating simple <a class="definition" href="http://www.promsns.org/ns/proms#BasicReport">Basic</a> and <a class="definition" href="http://www.promsns.org/ns/proms#ExternalReport">External</a> <em>Reports</em>and cannot produce the more detailed <a class="definition" href="http://www.promsns.org/ns/proms#InternalReport">Internal</a> <em>Reports</em>.</p>
-    <p>Complete the form below to create a <em>Report</em>. Input validation will ensure that the <em>Report</em> is valid.</p>
+    <p>Use this form to create a provenance <a class="definition" href="http://www.promsns.org/ns/proms#Report">Report</a> to be stored in the PROMS server.  </br>Input validation will ensure that the <em>Report</em> is valid.</p>
     <script src="/static/js/jquery.min.js" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"/ >
     <script src="/static/js/jquery.datetimepicker.js"></script>
@@ -80,7 +79,7 @@
                     console.log("test here " +entity_parts_json_obj[0]['uri']);
                 }
 
-                $('.list').append('<div class="item" id="entity_item_number">' + toAdd +'</div> ');
+                $('.list').append('<div class="item" id="entity_item_number">' + toAdd + '&nbsp &nbsp  &#x2716;</div> ');
                 entity_item_number +=1;
                 $('#entity-inputs').val('');
                 //console.log("adding " + JSON.stringify(entity_parts_json_obj));
@@ -126,7 +125,7 @@
                 entity_out_json_obj.push({"label":$('#entity-out-title').val(), "uri":$('#entity-out-uri').val(), "value": $('#entity-out-value').val()});
 
 
-                $('.list2').append('<div class="item" id="entity_item_number">' + toAdd2 +'</div> ');
+                $('.list2').append('<div class="item" id="entity_item_number">' + toAdd2 + '&nbsp &nbsp  &#x2716;</div> ');
                 entity_out_number +=1;
                 //$('#entity-inputs').val('');
                 console.log("adding " + JSON.stringify(entity_out_json_obj));
@@ -277,11 +276,11 @@
                 //var triples = new $rdf.Serializer(ActivityGraph).toN3(ActivityGraph);
 
 
+                var activity_title = $('#report-title').val() + "_activity";
 
+                var activityURL = 'http://pid.geoscience.gov.au/activity/' + activity_title;
 
-                var activityURL = 'http://pid.geoscience.gov.au/activity/' + $('#activity-title').val();
-
-                var activityObject = new Activity($('#activity-title').val(), started, ended, activityURL, Custodian, $('#activity-description').val(), usedEntityArray, genEntityArray);
+                var activityObject = new Activity(activity_title, started, ended, activityURL, Custodian, $('#activity-description').val(), usedEntityArray, genEntityArray);
                 var ReportObject = new Report($('#report-title').val(), reportingSystemURI, $('#report-nativeID').val(), activityObject, null, $('#report-type :selected').val(), generatedTime);
                 var ReportGraph = ReportObject.get_graph();
 
@@ -350,15 +349,15 @@
     </script>
     <form id="create-report" action="/function/create_report" method="post">
         <table class="lined" style="width:860px;">
-            <tr><td colspan="2"><h3>Agent</h3></td></tr>
+
             <tr>
                 <th style="width:300px;">
-                    Custodian:<br />
+                    Report Author:<br />
                     <span style="font-size:small; font-weight:normal;">Choose from the list of people or add in your details</span>
                 </th>
                 <td valign="top" style="width:560px;">
                     <p>
-                        <input type="radio" name="agent-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>
+                        <input type="radio" name="agent-new-existing" value="existing" checked="checked" /> Registered <strong>or</strong>
                         <input type="radio" name="agent-new-existing" value="new" /> New
                     </p>
                     {%if agents|length>0%}
@@ -379,9 +378,9 @@
                     </div>
                 </td>
             </tr>
-            <tr><td colspan="2"><h3>Report</h3></td></tr>
+            <tr><td colspan="2"><h3>Report Details</h3></td></tr>
             <tr>
-                <th>Report Type:<br />
+                <th>Type:<br />
                     <span style="font-size:small; font-weight:normal;">Only <a href="http://www.promsns.org/ns/proms#BasicReport" class="definition">Basic</a> and <a href="http://www.promsns.org/ns/proms#ExternalReport" class="definition">External</a> <em>Reports</em> are allowed using this form.</span></th>
                 <td valign="top">
                     <select name="report-type" id="report-type">
@@ -390,8 +389,11 @@
                     </select>
                 </td>
             </tr>
-            <tr><th>Report Title:<br /><span style="font-size:small; font-weight:normal;">A simple title for the <em>Report</em>. Can be the same for multiple <em>Reports</em> where systems are reporting multiple times.</span></th><td><input type="text" name="report-title" id="report-title" /></td></tr>
+            <tr><th>Title:<br /><span style="font-size:small; font-weight:normal;">A simple title for the <em>Report</em>. Can be the same for multiple <em>Reports</em> where systems are reporting multiple times.</span></th><td><input type="text" name="report-title" id="report-title" /></td></tr>
             <tr>
+                <th>ID:<br /><span style="font-size:small; font-weight:normal;">An ID for this <em>Report</em> assigned by the system you are reporting for. If no ID is known (e.g. for a manual process), use the word "none".</span></th>
+                <td><input type="text" name="report-nativeId" id="report-nativeId"  /></td>
+            </tr><tr>
                 <th>
                     Reporting System:<br />
                     <span style="font-size:small; font-weight:normal;">You must have already registered a <a href="http://www.promsns.org/ns/proms#ReportingSystem" class="definition">Reporting System</a> for this <em>Report</em>. See the <a href="/function/register_reportingsystem">Reporting System registration</a> page.</span>
@@ -408,41 +410,31 @@
                     {%endif%}
                 </td>
             </tr>
+
+            <tr><td colspan="2"><h3>Activity Details</h3></td></tr>
             <tr>
-                <th>Native ID:<br /><span style="font-size:small; font-weight:normal;">An ID for this <em>Report</em> assigned by the system you are reporting for. If no ID can be known (e.g. for a manual process), use the word "none".</span></th>
-                <td><input type="text" name="report-nativeId" id="report-nativeId" /></td>
-            </tr>
-            <tr><td colspan="2"><h3>Activity</h3></td></tr>
-            <tr>
-                <th>Activity Title:<br /><span style="font-size:small; font-weight:normal;">A simple title for the <em>Activity</em>. Try to use something different from the Report Title.</span></th>
-                <td><input type="text" name="activity-title" id="activity-title" /></td>
+                <th>Description:<br /><span style="font-size:small; font-weight:normal;">A simple description of the task this <em>Report</em> is for in one or two sentences.</span></th>
+                <td><textarea name="activity-description" id="activity-description" maxlength="60" style="width:300px; height:50px;"></textarea> <input type="hidden" name="activity-title" id="activity-title" value="Activity Title"/></td>
             </tr>
             <tr>
-                <th>Activity Description:<br /><span style="font-size:small; font-weight:normal;">A simple description for the <em>Activity</em>.</span></th>
-                <td><textarea name="activity-description" id="activity-description" style="width:230px;"></textarea></td>
-            </tr>
-            <tr>
-                <th>Activity Started At Time:<br /><span style="font-size:small; font-weight:normal;">The time at which the <em>Activity</em> started.</span></th>
+                <th>Started At Time:<br /><span style="font-size:small; font-weight:normal;">The time at which the <em>Activity</em> started.</span></th>
                 <td><input type="text" name="activity-startedAtTime" id="activity-startedAtTime" /></td>
             </tr>
             <tr>
-                <th>Activity Ended At Time:<br /><span style="font-size:small; font-weight:normal;">The time at which the <em>Activity</em> ended.</span></th>
+                <th>Ended At Time:<br /><span style="font-size:small; font-weight:normal;">The time at which the <em>Activity</em> ended.</span></th>
                 <td><input type="text" name="activity-endedAtTime" id="activity-endedAtTime" /></td>
             </tr>
-            <tr><td colspan="2"><h3>Entities</h3></td></tr>
-
-
+            <tr><td colspan="2"><h3>Datasets</h3></td></tr>
             <tr>
                 <th>
-                    Entity Used:<br />
-                    <span style="font-size:small; font-weight:normal;">Choose from the list of <em>Entities</em> known to this PROMS instance or add in your own details</span>
+                    Datasets Used:<br />
+                    <span style="font-size:small; font-weight:normal;">Choose from the list of <em>Entities</em> known to this PROMS instance or add in your own details.  Registered datasets are those already known to the PROMS server.</span>
                 </th>
-
                 <td valign="top">
                     <table class="entity layout" id="entity-inputs">
                         <tr id="entity-input-row-01">
                             <td>
-                                <input type="radio" id="entity-used-new-existing" name="entity-01-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>
+                                <input type="radio" id="entity-used-new-existing" name="entity-01-new-existing" value="existing" checked="checked" /> Registered <strong>or</strong>
                                 <input type="radio" id="entity-used-new-existing" name="entity-01-new-existing" value="new" /> New
                             </td>
                             <td></td>
@@ -487,7 +479,7 @@
                         </tr>
 -->
                         <tr>
-                            <td><button type="button" id="add" class="btn btn-info">Add</button></td>
+                            <td><button type="button" id="add" class="btn btn-info">Add another</button></td>
                             <td></td>
                             <td></td>
                         </tr>
@@ -509,7 +501,7 @@
             <tr><td colspan="2"><h3></h3></td></tr>
             <tr>
                 <th>
-                    Entity Generated:<br />
+                    Datasets Generated:<br />
                     <span style="font-size:small; font-weight:normal;">Add details about entity (dataset, report, etc) created</span>
                 </th>
                 <td valign="top">
@@ -530,7 +522,7 @@
                             <td></td>
                         </tr>
                         <tr>
-                            <td><button type="button" id="add2" class="btn btn-info">Add</button></td>
+                            <td><button type="button" id="add2" class="btn btn-info">Add another</button></td>
                             <td></td>
                             <td></td>
                         </tr>
@@ -545,14 +537,16 @@
 
                 </td>
             </tr>
-
+        </table>
+        <table>
             <tr>
-                <th colspan="3" style="text-align:right;">
+                <!--<th colspan="3" style="text-align:center;">-->
+                <td>
                     <br />
                     <button id="generate-report">Generate Report</button><br />
                     <textarea id="generated-results" style="display:none; width:840px; height: 500px;"></textarea>
                     <button id="generate-report" style="display:none;">Store Report Here</button>
-                </th>
+                </td>
             </tr>
         </table>
     </form>
