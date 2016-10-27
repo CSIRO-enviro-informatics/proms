@@ -55,12 +55,14 @@ function Agent(label, uri, givenName, familyName, mbox) {
     Build Entity
 */
 
-function Entity(label, uri, comment) {
+function Entity(label, uri, value, comment) {
 //(label, uri, comment, wasAttributedTo, creator, created, licence, metadataUri, downloadURL)
     this.label = label;
     if (uri) {
         this.uri = uri;
-        console.log("testing uri  " +uri +" testing again " +this.uri);
+    }
+    if (value) {
+        this.value = value;
     }
     //else {
     //    this.uri = 'http://placeholder.org#';
@@ -94,6 +96,7 @@ function Entity(label, uri, comment) {
         this.g.add($rdf.sym(this.uri), RDF('type'), PROV('Entity'));
         this.g.add($rdf.sym(this.uri), RDFS('label'), $rdf.lit(this.label, 'en', XSD('string')));
         this.g.add($rdf.sym(this.uri), RDFS('comment'), $rdf.lit(this.comment, 'en', XSD('string')));
+        this.g.add($rdf.sym(this.uri), PROV('value'), $rdf.lit(this.value, 'en', XSD('string')));
 /*
         if (this.wasAttributedTo) {
             this.g.add($rdf.sym(this.uri), PROV('wasAttributedTo'), $rdf.sym(this.wasAttributedTo.uri));
@@ -195,6 +198,9 @@ function Activity(label, startedAtTime, endedAtTime, uri, wasAssociatedWith, com
                 usedE = this.used_entities[u_entity].get_graph();
                 this.g.add($rdf.sym(this.uri), PROV('used'), $rdf.sym(this.used_entities[u_entity].uri));
                 this.g.add(usedE);
+
+
+                console.log("testing here ");
             }
         }
         if (this.generated_entities) {
@@ -226,6 +232,12 @@ function Activity(label, startedAtTime, endedAtTime, uri, wasAssociatedWith, com
             this.makeGraph();
             return this.g;
         }
+    };
+    this.serialize_graph = function() {
+        var sg = this.get_graph();
+        //var triples = new $rdf.serialize(sg.toN3(sg));
+        var triples = new $rdf.Serializer(sg).toN3(sg);
+        return triples;
     };
 }
 

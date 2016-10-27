@@ -157,6 +157,19 @@
 
             });
 
+            $('input[id=entity-used-simple-complex]').change(function () {
+                //TODO: complete new/existing Entity selection
+                //alert($(this).attr('name'));
+                if ($('input[id=entity-used-simple-complex]:checked', '#create-report').val() == "simple") {
+                    $('#complex-entity-option').hide();
+                    //$('#complex-dataset').hide();
+                } else {
+                    $('#complex-entity-option').show();
+                    //$('#complex-dataset').show();
+                }
+
+            });
+
             //  Button is pressed
 
             $('#generate-report').click(function(event) {
@@ -459,10 +472,18 @@
                                     </div>
                                 {%endif%}
                                  <div id="entity-new-value" style="width:300px; display:none;">
+                                     <table>
+                                         <tr>
+                                            <td>
+                                                <input type="radio" id="entity-used-simple-complex" name="entity-01-simple-complex" value="simple" checked="checked" /> Simple <strong>or</strong>
+                                                <input type="radio" id="entity-used-simple-complex" name="entity-01-simple-complex" value="complex" /> Complex
+                                            </td>
+                                         </tr>
+                                     </table>
                                     <table class="layout">
                                         <tr><td>Title:</td><td><input id="entity-title" name="entity-title" type="text" /></td></tr>
-                                        <tr><td>URI:</td><td><input id="entity-uri" name="entity-uri" type="text" /></td></tr>
                                         <tr><td>Value:</td><td><input id="entity-value" name="entity-value" type="text" /></td></tr>
+                                        <tr id="complex-entity-option" style="display:none;"><td>URI:</td><td><input id="entity-uri" name="entity-uri" type="text" /></td></tr>
                                     </table>
                                 </div>
 
