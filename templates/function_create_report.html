@@ -57,7 +57,8 @@
             var entity_parts_json_str = '[]';
             var entity_parts_json_obj = JSON.parse(entity_parts_json_str);
             var entity_item_number = 0;
-
+            var entity_uri = null;
+            //TODO   PRINT OUT THE ENTITY PARTS TO SEE WHAT'S GOING ON!
 
             $('#add').click(function(){
 
@@ -68,15 +69,27 @@
                         var entity_in_db = allEntities[entity_it];
                         if (entity_in_db["e_u"] == $('#entity :selected').val()) {
                             var toAdd = $('#entity :selected').val();
-                            entity_parts_json_obj.push({"label":"test1", "uri":$('#entity :selected').val(), "value": "value"});
-                            console.log("test here " +entity_parts_json_obj[0]['uri']);
+                            entity_parts_json_obj.push({"label":entity_in_db["l"], "uri":entity_in_db["e_u"], "value": "value"});
+                            console.log("test here RIGHT HERE" +entity_parts_json_obj[0]['uri']);
                         }
                     }
                 }
                 else {
-                    var toAdd = $('#entity-uri').val();
-                    entity_parts_json_obj.push({"label":$('#entity-title').val(), "uri":$('#entity-uri').val(), "value": $('#entity-value').val()});
-                    console.log("test here " +entity_parts_json_obj[0]['uri']);
+
+                    console.log("testing bit " +$('input[id=entity-used-simple-complex]:checked', '#create-report').val());
+                    if ($('input[id=entity-used-simple-complex]:checked', '#create-report').val() == "simple") {
+                        console.log("we're in   " +$('#entity-title').val());
+                        entity_uri = "http://pid.geoscience.gov.au/dataset/" + $('#entity-title').val();
+                        console.log("setting uri  " + entity_uri);
+                    }
+                    else {
+                        entity_uri = $('#entity-uri').val()
+                    }
+                    var toAdd = entity_uri + " " + $('#entity-title').val();
+                    console.log("testing toAdd  " +toAdd +" testing uri " +entity_uri);
+                    entity_parts_json_obj.push({"label":$('#entity-title').val(), "uri":entity_uri, "value": $('#entity-value').val()});
+                    console.log("test here ok here " +entity_parts_json_obj[0]['uri']);
+
                 }
 
                 $('.list').append('<div class="item" id="entity_item_number">' + toAdd + '&nbsp &nbsp  &#x2716;</div> ');
@@ -88,8 +101,8 @@
                 for (var i=0; i<entity_item_number; i++){
                     console.log("rightyo  test " + entity_item_number +" "+ entity_parts_json_obj[i]['uri']);
                 }
-
             });
+
             $(document).on("click", ".item", function(event) {
                 //console.log("here " +$(event.target).text());
                 for (var i = 0; i < entity_parts_json_obj.length; i++) {
@@ -181,7 +194,7 @@
 
                 entity_item_number = entity_parts_json_obj.length;
                 for (var i=0; i<entity_item_number; i++){
-                    console.log("main part test " + entity_item_number +" "+ entity_parts_json_obj[i]['uri']);
+                    console.log("used entities test " + entity_item_number +" "+ entity_parts_json_obj[i]['uri']);
                     var entityObject = new Entity(entity_parts_json_obj[i]['label'], entity_parts_json_obj[i]['uri'],entity_parts_json_obj[i]['value']);
                     usedEntityArray.push(entityObject);
                 }
