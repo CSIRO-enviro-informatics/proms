@@ -471,7 +471,7 @@
 		todayButton: true,
 		defaultSelect: true,
 
-		scrollMonth: true,
+		scrollMonth: false,
 		scrollTime: true,
 		scrollInput: true,
 
@@ -479,8 +479,8 @@
 		mask: false,
 		validateOnBlur: true,
 		allowBlank: true,
-		yearStart: 1950,
-		yearEnd: 2050,
+		yearStart: 2016,
+		yearEnd: 2025,
 		style: '',
 		id: '',
 		fixed: false,
