@@ -58,7 +58,7 @@
             var entity_parts_json_obj = JSON.parse(entity_parts_json_str);
             var entity_item_number = 0;
             var entity_uri = null;
-            //TODO   PRINT OUT THE ENTITY PARTS TO SEE WHAT'S GOING ON!
+            //TODO
 
             $('#add').click(function(){
 
@@ -70,41 +70,26 @@
                         if (entity_in_db["e_u"] == $('#entity :selected').val()) {
                             var toAdd = $('#entity :selected').val();
                             entity_parts_json_obj.push({"label":entity_in_db["l"], "uri":entity_in_db["e_u"], "value": "value"});
-                            console.log("test here RIGHT HERE" +entity_parts_json_obj[0]['uri']);
                         }
                     }
                 }
                 else {
-
-                    console.log("testing bit " +$('input[id=entity-used-simple-complex]:checked', '#create-report').val());
                     if ($('input[id=entity-used-simple-complex]:checked', '#create-report').val() == "simple") {
-                        console.log("we're in   " +$('#entity-title').val());
                         entity_uri = "http://pid.geoscience.gov.au/dataset/" + $('#entity-title').val();
-                        console.log("setting uri  " + entity_uri);
                     }
                     else {
                         entity_uri = $('#entity-uri').val()
                     }
                     var toAdd = entity_uri + " " + $('#entity-title').val();
-                    console.log("testing toAdd  " +toAdd +" testing uri " +entity_uri);
                     entity_parts_json_obj.push({"label":$('#entity-title').val(), "uri":entity_uri, "value": $('#entity-value').val()});
-                    console.log("test here ok here " +entity_parts_json_obj[0]['uri']);
-
                 }
-
                 $('.list').append('<div class="item" id="entity_item_number">' + toAdd + '&nbsp &nbsp  &#x2716;</div> ');
                 entity_item_number +=1;
                 $('#entity-inputs').val('');
-                //console.log("adding " + JSON.stringify(entity_parts_json_obj));
-
                 entity_item_number = entity_parts_json_obj.length;
-                for (var i=0; i<entity_item_number; i++){
-                    console.log("rightyo  test " + entity_item_number +" "+ entity_parts_json_obj[i]['uri']);
-                }
             });
 
             $(document).on("click", ".item", function(event) {
-                //console.log("here " +$(event.target).text());
                 for (var i = 0; i < entity_parts_json_obj.length; i++) {
                     if ($(event.target).text() == entity_parts_json_obj[i]["uri"]) {
                         console.log("tell me about it  " + entity_parts_json_obj[i]['uri']);
@@ -113,11 +98,6 @@
                 }
                 $(this).remove();
                 entity_item_number = JSON.stringify(entity_parts_json_obj).length;
-                //console.log("removing " + JSON.stringify(entity_parts_json_obj));
-
-
-
-
             });
 
             //
@@ -131,35 +111,24 @@
 
             $('#add2').click(function(){
 
-                //Object.keys(entity_parts_json_obj).length;
-
-
                 var toAdd2 = $('#entity-out-uri').val();
                 entity_out_json_obj.push({"label":$('#entity-out-title').val(), "uri":$('#entity-out-uri').val(), "value": $('#entity-out-value').val()});
-
-
                 $('.list2').append('<div class="item" id="entity_item_number">' + toAdd2 + '&nbsp &nbsp  &#x2716;</div> ');
                 entity_out_number +=1;
-                //$('#entity-inputs').val('');
                 console.log("adding " + JSON.stringify(entity_out_json_obj));
 
             });
             $(document).on("click", ".item", function(event) {
-                //console.log("here " +$(event.target).text());
                 for (var i = 0; i < entity_out_json_obj.length; i++) {
                     if ($(event.target).text() == entity_out_json_obj[i]["uri"]) {
-                        //console.log("tell me about it  " + entity_out_json_obj[i]["uri"]);
                         entity_out_json_obj.splice(i, 1);
                     }
                 }
                 $(this).remove();
                 entity_out_number = JSON.stringify(entity_out_json_obj).length;
-                //console.log("removing " + JSON.stringify(entity_out_json_obj));
             });
 
             $('input[id=entity-used-new-existing]').change(function () {
-                //TODO: complete new/existing Entity selection
-                //alert($(this).attr('name'));
                 if ($('input[id=entity-used-new-existing]:checked', '#create-report').val() == "existing") {
                     $('#entity-existing-value').show();
                     $('#entity-new-value').hide();
@@ -167,28 +136,19 @@
                     $('#entity-existing-value').hide();
                     $('#entity-new-value').show();
                 }
-
             });
 
             $('input[id=entity-used-simple-complex]').change(function () {
-                //TODO: complete new/existing Entity selection
-                //alert($(this).attr('name'));
                 if ($('input[id=entity-used-simple-complex]:checked', '#create-report').val() == "simple") {
                     $('#complex-entity-option').hide();
-                    //$('#complex-dataset').hide();
                 } else {
                     $('#complex-entity-option').show();
-                    //$('#complex-dataset').show();
                 }
-
             });
 
-            //  Button is pressed
 
             $('#generate-report').click(function(event) {
                 event.preventDefault();
-                //validate fields
-
 
                 var usedEntityArray = new Array();
 
@@ -206,7 +166,6 @@
                     var entityGenObject = new Entity(entity_out_json_obj[i]['label'], entity_out_json_obj[i]['uri'],entity_out_json_obj[i]['value']);
                     genEntityArray.push(entityGenObject);
                 }
-
 
                 var postRegRequest = false;
                 var foundAgent = false;
@@ -249,31 +208,6 @@
                 }
 
 
-                // Create Activity Object
-
-                //var ActivityObject = new Activity($('#activity-title').val(), $('#activity-startedAtTime'), $('#activity-endedAtTime'), null, Custodian, $('#activity-description'), createdEntity, generatedEntity);
-
-                // Create Report Object
-
-                //createdEntity[0] = new Entity("Entity 1", "http://pid.geoscience.gov.au/entity/entity1", "Value1");
-                //generatedEntity[0] = new Entity("Entity 2", "http://pid.geoscience.gov.au/entity/entity2", "Value2");
-
-
-                //var EntityIn = new Entity('Entity1', 'http://pid.geoscience.gov.au/entity/entity1', 'Value1');
-                //var EntityOut = new Entity('Entity2', 'http://pid.geoscience.gov.au/entity/entity2', 'Value2');
-                //var AnotherTest = new Entity('Entity1', 'http://pid.geoscience.gov.au/entity/entity1', 'Value1');
-                //var entityTest2 = new Entity('entity2', 'http://pid/entiyt/entity2', 'value2');
-                //var entityTest = new Entity('Entity2', 'http://pid.geoscience.gov.au/entity/entity2','Comment2');
-
-                //var ActivityObject = new Activity("Activity title", $('#activity-startedAtTime'), $('#activity-endedAtTime'), "nothing here", Custodian, "activity description", createdEntity, generatedEntity);
-                //var ActivityObject = new Activity("Activity title", $('#activity-startedAtTime'), $('#activity-endedAtTime'), "nothing here", Custodian, "activity description", EntityObject, EntityObject2);
-                //console.log("testing activity " + $('#activity-startedAtTime').val() +" " + $('#activity-endedAtTime').val());
-                //console.log("testing time " + started + "  " +ended);
-
-                //var startedTime =  '2016-09-20 13:00:08+10:00';
-                //var endedTime = '2016-09-20 14:00:08+10:00';
-
-
                 //
                 // Timey Wimey stuff
                 //
@@ -283,27 +217,7 @@
                 var now = new Date();
                 var generatedTime = now.dateFormat("Y-m-d H:i:s" +get_time_zone_offset());
 
-
-
-
-
-                //var ActivityObject = new Activity('Activity title', startedTime, endedTime, 'nothing here', Custodian, 'activity description', AnotherTest, entityTest, null, null);
-                //var activitytest = new Activity('label', '2016-09-20 13:00:08+10:00', '2016-09-20 13:00:08+10:00', 'http://pid.test', Custodian, 'comment', AnotherTest, entityTest);
-                //var activitytest = new Activity($('#activity-title').val(), startedTime, endedTime, 'http://pid.test', Custodian, $('#activity-description').val(), AnotherTest, entityTest);
-
-                //var ReportObject = new Report($('#report-title'), reportingSystemURI, $('#report-nativeId'), ActivityObject, null, $('#report-type'));
-                //var entityGraph = entityTest.get_graph();
-                //var entityGraph = EntityIn.get_graph();
-                //var agentGraph = Custodian.get_graph();
-                //var ActivityGraph = activitytest.get_graph();
-
-                //var triples = new $rdf.Serializer(agentGraph).toN3(agentGraph);
-                //var triples = new $rdf.Serializer(entityGraph).toN3(entityGraph);
-                //var triples = new $rdf.Serializer(ActivityGraph).toN3(ActivityGraph);
-
-
                 var activity_title = $('#report-title').val() + "_activity";
-
                 var activityURL = 'http://pid.geoscience.gov.au/activity/' + activity_title;
 
                 var activityObject = new Activity(activity_title, started, ended, activityURL, Custodian, $('#activity-description').val(), usedEntityArray, genEntityArray);
@@ -328,18 +242,6 @@
                             alert("Problem submitting report: \n" + response);
                         }
                     });
-
-
-                //post the JSON object to PROMS to convert it into Turtle
-                /*
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    data: data,
-                    success: success,
-                    dataType: dataType
-                });
-                */
 
                 //show the results to the user
                 $('#generated-results').text(triples);
@@ -454,7 +356,7 @@
             <tr>
                 <th>
                     Datasets Used:<br />
-                    <span style="font-size:small; font-weight:normal;">Choose from the list of <em>Entities</em> known to this PROMS instance or add in your own details.  Registered datasets are those already known to the PROMS server.</span>
+                    <span style="font-size:small; font-weight:normal;">Choose from the list of <em>datasets</em> known to this PROMS instance or add in your own details.  Registered datasets are those already known to the PROMS server.</span>
                 </th>
                 <td valign="top">
                     <table class="entity layout" id="entity-inputs">
@@ -465,13 +367,11 @@
                             </td>
                             <td></td>
                             <td></td>
-                            <!--<td><span class="entity-input-delete" id="entity-input-delete-01">delete</span></td>-->
                         </tr>
                         <tr id="entity-input-row-add">
                             <td></td>
                             <td></td>
                             <td></td>
-                            <!--<td><span class="entity-input-add">add another</span></td> -->
                         </tr>
                         <tr>
                             <td>
@@ -504,16 +404,8 @@
                             <td></td>
                             <td></td>
                         </tr>
-<!--
                         <tr>
-                            <td><span class="entity-input-add">add another</span></td>
-                            <td></td>
-                            <td><span class="entity-input-delete" id="entity-input-delete-01">delete</span></td>
-
-                        </tr>
--->
-                        <tr>
-                            <td><button type="button" id="add" class="btn btn-info">Add another</button></td>
+                            <td><button type="button" id="add" class="btn btn-info">Add dataset</button></td>
                             <td></td>
                             <td></td>
                         </tr>
@@ -556,7 +448,7 @@
                             <td></td>
                         </tr>
                         <tr>
-                            <td><button type="button" id="add2" class="btn btn-info">Add another</button></td>
+                            <td><button type="button" id="add2" class="btn btn-info">Add dataset</button></td>
                             <td></td>
                             <td></td>
                         </tr>
@@ -574,7 +466,6 @@
         </table>
         <table>
             <tr>
-                <!--<th colspan="3" style="text-align:center;">-->
                 <td>
                     <br />
                     <button id="generate-report">Generate Report</button><br />

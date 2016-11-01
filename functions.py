@@ -1158,11 +1158,13 @@ def get_agents_dict():
     #        }
     #    }
     #    '''
+
     query = '''
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         PREFIX prov: <http://www.w3.org/ns/prov#>
         SELECT DISTINCT ?ag ?n ?fn ?em
         WHERE {
+
                 {
 
                     ?ag foaf:familyName ?n .
