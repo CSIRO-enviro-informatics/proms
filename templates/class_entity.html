@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h1>PROMS Server</h1>
+    {% if entity %}
+        <h2>An Entity</h2>
+        <p><a href="">html</a> | <a href="{{request.path + "?_uri=" + entity['uri_html'] + "&_format=text/turtle"}}">rdf/turtle</a></p>
+        <table class="lined">
+            <tr><th>URI:</th><td><a href="{{ entity['uri'] }}">{{ entity['uri'] }}</a></td></tr>
+            {% if entity['l'] %}
+            <tr><th>Title:</th><td>{{ entity['l'] }}</td></tr>
+            {% endif %}
+            {% if entity['c'] %}
+            <tr><th>Created:</th><td>{{ entity['c'] }}</td></tr>
+            {% endif %}
+            {% if entity['dl'] %}
+            <tr><th>Download URL:</th><td><a href={{ entity['dl'] }}>{{ entity['dl'] }}</a></td></tr>
+            {% endif %}
+        </table>
+        {% if entity['e_script'] %}
+            <h4>Neighbours view</h4>
+            <div id="neighbour_view"></div>
+            <script type="text/javascript" src="{{ web_subfolder }}/static/js/raphael-min.js" charset="utf-8"></script>
+            <script type="text/javascript" src="{{ web_subfolder }}/static/js/proms-svg.js" charset="utf-8"></script>
+            <script type="text/javascript">
+                {{ entity['e_script'] | safe }}
+            </script>
+        {% endif %}
+    {% else %}
+        <p>No Entity information found.</p>
+    {% endif %}
+{% endblock %}

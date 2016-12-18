@@ -1,6 +1,5 @@
-PROMS Server
-============
-PROMS Server is an application designed to manage provenance information sent from a series of "reporting systems" which map their processes to a constrained variant of the [PROV Data Model](https://www.w3.org/TR/prov-dm/). It consists of a RESTful API (Python Flask) that both enforces data policy for incoming provenance information and also makes that information available in several ways. 
+# PROMS Server
+PROMS Server is an application designed to manage provenance information sent from a series of "reporting systems" which map their processes to a constrained variant of the [PROV Data Model](https://www.w3.org/TR/prov-dm/). It consists of an HTTP API (Python Flask) that both enforces data policy for incoming provenance information and also makes that information available in multiple ways that may help with provenance consuming apps' development. 
 
 PROMS Server works as an application layer on top of an RDF triplestore (graph database) and required a web server, such as Apache, to broker access to it online.
 
@@ -8,3 +7,9 @@ For pretty much everything you need to know about PROMS Server and the family of
 
 
 PROMS Server is jointly maintained by [CSIRO](http://www.csiro.au) and [Geoscience Australia](http://www.ga.gov.au).
+
+### Contact
+
+**Nicholas Car**  - Project Lead  
+Geoscience Australia  
+nicholas.car@ga.gov.au  

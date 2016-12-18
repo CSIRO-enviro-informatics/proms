@@ -1,0 +1,3 @@
+1. run Fuseki
+2. load example_reporting_system_minimal.ttl
+3. load example_report.ttl

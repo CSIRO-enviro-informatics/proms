@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h1>PROMS Server</h1>
+    <h2>The PROMS Server API</h2>
+    <h3>Endpoints</h3>
+    <table class="lined">
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Access</th>
+        </tr>
+        <tr>
+            <th>Provenance object</th>
+            <td>Accesses a single object from the provenance database</td>
+            <td>
+                <p><a href="{{ web_subfolder }}/object?url=">{{ web_subfolder }}/object?url={uri}</a></p>
+                uri <em>(mandatory)</em>: URI of an object in the provenance database
+            </td>
+        </tr>
+        <tr>
+            <th>Provenance object register</th>
+            <td>Accesses a register (index) of one class of object from the provenance database</td>
+            <td>
+                <p><a href="{{ web_subfolder }}/register">{{ web_subfolder }}/register/{class_name}/</a></p>
+                class_name <em>(mandatory)</em>: the name of a class in the provenance database<br />
+                class_names available are:
+                <ul>
+                    <li>Report</li>
+                    <li>ReportingSystem</li>
+                    <li>Activity</li>
+                    <li>Agent</li>
+                    <li>Entity</li>
+                    <li>Person</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <th>SPARQL endpoint</th>
+            <td>Provides a read-only <a href="https://www.w3.org/TR/sparql11-overview/">SPARQL 1.1</a> endpoint for the provenance database</td>
+            <td>
+                <p><a href="{{ web_subfolder }}/function/sparql">{{ web_subfolder }}/function/sparql</a></p>
+                See the SPARQL endpoint itself for documentation of use
+            </td>
+        </tr>
+        <tr>
+            <th>Register a <em>ReportingSystem</em></th>
+            <td>Manually register a ReportingSystem for which Reports can then be sent to this PROMS Server instance</td>
+            <td>
+                <p><a href="{{ web_subfolder }}/function/register_reportingsystem">{{ web_subfolder }}/function/register_reportingsystem</a></p>
+            </td>
+        </tr>
+        <tr>
+            <th>Create a <em>Report</em></th>
+            <td>Manually create a PROMS Report to download or send to this PROMS Server instance using a web form</td>
+            <td>
+                <p><a href="{{ web_subfolder }}/function/create_report">{{ web_subfolder }}/function/create_report</a></p>
+            </td>
+        </tr>
+        <tr>
+            <th>New <em>Report</em></th>
+            <td>POST a Report to this PROMS Server instance</td>
+            <td>
+                <p><a href="{{ web_subfolder }}/function/new_report">{{ web_subfolder }}/function/new_report</a></p>
+                Must be an <a href="https://en.wikipedia.org/wiki/POST_(HTTP)">HTTP POST</a> request containing a <a href="https://confluence.csiro.au/display/PROMS/Getting+information+into+PROMS+Server">valid PROMS Report</a> for a <a href="https://confluence.csiro.au/display/PROMS/Getting+information+into+PROMS+Server">registered ReportingSystem</a> in one of the following RDF mimetypes: 'text/turtle', 'application/rdf+xml', 'application/rdf+json', 'application/json', 'text/ntriples', 'text/nt', 'text/n3'
+            </td>
+        </tr>
+        <!--
+        <tr>
+            <th>New <em>Pingback</em></th>
+            <td>POST a PROV-O or PROMS Pingback to this PROMS Server instance</td>
+            <td>
+                <p><a href="{{ web_subfolder }}/function/pingback">{{ web_subfolder }}/function/pingback</a></p>
+                Must be an <a href="https://en.wikipedia.org/wiki/POST_(HTTP)">HTTP POST</a> request containing a <a href="http://promsns.org/pingbacks/validator">valid poingback message</a>.
+            </td>
+        </tr>
+        -->
+    </table>
+{% endblock %}

@@ -1,0 +1,4 @@
+<http://example.com/inftest/r0> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://promsns.org/def/proms#Report> .
+<http://example.com/inftest/r2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://promsns.org/def/proms#ExternalReport> .
+<http://example.com/inftest/r1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://promsns.org/def/proms#BasicReport> .
+<http://example.com/inftest/r3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://promsns.org/def/proms#InternalReport> .

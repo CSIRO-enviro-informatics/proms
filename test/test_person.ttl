@@ -1,0 +1,10 @@
+#   Test data for renderers/Person.py
+
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix : <http://example.com/ptest/> .
+
+<http://pid.geoscience.gov.au/person/u48876> a prov:Person ;
+    foaf:givenName "Nicholas"@en ;
+    foaf:FamilyName "Car"@en ;
+.

@@ -1,41 +1,20 @@
+import urllib
 from flask import Blueprint, Response, request, redirect, render_template
 from flask_httpauth import HTTPBasicAuth
-import functions
-import functions_db
-import urllib
 import settings
-import json
-from collections import Counter
-import operator
-from prom_db import PromDb
-from user import User
+# from secure.user import User
 auth = HTTPBasicAuth()
-routes = Blueprint('routes', __name__)
+functions = Blueprint('functions', __name__)
 
 
-#
-#   All the routes in the API
-#
-@routes.app_errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
-
-
-@routes.route('/')
-def home():
-    return render_template('index.html',
+@functions.route('/class/')
+def classes():
+    return render_template('classes.html',
                            PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
                            WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
-@routes.route('/id/')
-def ids():
-    return render_template('id.html',
-                           PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
-                           WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
-
-
-@routes.route('/id/reportingsystem/', methods=['GET', 'POST'])
+@functions.route('/class/reportingsystem/', methods=['GET', 'POST'])
 def reportingsystem():
     if request.method == 'GET':
         if request.args.get('uri'):
@@ -75,7 +54,7 @@ def reportingsystem():
             return Response('Only turtle documents allowed', status=400, mimetype='text/plain')
 
 
-@routes.route('/id/report/', methods=['GET', 'POST'])
+@functions.route('/class/report/', methods=['GET', 'POST'])
 def reports():
     if request.method == 'GET':
         # single Report
@@ -162,15 +141,15 @@ def reports():
             return Response('Only turtle documents allowed', status=400, mimetype='text/plain')
 
 
-@routes.route('/id/report/<regex(".{36}"):report_id><regex("(\..{3,4})?"):extension>', methods=['GET'])
+@functions.route('/class/report/<regex(".{36}"):report_id><regex("(\..{3,4})?"):extension>')
 def report_id(report_id, extension):
     # we're only handling turtl & HTML docs for now
     # we forward on the accept header/_format directive or extension as an extension
 
-    #check requested format
+    # check requested format
     if (request.headers.get('Content-Type') == 'text/turtle' or
-        request.args.get('_format') == 'text/turtle' or
-        extension == '.ttl'):
+            request.args.get('_format') == 'text/turtle' or
+            extension == '.ttl'):
         new_extension = '.ttl'
     else:
         # default is HTML
@@ -183,7 +162,7 @@ def report_id(report_id, extension):
     return redirect('/doc/report/' + report_id + new_extension, code=303)
 
 
-@routes.route('/doc/report/<regex(".{36}"):report_id><regex("(\..{3,4})?"):extension>', methods=['GET'])
+@functions.route('/doc/report/<regex(".{36}"):report_id><regex("(\..{3,4})?"):extension>')
 def report_doc(report_id, extension):
 
     #check requested format
@@ -196,11 +175,11 @@ def report_doc(report_id, extension):
     """
     # TODO: Re-implement later
     else:
-        # this code is the same as for /id/report/?url=X
+        # this code is the same as for /class/report/?url=X
         # TODO: de-duplicate this code
         uri = request.url
         #get back the original URI
-        uri = uri.replace('/doc/', '/id/')
+        uri = uri.replace('/doc/', '/class/')
         uri = uri.replace(extension, '')
         html = functions.get_proms_html_header()
         html += '''
@@ -215,8 +194,8 @@ def report_doc(report_id, extension):
     """
 
 
-@routes.route('/id/entity', methods=['GET'])
-@routes.route('/id/entity/', methods=['GET'])
+@functions.route('/class/entity')
+@functions.route('/class/entity/')
 def entities():
     #single Entity
     if request.args.get('uri'):
@@ -245,12 +224,12 @@ def entities():
                                    WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
-@routes.route('/id/activity', methods=['GET'])
-@routes.route('/id/activity/', methods=['GET'])
+@functions.route('/class/activity')
+@functions.route('/class/activity/')
 def activities():
-    #single Activity
+    # single Activity
     if request.args.get('uri'):
-        #unencode the uri QSA
+        # unencode the uri QSA
         uri = urllib.unquote(request.args.get('uri'))
         if request.args.get('_format'):
             if 'text/turtle' in request.args.get('_format'):
@@ -264,7 +243,7 @@ def activities():
                                    PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
                                    ACTIVITY=activity,
                                    WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
-    #multiple Activities (register)
+    # multiple Activities (register)
     else:
         if request.args.get('_format'):
             return Response('A specific Entity URI must be provided', status=400, mimetype='text/plain')
@@ -276,11 +255,11 @@ def activities():
                                    WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
-@routes.route('/id/agent/', methods=['GET'])
+@functions.route('/class/agent/')
 def agents():
-    #single Person
+    # single Person
     if request.args.get('uri'):
-        #unencode the uri QSA
+        # unencode the uri QSA
         uri = urllib.unquote(request.args.get('uri'))
         if request.args.get('_format'):
             if 'text/turtle' in request.args.get('_format'):
@@ -293,7 +272,7 @@ def agents():
             return render_template('agent.html',
                                    AGENT=agent,
                                    WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
-    #multiple Agents (register)
+    # multiple Agents (register)
     else:
         if request.args.get('_format'):
             return Response('A specific Entity URI must be provided', status=400, mimetype='text/plain')
@@ -305,228 +284,23 @@ def agents():
                                    WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
-@routes.route('/function/pingback', methods=['POST'])
-def pingback():
-    """
-    React to incoming pingback messages
-
-    :return: 204 if PROV-AQ successful, 201 if PROMS successfull, else 400 or 500 + msg
-    """
-    import pingbacks.handle_incoming.hi_functions as hi
-
-    # work out if it's a PROV-AQ message or a PROMS message
-    if hi.is_provaq_msg(request):
-        insert = hi.register_provaq_pingback(request)
-        if insert[0]:
-            return Response('', status=204)
-        else:
-            return Response('PROV-AQ pingback message not handled. ' + insert[1],
-                            status=400,
-                            mimetype='text/plain')
-    elif hi.is_proms_msg(hi.register_provaq_pingback(request)):
-        insert = hi.register_proms_pingback(request)
-        if insert[0]:
-            return Response('Created ' + insert[1] + ' triples.', status=201)
-        else:
-            return Response('PROMS pingback message not handled. ' + insert[1],
-                            status=400,
-                            mimetype='text/plain')
-    else:
-        # message not understood
-        return Response('Pingback message not understood. Not recognised as PROV-AQ or PROMS msg.', status=400, mimetype='text/plain')
-
-    pingback_result = functions.register_pingback(request.data)
-    if pingback_result[0]:
-        return Response('OK', status=200)
-    else:
-        return Response(pingback_result[1], status=400, mimetype='text/plain')
-
-
-@routes.route('/function/sparql', methods=['GET', 'POST'])
-def sparql():
-    # Query submitted
-    if request.method == 'POST':
-        '''
-        Pass on the SPARQL query to the underlying system PROMS is using (Fuseki etc.)
-        '''
-        if request.content_type == 'application/x-www-form-urlencoded':
-            '''
-            https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-via-post-urlencoded
-
-            2.1.2 query via POST with URL-encoded parameters
-
-            Protocol clients may send protocol requests via the HTTP POST method by URL encoding the parameters. When
-            using this method, clients must URL percent encode all parameters and include them as parameters within the
-            request body via the application/x-www-form-urlencoded media type with the name given above. Parameters must
-            be separated with the ampersand (&) character. Clients may include the parameters in any order. The content
-            type header of the HTTP request must be set to application/x-www-form-urlencoded.
-            '''
-            if request.form.get('query') is None:
-                return Response(
-                    'Your POST request to PROMS\' SPARQL endpoint must contain a \'query\' parameter if form posting is used.',
-                    status=400,
-                    mimetype="text/plain")
-            else:
-                query = request.form.get('query')
-        elif request.content_type == 'application/sparql-query':
-            '''
-            https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-via-post-direct
-
-            2.1.3 query via POST directly
-
-            Protocol clients may send protocol requests via the HTTP POST method by including the query directly and
-            unencoded as the HTTP request message body. When using this approach, clients must include the SPARQL query
-            string, unencoded, and nothing else as the message body of the request. Clients must set the content type
-            header of the HTTP request to application/sparql-query. Clients may include the optional default-graph-uri
-            and named-graph-uri parameters as HTTP query string parameters in the request URI. Note that UTF-8 is the
-            only valid charset here.
-            '''
-            query = request.data  # get the raw request
-            if query is None:
-                return Response(
-                    'Your POST request to PROMS\' SPARQL endpoint must contain the query in plain text in the POST body if the Content-Type \'application/sparql-query\' is used.',
-                    status=400,
-                    mimetype="text/plain")
-
-        # sorry, we only return JSON results. See the service description!
-        query_result = functions_db.query(query)
-
-        if query_result and 'results' in query_result:
-            query_result = json.dumps(query_result['results']['bindings'])
-        else:
-            query_result = json.dumps(query_result)
-
-        # resond to a form or with a raw result
-        if 'form' in request.values and request.values['form'].lower() == 'true':
-            return render_template('function_sparql.html',
-                                   query=query,
-                                   query_result=query_result,
-                                   WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
-        else:
-            return Response(json.dumps(query_result), status=200, mimetype="application/sparql-results+json")
-    # No query, display form
-    else:  # GET
-        if request.args.get('query') is not None:
-            # SPARQL GET request
-            '''
-            https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-via-get
-
-            2.1.1 query via GET
-
-            Protocol clients may send protocol requests via the HTTP GET method. When using the GET method, clients must
-            URL percent encode all parameters and include them as query parameter strings with the names given above.
-
-            HTTP query string parameters must be separated with the ampersand (&) character. Clients may include the
-            query string parameters in any order.
-
-            The HTTP request MUST NOT include a message body.
-            '''
-            # following check invalid due to higher order if/else
-            # if request.args.get('query') is None:
-            #     return Response(
-            #         'Your GET request to PROMS\' SPARQL endpoint must contain a \'query\' query string argument.',
-            #         status=400,
-            #         mimetype="text/plain")
-            query = request.args.get('query')
-            print query
-            query_result = functions_db.query(query)
-            print query_result
-            return Response(json.dumps(query_result), status=200, mimetype="application/sparql-results+json")
-        else:
-            # SPARQL Service Description
-            '''
-            https://www.w3.org/TR/sparql11-service-description/#accessing
-
-            SPARQL services made available via the SPARQL Protocol should return a service description document at the
-            service endpoint when dereferenced using the HTTP GET operation without any query parameter strings provided.
-            This service description must be made available in an RDF serialization, may be embedded in (X)HTML by way of
-            RDFa, and should use content negotiation if available in other RDF representations.
-            '''
-            best = request.accept_mimetypes.best_match([
-                'text/turtle',
-                'text/n3',
-                'application/rdf+json',
-                'application/rdf+xml',
-                'text/html'
-            ])
-            if best != 'text/html':
-                if best == "text/n3":
-                    return Response(functions.get_sparql_service_description('n3'),
-                                    status=200,
-                                    mimetype='text/n3')
-                elif best == "application/json":
-                    return Response(functions.get_sparql_service_description('json-ld'),
-                                    status=200,
-                                    mimetype='application/json')
-                elif best == "application/rdf+xml":
-                    return Response(functions.get_sparql_service_description('xml'),
-                                    status=200,
-                                    mimetype='application/rdf+xml')
-                else:  # turtle
-                    return Response(functions.get_sparql_service_description('turtle'),
-                                    status=200,
-                                    mimetype='text/turtle')
-            else:  #text/html
-                # show the SPARQL query form
-                query = request.args.get('query')
-                return render_template('function_sparql.html',
-                                       query=query,
-                                       WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
-
-
-@routes.route('/about', methods=['GET'])
-def about():
-    import subprocess
-    version = subprocess.check_output(["git", "describe"]).rstrip().replace('v', '').split('-')[0]
-
-    return render_template('about.html',
-                           PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
-                           WEB_SUBFOLDER=settings.WEB_SUBFOLDER,
-                           VERSION=version)
-
-
-@routes.route('/function/create_report', methods=['GET'])
-def create_report():
-    reportingsystems = functions.get_reportingsystems_dict()
-    entities = functions.get_entities_dict()
-    import pprint
-    pprint.pprint("test " + str(entities))
-    return render_template('function_create_report.html',
-                           agents=functions.get_agents_dict(),
-                           entities=functions.get_entities_dict(),
-                           reportingsystems=reportingsystems,
-                           WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
-
-
-@routes.route('/function/create_report_formparts', methods=['POST'])
-def create_report_formparts(form_parts):
-    return Response(functions.create_report_formparts(form_parts), status=200, mimetype='text/plain')
-
-
-# TODO: this is a stub
-@routes.route('/function/register_reportingsystem', methods=['GET'])
-def register_reporting_system():
-    agents = functions.get_agents_dict()
-    return render_template('function_register_reportingsystem.html',
-                           agents=agents,
-                           WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
-
-
-@routes.route('/id/publickey')
-def listPublicKey():
-    usrs = User.list()
-    return render_template("publickeys.html",
-                           users=usrs,
-                           WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
-
-
-@routes.route('/id/publickey/<id>')
-def getPublicKey(id=None):
-    if id:
-        user = User.find(id)
-        return user['publickey']
-    else:
-        return ''
+#   Secure prov endpoints
+#
+# @functions.route('/class/publickey')
+# def listPublicKey():
+#     usrs = User.list()
+#     return render_template("publickeys.html",
+#                            users=usrs,
+#                            WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
+#
+#
+# @functions.route('/class/publickey/<id>')
+# def getPublicKey(id=None):
+#     if id:
+#         user = User.find(id)
+#         return user['publickey']
+#     else:
+#         return ''
 
 
 

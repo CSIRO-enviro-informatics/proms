@@ -1,0 +1,19 @@
+#   Test data for renderers/Report.py
+
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix proms: <http://promsns.org/def/proms#> .
+@prefix : <http://example.com/rtest/> .
+
+:rs a proms:ReportingSystem .
+
+:r1 a proms:BasicReport ;
+    proms:nativeId "Report-ABC"^^xsd:string ;
+    proms:wasReportedBy :rs ;
+    rdfs:label "Report ABC"@en ;
+    prov:generatedAtTime "2016-12-08T23:00:00.000"^^xsd:dateTime ;
+
+    proms:startingActivity :a1 ;
+    proms:endingActivity :a1 ;
+.
+
+:a1 a prov:Activity .

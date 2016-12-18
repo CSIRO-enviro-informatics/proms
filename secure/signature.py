@@ -1,9 +1,12 @@
 __author__ = 'django'
-from prom_db import PromDb
-from user_db import UserDb
+from binascii import unhexlify
+
 import rsa
-from binascii import unhexlify,hexlify
+
 import functions
+from prom_db import PromDb
+from secure.user_db import UserDb
+
 
 # Obsolete
 def verifyReport(report_uri):

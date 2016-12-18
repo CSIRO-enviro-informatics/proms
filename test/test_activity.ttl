@@ -1,0 +1,13 @@
+#   Test data for renderers/Activity.py
+
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix : <http://example.com/atest/> .
+
+:a1 a prov:Activity ;
+	prov:used :e1, :e2 ;
+	prov:generated :e3 ;
+.
+
+:e1 a prov:Entity .
+:e2 a prov:Entity .
+:e3 a prov:Entity .

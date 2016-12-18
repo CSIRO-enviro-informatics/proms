@@ -1,22 +1,20 @@
 __author__ = 'bai187'
 
-
-from flask import Blueprint, Response, request, redirect, render_template, g, jsonify
-from prom_db import PromDb
-from flask_httpauth import HTTPBasicAuth
-from user import User
-from user_db import UserDb
-import settings
-import functions
-import rsa
-from binascii import unhexlify,hexlify
-import functions_db
-from rdflib import Graph
 import cStringIO
 import sys
-from proms_rulesets.rulesets.reports import BasicReport, ExternalReport, InternalReport
+from binascii import unhexlify,hexlify
 
+import rsa
+from flask import Blueprint, request, g, jsonify
+from flask_httpauth import HTTPBasicAuth
+from rdflib import Graph
 
+import functions
+import functions_sparqldb
+import settings
+from rulesets.reports import BasicReport, ExternalReport, InternalReport
+from secure.prom_db import PromDb
+from secure.user import User
 
 auth = HTTPBasicAuth()
 
@@ -173,7 +171,7 @@ def registerSignedReport():
             else:
                 return jsonify({"status":False, "error":fail_reasons[0]})
             report_id = r_uri
-            result = functions_db.insert(report, graph_name, True)
+            result = functions_sparqldb.insert(report, graph_name, True)
             #send_pingback(g)
 
             if result[0]:

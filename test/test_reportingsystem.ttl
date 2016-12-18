@@ -1,0 +1,22 @@
+#   Test data for renderers/ReportingSystem.py
+
+@prefix proms: <http://promsns.org/def/proms#> .
+@prefix : <http://example.com/rstest/> .
+
+:rs a proms:ReportingSystem .
+
+:r1 a proms:BasicReport ;
+    proms :wasReportedBy :rs ;
+.
+
+:r2 a proms:BasicReport ;
+    proms :wasReportedBy :rs ;
+.
+
+:r3 a proms:ExternalReport ;
+    proms :wasReportedBy :rs ;
+.
+
+:r4 a proms:InternalReport ;
+    proms :wasReportedBy :rs ;
+.

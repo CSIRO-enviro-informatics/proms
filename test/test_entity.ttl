@@ -1,0 +1,52 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix proms: <http://promsns.org/ns/proms#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix :     <http://eg.org#> .
+
+
+
+:e1
+    a prov:Entity ;
+    prov:value "42"^^xsd:int ;
+    prov:wasAttributedTo <http://eg.com/person/nick> ;
+.
+
+:a1
+    a prov:Activity ;
+    dc:title "Activity 1"^^xsd:string ;
+    prov:endedAtTime "2014-20-28T11:20:04+10:00"^^xsd:dateTime ;
+    prov:startedAtTime "2014-20-26T11:20:04+10:00"^^xsd:dateTime ;
+    prov:used :e1 ;
+    prov:generated :e2 ;
+    prov:wasAssociatedWith <http://eg.com/person/bill> ;
+.
+
+:e2
+    a prov:Entity ;
+    prov:value "43"^^xsd:int ;
+.
+
+:e3
+    a prov:Entity ;
+    prov:value "100"^^xsd:int ;
+    prov:wasGeneratedby :a2
+.
+
+:a2
+    a prov:Activity ;
+    dc:title "Activity 3"^^xsd:string ;
+    prov:endedAtTime "2014-20-28T11:20:04+10:00"^^xsd:dateTime ;
+    prov:startedAtTime "2014-20-26T11:20:04+10:00"^^xsd:dateTime ;
+    prov:used :e2 ;
+    prov:wasAssociatedWith <http://eg.com/person/fred> ;
+.
+
+:e4
+    a prov:Entity ;
+    prov:wasDerivedFrom :e3 ;
+.

@@ -1,0 +1,21 @@
+# Report inference test
+#
+# the Report r0 is a Report, r1 is a Basic Report, r2 an External Report and r3 an Internal Report
+#
+# Without Inferencing
+# the SPARQL query '''SELECT ?s WHERE { ?s a proms:Report . }''' without inferencing should return :r0 only
+#
+# With Inferencing
+# the SPARQL query '''SELECT ?s WHERE { ?s a proms:Report . }''' with inferencing should return :r0, :r1, :r2 & :r3
+
+
+@prefix proms: <http://promsns.org/def/proms#> .
+@prefix : <http://example.com/inftest/> .
+
+:r0 a proms:Report .
+
+:r1 a proms:BasicReport .
+
+:r2 a proms:ExternalReport .
+
+:r3 a proms:InternalReport .

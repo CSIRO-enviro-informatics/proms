@@ -1,0 +1,9 @@
+#   Test data for renderers/Agent.py
+
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix : <http://example.com/agtest/> .
+
+<http://pid.geoscience.gov.au/agent/x> a prov:Agent ;
+    rdfs:label "System X"@en ;
+.

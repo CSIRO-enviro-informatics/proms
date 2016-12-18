@@ -4,7 +4,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-:rs1 a proms:ReportingSystem ;
+<http://localhost:9000/id/reportingsystem/553a7777-1218-4d9d-9667-8da48041ce0d> a proms:ReportingSystem ;
     rdfs:label "Example Reporting System"^^xsd:string ;
     rdfs:comment "This is a minimal example of a ReportingSystem"@en ;
 .

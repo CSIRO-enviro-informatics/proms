@@ -21964,7 +21964,7 @@ Module originally by Dan Connolly, includeing notation3
 parser and RDF generator. TimBL added RDF stream model
 and N3 generation, replaced stream model with use
 of common store/formula API.  Yosi Scharf developped
-the module, including tests and test harness.
+the module, including test and test harness.
 
 */
 

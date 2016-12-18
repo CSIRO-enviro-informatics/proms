@@ -2,6 +2,22 @@
 #   Basic settings
 #
 
+#   The IP address that the in-built Flask HTTP server will listen on. Default is 0.0.0.0
+#   Irrelevant if PROMS Server is deployed via Apache + mod_wsgi
+HOST = '0.0.0.0'
+
+#   The port that the in-built Flask HTTP server will listen on. Default is 9000
+#   Irrelevant if PROMS Server is deployed via Apache + mod_wsgi
+PORT = 9000
+
+#   The base URI of the system
+BASE_URI = 'http://localhost' + str(PORT)
+
+#   If this instance of PROMS Server is installed at a location other than the root of a domain, e.g. at
+#   http://example.org/service/proms rather than at http://example.org, then this variable needs to be set to the
+#   subfolder. In the example above, the value would be: WEB_SUBFOLDER = '/service/proms'
+WEB_SUBFOLDER = ''  # starting slash, no trailing slash
+
 #   These base URIs are the URIs that this instance of PROMS will use to replace http://placeholder.org# URIs for the
 #   particular classes of objects in incoming ReportingSystems and Reports. E.g.: an incoming Report with the
 #   declaration of <http://placeholder.org#abc123> a proms:ExternalReport ; will see that triple changed to
@@ -12,10 +28,6 @@ AGENT_BASE_URI = "http://localhost:9000/id/agent"
 REPORT_BASE_URI = "http://localhost:9000/id/report"
 REPORTINGSYSTEM_BASE_URI = "http://localhost:9000/id/reportingsystem"
 
-#   If this instance of PROMS Server is installed at a location other than the root of a domain, e.g. at
-#   http://example.org/service/proms rather than at http://example.org, then this variable needs to be set to the
-#   subfolder. In the example above, the value would be: WEB_SUBFOLDER = '/service/proms'
-WEB_SUBFOLDER = ''  # starting slash, no trailing slash
 
 #   This is the URI of this PROMS Server instance. It is the full address of where the service is installed. If running
 #   locally without port proxying, as you would for dev, it is likely to be something like http://localhost:9000
@@ -24,7 +36,7 @@ WEB_SUBFOLDER = ''  # starting slash, no trailing slash
 #   http://proms.example.org
 #
 #   To ensure HTML links work across all pages in PROMS Server, seperate out the web subfolder (see above)
-PROMS_INSTANCE_NAMESPACE_URI = 'http://localhost:9000' + WEB_SUBFOLDER
+PROMS_INSTANCE_NAMESPACE_URI = 'http://localhost'
 
 #   This is the location at which PROMS Server is installed on your file system. For Windows this could be something
 #   like 'c:/work/proms/', for Linux it could be '/opt/proms/' or '/var/www/proms/'
@@ -35,14 +47,6 @@ STATIC_DIR = 'static/'
 
 #   The PROMS main log file. Usually somewhere in HOME_DIR but need not be
 LOGFILE = HOME_DIR + 'proms.log'
-
-#   The IP address that the in-built Flask HTTP server will listen on. Default is 0.0.0.0
-#   Irrelevant if PROMS Server is deployed via Apache + mod_wsgi
-HOST = '0.0.0.0'
-
-#   The port that the in-built Flask HTTP server will listen on. Default is 9000
-#   Irrelevant if PROMS Server is deployed via Apache + mod_wsgi
-PORT = 9000
 
 #   Flask debug mode. True for testing, False for production.
 #   Irrelevant if PROMS Server is deployed via Apache + mod_wsgi
@@ -79,8 +83,8 @@ DEBUG = True
 #   SPARQL_SECURE_QUERY_URI = 'http://localhost/fuseki/data/query'
 #
 #   as Apache server is hiding port 3030 from access by proxying to it.
-SPARQL_QUERY_URI = 'http://localhost:3030/data/query'
-SPARQL_UPDATE_URI = 'http://localhost:3030/data/update'
+SPARQL_QUERY_URI = 'http://localhost:3030/tdb/query'
+SPARQL_UPDATE_URI = 'http://localhost:3030/tdb/update'
 SPARQL_AUTH_USR = ''  # Ensure this matches any triplestore proxying settings (install-apache.sh)
 SPARQL_AUTH_PWD = ''  # Ensure this matches any triplestore proxying settings (install-apache.sh)
 SPARQL_TIMEOUT = 5  # Request Timeout in seconds
@@ -115,3 +119,5 @@ KNOWN_PROVENANCE_STORE_PINGBACK_ENDPOINTS = [
 #
 SECRET_KEY = 'hello, proms'
 MONGODB = "127.0.0.1"
+
+VERSION = '3.1.0'
