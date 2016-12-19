@@ -23,7 +23,3 @@ def is_proms_msg(request):
     ]
     if request.headers['Content-Type'] in rdf_mimetype:
         return True
-
-
-def register_proms_pingback(request):
-    return True

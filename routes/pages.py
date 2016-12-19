@@ -10,7 +10,7 @@ pages = Blueprint('pages', __name__)
 @pages.route('/')
 def home():
     return render_template(
-        'index.html',
+        'page_index.html',
         web_subfolder=settings.WEB_SUBFOLDER
     )
 
@@ -18,7 +18,7 @@ def home():
 @pages.route('/about')
 def about():
     return render_template(
-        'about.html',
+        'page_about.html',
         web_subfolder=settings.WEB_SUBFOLDER,
         version=settings.VERSION
     )
@@ -27,7 +27,7 @@ def about():
 @pages.route('/api')
 def api():
     return render_template(
-        'api.html',
+        'page_api.html',
         web_subfolder=settings.WEB_SUBFOLDER
     )
 

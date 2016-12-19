@@ -1,3 +1,116 @@
+from rdflib import Graph
+import cStringIO
+from ldapi import LDAPI
+import rulesets.reports as report_rulesets
+import functions_sparqldb
+import api_functions
+
+
+class ReportsFunctions:
+    def __init__(self, report_data, report_mimetype):
+        self.report_data = report_data
+        self.report_mimetype = report_mimetype
+        self.report_graph = None
+        self.report_type = None
+        self.error_messages = None
+        self.report_uri = None
+
+    def valid(self):
+        """Validates an incoming Report using direct tests (can it be parsed?) and appropriate RuleSets"""
+        # try to parse the Report data
+        try:
+            self.report_graph = Graph().parse(
+                cStringIO.StringIO(self.report_data),
+                [item for item in LDAPI.MIMETYPES_PARSERS if item[0] == self.report_mimetype]
+            )
+        except Exception, e:
+            self.error_messages = ['The serialised data cannot be parsed. Is it valid RDF?',
+                                   'Parser says: ' + e.message]
+            return False
+
+        # try to determine Report type
+        result = self.report_graph.query('''
+             PREFIX proms: <http://promsns.org/def/proms#>
+             SELECT DISTINCT ?type WHERE {
+                 ?r a ?type .
+                 FILTER (?type = proms:BasicReport || ?type = proms:ExternalReport || ?type = proms:InternalReport)
+             }
+         ''')
+        if len(result) != 1:
+            self.error_messages = [
+                    'Could not determine Report type. Must be one of proms:BasicReport, proms:ExternalReport or '
+                    'proms:InternalReport'
+            ]
+            return  False
+        else:
+            for row in result:
+                self.report_type = row[0]
+
+        # choose RuleSet based on Report type
+        if self.report_type == 'BasicReport':
+            conformant_report = report_rulesets.BasicReport(self.report_graph)
+        elif self.report_type == 'ExternalReport':
+            conformant_report = report_rulesets.ExternalReport(self.report_graph)
+        else:  # self.report_type == 'InternalReport':
+            conformant_report = report_rulesets.InternalReport(self.report_graph)
+
+        if not conformant_report.passed:
+            self.error_messages = conformant_report.fail_reasons
+            return False
+
+        # if the Report has been parsed, we have found the Report type and it's passed it's relevant RuleSet, it's valid
+        return True
+
+    def determine_report_uri(self):
+        """Determines the URI for this Report"""
+        # if this Report has a placeholder URI, generate a new one
+        q = '''
+            ASK
+            WHERE {
+                { ?uri a <http://promsns.org/def/proms#BasicReport> . }
+                UNION
+                { ?uri a <http://promsns.org/def/proms#ExternalReport> . }
+                UNION
+                { ?uri a <http://promsns.org/def/proms#InternalReport> . }
+                FILTER regex(str(?uri), "placeholder")
+            }
+        '''
+        if self.report_graph.query(q):
+            self._generate_new_uri()
+        else:
+            # since it has an existing URI, not a placeholder one, use the existing one
+            q = '''
+                SELECT ?uri
+                WHERE {
+                    { ?uri a <http://promsns.org/def/proms#BasicReport> . }
+                    UNION
+                    { ?uri a <http://promsns.org/def/proms#ExternalReport> . }
+                    UNION
+                    { ?uri a <http://promsns.org/def/proms#InternalReport> . }
+                }
+            '''
+            for r in self.report_graph.query(q):
+                self.report_uri = r['uri']
+
+        return True
+
+    def _generate_new_uri(self):
+        # ask PROMS Server for a new Report URI
+        new_uri = 'http://fake.com/report/3'
+        self.report_uri = new_uri
+        # add that new URI to the in-memory graph
+        api_functions.replace_uri(self.report_graph, 'http://placeholder.org', new_uri)
+
+    def stored(self):
+        """ Add a Report to PROMS
+        """
+        try:
+            functions_sparqldb.insert(self.report_graph, self.report_uri)
+            return True
+        except Exception as e:
+            raise
+
+
 def get_reports_dict():
     """ Get details of all Reports
     """
@@ -215,62 +328,6 @@ def send_pingback(report_graph):
                     if 'pingback_successful' in pingback_result:
                         successful = pingback_result['pingback_successful']
     # TODO: Return attempts and successes if they're to be used
-
-
-def put_report(report_in_turtle):
-    """ Add a Report to PROMS
-    """
-    try:
-        # try to make a graph of the input text
-        g = Graph().parse(cStringIO.StringIO(report_in_turtle), format='turtle')
-
-        # determine Report type for RuleSet validation
-        result = g.query('''
-            PREFIX proms: <http://promsns.org/def/proms#>
-            SELECT DISTINCT ?type WHERE {
-                ?r a ?type .
-                FILTER (?type = proms:BasicReport || ?type = proms:ExternalReport || ?type = proms:InternalReport)
-            }
-        ''')
-        if len(result) != 1:
-            return [
-                False,
-                ['Could not determine report type. Must be one of proms:BasicReport, proms:ExternalReport or proms:InternalReport']
-            ]
-        else:
-            for row in result:
-                if 'BasicReport' in row[0]:
-                    pr = BasicReport(g)
-                elif 'ExternalReport' in row[0]:
-                    pr = ExternalReport(g)
-                else:  # 'InternalReport' in row[0]:
-                    pr = InternalReport(g)
-
-                # fail if RuleSet validation unsuccessful
-                if not pr.passed:
-                    return [False, pr.fail_reasons]
-
-                # replace the document's placeholder URI with one generated by this PROMS instance
-                g = replace_placeholder_uuids(g)
-
-                # insert the graph into the triplestore as a named graph
-                result = g.query('''
-                    PREFIX proms: <http://promsns.org/def/proms#>
-                    SELECT ?r WHERE {
-                        ?r a ?type .
-                        FILTER (?type = proms:BasicReport || ?type = proms:ExternalReport || ?type = proms:InternalReport)
-                    }
-                ''')
-                for row in result:
-                    insert = functions_sparqldb.insert(g, row[0])  # graph_name
-                    if insert[0]:
-                        # only attempt a pingback if insert successful
-                        #send_pingback(g)
-                        return [insert[0], [row[0]]]
-                    else:
-                        return insert
-    except Exception as e:
-        return [False, ['Could not parse input: ' + str(e)]]
 
 
 def create_report_formparts(form_parts_json_obj):

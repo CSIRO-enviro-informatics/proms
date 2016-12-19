@@ -7,12 +7,12 @@
     <link rel="shortcut icon" href="{{ web_subfolder }}{{url_for('static', filename='img/favicon.ico')}}">
 </head>
 <body>
-    {% include 'vanilla_header.html' %}
+    {% include 'template_header_vanilla.html' %}
     <div id="container-content">
         <div id="container-content-2">
             {% block content %}{% endblock %}
         </div>
 	</div>
-	{% include 'vanilla_footer.html' %}
+	{% include 'template_footer_vanilla.html' %}
 </body>
 </html>

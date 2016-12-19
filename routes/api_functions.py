@@ -39,3 +39,46 @@ def get_sparql_service_description(rdf_format='turtle'):
     else:
         raise ValueError('Input parameter rdf_format must be one of: ' + ', '.join(rdf_formats))
 
+
+def replace_uri(g, initial_uri, replacement_uri):
+    """
+    Replaces a given URI for all subjects or objects (not predicates) in a given graph
+
+    :param g: the graph to replace URIs in
+    :param initial_uri: the URI to replace
+    :param replacement_uri: the replacement URI
+    :return: the altered graph g
+    """
+    # replace all subjects
+    u = '''
+        DELETE {
+            ?s ?p ?o .
+        }
+        INSERT {
+            <''' + replacement_uri + '''> ?p ?o .
+        }
+        WHERE {
+            ?s ?p ?o .
+            FILTER (STR(?s) = "''' + initial_uri + '''")
+            # Nick: this really seems to need to be a FILTER, not a subgraph match i.e. <> ?p ?o . Don't know why.
+        }
+    '''
+    g.update(u)
+
+    # replace all objects
+    u = '''
+        DELETE {
+            ?s ?p ?o .
+        }
+        INSERT {
+            ?s ?p <''' + replacement_uri + '''> .
+        }
+        WHERE {
+            ?s ?p ?o .
+            FILTER (STR(?o) = "''' + initial_uri + '''")
+        }
+    '''
+    g.update(u)
+
+    # there are no predicates to place (no placeholder relations)
+    return g

@@ -15,9 +15,8 @@ def query(sparql_query, format_mimetype='application/sparql-results+json'):
     r = requests.post(settings.SPARQL_QUERY_URI, auth=auth, data=data, headers=headers)
     try:
         return json.loads(r.text)
-    except Exception, e:
-        print e.message
-        return [False, e.message]
+    except Exception as e:
+        raise
 
 
 def query_turtle(sparql_query):
@@ -27,7 +26,10 @@ def query_turtle(sparql_query):
     auth = (settings.SPARQL_AUTH_USR, settings.SPARQL_AUTH_PWD)
     headers = {'Accept': 'text/turtle'}
     r = requests.post(settings.SPARQL_QUERY_URI, data=data, auth=auth, headers=headers)
-    return r.text
+    try:
+        return r.text
+    except Exception as e:
+        raise
 
 
 def insert(g, named_graph_uri=None):
@@ -42,8 +44,7 @@ def insert(g, named_graph_uri=None):
     try:
         r = requests.post(settings.SPARQL_UPDATE_URI, headers=headers, data=data, auth=auth)
         if r.status_code != 200 and r.status_code != 201:
-            return [False, r.text]
-        return [True, r.text]
-    except Exception, e:
-        print e.message
-        return [False, e.message]
+            raise Exception('The INSERT was not successful. The SPARQL database\' error message is: ' + r.content)
+        return True
+    except Exception as e:
+        raise

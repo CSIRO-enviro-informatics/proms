@@ -1,5 +1,82 @@
-import urllib
+from rdflib import Graph
+import cStringIO
+from ldapi import LDAPI
+import rulesets.reportingsystems as reportingsystem_ruleset
 import functions_sparqldb
+import api_functions
+
+
+class ReportingSystemsFunctions:
+    def __init__(self, reportingsystem_data, reportingsystem_mimetype):
+        self.reportingsystem_data = reportingsystem_data
+        self.reportingsystem_mimetype = reportingsystem_mimetype
+        self.reportingsystem_graph = None
+        self.error_messages = None
+        self.reportingsystem_uri = None
+
+    def valid(self):
+        """Validates an incoming ReportingSystem using direct tests (can it be parsed?) and appropriate RuleSets"""
+        # try to parse the Reportingsystem data
+        try:
+            self.reportingsystem_graph = Graph().parse(
+                cStringIO.StringIO(self.reportingsystem_data),
+                format=[item[1] for item in LDAPI.MIMETYPES_PARSERS if item[0] == self.reportingsystem_mimetype][0]
+            )
+        except Exception, e:
+            self.error_messages = ['The serialised data cannot be parsed. Is it valid RDF?',
+                                   'Parser says: ' + e.message]
+            return False
+
+        # RuleSet
+        conformant_report = reportingsystem_ruleset.ReportingSytems(self.reportingsystem_graph)
+
+        if not conformant_report.passed:
+            self.error_messages = conformant_report.fail_reasons
+            return False
+
+        # if the Report has been parsed, we have found the Report type and it's passed it's relevant RuleSet, it's valid
+        return True
+
+    def determine_reportingsystem_uri(self):
+        """Determines the URI for this ReportingSystem"""
+        # if this ReportingSystem has a placeholder URI, generate a new one
+        q = '''
+            ASK
+            WHERE {
+                ?uri a <http://promsns.org/def/proms#ReportingSystem> .
+                FILTER regex(str(?uri), "placeholder")
+            }
+        '''
+        if self.reportingsystem_graph.query(q):
+            self._generate_new_uri()
+        else:
+            # since it has an existing URI, not a placeholder one, use the existing one
+            q = '''
+                SELECT ?uri
+                WHERE {
+                    ?uri a <http://promsns.org/def/proms#ReportingSystem> .
+                }
+            '''
+            for r in self.reportingsystem_graph.query(q):
+                self.reportingsystem_uri = r['uri']
+
+        return True
+
+    def _generate_new_uri(self):
+        # ask PROMS Server for a new RS URI
+        new_uri = 'http://fake.com/reportingsystem/3'
+        self.reportingsystem_uri = new_uri
+        # add that new URI to the in-memory graph
+        api_functions.replace_uri(self.reportingsystem_graph, 'http://placeholder.org', new_uri)
+
+    def stored(self):
+        return True
+        """ Add a Report to PROMS"""
+        try:
+            functions_sparqldb.insert(self.reportingsystem_graph, self.reportingsystem_uri)
+            return True
+        except Exception as e:
+            raise
 
 
 def get_reportingsystems_dict():
@@ -105,7 +182,7 @@ ORDER BY DESC(?eat)
     return query
 
 
-#TODO: get ordering by Report --> Activity --> startedAtTime
+# TODO: get ordering by Report --> Activity --> startedAtTime
 def get_reports_for_rs(reportingsystem_uri):
     """ Get all Reports for a ReportingSystem
     """

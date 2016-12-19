@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "template_layout.html" %}
 
 {% block content %}
     <h1>PROMS Server</h1>
@@ -44,27 +44,35 @@
             </td>
         </tr>
         <tr>
-            <th>Register a <em>ReportingSystem</em></th>
+            <th>Lodge a <em>ReportingSystem</em></th>
             <td>Manually register a ReportingSystem for which Reports can then be sent to this PROMS Server instance</td>
             <td>
-                <p><a href="{{ web_subfolder }}/function/register_reportingsystem">{{ web_subfolder }}/function/register_reportingsystem</a></p>
+                <p><a href="{{ web_subfolder }}/function/lodge-reportingsystem">{{ web_subfolder }}/function/lodge-reportingsystem</a></p>
+            </td>
+        </tr>
+        <tr>
+            <th>Create a <em>ReportingSystem</em></th>
+            <td>Manually create a PROMS ReportingSystem using a web form</td>
+            <td>
+                <p><a href="{{ web_subfolder }}/function/create-reportingsystem">{{ web_subfolder }}/function/create-reportingsystem</a></p>
+            </td>
+        </tr>
+        <tr>
+            <th>Lodge <em>Report</em></th>
+            <td>POST a Report to this PROMS Server instance</td>
+            <td>
+                <p><a href="{{ web_subfolder }}/function/lodge-report">{{ web_subfolder }}/function/lodge-report</a></p>
+                Must be an <a href="https://en.wikipedia.org/wiki/POST_(HTTP)">HTTP POST</a> request containing a <a href="https://confluence.csiro.au/display/PROMS/Getting+information+into+PROMS+Server">valid PROMS Report</a> for a <a href="https://confluence.csiro.au/display/PROMS/Getting+information+into+PROMS+Server">registered ReportingSystem</a> in one of the following RDF mimetypes: 'text/turtle', 'application/rdf+xml', 'application/rdf+json', 'application/json', 'text/ntriples', 'text/nt', 'text/n3'
             </td>
         </tr>
         <tr>
             <th>Create a <em>Report</em></th>
             <td>Manually create a PROMS Report to download or send to this PROMS Server instance using a web form</td>
             <td>
-                <p><a href="{{ web_subfolder }}/function/create_report">{{ web_subfolder }}/function/create_report</a></p>
+                <p><a href="{{ web_subfolder }}/function/create-report">{{ web_subfolder }}/function/create-report</a></p>
             </td>
         </tr>
-        <tr>
-            <th>New <em>Report</em></th>
-            <td>POST a Report to this PROMS Server instance</td>
-            <td>
-                <p><a href="{{ web_subfolder }}/function/new_report">{{ web_subfolder }}/function/new_report</a></p>
-                Must be an <a href="https://en.wikipedia.org/wiki/POST_(HTTP)">HTTP POST</a> request containing a <a href="https://confluence.csiro.au/display/PROMS/Getting+information+into+PROMS+Server">valid PROMS Report</a> for a <a href="https://confluence.csiro.au/display/PROMS/Getting+information+into+PROMS+Server">registered ReportingSystem</a> in one of the following RDF mimetypes: 'text/turtle', 'application/rdf+xml', 'application/rdf+json', 'application/json', 'text/ntriples', 'text/nt', 'text/n3'
-            </td>
-        </tr>
+
         <!--
         <tr>
             <th>New <em>Pingback</em></th>
