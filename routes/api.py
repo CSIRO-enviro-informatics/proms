@@ -13,7 +13,6 @@ from ldapi import LDAPI
 api = Blueprint('api', __name__)
 
 
-# TODO: this is a stub
 @api.route('/function/lodge-reportingsystem', methods=['POST'])
 def lodge_reportingsystem():
     # only accept RDF documents
@@ -161,7 +160,6 @@ def lodge_pingback():
 #         return pingback_result[1], 400
 
 
-# TODO: tidy up with templates, inc. error_db_connection
 @api.route('/function/sparql', methods=['GET', 'POST'])
 def sparql():
     # Query submitted
@@ -205,7 +203,17 @@ def sparql():
                        'POST body if the Content-Type \'application/sparql-query\' is used.', 400
 
         # sorry, we only return JSON results. See the service description!
-        query_result = functions_sparqldb.query(query)
+        try:
+            query_result = functions_sparqldb.query(query)
+        except ValueError, e:
+            return render_template(
+                'function_sparql.html',
+                query=query,
+                query_result='No results: ' + e.message,
+                web_subfolder=settings.WEB_SUBFOLDER
+            ), 400
+        except ConnectionError:
+            return render_template('error_db_connection.html'), 500
 
         if query_result and 'results' in query_result:
             query_result = json.dumps(query_result['results']['bindings'])
