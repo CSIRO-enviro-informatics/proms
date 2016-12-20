@@ -14,7 +14,7 @@ def post_static_prov_aq_pingback():
                   'anchor="http://somewhere-else-else.com"'
     headers['Link'] = link_header1 + ', ' + link_header2
 
-    send_to = settings.PROMS_INSTANCE_NAMESPACE_URI + '/function/pingback'
+    send_to = settings.BASE_URI + '/function/pingback'
     print send_to
     r = requests.post(send_to,
                       data=None,

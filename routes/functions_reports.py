@@ -4,6 +4,8 @@ from ldapi import LDAPI
 import rulesets.reports as report_rulesets
 import functions_sparqldb
 import api_functions
+import settings
+import uuid
 
 
 class ReportsFunctions:
@@ -21,7 +23,7 @@ class ReportsFunctions:
         try:
             self.report_graph = Graph().parse(
                 cStringIO.StringIO(self.report_data),
-                [item for item in LDAPI.MIMETYPES_PARSERS if item[0] == self.report_mimetype]
+                format=[item[1] for item in LDAPI.MIMETYPES_PARSERS if item[0] == self.report_mimetype][0]
             )
         except Exception, e:
             self.error_messages = ['The serialised data cannot be parsed. Is it valid RDF?',
@@ -44,12 +46,12 @@ class ReportsFunctions:
             return  False
         else:
             for row in result:
-                self.report_type = row[0]
+                self.report_type = str(row[0])
 
         # choose RuleSet based on Report type
-        if self.report_type == 'BasicReport':
+        if self.report_type == 'http://promsns.org/def/proms#BasicReport':
             conformant_report = report_rulesets.BasicReport(self.report_graph)
-        elif self.report_type == 'ExternalReport':
+        elif self.report_type == 'http://promsns.org/def/proms#ExternalReport':
             conformant_report = report_rulesets.ExternalReport(self.report_graph)
         else:  # self.report_type == 'InternalReport':
             conformant_report = report_rulesets.InternalReport(self.report_graph)
@@ -65,7 +67,7 @@ class ReportsFunctions:
         """Determines the URI for this Report"""
         # if this Report has a placeholder URI, generate a new one
         q = '''
-            ASK
+            SELECT ?uri
             WHERE {
                 { ?uri a <http://promsns.org/def/proms#BasicReport> . }
                 UNION
@@ -75,8 +77,12 @@ class ReportsFunctions:
                 FILTER regex(str(?uri), "placeholder")
             }
         '''
-        if self.report_graph.query(q):
-            self._generate_new_uri()
+        uri = None
+        for r in self.report_graph.query(q):
+            uri = r['uri']
+
+        if uri is not None:
+            self._generate_new_uri(uri)
         else:
             # since it has an existing URI, not a placeholder one, use the existing one
             q = '''
@@ -94,12 +100,12 @@ class ReportsFunctions:
 
         return True
 
-    def _generate_new_uri(self):
+    def _generate_new_uri(self, old_uri):
         # ask PROMS Server for a new Report URI
-        new_uri = 'http://fake.com/report/3'
+        new_uri = settings.REPORT_BASE_URI + str(uuid.uuid4())
         self.report_uri = new_uri
         # add that new URI to the in-memory graph
-        api_functions.replace_uri(self.report_graph, 'http://placeholder.org', new_uri)
+        api_functions.replace_uri(self.report_graph, old_uri, new_uri)
 
     def stored(self):
         """ Add a Report to PROMS
@@ -108,7 +114,8 @@ class ReportsFunctions:
             functions_sparqldb.insert(self.report_graph, self.report_uri)
             return True
         except Exception as e:
-            raise
+            self.error_messages = ['Could not connect to the provenance database']
+            return False
 
 
 def get_reports_dict():

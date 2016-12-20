@@ -10,7 +10,7 @@ functions = Blueprint('functions', __name__)
 @functions.route('/class/')
 def classes():
     return render_template('classes.html',
-                           PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                           PROMS_INSTANCE_NAMESPACE_URI=settings.BASE_URI,
                            WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
 
@@ -28,7 +28,7 @@ def reportingsystem():
                 rs = functions.get_reportingsystems_dict()
                 return render_template('reportingsystem.html',
                                        REPORTINGSYSTEMS=rs,
-                                       PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                                       PROMS_INSTANCE_NAMESPACE_URI=settings.BASE_URI,
                                        WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
             #else:
             #    if request.headers.get('rdf_object'):
@@ -43,7 +43,7 @@ def reportingsystem():
             put_result = functions.put_reportingsystem(request.data)
             if put_result[0]:
                 reportingsystem_uri = put_result[1][0]
-                link_header_content = '<' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/reportingsystem/?uri=' + reportingsystem_uri + '>; rel=http://promsns.org/def/proms#ReportingSystem'
+                link_header_content = '<' + settings.BASE_URI + 'id/reportingsystem/?uri=' + reportingsystem_uri + '>; rel=http://promsns.org/def/proms#ReportingSystem'
                 headers = {}
                 headers['Content-Type'] = 'text/uri-list'
                 headers['Link'] = link_header_content
@@ -85,7 +85,7 @@ def reports():
                 '''
                 return render_template('report.html',
                                        REPORT=report,
-                                       PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                                       PROMS_INSTANCE_NAMESPACE_URI=settings.BASE_URI,
                                        WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
         # multiple Reports (register)
         else:
@@ -118,7 +118,7 @@ def reports():
                 return render_template('report.html',
                                        REPORTS=reports,
                                        #SIGNED_REPORTS=signed_reports,
-                                       PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                                       PROMS_INSTANCE_NAMESPACE_URI=settings.BASE_URI,
                                        WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
     # process a posted Report
@@ -130,7 +130,7 @@ def reports():
             put_result = functions.put_report(request.data)
             if put_result[0]:
                 report_uri = put_result[1][0]
-                link_header_content = '<' + settings.PROMS_INSTANCE_NAMESPACE_URI + 'id/report/?uri=' + report_uri + '>; rel=http://promsns.org/def/proms#Report'
+                link_header_content = '<' + settings.BASE_URI + 'id/report/?uri=' + report_uri + '>; rel=http://promsns.org/def/proms#Report'
                 headers = {}
                 headers['Content-Type'] = 'text/uri-list'
                 headers['Link'] = link_header_content
@@ -219,7 +219,7 @@ def entities():
         else:
             entities = functions.get_entities_dict()
             return render_template('entity.html',
-                                   PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                                   PROMS_INSTANCE_NAMESPACE_URI=settings.BASE_URI,
                                    ENTITIES=entities,
                                    WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
@@ -240,7 +240,7 @@ def activities():
         else:
             activity = functions.get_activity_dict(uri)
             return render_template('activity.html',
-                                   PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                                   PROMS_INSTANCE_NAMESPACE_URI=settings.BASE_URI,
                                    ACTIVITY=activity,
                                    WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
     # multiple Activities (register)
@@ -250,7 +250,7 @@ def activities():
         else:
             activities = functions.get_activities_dict()
             return render_template('activity.html',
-                                   PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                                   PROMS_INSTANCE_NAMESPACE_URI=settings.BASE_URI,
                                    ACTIVITIES=activities,
                                    WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 
@@ -279,7 +279,7 @@ def agents():
         else:
             agents = functions.get_agents_dict()
             return render_template('agent.html',
-                                   PROMS_INSTANCE_NAMESPACE_URI=settings.PROMS_INSTANCE_NAMESPACE_URI,
+                                   PROMS_INSTANCE_NAMESPACE_URI=settings.BASE_URI,
                                    AGENTS=agents,
                                    WEB_SUBFOLDER=settings.WEB_SUBFOLDER)
 

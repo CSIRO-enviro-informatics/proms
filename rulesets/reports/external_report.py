@@ -1,5 +1,5 @@
 from rulesets import RuleSet, Rule
-from proms_report import PromsReport
+from report import PromsReport
 
 
 class ExternalReport(RuleSet):

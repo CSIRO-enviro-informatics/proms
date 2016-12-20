@@ -146,7 +146,7 @@ def try_strategy_3(g, excluded_entities=[]):
             {
                 'resource': entity,
                 'rel': 'has_query_service',
-                'anchor': settings.PROMS_INSTANCE_NAMESPACE_URI + '/function/sparql'
+                'anchor': settings.BASE_URI + '/function/sparql'
             },
             {
                 'resource': entity,

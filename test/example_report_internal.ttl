@@ -1,0 +1,86 @@
+@prefix proms: <http://promsns.org/def/proms#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://placeholder.org#73101cb4-b74e-4acb-85ef-a6da237cdccb> a proms:InternalReport ;
+    rdfs:label "Test Internal Report PyPROMS"^^xsd:string ;
+    proms:endingActivity <http://placeholder.org#57e4ef41-277c-4410-a9dd-2cf9b154fe60> ;
+    proms:nativeId "report-71"^^xsd:string ;
+    proms:startingActivity <http://placeholder.org#a7837bb2-5bbc-40e2-9335-3d91132b734d> ;
+    proms:wasReportedBy <http://example.com/reportingsystem/1ceb311f-3b78-4fec-9576-806e31fb50e2> ;
+    prov:generatedAtTime "2014-06-25T12:13:34"^^xsd:dateTime .
+
+<http://placeholder.org#f2639232-1f51-4adc-ae8b-bd560764bcb8> a prov:Activity ;
+    rdfs:label "Activity 2"^^xsd:string ;
+    rdfs:comment "A test Activity"^^xsd:string ;
+    prov:endedAtTime "2014-06-25T13:00:00"^^xsd:dateTime ;
+    prov:generated <http://web3-wron:8080/water/thredds/somefile.nc> ;
+    prov:startedAtTime "2014-06-25T12:13:24"^^xsd:dateTime ;
+    prov:used <http://placeholder.org#64455ca4-ccbd-44b5-9bf0-9c60c87c2eb7>,
+        <http://placeholder.org#d7ae2af6-d44d-40cf-9b14-17ec1fad123e> ;
+    prov:wasAssociatedWith <http://placeholder.org#d684685e-90fb-46f2-92a9-b4591cb4147a> .
+
+<http://example.org.au/id/thing/dataset/3> a prov:Entity ;
+    rdfs:label "Input 3"^^xsd:string .
+
+<http://pid.geoscience.gov.au/dataset/12> a prov:Entity ;
+    rdfs:label "Dataset 12"^^xsd:string .
+
+<http://placeholder.org#2ee55187-c3cf-46e9-ac5a-4c80bacf1fa8> a prov:Entity ;
+    rdfs:label "Output Number"^^xsd:string ;
+    prov:value 42 .
+
+<http://placeholder.org#57e4ef41-277c-4410-a9dd-2cf9b154fe60> a prov:Activity ;
+    rdfs:label "Activity 3"^^xsd:string ;
+    rdfs:comment "A test Activity"^^xsd:string ;
+    prov:endedAtTime "2014-06-25T13:05:00"^^xsd:dateTime ;
+    prov:generated <http://placeholder.org#2ee55187-c3cf-46e9-ac5a-4c80bacf1fa8> ;
+    prov:startedAtTime "2014-06-25T13:00:01"^^xsd:dateTime ;
+    prov:used <http://placeholder.org#b0cff2bf-de85-45e6-9000-57b201e17a0a> ;
+    prov:wasAssociatedWith <http://placeholder.org#d684685e-90fb-46f2-92a9-b4591cb4147a> .
+
+<http://placeholder.org#64455ca4-ccbd-44b5-9bf0-9c60c87c2eb7> a prov:Entity ;
+    rdfs:label "Band Selector"^^xsd:string ;
+    prov:value "Band_3,Band_4,Band_7"^^xsd:string .
+
+<http://placeholder.org#a7837bb2-5bbc-40e2-9335-3d91132b734d> a prov:Activity ;
+    rdfs:label "Activity 1"^^xsd:string ;
+    rdfs:comment "A test Activity"^^xsd:string ;
+    prov:endedAtTime "2014-06-25T12:13:24"^^xsd:dateTime ;
+    prov:startedAtTime "2014-06-25T12:13:14"^^xsd:dateTime ;
+    prov:used <http://example.org.au/id/thing/dataset/3>,
+        <http://pid.geoscience.gov.au/dataset/12>,
+        <http://placeholder.org#b0095b3c-5153-40d8-afc7-dcfcbb785e55> ;
+    prov:wasAssociatedWith <http://placeholder.org#d684685e-90fb-46f2-92a9-b4591cb4147a> .
+
+<http://placeholder.org#b0095b3c-5153-40d8-afc7-dcfcbb785e55> a prov:Entity ;
+    rdfs:label "Input 2"^^xsd:string ;
+    rdfs:comment "The Entity, 02"^^xsd:string ;
+    prov:wasAttributedTo <http://placeholder.org#855ebdbc-a0b6-47b6-a8ba-13881c49046b> .
+
+<http://placeholder.org#b0cff2bf-de85-45e6-9000-57b201e17a0a> a prov:Entity ;
+    rdfs:label "Thing 2"^^xsd:string .
+
+<http://placeholder.org#d7ae2af6-d44d-40cf-9b14-17ec1fad123e> a prov:Entity ;
+    rdfs:label "Thing 1"^^xsd:string ;
+    prov:wasAttributedTo <http://placeholder.org#d684685e-90fb-46f2-92a9-b4591cb4147a> .
+
+<http://placeholder.org#ff99899d-3e2b-4165-b1d8-33fd4cae65c9> a proms:ReportingSystem ;
+    rdfs:label "Workflow System Z"^^xsd:string ;
+    prov:actedOnBehalfOf <http://placeholder.org#d684685e-90fb-46f2-92a9-b4591cb4147a> .
+
+<http://web3-wron:8080/water/thredds/somefile.nc> a prov:Entity ;
+    rdfs:label "Output Data"^^xsd:string ;
+    rdfs:comment "The Entity, 03"^^xsd:string ;
+    prov:wasAttributedTo <http://placeholder.org#855ebdbc-a0b6-47b6-a8ba-13881c49046b> .
+
+<http://placeholder.org#855ebdbc-a0b6-47b6-a8ba-13881c49046b> a prov:Agent ;
+    rdfs:label "Agent Orange"^^xsd:string .
+
+<http://placeholder.org#d684685e-90fb-46f2-92a9-b4591cb4147a> a prov:Agent ;
+    rdfs:label "Agent X"^^xsd:string ;
+    prov:actedOnBehalfOf <http://placeholder.org#855ebdbc-a0b6-47b6-a8ba-13881c49046b> .
+

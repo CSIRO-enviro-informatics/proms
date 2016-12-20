@@ -10,7 +10,12 @@ HOST = '0.0.0.0'
 #   Irrelevant if PROMS Server is deployed via Apache + mod_wsgi
 PORT = 9000
 
-#   The base URI of the system
+#   This is the URI of this PROMS Server instance. It is the full address of where the service is installed. If running
+#   locally without port proxying, as you would for dev, it is likely to be something like http://localhost:9000
+#
+#   If PROMS Server is installed somewhere it could be http://example.org/service/proms or perhaps
+#   http://proms.example.org
+#
 BASE_URI = 'http://localhost' + str(PORT)
 
 #   If this instance of PROMS Server is installed at a location other than the root of a domain, e.g. at
@@ -18,25 +23,17 @@ BASE_URI = 'http://localhost' + str(PORT)
 #   subfolder. In the example above, the value would be: WEB_SUBFOLDER = '/service/proms'
 WEB_SUBFOLDER = ''  # starting slash, no trailing slash
 
-#   These base URIs are the URIs that this instance of PROMS will use to replace http://placeholder.org# URIs for the
+#   These base URIs are the URIs that this instance of PROMS will use to replace http://placeholder.org URIs for the
 #   particular classes of objects in incoming ReportingSystems and Reports. E.g.: an incoming Report with the
-#   declaration of <http://placeholder.org#abc123> a proms:ExternalReport ; will see that triple changed to
-#   <{REPORT_BASE_URI}> a proms:ExternalReport ;
-ENTITY_BASE_URI = 'http://localhost:9000/id/entity'
-ACTIVITY_BASE_URI = "http://localhost:9000/id/activity"
-AGENT_BASE_URI = "http://localhost:9000/id/agent"
-REPORT_BASE_URI = "http://localhost:9000/id/report"
-REPORTINGSYSTEM_BASE_URI = "http://localhost:9000/id/reportingsystem"
+#   declaration of <http://placeholder.org> a proms:ExternalReport ; will see that triple changed to
+#   <{REPORT_BASE_URI + identifier}> a proms:ExternalReport
+ACTIVITY_BASE_URI = 'http://example.com/activity/'
+AGENT_BASE_URI = 'http://example.com/agent/'
+ENTITY_BASE_URI = 'http://example.com/entity/'
+PERSON_BASE_URI = 'http://example.com/person/'
+REPORT_BASE_URI = 'http://example.com/report/'
+REPORTINGSYSTEM_BASE_URI = 'http://example.com/reportingsystem/'
 
-
-#   This is the URI of this PROMS Server instance. It is the full address of where the service is installed. If running
-#   locally without port proxying, as you would for dev, it is likely to be something like http://localhost:9000
-#
-#   If PROMS Server is installed somewhere it could be http://example.org/service/proms or perhaps
-#   http://proms.example.org
-#
-#   To ensure HTML links work across all pages in PROMS Server, seperate out the web subfolder (see above)
-PROMS_INSTANCE_NAMESPACE_URI = 'http://localhost'
 
 #   This is the location at which PROMS Server is installed on your file system. For Windows this could be something
 #   like 'c:/work/proms/', for Linux it could be '/opt/proms/' or '/var/www/proms/'
@@ -83,8 +80,8 @@ DEBUG = True
 #   SPARQL_SECURE_QUERY_URI = 'http://localhost/fuseki/data/query'
 #
 #   as Apache server is hiding port 3030 from access by proxying to it.
-SPARQL_QUERY_URI = 'http://localhost:3030/tdb/query'
-SPARQL_UPDATE_URI = 'http://localhost:3030/tdb/update'
+SPARQL_QUERY_URI = 'http://localhost:3030/tdb2/query'
+SPARQL_UPDATE_URI = 'http://localhost:3030/tdb2/update'
 SPARQL_AUTH_USR = ''  # Ensure this matches any triplestore proxying settings (install-apache.sh)
 SPARQL_AUTH_PWD = ''  # Ensure this matches any triplestore proxying settings (install-apache.sh)
 SPARQL_TIMEOUT = 5  # Request Timeout in seconds
@@ -97,12 +94,12 @@ ENTITY_STATE_STORE = HOME_DIR + 'pingbacks/status_recorder/entities.json'
 #
 # Pingbacks
 #
-#{'id': 0, 'title': 'No Action'},
-#{'id': 1, 'title': 'Given Pingback'},
-#{'id': 2, 'title': 'Given Provenance'},
-#{'id': 3, 'title': 'Known Provenance Stores'},
-#{'id': 4, 'title': 'Pingback Lookup'},
-#{'id': 5, 'title': 'Provenance Lookup'}
+# {'id': 0, 'title': 'No Action'},
+# {'id': 1, 'title': 'Given Pingback'},
+# {'id': 2, 'title': 'Given Provenance'},
+# {'id': 3, 'title': 'Known Provenance Stores'},
+# {'id': 4, 'title': 'Pingback Lookup'},
+# {'id': 5, 'title': 'Provenance Lookup'}
 # Strategy 3: Known Provenance Stores
 #
 # For strategy 3, we have to have the pingback endpoint URI of the store, not the base URI of the store

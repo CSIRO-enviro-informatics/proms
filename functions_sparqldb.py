@@ -20,7 +20,7 @@ def query(sparql_query, format_mimetype='application/sparql-results+json'):
 
 
 def query_turtle(sparql_query):
-    """ Make a secure query in TURTLE format
+    """ Make a secure query with TURTLE format response
     """
     data = {'query': sparql_query, 'format': 'text/turtle'}
     auth = (settings.SPARQL_AUTH_USR, settings.SPARQL_AUTH_PWD)
@@ -46,5 +46,5 @@ def insert(g, named_graph_uri=None):
         if r.status_code != 200 and r.status_code != 201:
             raise Exception('The INSERT was not successful. The SPARQL database\' error message is: ' + r.content)
         return True
-    except Exception as e:
-        raise
+    except requests.ConnectionError as e:
+        raise Exception()

@@ -48,7 +48,7 @@ def create_pingback_link_only_message(entity_uri):
         :svc a dpn:Service ;
             dpn:hostsDataset :dataset ;
             dpn:implements :my_proms ;
-            dpn:endpoint "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''"^^xsd:anyUri ;
+            dpn:endpoint "''' + settings.BASE_URI + '''"^^xsd:anyUri ;
             dpn:node    <''' + settings.DPN_BASE_URI + '''> .
 
         :PromsServiceInterface rdfs:subclassOf dpn:ProvenanceServiceInterface .
@@ -56,7 +56,7 @@ def create_pingback_link_only_message(entity_uri):
         :my_proms    a dpn-proms:PromsServiceInterface ;
             rdfs:subClassOf dpn:ProvenanceServiceInterface ;
             rdfs:label "A PROMS Server"^^xsd:string ;
-            dpn-proms:provenanceQueryUri "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/entity?uri=''' + entity_uri + '''"^^xsd:anyUri .
+            dpn-proms:provenanceQueryUri "''' + settings.BASE_URI + '''id/entity?uri=''' + entity_uri + '''"^^xsd:anyUri .
     '''
     return message
 
@@ -100,7 +100,7 @@ def create_provenance_graph_transfer_plus_link(report_graph, entity_uri, rs_uri,
         :svc a dpn:Service ;
             dpn:hostsDataset :dataset ;
             dpn:implements :my_proms ;
-            dpn:endpoint "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''"^^xsd:anyUri ;
+            dpn:endpoint "''' + settings.BASE_URI + '''"^^xsd:anyUri ;
             dpn:node    <''' + settings.DPN_BASE_URI + '''> .
 
         :PromsServiceInterface rdfs:subclassOf dpn:ProvenanceServiceInterface .
@@ -108,7 +108,7 @@ def create_provenance_graph_transfer_plus_link(report_graph, entity_uri, rs_uri,
         :my_proms    a dpn-proms:PromsServiceInterface ;
             rdfs:subClassOf dpn:ProvenanceServiceInterface ;
             rdfs:label "A PROMS Server"^^xsd:string ;
-            dpn-proms:provenanceQueryUri "''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '''id/entity?uri=''' + entity_uri + '''"^^xsd:anyUri .
+            dpn-proms:provenanceQueryUri "''' + settings.BASE_URI + '''id/entity?uri=''' + entity_uri + '''"^^xsd:anyUri .
     '''
     return message
 

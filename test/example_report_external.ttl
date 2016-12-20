@@ -1,0 +1,47 @@
+@prefix proms: <http://promsns.org/def/proms#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://placeholder.org#1ce63b47-082e-438b-8577-423ccf9ef522> a proms:ExternalReport ;
+    rdfs:label "Test External Report PyPROMS"^^xsd:string ;
+    proms:endingActivity <http://placeholder.org#f1f37e34-4e06-4fdd-98b6-1d38a758ef4e> ;
+    proms:nativeId "report-71"^^xsd:string ;
+    proms:startingActivity <http://placeholder.org#f1f37e34-4e06-4fdd-98b6-1d38a758ef4e> ;
+    proms:wasReportedBy <http://example.com/reportingsystem/2b43c21a-288b-4a52-95ae-7545fd11a962> ;
+    prov:generatedAtTime "2014-06-25T12:13:34"^^xsd:dateTime .
+
+<http://pid.geoscience.gov.au/dataset/12> a prov:Entity ;
+    rdfs:label "Dataset 12"^^xsd:string .
+
+<http://placeholder.org#7b344fc5-bd97-4a9c-aa15-64ccdffc5a89> a prov:Agent ;
+    rdfs:label "Agent X"^^xsd:string .
+
+<http://placeholder.org#be24de81-7e93-462e-b5b6-6138e00bc3be> a prov:Entity ;
+    rdfs:label "Input 02"^^xsd:string ;
+    rdfs:comment "The Entity, 02"^^xsd:string ;
+    prov:wasAttributedTo <http://placeholder.org#4ca2195c-c06a-4231-88d6-61963c723493> .
+
+<http://placeholder.org#f13479db-6b20-4ec6-979b-33ad79db79d3> a proms:ReportingSystem ;
+    rdfs:label "Workflow System Z"^^xsd:string .
+
+<http://web3-wron:8080/water/thredds/somefile.nc> a prov:Entity ;
+    rdfs:label "Output Data"^^xsd:string ;
+    rdfs:comment "The Entity, 03"^^xsd:string ;
+    prov:wasAttributedTo <http://placeholder.org#4ca2195c-c06a-4231-88d6-61963c723493> .
+
+<http://placeholder.org#4ca2195c-c06a-4231-88d6-61963c723493> a prov:Agent ;
+    rdfs:label "Agent Orange"^^xsd:string .
+
+<http://placeholder.org#f1f37e34-4e06-4fdd-98b6-1d38a758ef4e> a prov:Activity ;
+    rdfs:label "Test Activity"^^xsd:string ;
+    rdfs:comment "A test Activity"^^xsd:string ;
+    prov:endedAtTime "2014-06-25T12:13:24"^^xsd:dateTime ;
+    prov:generated <http://web3-wron:8080/water/thredds/somefile.nc> ;
+    prov:startedAtTime "2014-06-25T12:13:14"^^xsd:dateTime ;
+    prov:used <http://pid.geoscience.gov.au/dataset/12>,
+        <http://placeholder.org#be24de81-7e93-462e-b5b6-6138e00bc3be> ;
+    prov:wasAssociatedWith <http://placeholder.org#7b344fc5-bd97-4a9c-aa15-64ccdffc5a89> .
+

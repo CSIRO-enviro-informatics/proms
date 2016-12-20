@@ -17,9 +17,9 @@ def get_sparql_service_description(rdf_format='turtle'):
         @prefix void: <http://rdfs.org/ns/void#> .
         @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-        <''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '/function/sparql' + '''>
+        <''' + settings.BASE_URI + '/function/sparql' + '''>
             a                       sd:Service ;
-            sd:endpoint             <''' + settings.PROMS_INSTANCE_NAMESPACE_URI + '/function/sparql' + '''> ;
+            sd:endpoint             <''' + settings.BASE_URI + '/function/sparql' + '''> ;
             sd:supportedLanguage    sd:SPARQL11Query ; # yes, read only, sorry!
             sd:resultFormat         sdf:SPARQL_Results_JSON ; # yes, we only deliver JSON results, sorry!
             sd:feature sd:DereferencesURIs ;
