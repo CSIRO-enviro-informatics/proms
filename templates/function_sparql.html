@@ -11,6 +11,20 @@
         <input type="submit" value="Query PROMS" /><br />
         <!--<button id="query-proms">Query PROMS</button><br />-->
         <h4>Result</h4>
-        <textarea id="query-result" style="width:500px; height:300px;" readonly>{% if query_result != '' %}{{query_result}}{% endif %}</textarea>
+        <textarea id="query-result" style="width:500px; height:300px;" readonly>
+                {% if query_result != '' %}{{query_result}}{% endif %}
+        </textarea>
     </form>
+    <script>
+
+    window.onload = function() {
+        prettyPrintJSON();
+    };
+        function prettyPrintJSON() {
+            var ugly = document.getElementById('query-result').value;
+            var obj = JSON.parse(ugly);
+            var pretty = JSON.stringify(obj, undefined, 4);
+            document.getElementById('query-result').value = pretty;
+        }
+    </script>
 {% endblock %}
