@@ -12,7 +12,7 @@ def query(sparql_query, format_mimetype='application/sparql-results+json'):
         'Content-Type': 'application/x-www-form-urlencoded',
         'Accept': format_mimetype
     }
-    r = requests.post(settings.SPARQL_QUERY_URI, auth=auth, data=data, headers=headers)
+    r = requests.post(settings.SPARQL_QUERY_URI, auth=auth, data=data, headers=headers, timeout=1)
     try:
         return json.loads(r.text)
     except Exception as e:
@@ -25,7 +25,7 @@ def query_turtle(sparql_query):
     data = {'query': sparql_query, 'format': 'text/turtle'}
     auth = (settings.SPARQL_AUTH_USR, settings.SPARQL_AUTH_PWD)
     headers = {'Accept': 'text/turtle'}
-    r = requests.post(settings.SPARQL_QUERY_URI, data=data, auth=auth, headers=headers)
+    r = requests.post(settings.SPARQL_QUERY_URI, data=data, auth=auth, headers=headers, timeout=1)
     try:
         return r.text
     except Exception as e:
@@ -42,7 +42,7 @@ def insert(g, named_graph_uri=None):
     auth = (settings.SPARQL_AUTH_USR, settings.SPARQL_AUTH_PWD)
     headers = {'Accept': 'text/turtle'}
     try:
-        r = requests.post(settings.SPARQL_UPDATE_URI, headers=headers, data=data, auth=auth)
+        r = requests.post(settings.SPARQL_UPDATE_URI, headers=headers, data=data, auth=auth, timeout=1)
         if r.status_code != 200 and r.status_code != 201:
             raise Exception('The INSERT was not successful. The SPARQL database\' error message is: ' + r.content)
         return True

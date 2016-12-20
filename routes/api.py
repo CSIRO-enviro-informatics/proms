@@ -42,13 +42,13 @@ def lodge_reportingsystem():
 
 @api.route('/function/create-reportingsystem')
 def create_reportingsystem():
-    try:
-        agents = functions_agents.get_agents_dict()
-    except ConnectionError:
-        return render_template('error_db_connection.html'), 500
+    # try:
+    #     agents = functions_agents.get_agents_dict()
+    # except ConnectionError:
+    #     return render_template('error_db_connection.html'), 500
     return render_template(
         'function_create_reportingsystem.html',
-        agents=agents,
+        #agents=agents,
         web_subfolder=settings.WEB_SUBFOLDER
     )
 

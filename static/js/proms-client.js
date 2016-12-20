@@ -5,11 +5,9 @@
 var FOAF = $rdf.Namespace('http://xmlns.com/foaf/0.1/');
 var RDF = $rdf.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
 var RDFS = $rdf.Namespace("http://www.w3.org/2000/01/rdf-schema#");
-var XSD = $rdf.Namespace("http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#dt-");
+var XSD = $rdf.Namespace("http://www.w3.org/2001/XMLSchema#");
 var PROV = $rdf.Namespace('http://www.w3.org/ns/prov#');
 var PROMS = $rdf.Namespace('http://promsns.org/def/proms#');
-var DC = $rdf.Namespace('http://purl.org/dc/elements/1.1/');
-var DCAT = $rdf.Namespace('http://www.w3.org/n2/dcat#');
 
 
 /*
@@ -54,7 +52,6 @@ function Agent(label, uri, givenName, familyName, mbox) {
 /*
     Build Entity
 */
-
 function Entity(label, uri, value, comment) {
 //(label, uri, comment, wasAttributedTo, creator, created, licence, metadataUri, downloadURL)
     this.label = label;
@@ -142,11 +139,9 @@ function Entity(label, uri, value, comment) {
      };
 }
 
-
 /*
     Build Activity
 */
-
 function Activity(label, startedAtTime, endedAtTime, uri, wasAssociatedWith, comment, used_entities, generated_entities) {
 //(label, startedAtTime, endedAtTime, uri, wasAssociatedWith, comment, used_entities, generated_entities, wasInformedBy, namedActivityUri) {
 
@@ -241,52 +236,38 @@ function Activity(label, startedAtTime, endedAtTime, uri, wasAssociatedWith, com
     };
 }
 
-
 /*
     Build ReportingSystem
 */
-
-function ReportingSystem(label, uri, comment, actedOnBehalfOf) {
+function ReportingSystem(label, comment, uri, actedOnBehalfOf) {
     this.label = label;
     if (uri) {
         this.uri = uri;
-    }
-    else {
-        this.uri = 'http://placeholder.org#';
+    } else {
+        this.uri = 'http://placeholder.org#abc123';
     }
     if (comment) {
         this.comment = comment;
     }
-    // if (name) this.name = name
     if (actedOnBehalfOf) {
         this.actedOnBehalfOf = actedOnBehalfOf;
     }
 
-
-    this.makeGraph = function () {
+    this.makeGraph = function() {
         this.g = new $rdf.graph();
 
-        this.g.add($rdf.sym(this.uri), RDF('type'), PROMS('ReportingSystem'));
-
-        this.g.add($rdf.sym(this.uri), RDFS('label'), $rdf.lit(this.label, 'en', XSD('string')));
+        var me = $rdf.sym(this.uri);
+        this.g.add(me, RDF('type'), PROMS('ReportingSystem'));
+        this.g.add(me, RDFS('label'), $rdf.lit(this.label, 'en', XSD('string')));
         if (this.comment) {
-            this.g.add($rdf.sym(this.uri), RDFS('comment'), $rdf.lit(this.comment, 'en', XSD('string')));
+            this.g.add(me, RDFS('comment'), $rdf.lit(this.comment, 'en', XSD('string')));
         }
         if (this.actedOnBehalfOf) {
-             // get graph of person, add it to this graph
-            var ag = new $rdf.graph;
-            ag = this.actedOnBehalfOf.get_graph();
-
-            this.g.add($rdf.sym(this.uri), PROV('actedOnBehalfOf'), $rdf.sym(this.actedOnBehalfOf.uri));
-            this.g.add(ag);
-
+            this.g.add(me, PROV('actedOnBehalfOf'), $rdf.sym(this.uri));
         }
-
-
-
     };
 
-    this.get_graph = function () {
+    this.getGraph = function() {
         if (!this.g) {
             this.makeGraph();
             return this.g;
@@ -294,22 +275,22 @@ function ReportingSystem(label, uri, comment, actedOnBehalfOf) {
     };
 }
 
+function getTurtle(g) {
+    return $rdf.serialize(null, g, null, 'text/turtle');
+}
+
 /*
     Build Report
 */
-
 function Report(label, reportingSystemURI, nativeId, reportActivity, comment, reportType, generatedAtTime) {
-
     this.label = label;
     this.uri = 'http://placeholder.org/reporting#';
     this.reportingSystemURI = reportingSystemURI;
     this.nativeId = nativeId;
     this.reportActivity = reportActivity;
-
     if (comment) {
         this.comment = comment;
     }
-
     this.reportType = reportType;
     this.generatedAtTime = generatedAtTime;
 
@@ -323,28 +304,19 @@ function Report(label, reportingSystemURI, nativeId, reportActivity, comment, re
             this.g.add($rdf.sym(this.uri), RDF('type'), PROMS('ExternalReport'));
         }
         this.g.add($rdf.sym(this.uri), RDFS('label'), $rdf.lit(this.label, 'en', XSD('string')));
-
         //this.g.add(this.reportingSystem.get_graph());
         this.g.add($rdf.sym(this.uri), PROMS('reportingSystem'), $rdf.sym(this.reportingSystemURI));
-
         this.g.add($rdf.sym(this.uri), PROMS('nativeId'),$rdf.lit(this.nativeId, 'en', XSD('string')));
-
         this.g.add(this.reportActivity.get_graph());
         this.g.add($rdf.sym(this.uri), PROMS('startingActivity'), $rdf.sym(this.reportActivity.uri));
         this.g.add($rdf.sym(this.uri), PROMS('endingActivity'), $rdf.sym(this.reportActivity.uri));
-
         this.g.add($rdf.sym(this.uri), PROV('generatedAtTime'), $rdf.lit(this.generatedAtTime, 'en', XSD('dateTime')) )
-
-
-
     };
 
-
-    this.get_graph = function () {
+    this.getGraph = function () {
         if (!this.g) {
             this.makeGraph();
             return this.g;
         }
     };
-
 }

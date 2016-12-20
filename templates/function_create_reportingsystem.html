@@ -1,15 +1,17 @@
 {% extends "template_layout.html" %}
 
 {% block content %}
-    <h2>Register a <em>Reporting System</em></h2>
-    <p>This page allows someone to register a <a class="definition" href="http://promsns.org/def/proms#ReportingSystem">Report</a> allowing that ReportingSystem to send data to this PROMS Server instance in the form of <a class="definition" href="http://promsns.org/def/proms#Report"><em>Reports</em></a>.</p>
-    <p>Complete the form below to register a <em>ReportingSystem</em>. Input validation will ensure that the <em>ReportingSystem</em> registered is valid, i.e. that all the metadata by the <a class="definition" href="http://promsns.org/def/proms">PROMS ontology</a> is supplied.</p>
+    <h2>Create a <em>Reporting System</em></h2>
+    <p>This page allows someone to create a <a class="definition" href="http://promsns.org/def/proms#ReportingSystem">Report</a> allowing that ReportingSystem to send data to this PROMS Server instance in the form of <a class="definition" href="http://promsns.org/def/proms#Report"><em>Reports</em></a>.</p>
+    <p>Complete the form below to register a <em>ReportingSystem</em>. Input validation will ensure that the <em>ReportingSystem</em> registered is valid, i.e. that all the metadata required by the <a class="definition" href="http://promsns.org/def/proms">PROMS ontology</a> is supplied.</p>
 
-    <script src="/static/js/jquery.min.js" charset="utf-8"></script>
-    <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"/ >
+    <script src="/static/js/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css" />
     <script src="/static/js/jquery.datetimepicker.js"></script>
     <script src="/static/js/rdflib.js"></script>
-    <script src="/static/js/jsproms.js"></script>
+    <script src="/static/js/proms-client.js"></script>
+    <script src="/static/js/jquery.validate.min.js"></script>
+    <script src="/static/js/additional-methods.min.js"></script>
     <style>
         .entity-input-delete,
         .entity-output-delete,
@@ -22,165 +24,117 @@
     </style>
 
     <script>
-        var allAgents = {{ agents|tojson }};
-    </script>
-
-    <script>
-        var entityInputCounter = 0;
-        var entityOutputCounter = 0;
         $(function() {
-            $('input[name=agent-new-existing]').change(function () {
-                if ($('input[name=agent-new-existing]:checked', '#register-system').val() == "existing") {
-                    $('#agent-existing-value').show();
-                    $('#agent-new-value').hide();
-                } else {
-                    $('#agent-existing-value').hide();
-                    $('#agent-new-value').show();
+            // validating form inputs
+            $("#createDescription").validate({
+                errorElement: 'div',
+                rules: {
+                    uri: {
+                        url: true
+                    },
+                    actedOnBehalfOf: {
+                        url: true
+                    }
                 }
             });
 
-            $('#submit-system').click(function(event) {
+            $('#create-button').click(function(event) {
                 event.preventDefault();
-                // TODO: validate fields
 
+                // make the RDF for the RS
+                var repSys = new ReportingSystem(
+                    $('#label').val(),
+                    $('#comment').val(),
+                    $('#uri').val(),
+                    $('#actedonbehalfof').val()
+                );
 
-                var postRegRequest = false;
-                var foundAgent = false;
-
-                // For new Agent, Check if new Agent already in system
-
-                if ($('input[name=agent-new-existing]:checked', '#register-system').val() == "new") {
-
-                    for (agent_it in allAgents) {
-                        var agent_in_db = allAgents[agent_it];
-                        if (agent_in_db["n"] == $('#agent-lname').val() && agent_in_db["em"] == $('#agent-email').val().toLowerCase()) {
-                            alert("Agent: " + agent_in_db["fn"] + " " + agent_in_db["n"] + " has previously registered. Please use the selection list");
-                            postRegRequest = false;
-                            foundAgent = true;
-                        }
-                    }
-                    if (foundAgent === false) {
-                        var Custodian = new Agent('GA Agent', "http://pid.geoscience.au/person/" + $('#agent-lname').val() + "." + $('#agent-fname').val(), $('#agent-fname').val(), $('#agent-lname').val(), $('#agent-email').val().toLowerCase());
-                        postRegRequest = true;
-                    }
-                }
-                else {
-
-                    // For existing agents, find their info
-
-                    for (agent_it in allAgents) {
-                        var agent_in_db = allAgents[agent_it];
-                        if (agent_in_db["ag_u"] == $('#agent :selected').val()) {
-                            var Custodian = new Agent('GA Agent', "http://pid.geoscience.au/person/" + agent_in_db["n"] +"."+ agent_in_db["fn"] , agent_in_db["fn"] , agent_in_db["n"] , agent_in_db["em"] );
-                        }
-                    }
-                    postRegRequest = true;
-
-                }
-
-
-
-
-                var entityTest2 = new Entity('entity2', 'http://pid/entiyt/entity2', 'value2');
-
-                //}
-                //var Custodian = new Agent("some text", null, 'wilma', 'flinstone', 'wf@email.com');
-                //var RepSys = new ReportingSystem('some label', null, 'some comment', Custodian);
-
-
-
-                if (postRegRequest === true) {
-                    var RepSys = new ReportingSystem($('#system-label').val(), $('#system-uri').val(), $('#system-comment').val(), Custodian, entityTest2);
-                    var RSgraph = RepSys.get_graph();
-                    var triples = new $rdf.Serializer(RSgraph).toN3(RSgraph);
-
-                    // Post to Proms
-                    $.ajax({
-                        type: 'POST',
-                        datatype: 'text',
-                        //url: '/id/reportingsystem/',
-                        url: '/id/reportingsystem/',
-                        data: triples,
-                        headers: {'Content-Type': 'text/turtle'},
-                        success: function (response) {
-                            alert("Reporting system registered with ID: \n" + response);
-                        },
-                        error: function (response) {
-                            alert("Problem registering reporting system: \n" + response);
-                        }
-                    });
-
-
-
-
-                    $('#generated-results').text(triples);
-                    $('#generated-results').show();
-                }
-
+                //show the RDF
+                var ttl = getTurtle(repSys.getGraph());
+                $('#generated-results').val(ttl);
+                console.log('lines: '+ ttl.split("\n").length);
+                $('#generated-results').css('height', ttl.split("\n").length * 2.5 + 'ex');
+                $('#generated-results-row').show();
+                $('#lodge-button-row').show();
+                $('#create-button').html('Regenerate RDF');
             });
 
+            $('#lodge-button').click(function(event) {
+                event.preventDefault();
+
+                // read the turtle
+                var ttl = $('#generated-results').val();
+                if (!ttl) {
+                    $('#lodge-results').val("Please generate your RDF again.");
+                    $('#lodge-results-row').show();
+                    return
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/function/lodge-reportingsystem',
+                    data: ttl,
+                    headers: {'Content-Type': 'text/turtle'},
+                    dataType: 'text',
+                    success: function (response) {
+                        $('#lodge-results').val('Success! The URI for your new ReportingSystem is:\n\n' + response);
+                    },
+                    error: function (response) {
+                        $('#lodge-results').val('Failed: \n\n' + response.responseText);
+                    }
+                });
+                $('#lodge-results-row').show();
+            });
         });
-
-
-        function pad(n, width, z) {
-            z = z || '0';
-            n = n + '';
-            return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-        }
     </script>
-    <form id="register-system" action="/function/register_reporting_system" method="post">
-        <table class="lined" style="width:860px;">
-            <tr><td colspan="2"><h3>Agent</h3></td></tr>
+    <form id="createDescription" method="post" action="/function/register_reporting_system">
+        <table class="lined" style="width:100%;">
+            <tr><td colspan="2"><h3>Reporting System</h3></td></tr>
             <tr>
-                <th style="width:300px;">
-                    Custodian:<br />
-                    <span style="font-size:small; font-weight:normal;">Choose from the list of people or add in your details</span>
+                <th style="width:55%">
+                    <label for="label">Name</label><span style="color:red;">*</span>:<br />
+                    <span style="font-size:small; font-weight:normal;">A simple name for the <em>Reporting System</em>. </span>
                 </th>
-                <td valign="top" style="width:560px;">
-                    <p>
-                        <input type="radio" name="agent-new-existing" value="existing" checked="checked" /> Existing <strong>or</strong>
-                        <input type="radio" name="agent-new-existing" value="new" /> New
-                    </p>
-                    {%if agents|length>0%}
-                    <div id="agent-existing-value" style="width:300px;">
-                        <select name="agent" id="agent">
-                            {% for agent_item in agents %}
-                                <option value="{{ agent_item.ag_u }}">{{ agent_item.n + " " + agent_item.fn}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    {%endif%}
-                    <div id="agent-new-value" style="width:300px; display:none;">
-                        <table class="layout">
-                            <tr><td>First Name:</td><td><input id="agent-fname" name="agent-fname" type="text" /></td></tr>
-                            <tr><td>Last Name:</td><td><input id="agent-lname" name="agent-lname" type="text" /></td></tr>
-                            <tr><td>Email:</td><td><input id="agent-email" name="agent-email" type="text" /></td></tr>
-                        </table>
-                    </div>
+                <td><input id="label" name="label" type="text" minlength="5" required style="width:55%" /></td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="comment">Description:</label><br />
+                    <span style="font-size:small; font-weight:normal;">A simple description of the <em>Reporting System</em>.</span></th>
+                <td><textarea id="comment" name="comment"  style="width:98%;"></textarea></td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="uri">Existing URI:</label><br />
+                    <span style="font-size:small; font-weight:normal;">If this ReportingSystem is defined elsewhere and therefore has a URI, add it here.</span></th>
+                <td><input id="uri" name="uri" type="text" style="width:55%" /></td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="actedOnBehalfOf">Acted on behalf of:</label><br />
+                    <span style="font-size:small; font-weight:normal;">Who was responsible for running this ReportingSystem? (Person or Group)</span></th>
+                <td><input id="actedOnBehalfOf" name="actedOnBehalfOf" type="text" style="width:55%" /></td>
+            </tr>
+            <tr id="generated-button-row">
+                <td colspan="2" style="text-align:right;">
+                    <button id="create-button" style="width: 160px;">Create RDF</button>
                 </td>
             </tr>
-            <tr><td colspan="2"><h3>Reporting System</h3></td></tr>
-
-            <tr><th>Name:<br /><span style="font-size:small; font-weight:normal;">A simple name for the <em>Reporting System</em>. </span></th>
-                <td><input type="text" name="system-label" id="system-label" /></td>
-                <td><input type="hidden" name="system-uri" id="system-uri" value="http://pid.geoscience.gov.au/reportingsystem/"/></td>
+            <tr id="generated-results-row" style="display:none;">
+                <td colspan="2">
+                    Your ReportingSystem in RDF (turtle):<br />
+                    <textarea id="generated-results" style="width:98%; min-height:50px;"></textarea>
+                </td>
             </tr>
- <!--           <tr>
-                <th>Reporting System URI:<br /><span style="font-size:small; font-weight:normal;">A valid link for the <em>Reporting System</em>. </span></th>
-                <td><input type="text" name="system-uri" id="system-uri" /></td>
-
-            </tr>-->
-            <tr>
-                <th>Reporting System Description:<br /><span style="font-size:small; font-weight:normal;">A simple description for the <em>Activity</em>.</span></th>
-                <td><textarea name="system-comment" id="system-comment" style="width:230px;"></textarea></td>
+            <tr id="lodge-button-row" style="display:none;">
+                <td colspan="2" style="text-align:right;">
+                    <button id="lodge-button" style="width: 160px;">Lodge RDF</button>
+                </td>
             </tr>
-        </table>
-            <tr>
-                <td>
-                    <br />
-                    <button id="submit-system">Register System</button><br />
-                    <textarea id="generated-results" style="display:none; width:840px; height: 500px;"></textarea>
-                    <button id="generate-report" style="display:none;">Store Report Here</button>
+            <tr id="lodge-results-row" style="display:none;">
+                <td colspan="2">
+                    Results of lodging your ReportingSystem with this instance of PROMS Server:<br />
+                    <textarea id="lodge-results" style="width:98%; min-height:50px;"></textarea>
                 </td>
             </tr>
         </table>
