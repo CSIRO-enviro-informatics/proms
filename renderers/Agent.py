@@ -1,6 +1,6 @@
 from flask import Response, render_template
 from ldapi import LDAPI
-import functions
+from routes import functions_agents
 import settings
 
 
@@ -22,15 +22,15 @@ class AgentRenderer:
         """
         if view == 'neighbours':
             # no work to be done as we have already loaded the triples
-            if format in LDAPI.MIMETYPES_PARSERS.iterkeys():
+            if format in [x[0] for x in LDAPI.MIMETYPES_PARSERS]:
                 return Response(
                     self.g.serialize(format=LDAPI.MIMETYPES_PARSERS.get(format)),
                     status=200,
-                    mimetype=format
+                    mimetype=[item[1] for item in LDAPI.MIMETYPES_PARSERS if item[0] == self.agent_mimetype][0]
                 )
             elif format == 'text/html':
                 return render_template(
                     'class_agent.html',
-                    reportingsystem=functions.get_reportingsystem_dict(self.uri),
+                    agent=functions_agents.get_agent(self.uri),
                     web_subfolder=settings.WEB_SUBFOLDER
                 )

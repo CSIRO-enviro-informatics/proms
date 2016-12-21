@@ -5,6 +5,7 @@ import functions_sparqldb
 import api_functions
 import settings
 import uuid
+import urllib
 
 
 class AgentFunctions:
@@ -96,10 +97,9 @@ class AgentFunctions:
 
 
 def get_agents_dict():
-    """ Get all Agents in the provenance database
-    """
+    """ Get all Agents in the provenance database"""
 
-    query = '''
+    q = '''
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
         SELECT ?ag ?label
@@ -110,8 +110,7 @@ def get_agents_dict():
         }
         '''
     agents = []
-    for row in functions_sparqldb.query(query)['results']['bindings']:
-        print row
+    for row in functions_sparqldb.query(q)['results']['bindings']:
         agents.append({
             'uri': row['ag']['value'],
             'label': row['label']['value']
@@ -121,45 +120,26 @@ def get_agents_dict():
 
 
 def get_agent(agent_uri):
-    """ Get Person details (JSON)
-    """
-    query = '''
-        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+    """ Get an Agent from the provenance database"""
+
+    q = '''
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
-        SELECT DISTINCT (<''' + agent_uri + '''> AS ?ag) ?n ?ag2
-        WHERE {
-            GRAPH ?g {
-                {
-                    { ?e a prov:Entity . }
-                    UNION
-                    { ?e a prov:Plan . }
-                    OPTIONAL{ ?e prov:wasAttributedTo <''' + agent_uri + '''> . }
-                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
-                    OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
-                }
-                UNION
-                {
-                    ?e a prov:Activity .
-                    OPTIONAL{ ?e prov:wasAssociatedWith <''' + agent_uri + '''> . }
-                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
-                    OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
-                }
-                UNION
-                {
-                    ?aoo a prov:Person .
-                    ?aoo prov:actedOnBehalfOf <''' + agent_uri + '''> .
-                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
-                }
-                UNION
-                {
-                    <''' + agent_uri + '''> a prov:Person .
-                    OPTIONAL{ <''' + agent_uri + '''> foaf:name ?n . }
-                    OPTIONAL{ <''' + agent_uri + '''> prov:actedOnBehalfOf ?ag2 . }
-                }
-            }
+        SELECT ?label
+        WHERE { GRAPH ?g {
+            <%(agent_uri)s> a prov:Agent ;
+                rdfs:label ?label .
+          }
         }
-        '''
-    return functions_sparqldb.query(query)
+        ''' % {'agent_uri': agent_uri}
+    agent = None
+    for row in functions_sparqldb.query(q)['results']['bindings']:
+        agent = {
+            'uri': agent_uri,
+            'label': row['label']['value']
+        }
+
+    return agent
 
 
 def get_agent_dict(agent_uri):

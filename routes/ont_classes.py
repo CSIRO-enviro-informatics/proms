@@ -9,6 +9,7 @@ from ldapi import LDAPI, LdapiParameterError
 import functions_sparqldb
 import urllib
 from rdflib import Graph
+from renderers import AgentRenderer
 ont_classes = Blueprint('ont_classes', __name__)
 cache = SimpleCache()
 
@@ -20,7 +21,7 @@ def get_classes_views_formats():
     """
     cvf = cache.get('classes_views_formats')
     if cvf is None:
-        cvf = json.load(open('classes_views_formats.json'))
+        cvf = json.load(open('routes/classes_views_formats.json'))
         # times out never (i.e. on app startup/shutdown
         cache.set('classes_views_formats', cvf)
     return cvf
@@ -87,7 +88,12 @@ def get_graph(uri):
 @ont_classes.route('/register')
 @ont_classes.route('/register/')
 def class_register_missing():
-    return 'You must specify a class name, /register{class_name}. class_name can be one of Report, ReportingSystem, Activity, Agent,  Entity, Person.', 400
+    return Response(
+        'You must specify a class name, /register{class_name}. class_name can be one of Report, ReportingSystem, '
+        'Activity, Agent,  Entity, Person.',
+        status=400,
+        mimetype='text/plain'
+    )
 
 
 @ont_classes.route('/register/<string:class_name>/')
@@ -115,7 +121,8 @@ def graph_object():
     uri = request.args.get('_uri')
     g = get_graph(uri)
     if not g:
-        return client_error_Response('No URI of an object in the graph database was supplied. Expecting a query string argument \'uri\'.')
+        return client_error_Response(
+            'No URI of an object in the graph database was supplied. Expecting a query string argument \'_uri\'.')
 
     # the URI is of something in the graph so now we validate the requested view and format
     # find the class of the URI
