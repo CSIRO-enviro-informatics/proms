@@ -11,41 +11,44 @@ var PROMS = $rdf.Namespace('http://promsns.org/def/proms#');
 
 
 /*
-    Build Person
+    Build Agent
 */
-function Agent(label, uri, givenName, familyName, mbox) {
+function Agent(label, comment, uri, actedOnBehalfOf) {
     this.label = label;
-    this.givenName = givenName;
-    this.familyName = familyName;
-    this.mbox = mbox;
     if (uri) {
         this.uri = uri;
+    } else {
+        this.uri = 'http://placeholder.org#abc123';
     }
-    else {
-        this.uri = 'http://placeholder.org#';
+    if (comment) {
+        this.comment = comment;
     }
-    this.makeGraph = function () {
+    if (actedOnBehalfOf) {
+        this.actedOnBehalfOf = actedOnBehalfOf;
+    }
+
+    this.makeGraph = function() {
+        console.log('makeGraph');
         this.g = new $rdf.graph();
-        //this.g.add($rdf.sym(this.uri), RDF('type'), PROV('Person')); -- redundant
-        this.g.add($rdf.sym(this.uri), RDF('type'), PROV('Person'));
 
-        this.g.add($rdf.sym(this.uri), FOAF('familyName'), this.familyName);
-        this.g.add($rdf.sym(this.uri), FOAF('givenName'), this.givenName);
-        this.g.add($rdf.sym(this.uri), FOAF('mbox'), this.mbox);
-
-        return this.g;
+        var me = $rdf.sym(this.uri);
+        this.g.add(me, RDF('type'), PROV('Agent'));
+        this.g.add(me, RDFS('label'), $rdf.lit(this.label, 'en', XSD('string')));
+        if (this.comment) {
+            this.g.add(me, RDFS('comment'), $rdf.lit(this.comment, 'en', XSD('string')));
+        }
+        if (this.actedOnBehalfOf) {
+            this.g.add(me, PROV('actedOnBehalfOf'), $rdf.sym(this.actedOnBehalfOf));
+            console.log('actedOnBehalfOf: ' + this.actedOnBehalfOf);
+        }
     };
-    this.get_graph = function () {
+
+    this.getGraph = function() {
         if (!this.g) {
             this.makeGraph();
             return this.g;
         }
     };
-    this.serialize_graph = function() {
-        var sg = this.get_graph();
-        var triples = new $rdf.serialize(sg.toN3(sg));
-        return triples;
-     };
 }
 
 
@@ -254,6 +257,7 @@ function ReportingSystem(label, comment, uri, actedOnBehalfOf) {
     }
 
     this.makeGraph = function() {
+        console.log('makeGraph');
         this.g = new $rdf.graph();
 
         var me = $rdf.sym(this.uri);
@@ -263,7 +267,8 @@ function ReportingSystem(label, comment, uri, actedOnBehalfOf) {
             this.g.add(me, RDFS('comment'), $rdf.lit(this.comment, 'en', XSD('string')));
         }
         if (this.actedOnBehalfOf) {
-            this.g.add(me, PROV('actedOnBehalfOf'), $rdf.sym(this.uri));
+            this.g.add(me, PROV('actedOnBehalfOf'), $rdf.sym(this.actedOnBehalfOf));
+            console.log('actedOnBehalfOf: ' + this.actedOnBehalfOf);
         }
     };
 

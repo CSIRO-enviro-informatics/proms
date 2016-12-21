@@ -7,9 +7,9 @@
     <script src="/static/js/jquery.validate.min.js"></script>
     <script src="/static/js/additional-methods.min.js"></script> <!-- for jQuery Validate's URI validation -->
 
-    <h2>Create a <em>Reporting System</em></h2>
-    <p>This page allows someone to create a <a class="definition" href="http://promsns.org/def/proms#ReportingSystem">Reportingsystem</a> allowing that ReportingSystem to send data to this PROMS Server instance in the form of <a class="definition" href="http://promsns.org/def/proms#Report"><em>Reports</em></a>.</p>
-    <p>Complete the form below to register a <em>ReportingSystem</em>. Input validation will ensure that the <em>ReportingSystem</em> registered is valid, i.e. that all the metadata required for one according to the <a class="definition" href="http://promsns.org/def/proms">PROMS ontology</a> is supplied.</p>
+    <h2>Create an <em>Agent</em></h2>
+    <p>This page allows someone to create an <a class="definition" href="http://www.w3.org/ns/prov#Agent">Agent</a> allowing to which data may be attributed, actions associated and on who's behalf a <a class="definition" href="http://promsns.org/def/proms#ReportingSystem">Reportingsystem</a> may operate. From PROV: "An agent is something that bears some form of responsibility for an activity taking place".</p>
+    <p>Complete the form below to register an <em>Agent</em>. Input validation will ensure that the <em>Agent</em> registered is valid, i.e. that all the metadata required for one according to the <a class="definition" href="http://promsns.org/def/proms">PROMS ontology</a> is supplied.</p>
     <script>
         // jQuery onLoad function
         $(function() {
@@ -31,7 +31,7 @@
                 event.preventDefault();
 
                 // make the RDF for the RS
-                var repSys = new ReportingSystem(
+                var repSys = new Agent(
                     $('#label').val(),
                     $('#comment').val(),
                     $('#uri').val(),
@@ -60,16 +60,16 @@
                     return
                 }
 
-                // make an AJAX request to PROMS Server's lodge-reportingsystem endpoint
+                // make an AJAX request to PROMS Server's lodge-agent endpoint
                 $.ajax({
                     type: 'POST',
-                    url: '/function/lodge-reportingsystem',
+                    url: '/function/lodge-agent',
                     data: ttl,
                     headers: {'Content-Type': 'text/turtle'},
                     dataType: 'text',
                     success: function (response) {
                         $('#lodge-results').css('height', response.split("\n").length * 2.5 + 'ex');
-                        $('#lodge-results').val('Success! The URI for your new ReportingSystem is:\n\n<' + response + '>');
+                        $('#lodge-results').val('Success! The URI for your Agent is:\n\n<' + response + '>');
                     },
                     error: function (response) {
                         $('#lodge-results').css('height', response.responseText.split("\n").length * 2.5 + 'ex');
@@ -100,13 +100,13 @@
         <table class="lined">
             <tr>
                 <td colspan="2">
-                    <h3>Reporting System</h3>
+                    <h3>Agent</h3>
                 </td>
             </tr>
             <tr>
                 <th>
                     <label for="label">Name</label><span style="color:red;">*</span>:<br />
-                    <span>A simple name for the <em>Reporting System</em>. </span>
+                    <span>A simple name for the <em>Agent</em>. </span>
                 </th>
                 <td>
                     <input id="label" name="label" type="text" minlength="5" required style="width:55%" />
@@ -115,7 +115,7 @@
             <tr>
                 <th>
                     <label for="comment">Description:</label><br />
-                    <span>A simple description of the <em>Reporting System</em>.</span></th>
+                    <span>A simple description of the <em>Agent</em>.</span></th>
                 <td>
                     <textarea id="comment" name="comment" style="width:98%;"></textarea>
                 </td>
@@ -123,7 +123,7 @@
             <tr>
                 <th>
                     <label for="uri">Existing URI:</label><br />
-                    <span>If this ReportingSystem is defined elsewhere and therefore has a URI, add it here.</span></th>
+                    <span>If this <em>Agent</em> is defined elsewhere and therefore has a URI, add it here.</span></th>
                 <td>
                     <input id="uri" name="uri" type="text" style="width:55%" />
                 </td>
@@ -131,7 +131,7 @@
             <tr>
                 <th>
                     <label for="actedOnBehalfOf">Acted on behalf of:</label><br />
-                    <span>Who did this ReportingSystem act on behalf of?<br />Any other Agent already registered in this system may be chosen.</span></th>
+                    <span>Who did this Agent act on behalf of?<br />Any other Agent already registered in this system may be chosen.</span></th>
                 <td>
                     <select id="actedOnBehalfOf" name="actedOnBehalfOf">
                         <option value="">choose one...</option>

@@ -13,42 +13,106 @@ from ldapi import LDAPI
 api = Blueprint('api', __name__)
 
 
+@api.route('/function/lodge-agent', methods=['POST'])
+def lodge_agent():
+    # only accept RDF documents
+    acceptable_mimes = [x[0] for x in LDAPI.MIMETYPES_PARSERS]
+    ct = request.content_type
+    if ct not in acceptable_mimes:
+        return Response(
+            'The Agent posted is not encoded with a valid RDF Content-Type. Must be one of: ' +
+            ', '.join(acceptable_mimes) + '.',
+            status=400,
+            mimetype='text/plain')
+
+    # validate Agent
+    sr = functions_agents.AgentFunctions(request.data, request.content_type)
+    if not sr.valid():
+        return Response(
+            'The Agent posted is not valid for the following reasons: ' +
+            ', '.join(sr.error_messages) + '.',
+            status=400,
+            mimetype='text/plain')
+
+    # get the Agent's URI
+    sr.determine_agent_uri()
+
+    # store the Agent
+    if not sr.stored():
+        return Response(
+            'The Agent posted is valid but cannot be stored for the following reasons: ' +
+            ', '.join(sr.error_messages) + '.',
+            status=500,
+            mimetype='text/plain')
+
+    # reply to sender
+    return Response(
+        sr.agent_uri,
+        status=201,
+        mimetype='text/plain')
+
+
+@api.route('/function/create-agent')
+def create_agent():
+    try:
+        agents = functions_agents.get_agents_dict()
+    except ConnectionError:
+        return render_template('error_db_connection.html'), 500
+    return render_template(
+        'function_create_agent.html',
+        agents=agents,
+        web_subfolder=settings.WEB_SUBFOLDER
+    )
+
+
 @api.route('/function/lodge-reportingsystem', methods=['POST'])
 def lodge_reportingsystem():
     # only accept RDF documents
     acceptable_mimes = [x[0] for x in LDAPI.MIMETYPES_PARSERS]
     ct = request.content_type
     if ct not in acceptable_mimes:
-        return 'The ReportingSystem posted is not encoded with a valid RDF Content-Type. Must be one of: ' + \
-               ', '.join(acceptable_mimes) + '.', 400
+        return Response(
+            'The ReportingSystem posted is not encoded with a valid RDF Content-Type. Must be one of: ' +
+            ', '.join(acceptable_mimes) + '.',
+            status=400,
+            mimetype='text/plain')
 
     # validate ReportingSystem
     sr = functions_reportingsystems.ReportingSystemsFunctions(request.data, request.content_type)
     if not sr.valid():
-        return 'The ReportingSystem posted is not valid for the following reasons: ' + \
-               ', '.join(sr.error_messages) + '.', 400
+        return Response(
+            'The ReportingSystem posted is not valid for the following reasons: ' +
+            ', '.join(sr.error_messages) + '.',
+            status=400,
+            mimetype='text/plain')
 
     # get the ReportingSystem's URI
     sr.determine_reportingsystem_uri()
 
     # store the ReportingSystem
     if not sr.stored():
-        return 'ReportingSystem posted is valid but cannot be stored for the following reasons: ' + \
-               ', '.join(sr.error_messages) + '.', 500
+        return Response(
+            'ReportingSystem posted is valid but cannot be stored for the following reasons: ' +
+            ', '.join(sr.error_messages) + '.',
+            status=500,
+            mimetype='text/plain')
 
     # reply to sender
-    return sr.reportingsystem_uri, 201
+    return Response(
+        sr.reportingsystem_uri,
+        status=201,
+        mimetype='text/plain')
 
 
 @api.route('/function/create-reportingsystem')
 def create_reportingsystem():
-    # try:
-    #     agents = functions_agents.get_agents_dict()
-    # except ConnectionError:
-    #     return render_template('error_db_connection.html'), 500
+    try:
+        agents = functions_agents.get_agents_dict()
+    except ConnectionError:
+        return render_template('error_db_connection.html'), 500
     return render_template(
         'function_create_reportingsystem.html',
-        #agents=agents,
+        agents=agents,
         web_subfolder=settings.WEB_SUBFOLDER
     )
 
