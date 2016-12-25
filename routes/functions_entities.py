@@ -1,70 +1,8 @@
 import urllib
-import functions_sparqldb
+
 import settings
-
-
-def get_entities_dict():
-    """ Get details for all Entities
-    """
-    query = '''
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX proms: <http://promsns.org/def/proms#>
-        SELECT DISTINCT ?e ?l
-        WHERE {
-            GRAPH ?g {
-                { ?e a prov:Entity . }
-                UNION
-                { ?e a prov:Plan . }
-                UNION
-                { ?e a proms:ServiceEntity . }
-                OPTIONAL { ?e rdfs:label ?l . }
-            }
-        }
-        ORDER BY ?e
-    '''
-    entities = functions_sparqldb.query(query)
-    entity_items = []
-    # Check if nothing is returned
-    if entities and 'results' in entities:
-        for entity in entities['results']['bindings']:
-            ret = {}
-            ret['e'] = urllib.quote(str(entity['e']['value']))
-            ret['e_u'] = str(entity['e']['value'])
-            if entity.get('l'):
-                ret['l'] = str(entity['l']['value'])
-            entity_items.append(ret)
-    return entity_items
-
-
-def get_entity(entity_uri):
-    """ Get details for an Entity (JSON)
-    """
-    # TODO: landing page with view options:
-    #   wasDerivedFrom, wasGeneratedBy, inv. used, hadPrimarySource, wasAttributedTo, value
-    # get the report metadata from DB
-    query = '''
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX dc: <http://purl.org/dc/elements/1.1/>
-        PREFIX dcat: <http://www.w3.org/ns/dcat#>
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX proms: <http://promsns.org/def/proms#>
-        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-        SELECT DISTINCT ?l ?c ?dl ?t ?v ?wat ?wat_name
-        WHERE {
-            GRAPH ?g {
-                <''' + entity_uri + '''> a prov:Entity .
-                OPTIONAL { <''' + entity_uri + '''> rdfs:label ?l . }
-                OPTIONAL { <''' + entity_uri + '''> dc:created ?c . }
-                OPTIONAL { <''' + entity_uri + '''> dcat:downloadURL ?dl . }
-                OPTIONAL { <''' + entity_uri + '''> rdfs:label ?t . }
-                OPTIONAL { <''' + entity_uri + '''> prov:value ?v . }
-                OPTIONAL { <''' + entity_uri + '''> prov:wasAttributedTo ?wat . }
-                OPTIONAL { ?wat foaf:name ?wat_name . }
-            }
-        }
-    '''
-    return functions_sparqldb.query(query)
+from database import sparqlqueries
+from database.get_things import get_entity
 
 
 def get_entity_dict(entity_uri):
@@ -106,7 +44,7 @@ def get_entity_rdf(entity_uri):
     query = '''
         DESCRIBE <'''+ entity_uri + '''>
     '''
-    return functions_sparqldb.query_turtle(query)
+    return sparqlqueries.query_turtle(query)
 
 
 def get_entity_details_svg(entity_dict):
@@ -160,7 +98,7 @@ def get_entity_activity_wgb_svg(entity_uri):
             }
         }
     '''
-    entity_results = functions_sparqldb.query(query)
+    entity_results = sparqlqueries.query(query)
     if entity_results and 'results' in entity_results:
         wgb = entity_results['results']['bindings']
         if len(wgb) == 1:
@@ -195,7 +133,7 @@ WHERE {
     }
 }
     '''
-    entity_result = functions_sparqldb.query(query)
+    entity_result = sparqlqueries.query(query)
     if entity_result and 'results' in entity_result:
         used = entity_result['results']['bindings']
         if len(used) == 1:
@@ -252,7 +190,7 @@ WHERE {
     }
 }
     '''
-    entity_results = functions_sparqldb.query(query)
+    entity_results = sparqlqueries.query(query)
 
     if entity_results and 'results' in entity_results:
         wdf = entity_results['results']['bindings']

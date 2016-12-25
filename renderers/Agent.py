@@ -1,4 +1,6 @@
 from flask import Response, render_template
+
+import database.get_things
 from ldapi import LDAPI
 from routes import functions_agents
 import settings
@@ -31,6 +33,6 @@ class AgentRenderer:
             elif format == 'text/html':
                 return render_template(
                     'class_agent.html',
-                    agent=functions_agents.get_agent(self.uri),
+                    agent=database.get_things.get_agent(self.uri),
                     web_subfolder=settings.WEB_SUBFOLDER
                 )

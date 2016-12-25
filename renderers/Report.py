@@ -1,6 +1,6 @@
 from flask import Response, render_template
 from ldapi import LDAPI
-import functions
+import database.get_things
 import settings
 
 
@@ -31,6 +31,6 @@ class ReportRenderer:
             elif format == 'text/html':
                 return render_template(
                     'class_report.html',
-                    report=functions.get_report_dict(self.uri),
+                    report=database.get_things.get_report(self.uri),
                     web_subfolder=settings.WEB_SUBFOLDER
                 )

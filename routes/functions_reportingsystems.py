@@ -1,14 +1,17 @@
-from rdflib import Graph
 import cStringIO
-from ldapi import LDAPI
-import rulesets.reportingsystems as reportingsystem_ruleset
-import functions_sparqldb
-import api_functions
-import settings
+import urllib
 import uuid
 
+from rdflib import Graph
 
-class ReportingSystemsFunctions:
+import api_functions
+import rulesets.reportingsystems as reportingsystem_ruleset
+import settings
+from database import sparqlqueries
+from ldapi import LDAPI
+
+
+class IncomingReportingSystem:
     def __init__(self, reportingsystem_data, reportingsystem_mimetype):
         self.reportingsystem_data = reportingsystem_data
         self.reportingsystem_mimetype = reportingsystem_mimetype
@@ -78,85 +81,11 @@ class ReportingSystemsFunctions:
     def stored(self):
         """ Add a ReportingSystem to PROMS"""
         try:
-            functions_sparqldb.insert(self.reportingsystem_graph, self.reportingsystem_uri)
+            sparqlqueries.insert(self.reportingsystem_graph, self.reportingsystem_uri)
             return True
         except Exception as e:
             self.error_messages = ['Could not connect to the provenance database']
             return False
-
-
-def get_reportingsystems_dict():
-    """ Get all ReportingSystem details
-    """
-    query = '''
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX proms: <http://promsns.org/def/proms#>
-        SELECT ?rs ?t
-        WHERE {
-          ?rs a proms:ReportingSystem .
-          ?rs rdfs:label ?t .
-        }
-    '''
-    reportingsystems = functions_sparqldb.query(query)
-    reportingsystem_items = []
-    # Check if nothing is returned
-    if reportingsystems and 'results' in reportingsystems:
-        for reportingsystem in reportingsystems['results']['bindings']:
-            ret = {}
-            ret['rs'] = urllib.quote(str(reportingsystem['rs']['value']))
-            ret['rs_u'] = str(reportingsystem['rs']['value'])
-            if reportingsystem.get('t'):
-                ret['t'] = str(reportingsystem['t']['value'])
-            reportingsystem_items.append(ret)
-    return reportingsystem_items
-
-
-def get_reportingsystem_dict(reportingsystem_uri):
-    """ Get details for a ReportingSystem
-    """
-    query = '''
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX proms: <http://promsns.org/def/proms#>
-        PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
-        SELECT ?t ?fn ?o ?em ?ph ?add ?v
-        WHERE {
-          <''' + reportingsystem_uri + '''> a proms:ReportingSystem .
-          <''' + reportingsystem_uri + '''> rdfs:label ?t .
-          OPTIONAL { <''' + reportingsystem_uri + '''> proms:owner ?o . }
-          OPTIONAL { <''' + reportingsystem_uri + '''> proms:validation ?v . }
-          OPTIONAL { ?o vcard:fn ?fn . }
-          OPTIONAL { ?o vcard:hasEmail ?em . }
-          OPTIONAL { ?o vcard:hasTelephone ?ph_1 . }
-          OPTIONAL { ?ph_1 vcard:hasValue ?ph . }
-          OPTIONAL { ?o vcard:hasAddress ?add_1 . }
-          OPTIONAL { ?add_1 vcard:locality ?add }
-        }
-    '''
-    reportingsystem_detail = functions_sparqldb.query(query)
-    ret = {}
-    if reportingsystem_detail and 'results' in reportingsystem_detail:
-        if len(reportingsystem_detail['results']['bindings']) > 0:
-            ret['t'] = reportingsystem_detail['results']['bindings'][0]['t']['value']
-            if 'fn' in reportingsystem_detail['results']['bindings'][0]:
-                ret['fn'] = reportingsystem_detail['results']['bindings'][0]['fn']['value']
-            if 'o' in reportingsystem_detail['results']['bindings'][0]:
-                ret['o'] = reportingsystem_detail['results']['bindings'][0]['o']['value']
-            if 'em' in reportingsystem_detail['results']['bindings'][0]:
-                ret['em'] = reportingsystem_detail['results']['bindings'][0]['em']['value']
-            if 'ph' in reportingsystem_detail['results']['bindings'][0]:
-                ret['ph'] = reportingsystem_detail['results']['bindings'][0]['ph']['value']
-            if 'add' in reportingsystem_detail['results']['bindings'][0]:
-                ret['add'] = reportingsystem_detail['results']['bindings'][0]['add']['value']
-            if 'v' in reportingsystem_detail['results']['bindings'][0]:
-                ret['v'] = reportingsystem_detail['results']['bindings'][0]['v']['value']
-            ret['uri'] = reportingsystem_uri
-
-            svg_script = get_reportingsystem_details_svg(ret)
-            if svg_script[0] == True:
-                rs_script = svg_script[1]
-                rs_script += get_reportingsystem_reports_svg(reportingsystem_uri)
-                ret['rs_script'] = rs_script
-    return ret
 
 
 def get_reports_for_rs_query(reportingsystem_uri):
@@ -193,7 +122,7 @@ def get_reports_for_rs(reportingsystem_uri):
     """ Get all Reports for a ReportingSystem
     """
     query = get_reports_for_rs_query(reportingsystem_uri)
-    return functions_sparqldb.query(query)
+    return sparqlqueries.query(query)
 
 
 def get_reportingsystem_details_svg(reportingsystem_dict):
@@ -289,7 +218,7 @@ def put_reportingsystem(reportingsystem_in_turtle):
             rs_uri = row[0]
 
         # insert into triplestore's default graph
-        insert = functions_sparqldb.insert(g)
+        insert = sparqlqueries.insert(g)
         if insert[0]:
             return [insert[0], [rs_uri]]
         else:

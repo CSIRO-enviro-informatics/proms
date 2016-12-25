@@ -1,14 +1,17 @@
-from rdflib import Graph
 import cStringIO
-from ldapi import LDAPI
-import functions_sparqldb
+import urllib
+import uuid
+
+from rdflib import Graph
+
 import api_functions
 import settings
-import uuid
-import urllib
+from database import sparqlqueries
+from database.get_things import get_agent
+from ldapi import LDAPI
 
 
-class AgentFunctions:
+class IncomingAgent:
     def __init__(self, agent_data, agent_mimetype):
         self.agent_data = agent_data
         self.agent_mimetype = agent_mimetype
@@ -89,57 +92,11 @@ class AgentFunctions:
     def stored(self):
         """ Add an Agent to PROMS"""
         try:
-            functions_sparqldb.insert(self.agent_graph, self.agent_uri)
+            sparqlqueries.insert(self.agent_graph, self.agent_uri)
             return True
         except Exception as e:
             self.error_messages = ['Could not connect to the provenance database']
             return False
-
-
-def get_agents_dict():
-    """ Get all Agents in the provenance database"""
-
-    q = '''
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        SELECT ?ag ?label
-        WHERE { GRAPH ?g {
-            ?ag a prov:Agent ;
-                rdfs:label ?label .
-          }
-        }
-        '''
-    agents = []
-    for row in functions_sparqldb.query(q)['results']['bindings']:
-        agents.append({
-            'uri': row['ag']['value'],
-            'label': row['label']['value']
-        })
-
-    return agents
-
-
-def get_agent(agent_uri):
-    """ Get an Agent from the provenance database"""
-
-    q = '''
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        SELECT ?label
-        WHERE { GRAPH ?g {
-            <%(agent_uri)s> a prov:Agent ;
-                rdfs:label ?label .
-          }
-        }
-        ''' % {'agent_uri': agent_uri}
-    agent = None
-    for row in functions_sparqldb.query(q)['results']['bindings']:
-        agent = {
-            'uri': agent_uri,
-            'label': row['label']['value']
-        }
-
-    return agent
 
 
 def get_agent_dict(agent_uri):
@@ -227,7 +184,7 @@ WHERE {
     }
 }
     '''
-    entity_results = functions_sparqldb.query(query)
+    entity_results = sparqlqueries.query(query)
 
     if entity_results and 'results' in entity_results:
         wat = entity_results['results']
@@ -279,7 +236,7 @@ WHERE {
     }
 }
     '''
-    activity_results = functions_sparqldb.query(query)
+    activity_results = sparqlqueries.query(query)
 
     if activity_results and 'results' in activity_results:
         waw = activity_results['results']

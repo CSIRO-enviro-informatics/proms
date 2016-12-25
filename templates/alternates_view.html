@@ -1,0 +1,29 @@
+{% extends "template_layout.html" %}
+
+{% block content %}
+    <h1>PROMS Server</h1>
+    <h2>Alternates view of a <a href="{{ class_uri }}">{{ class_uri }}</a></h2>
+    {% if instance_uri %}
+        <h3>Instance <a href="{{ instance_uri }}">{{ instance_uri }}</a></h3>
+    {% endif %}
+    <table class="lined">
+    <tr><th>View</th><th>Formats</th></tr>
+    {% for v, fs in views_formats.iteritems() %}
+        {% if v == 'default' %}
+            <td>default</td><td><a href="{{base_uri}}{{web_subfolder}}?uri={{ instance_uri }}&_view={{ fs }}">{{ fs }}</a></td>
+        {% elif v == 'renderer' %}
+        {% else %}
+            <tr>
+                <td><a href="{{base_uri}}{{web_subfolder}}?uri={{ instance_uri }}&_view={{ v }}">{{ v }}</a></td>
+                <td>
+                {% for f in fs %}
+                <a href="{{base_uri}}{{web_subfolder}}?uri={{ instance_uri }}&_view={{ v }}&_format={{ f }}">{{ f }}</a>
+                {% endfor %}
+                </td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+    </table>
+
+
+{% endblock %}

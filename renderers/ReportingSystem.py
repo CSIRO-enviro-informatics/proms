@@ -1,6 +1,6 @@
 from flask import Response, render_template
 from ldapi import LDAPI
-import functions
+import database.get_things
 import settings
 
 
@@ -22,16 +22,16 @@ class ReportingSystemRenderer:
         """
         if view == 'neighbours':
             # no work to be done as we have already loaded the triples
-            if format in LDAPI.MIMETYPES_PARSERS.iterkeys():
+            if format in [item[0] for item in LDAPI.MIMETYPES_PARSERS]:
                 return Response(
-                    self.g.serialize(format=LDAPI.MIMETYPES_PARSERS.get(format)),
+                    self.g.serialize(format=[item[1] for item in LDAPI.MIMETYPES_PARSERS if item[0] == rdf_format][0]),
                     status=200,
                     mimetype=format
                 )
             elif format == 'text/html':
                 return render_template(
                     'class_reportingsystem.html',
-                    reportingsystem=functions.get_reportingsystem_dict(self.uri),
+                    reportingsystem=database.get_things.get_reportingsystem(self.uri),
                     web_subfolder=settings.WEB_SUBFOLDER
                 )
         # elif view == 'prov':

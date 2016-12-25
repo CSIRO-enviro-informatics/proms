@@ -1,15 +1,12 @@
-__author__ = 'django'
 from binascii import unhexlify
-
 import rsa
-
-import functions
+import database.get_things
 from prom_db import PromDb
 from secure.user_db import UserDb
 
 
 # Obsolete
-def verifyReport(report_uri):
+def verify_report(report_uri):
         prom_db = PromDb()
         d_report = prom_db.find(report_uri)
         if d_report:
@@ -29,7 +26,8 @@ def verifyReport(report_uri):
         else :
             return False, 'Report cannot be found!'
 
-def graphComparison(g1, g2):
+
+def graph_comparison(g1, g2):
 
     in_first = []
     in_second = []
@@ -43,10 +41,7 @@ def graphComparison(g1, g2):
     return diff_first, diff_second, difference
 
 
-
-
-
-def verifyFusekiReport(report_uri):
+def verify_fuseki_report(report_uri):
         prom_db = PromDb()
         d_report = prom_db.find(report_uri)
         if d_report:
@@ -57,7 +52,7 @@ def verifyFusekiReport(report_uri):
                 publickey = user['publickey']
                 pub_key = rsa.PublicKey.load_pkcs1(publickey) # retrieve back a key object
                 report_in_db = d_report['report']
-                report_from_fuseki  =  functions.get_report_rdf(report_uri)
+                report_from_fuseki  =  database.get_things.get_report_rdf(report_uri)
                 signedreport = unhexlify(d_report['signed_report'])
 
                 rsa.verify(report_in_db, signedreport, pub_key)
@@ -65,7 +60,7 @@ def verifyFusekiReport(report_uri):
                 from rdflib import Graph,compare
                 d_g = Graph().parse(data=report_in_db, format='n3')
                 f_g = Graph().parse(data=report_from_fuseki, format='n3')
-                difference = graphComparison(d_g,f_g)
+                difference = graph_comparison(d_g, f_g)
 
                 if len(difference[0])+len(difference[1])+len(difference[2])== 0:
                     return True, 'Verification passed'
@@ -76,6 +71,7 @@ def verifyFusekiReport(report_uri):
                 return False, e.message
         else :
             return False, 'Report cannot be found!'
+
 
 if __name__ == '__main__':
     verifyFuseki("http://localhost:9000#bcb8f4ae-1e5f-4405-9cfd-87977cab8ad3")

@@ -4,24 +4,22 @@ import json
 
 
 def query(sparql_query, format_mimetype='application/sparql-results+json'):
-    """ Make a secure SPARQL query
-    """
+    """ Make a SPARQL query"""
     auth = (settings.SPARQL_AUTH_USR, settings.SPARQL_AUTH_PWD)
     data = {'query': sparql_query}
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Accept': format_mimetype
     }
-    r = requests.post(settings.SPARQL_QUERY_URI, auth=auth, data=data, headers=headers, timeout=1)
     try:
+        r = requests.post(settings.SPARQL_QUERY_URI, auth=auth, data=data, headers=headers, timeout=1)
         return json.loads(r.text)
     except Exception as e:
-        raise
+        raise e
 
 
 def query_turtle(sparql_query):
-    """ Make a secure query with TURTLE format response
-    """
+    """ Make a SPARQL query with turtle format response"""
     data = {'query': sparql_query, 'format': 'text/turtle'}
     auth = (settings.SPARQL_AUTH_USR, settings.SPARQL_AUTH_PWD)
     headers = {'Accept': 'text/turtle'}

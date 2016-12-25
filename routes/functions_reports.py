@@ -1,14 +1,17 @@
-from rdflib import Graph
 import cStringIO
-from ldapi import LDAPI
-import rulesets.reports as report_rulesets
-import functions_sparqldb
-import api_functions
-import settings
 import uuid
 
+from rdflib import Graph
 
-class ReportsFunctions:
+import api_functions
+import rulesets.reports as report_rulesets
+import settings
+from database import sparqlqueries
+from database.get_things import get_report
+from ldapi import LDAPI
+
+
+class IncomingReport:
     def __init__(self, report_data, report_mimetype):
         self.report_data = report_data
         self.report_mimetype = report_mimetype
@@ -111,74 +114,11 @@ class ReportsFunctions:
         """ Add a Report to PROMS
         """
         try:
-            functions_sparqldb.insert(self.report_graph, self.report_uri)
+            sparqlqueries.insert(self.report_graph, self.report_uri)
             return True
         except Exception as e:
             self.error_messages = ['Could not connect to the provenance database']
             return False
-
-
-def get_reports_dict():
-    """ Get details of all Reports
-    """
-    query = '''
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX proms: <http://promsns.org/def/proms#>
-        SELECT DISTINCT ?r ?t
-        WHERE {
-            GRAPH ?g {
-                { ?r a proms:BasicReport . }
-                UNION
-                { ?r a proms:ExternalReport . }
-                UNION
-                { ?r a proms:InternalReport . }
-                ?r rdfs:label ?t
-            }
-        }
-        ORDER BY ?r
-    '''
-    reports = functions_sparqldb.query(query)
-
-    report_items = []
-    # Check if nothing is returned
-    if reports and 'results' in reports:
-        for report in reports['results']['bindings']:
-            ret = {}
-            ret['r'] = urllib.quote(str(report['r']['value']))
-            ret['r_u'] = str(report['r']['value'])
-            if report.get('t'):
-                ret['t'] = str(report['t']['value'])
-            report_items.append(ret)
-    return report_items
-
-
-def get_report(report_uri):
-    """ Get details for a a Report (JSON)
-    """
-    query = '''
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX proms: <http://promsns.org/def/proms#>
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        SELECT ?rt ?l ?id ?rs ?rs_t ?sac ?sac_t ?sat ?eac ?eac_t ?eat
-        WHERE {
-            GRAPH ?g {
-                <''' + report_uri + '''> a ?rt .
-                <''' + report_uri + '''> rdfs:label ?l .
-                <''' + report_uri + '''> proms:nativeId ?id .
-                OPTIONAL { <''' + report_uri + '''> proms:reportingSystem ?rs } .
-                OPTIONAL { <''' + report_uri + '''> proms:startingActivity ?sac .
-                    ?sac prov:startedAtTime ?sat .
-                    ?sac rdfs:label ?sac_t
-                } .
-                OPTIONAL { <''' + report_uri + '''> proms:endingActivity ?eac .
-                    ?eac prov:endedAtTime ?eat .
-                    ?eac rdfs:label ?eac_t .
-                } .
-            }
-            OPTIONAL { ?rs rdfs:label ?rs_t }
-        }
-    '''
-    return functions_sparqldb.query(query)
 
 
 def get_report_dict(report_uri):
@@ -226,15 +166,6 @@ def get_report_dict(report_uri):
             if svg_script[0] == True:
                 ret['r_script'] = svg_script[1]
     return ret
-
-
-def get_report_rdf(report_uri):
-    """ Get Report details as RDF
-    """
-    query = '''
-        DESCRIBE * WHERE { GRAPH <''' + report_uri + '''> { ?s ?p ?o } FILTER ( ?p != <http://promsns.org/def/proms#reportingSystem> ) }
-    '''
-    return functions_sparqldb.query_turtle(query)
 
 
 def get_report_details_svg(report_dict):
@@ -316,7 +247,7 @@ def register_pingback(data):
                 prov:used <''' + row[0] + '''> ;
                 proms:provenaceQueryUri <''' + row[1] + '''>^^xsd:anyUri .
             '''
-            db_result = functions_sparqldb.insert(query)
+            db_result = sparqlqueries.insert(query)
             if not db_result[0]:
                 return [False, 'Problem storing received pingback: ' + db_result[1]]
     return [True]

@@ -2,7 +2,7 @@ import logging
 from flask import Flask
 from werkzeug.routing import BaseConverter
 import settings
-from routes import ont_classes, pages, api
+from routes import instances_classes, pages, api
 # from secure.api import api -- not implemented yet
 
 app = Flask(__name__)
@@ -17,11 +17,9 @@ class RegexConverter(BaseConverter):
 app.url_map.converters['regex'] = RegexConverter
 app.url_map.strict_slashes = True
 
-# import the routes in functions.py
 app.register_blueprint(pages.pages)
 app.register_blueprint(api.api)
-app.register_blueprint(ont_classes.ont_classes)
-# app.register_blueprint(functions)
+app.register_blueprint(instances_classes.inst_cls)
 # app.register_blueprint(api) -- rename this from 'api' to secure or something
 
 

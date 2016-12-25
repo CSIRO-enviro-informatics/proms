@@ -1,8 +1,9 @@
-from rdflib import Graph
 import cStringIO
+
+from rdflib import Graph
+
+from database import sparqlqueries
 from ldapi import LDAPI
-import rulesets.pingbacks as pingbacks_rulesets
-import functions_sparqldb
 
 
 class PingbacksFunctions:
@@ -62,7 +63,7 @@ class PingbacksFunctions:
         """ Add a Report to PROMS
         """
         try:
-            functions_sparqldb.insert(self.report_graph, self.report_uri)
+            sparqlqueries.insert(self.report_graph, self.report_uri)
             return True
         except Exception as e:
             raise

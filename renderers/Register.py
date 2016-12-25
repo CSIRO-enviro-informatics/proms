@@ -1,36 +1,50 @@
 from flask import Response, render_template
 from ldapi import LDAPI
-import functions
 import settings
+from rdflib import Graph, URIRef, RDF, RDFS, XSD, Namespace, Literal
 
 
 class RegisterRenderer:
-    def __init__(self, g, uri):
-        # load Entity data from given graph
-        self.g = g
+    def __init__(self, request, uri, register):
+        self.request = request
         self.uri = uri
+        self.register = register
+        self.g = None
 
-    def render_view_format(self, view, format):
-        """
-        Renders a view and format of an Register
-
-        No validation is needed as the view and format for an Register are pre-validated before this class is
-        instantiated
-        :param view: An allowed model view of an Register
-        :param format: An allowed format of an Register
-        :return: A Flask Response object
-        """
-        if view == 'neighbours':
-            # no work to be done as we have already loaded the triples
-            if format in LDAPI.MIMETYPES_PARSERS.iterkeys():
+    def render_view_format(self, view, rdf_format):
+        if view == 'reg':
+            # is an RDF format requested?
+            if rdf_format in [item[0] for item in LDAPI.MIMETYPES_PARSERS]:
+                # it is an RDF format so make the graph for serialization
+                self._make_dpr_graph(view)
+                rdflib_format = [item[1] for item in LDAPI.MIMETYPES_PARSERS if item[0] == rdf_format][0]
                 return Response(
-                    self.g.serialize(format=LDAPI.MIMETYPES_PARSERS.get(format)),
+                    self.g.serialize(format=rdflib_format),
                     status=200,
-                    mimetype=format
+                    mimetype=rdf_format
                 )
-            elif format == 'text/html':
+            elif rdf_format == 'text/html':
                 return render_template(
-                    'class_agent.html',
-                    reportingsystem=functions.get_reportingsystem_dict(self.uri),
+                    'class_register.html',
+                    class_name=self.request.args.get('uri'),
+                    register=self.register,
                     web_subfolder=settings.WEB_SUBFOLDER
                 )
+        else:
+            return Response('The requested model view is not valid for this class', status=400, mimetype='text/plain')
+
+    def _make_dpr_graph(self, model_view):
+        self.g = Graph()
+
+        if model_view == 'default' or model_view == 'reg' or model_view is None:
+            # make the static part of the graph
+            REG = Namespace('http://purl.org/linked-data/registry#')
+            self.g.bind('reg', REG)
+
+            self.g.add((URIRef(self.request.url), RDF.type, REG.Register))
+
+            # add all the items
+            for item in self.register:
+                self.g.add((URIRef(item['uri']), RDF.type, URIRef(self.uri)))
+                self.g.add((URIRef(item['uri']), RDFS.label, Literal(item['label'], datatype=XSD.string)))
+                self.g.add((URIRef(item['uri']), REG.register, URIRef(self.request.url)))

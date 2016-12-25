@@ -1,17 +1,14 @@
 __author__ = 'bai187'
-
 import cStringIO
 import sys
 from binascii import unhexlify,hexlify
-
 import rsa
 from flask import Blueprint, request, g, jsonify
 from flask_httpauth import HTTPBasicAuth
 from rdflib import Graph
-
-import functions
-import functions_sparqldb
+import database.get_things
 import settings
+from database import sparqlqueries
 from rulesets.reports import BasicReport, ExternalReport, InternalReport
 from secure.prom_db import PromDb
 from secure.user import User
@@ -129,7 +126,7 @@ def registerSignedReport():
 
             # Additional validation (if any, as defined in ReportingSystem)
             if reporting_system != '':
-                rs_dict =functions.get_reportingsystem_dict(reporting_system)
+                rs_dict =database.get_things.get_reportingsystem(reporting_system)
                 if 'v' in rs_dict:
                     validation_name = rs_dict['v']
                     validation_module = __import__('rules_proms.' + validation_name)
@@ -171,7 +168,7 @@ def registerSignedReport():
             else:
                 return jsonify({"status":False, "error":fail_reasons[0]})
             report_id = r_uri
-            result = functions_sparqldb.insert(report, graph_name, True)
+            result = sparqlqueries.insert(report, graph_name, True)
             #send_pingback(g)
 
             if result[0]:

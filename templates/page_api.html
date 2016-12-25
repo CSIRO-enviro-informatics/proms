@@ -11,27 +11,34 @@
             <th>Access</th>
         </tr>
         <tr>
-            <th>Provenance object</th>
+            <th>Instance viewer</th>
             <td>Accesses a single object from the provenance database</td>
             <td>
-                <p><a href="{{ web_subfolder }}/object?url=">{{ web_subfolder }}/object?url={uri}</a></p>
-                uri <em>(mandatory)</em>: URI of an object in the provenance database
+                <p><a href="{{ web_subfolder }}/instance?uri=">{{ web_subfolder }}/instance?uri={uri}</a></p>
+                uri <em>(mandatory)</em>: the URI of an object in the provenance database, URL encoded
             </td>
         </tr>
         <tr>
-            <th>Provenance object register</th>
-            <td>Accesses a register (index) of one class of object from the provenance database</td>
+            <th>Register viewer</th>
+            <td>Accesses a register of a single class of object from the provenance database</td>
+            <td>
+                <p><a href="{{ web_subfolder }}/register?uri=">{{ web_subfolder }}/register?uri={uri}</a></p>
+                uri <em>(mandatory)</em>: the URI of a class of object in the provenance database, URL encoded
+            </td>
+        </tr>
+        <tr>
+            <th>Register viewer, class name</th>
+            <td>Accesses a register of a single one class of object from the provenance database using the class name, not the full URI of the class</td>
             <td>
                 <p><a href="{{ web_subfolder }}/register">{{ web_subfolder }}/register/{class_name}/</a></p>
-                class_name <em>(mandatory)</em>: the name of a class in the provenance database<br />
                 class_names available are:
                 <ul>
-                    <li>Report</li>
-                    <li>ReportingSystem</li>
                     <li>Activity</li>
                     <li>Agent</li>
                     <li>Entity</li>
                     <li>Person</li>
+                    <li>Report</li>
+                    <li>ReportingSystem</li>
                 </ul>
             </td>
         </tr>

@@ -1,15 +1,16 @@
-from requests.exceptions import ConnectionError
 import json
 from flask import Blueprint, Response, request, render_template
-import functions_reports
-import functions_reportingsystems
-import functions_pingbacks
-import functions_agents
-import functions_entities
-import functions_sparqldb
+from requests.exceptions import ConnectionError
 import api_functions
+import database.get_things
+import functions_agents
+import functions_pingbacks
+import functions_reportingsystems
+import functions_reports
 import settings
+from database import sparqlqueries
 from ldapi import LDAPI
+
 api = Blueprint('api', __name__)
 
 
@@ -19,31 +20,25 @@ def lodge_agent():
     acceptable_mimes = [x[0] for x in LDAPI.MIMETYPES_PARSERS]
     ct = request.content_type
     if ct not in acceptable_mimes:
-        return Response(
+        return api_functions.Response_client_error(
             'The Agent posted is not encoded with a valid RDF Content-Type. Must be one of: ' +
-            ', '.join(acceptable_mimes) + '.',
-            status=400,
-            mimetype='text/plain')
+            ', '.join(acceptable_mimes) + '.')
 
     # validate Agent
-    sr = functions_agents.AgentFunctions(request.data, request.content_type)
+    sr = functions_agents.IncomingAgent(request.data, request.content_type)
     if not sr.valid():
-        return Response(
+        return api_functions.Response_client_error(
             'The Agent posted is not valid for the following reasons: ' +
-            ', '.join(sr.error_messages) + '.',
-            status=400,
-            mimetype='text/plain')
+            ', '.join(sr.error_messages) + '.')
 
     # get the Agent's URI
     sr.determine_agent_uri()
 
     # store the Agent
     if not sr.stored():
-        return Response(
+        return api_functions.Response_server_error(
             'The Agent posted is valid but cannot be stored for the following reasons: ' +
-            ', '.join(sr.error_messages) + '.',
-            status=500,
-            mimetype='text/plain')
+            ', '.join(sr.error_messages) + '.')
 
     # reply to sender
     return Response(
@@ -55,7 +50,7 @@ def lodge_agent():
 @api.route('/function/create-agent')
 def create_agent():
     try:
-        agents = functions_agents.get_agents_dict()
+        agents = database.get_things.get_agents()
     except ConnectionError:
         return render_template('error_db_connection.html'), 500
     return render_template(
@@ -71,31 +66,25 @@ def lodge_reportingsystem():
     acceptable_mimes = [x[0] for x in LDAPI.MIMETYPES_PARSERS]
     ct = request.content_type
     if ct not in acceptable_mimes:
-        return Response(
+        return api_functions.Response_client_error(
             'The ReportingSystem posted is not encoded with a valid RDF Content-Type. Must be one of: ' +
-            ', '.join(acceptable_mimes) + '.',
-            status=400,
-            mimetype='text/plain')
+            ', '.join(acceptable_mimes) + '.')
 
     # validate ReportingSystem
-    sr = functions_reportingsystems.ReportingSystemsFunctions(request.data, request.content_type)
+    sr = functions_reportingsystems.IncomingReportingSystem(request.data, request.content_type)
     if not sr.valid():
-        return Response(
+        return api_functions.Response_client_error(
             'The ReportingSystem posted is not valid for the following reasons: ' +
-            ', '.join(sr.error_messages) + '.',
-            status=400,
-            mimetype='text/plain')
+            ', '.join(sr.error_messages) + '.')
 
     # get the ReportingSystem's URI
     sr.determine_reportingsystem_uri()
 
     # store the ReportingSystem
     if not sr.stored():
-        return Response(
+        return api_functions.Response_server_error(
             'ReportingSystem posted is valid but cannot be stored for the following reasons: ' +
-            ', '.join(sr.error_messages) + '.',
-            status=500,
-            mimetype='text/plain')
+            ', '.join(sr.error_messages) + '.')
 
     # reply to sender
     return Response(
@@ -107,7 +96,7 @@ def lodge_reportingsystem():
 @api.route('/function/create-reportingsystem')
 def create_reportingsystem():
     try:
-        agents = functions_agents.get_agents_dict()
+        agents = database.get_things.get_agents()
     except ConnectionError:
         return render_template('error_db_connection.html'), 500
     return render_template(
@@ -123,21 +112,24 @@ def lodge_report():
     acceptable_mimes = [x[0] for x in LDAPI.MIMETYPES_PARSERS]
     ct = request.content_type
     if ct not in acceptable_mimes:
-        return 'The Report posted is not encoded with a valid RDF Content-Type. Must be one of: ' + \
-               ', '.join(acceptable_mimes) + '.', 400
+        return api_functions.Response_client_error(
+            'The Report posted is not encoded with a valid RDF Content-Type. Must be one of: ' +
+            ', '.join(acceptable_mimes) + '.')
 
     # validate Report
-    sr = functions_reports.ReportsFunctions(request.data, request.content_type)
+    sr = functions_reports.IncomingReport(request.data, request.content_type)
     if not sr.valid():
-        return 'The Report posted is not valid for the following reasons: ' + ', '.join(sr.error_messages) + '.', 400
+        return api_functions.Response_client_error(
+            'The Report posted is not valid for the following reasons: ' + ', '.join(sr.error_messages) + '.')
 
     # get the Report's URI
     sr.determine_report_uri()
 
     # store the Report
     if not sr.stored():
-        return 'Report posted is valid but cannot be stored for the following reasons: ' + \
-               ', '.join(sr.error_messages) + '.', 500
+        return api_functions.Response_server_error(
+            'Report posted is valid but cannot be stored for the following reasons: ' +
+            ', '.join(sr.error_messages) + '.')
 
     # reply to sender
     return sr.report_uri, 201
@@ -146,9 +138,9 @@ def lodge_report():
 @api.route('/function/create-report')
 def create_report():
     try:
-        reportingsystems = functions_reportingsystems.get_reportingsystems_dict()
-        agents = functions_agents.get_agents_dict()
-        entities = functions_entities.get_entities_dict()
+        reportingsystems = database.get_things.get_reportingsystems()
+        agents = database.get_things.get_agents()
+        entities = database.get_things.get_entities()
     except ConnectionError:
         return render_template('error_db_connection.html'), 500
 
@@ -167,21 +159,22 @@ def lodge_pingback():
     acceptable_mimes = [x[0] for x in LDAPI.MIMETYPES_PARSERS]  # TODO: change
     ct = request.content_type
     if ct not in acceptable_mimes:
-        return 'The Pingback posted is not encoded with a valid Content-Type. Must be one of: ' + \
-               ', '.join(acceptable_mimes) + '.', 400
+        return api_functions.Response_client_error(
+            'The Pingback posted is not encoded with a valid Content-Type. Must be one of: ' +
+            ', '.join(acceptable_mimes) + '.')
 
     # validate Pingback
     p = functions_pingbacks.PingbacksFunctions(request.data, request.headers)
     if not p.valid():
-        return \
-            'The Pingback posted is not valid for the following reasons: ' + ', '\
-            .join(p.error_messages) + '.', 400
+        return api_functions.Response_client_error(
+            'The Pingback posted is not valid for the following reasons: ' + ', '
+            .join(p.error_messages) + '.')
 
     # store the Pingback
     if not p.stored():
-        return \
-            'Report posted is valid but cannot be stored for the following reasons: , '\
-            .join(p.error_messages) + '.', 500
+        return api_functions.Response_server_error(
+            'Report posted is valid but cannot be stored for the following reasons: , '
+            .join(p.error_messages) + '.')
 
     # reply to sender
     return 204
@@ -231,6 +224,7 @@ def sparql():
         '''
         Pass on the SPARQL query to the underlying system PROMS is using (Fuseki etc.)
         '''
+        query = None
         if request.content_type == 'application/x-www-form-urlencoded':
             '''
             https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/#query-via-post-urlencoded
@@ -244,8 +238,9 @@ def sparql():
             type header of the HTTP request must be set to application/x-www-form-urlencoded.
             '''
             if request.form.get('query') is None:
-                return 'Your POST request to PROMS\' SPARQL endpoint must contain a \'query\' parameter if form ' \
-                       'posting is used.', 400
+                return api_functions.Response_client_error(
+                    'Your POST request to PROMS\' SPARQL endpoint must contain a \'query\' parameter if form '
+                    'posting is used.')
             else:
                 query = request.form.get('query')
         elif request.content_type == 'application/sparql-query':
@@ -263,12 +258,13 @@ def sparql():
             '''
             query = request.data  # get the raw request
             if query is None:
-                return 'Your POST request to PROMS\' SPARQL endpoint must contain the query in plain text in the ' \
-                       'POST body if the Content-Type \'application/sparql-query\' is used.', 400
+                return api_functions.Response_client_error(
+                    'Your POST request to PROMS\' SPARQL endpoint must contain the query in plain text in the '
+                    'POST body if the Content-Type \'application/sparql-query\' is used.')
 
         # sorry, we only return JSON results. See the service description!
         try:
-            query_result = functions_sparqldb.query(query)
+            query_result = sparqlqueries.query(query)
         except ValueError, e:
             return render_template(
                 'function_sparql.html',
@@ -317,7 +313,7 @@ def sparql():
             #         status=400,
             #         mimetype="text/plain")
             query = request.args.get('query')
-            query_result = functions_sparqldb.query(query)
+            query_result = sparqlqueries.query(query)
             return Response(json.dumps(query_result), status=200, mimetype="application/sparql-results+json")
         else:
             # SPARQL Service Description
@@ -347,11 +343,5 @@ def sparql():
                     status=200,
                     mimetype=best)
             else:
-                return 'Accept header must be one of ' + ', '.join(acceptable_mimes) + '.', 400
-
-
-# @api.route('/function/create-report-formparts', methods=['POST'])
-# def create_report_formparts(form_parts):
-#     return Response(functions_reports.create_report_formparts(form_parts), status=200, mimetype='text/plain')
-
-
+                return api_functions.Response_client_error(
+                    'Accept header must be one of ' + ', '.join(acceptable_mimes) + '.')

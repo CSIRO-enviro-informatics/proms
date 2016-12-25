@@ -1,6 +1,6 @@
 from flask import Response, render_template
 from ldapi import LDAPI
-import functions
+import database.get_things
 import settings
 
 
@@ -31,6 +31,6 @@ class ActivityRenderer:
             elif format == 'text/html':
                 return render_template(
                     'class_activity.html',
-                    reportingsystem=functions.get_reportingsystem_dict(self.uri),
+                    reportingsystem=database.get_things.get_reportingsystem(self.uri),
                     web_subfolder=settings.WEB_SUBFOLDER
                 )

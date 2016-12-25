@@ -1,0 +1,12 @@
+{% extends "template_layout.html" %}
+
+{% block content %}
+    <h1>PROMS Server</h1>
+    <h2>Register view of <em><a href="{{ class_name }}">{{ class_name }}</a></em></h2>
+    <h3>Instances</h3>
+    <ul>
+    {% for instance in register %}
+        <li><a href="{{ web_subfolder }}/object?_uri={{ instance['uri'] }}">{{ instance['label'] }}</a></li>
+    {% endfor %}
+    </ul>
+{% endblock %}

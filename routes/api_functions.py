@@ -1,7 +1,9 @@
-from rdflib import Graph
+from flask import Response, render_template
+from rdflib import Graph, Namespace, Literal, URIRef, RDF, RDFS, XSD
 import cStringIO
 from ldapi import LDAPI
 import settings
+import json
 
 
 def get_sparql_service_description(rdf_format='turtle'):
@@ -82,3 +84,60 @@ def replace_uri(g, initial_uri, replacement_uri):
 
     # there are no predicates to place (no placeholder relations)
     return g
+
+
+def Response_client_error(error_message):
+    return Response(
+        error_message,
+        status=400,
+        mimetype='text/plain'
+    )
+
+
+def Response_server_error(error_message):
+    return Response(
+        error_message,
+        status=500,
+        mimetype='text/plain'
+    )
+
+
+def render_alternates_view(class_uri, instance_uri, views_formats, mime_format):
+    if mime_format == 'application/json':
+        del views_formats['renderer']  # the renderer used is not for public consumption!
+        return Response(json.dumps(views_formats), status=200, mimetype='application/json')
+    elif mime_format in [item[0] for item in LDAPI.MIMETYPES_PARSERS]:
+        g = Graph()
+        LDAPI_O = Namespace('http://promsns.org/def/ldapi#')
+        g.bind('ldapi', LDAPI_O)
+
+        instance_uri_ref = URIRef(instance_uri)
+        class_uri_ref = URIRef(class_uri)
+
+        if instance_uri:
+            g.add((instance_uri_ref, RDF.type, class_uri_ref))
+            g.add((instance_uri_ref, LDAPI_O.defaultView, Literal(views_formats['default'], datatype=XSD.string)))
+
+
+
+        # make the static part of the graph
+        # REG = Namespace('http://purl.org/linked-data/registry#')
+        # self.g.bind('reg', REG)
+        #
+        # self.g.add((URIRef(self.request.url), RDF.type, REG.Register))
+        #
+        # # add all the items
+        # for item in self.register:
+        #     self.g.add((URIRef(item['uri']), RDF.type, URIRef(self.uri)))
+        #     self.g.add((URIRef(item['uri']), RDFS.label, Literal(item['label'], datatype=XSD.string)))
+        #     self.g.add((URIRef(item['uri']), REG.register, URIRef(self.request.url)))
+        rdflib_format = [item[1] for item in LDAPI.MIMETYPES_PARSERS if item[0] == mime_format][0]
+        return Response(g.serialize(format=rdflib_format), status=200, mimetype=mime_format)
+    else:  # HTML
+        return render_template(
+            'alternates_view.html',
+            class_uri=class_uri,
+            instance_uri=instance_uri,
+            web_subfolder=settings.WEB_SUBFOLDER,
+            views_formats=views_formats
+        )

@@ -1,62 +1,8 @@
 import urllib
-import functions_sparqldb
+
 import settings
-
-
-def get_activities_dict():
-    """ Get details of all Activities
-    """
-    query = '''
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        SELECT DISTINCT ?a ?l
-        WHERE {
-            GRAPH ?g {
-                ?a a prov:Activity .
-                ?a rdfs:label ?l
-            }
-        }
-        ORDER BY ?a
-    '''
-    activities = functions_sparqldb.query(query)
-    activity_items = []
-    if activities and 'results' in activities:
-        for activity in activities['results']['bindings']:
-            ret = {}
-            ret['a'] = urllib.quote(str(activity['a']['value']))
-            ret['a_u'] = str(activity['a']['value'])
-            if activity.get('l'):
-                ret['l'] = str(activity['l']['value'])
-            activity_items.append(ret)
-    return activity_items
-
-
-def get_activity(activity_uri):
-    """ Get the details of an Activity (JSON)
-    """
-    query = '''
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-        PREFIX proms: <http://promsns.org/def/proms#>
-        SELECT DISTINCT ?l ?t ?sat ?eat ?waw ?r ?rt
-        WHERE {
-            GRAPH ?g {
-                <''' + activity_uri + '''> a prov:Activity .
-                <''' + activity_uri + '''> rdfs:label ?l .
-                { ?r proms:startingActivity <''' + activity_uri + '''> . }
-                UNION
-                { ?r proms:endingActivity <''' + activity_uri + '''> . }
-                OPTIONAL { ?r rdfs:label ?rt . }
-                OPTIONAL { <''' + activity_uri + '''> rdfs:label ?t . }
-                OPTIONAL { <''' + activity_uri + '''> prov:startedAtTime ?sat . }
-                OPTIONAL { <''' + activity_uri + '''> prov:endedAtTime ?eat . }
-                OPTIONAL { <''' + activity_uri + '''> prov:wasAssociatedWith ?waw . }
-                OPTIONAL { ?waw foaf:name ?waw_name . }
-            }
-        }
-    '''
-    return functions_sparqldb.query(query)
+from database import sparqlqueries
+from database.get_things import get_activity
 
 
 def get_activity_dict(activity_uri):
@@ -100,7 +46,7 @@ def get_activity_rdf(activity_uri):
     query = '''
         DESCRIBE <''' + activity_uri + '''>
     '''
-    return functions_sparqldb.query_turtle(query)
+    return sparqlqueries.query_turtle(query)
 
 
 def get_activity_details_svg(activity_dict):
@@ -146,7 +92,7 @@ WHERE {
     }
 }
     '''
-    activity_results = functions_sparqldb.query(query)
+    activity_results = sparqlqueries.query(query)
     if activity_results and 'results' in activity_results:
         used = activity_results['results']
         if len(used['bindings']) > 0:
@@ -220,7 +166,7 @@ WHERE {
 }
     '''
 
-    activity_results = functions_sparqldb.query(query)
+    activity_results = sparqlqueries.query(query)
     if activity_results and 'results' in activity_results:
         gen = activity_results['results']
         if len(gen['bindings']) > 0:
@@ -294,7 +240,7 @@ WHERE {
     }
 }
     '''
-    activity_results = functions_sparqldb.query(query)
+    activity_results = sparqlqueries.query(query)
 
     if activity_results and 'results' in activity_results:
         wif = activity_results['results']

@@ -1,6 +1,6 @@
 import requests
 import settings
-import functions
+import database.get_things
 import urllib
 
 
@@ -131,7 +131,7 @@ def create_pingback_message(entity_uri, report_graph):
         for row in result:
             if len(row) > 0:
                 rs_uri = row[0]
-        rs_dict = functions.get_reportingsystem_dict(rs_uri)
+        rs_dict = database.get_things.get_reportingsystem(rs_uri)
         rs_label = rs_dict.get('t', '')
         # TODO Make sure this exists
         rs_description = rs_dict.get('d', '')

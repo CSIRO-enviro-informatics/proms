@@ -1,9 +1,9 @@
 from flask import Response, render_template
-from ldapi import LDAPI
-import functions
-import settings
-import functions_sparqldb
 from rdflib import Graph
+import database.get_things
+import settings
+from database import sparqlqueries
+from ldapi import LDAPI
 
 
 class EntityRenderer:
@@ -21,12 +21,12 @@ class EntityRenderer:
         """
         uri = self.uri
         if uri is not None:
-            r = functions_sparqldb.query_turtle(q)
+            r = sparqlqueries.query_turtle(q)
             # a uri query string argument was supplied was supplied but it was not the URI of something in the graph
             g = Graph().parse(data=r, format='turtle')
             if len(g) == 0:
                 # try a named graph
-                r = functions_sparqldb.query_turtle(
+                r = sparqlqueries.query_turtle(
                     'CONSTRUCT { <' + uri + '> ?p ?o } WHERE { GRAPH ?g { <' + uri + '> ?p ?o }}'
                 )
                 # a uri query string argument was supplied was supplied but it was not the URI of something in the graph
@@ -74,7 +74,7 @@ class EntityRenderer:
                         }
                     }
             '''
-            g2 = Graph().parse(data=functions_sparqldb.query_turtle(q2), format='turtle')
+            g2 = Graph().parse(data=sparqlqueries.query_turtle(q2), format='turtle')
             self.g = self.g + g2
 
             for s, p, o in self.g:
@@ -98,7 +98,7 @@ class EntityRenderer:
             '''
             # TODO: show wasDerivedFrom in SVG
 
-            g3 = Graph().parse(data=functions_sparqldb.query_turtle(q3), format='turtle')
+            g3 = Graph().parse(data=sparqlqueries.query_turtle(q3), format='turtle')
             self.g = self.g + g3
 
             if format in LDAPI.MIMETYPES_PARSERS.iterkeys():
@@ -110,7 +110,7 @@ class EntityRenderer:
             elif format == 'text/html':
                 return render_template(
                     'class_entity.html',
-                    entity=functions.get_entity_dict(self.uri),
+                    entity=database.get_things.get_entity(self.uri),
                     web_subfolder=settings.WEB_SUBFOLDER
                 )
         # elif view == 'prov':

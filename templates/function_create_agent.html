@@ -41,7 +41,6 @@
                 //show the RDF
                 var ttl = getTurtle(repSys.getGraph());
                 $('#generated-results').val(ttl);
-                console.log('lines: '+ ttl.split("\n").length);
                 $('#generated-results').css('height', ttl.split("\n").length * 2.5 + 'ex');
                 $('#generated-results-row').show();
                 $('#lodge-button-row').show();
@@ -68,7 +67,6 @@
                     headers: {'Content-Type': 'text/turtle'},
                     dataType: 'text',
                     success: function (response) {
-                        $('#lodge-results').css('height', response.split("\n").length * 2.5 + 'ex');
                         $('#lodge-results').val('Success! The URI for your Agent is:\n\n<' + response + '>');
                     },
                     error: function (response) {
@@ -160,7 +158,7 @@
             <tr id="lodge-results-row" style="display:none;">
                 <td colspan="2">
                     Results of lodging your ReportingSystem with this instance of PROMS Server:<br />
-                    <textarea id="lodge-results" style="width:98%;"></textarea>
+                    <textarea id="lodge-results" style="width:98%; min-height:20px;"></textarea>
                 </td>
             </tr>
         </table>

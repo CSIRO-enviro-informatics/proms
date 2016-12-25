@@ -2,13 +2,22 @@
 HTTP routes for basic HTML pages
 """
 import os
-from flask import Blueprint, render_template, send_from_directory
+from flask import Blueprint, render_template, send_from_directory, request, Response
 import settings
+import pages_functions
 pages = Blueprint('pages', __name__)
 
 
 @pages.route('/')
 def home():
+    # TODO: add a GetCapabilities function here
+    if request.args.get('_view') or request.args.get('request') or request.args.get('REQUEST'):
+        return Response(
+            pages_functions.get_capabilities(),
+            status=200,
+            mimetype='application/xml'
+        )
+
     return render_template(
         'page_index.html',
         web_subfolder=settings.WEB_SUBFOLDER
@@ -53,4 +62,4 @@ def page_not_found(e):
     return render_template(
         'error_405.html',
         web_subfolder=settings.WEB_SUBFOLDER
-    ), 404
+    ), 405
