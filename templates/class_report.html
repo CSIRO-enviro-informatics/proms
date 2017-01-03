@@ -4,21 +4,15 @@
     <h1>PROMS Server</h1>
     {% if report %}
         <h2>A Report</h2>
-        <p><a href="">html</a> | <a href="{{request.path + "?_uri=" + report['uri_html'] + "&_format=text/turtle"}}">rdf/turtle</a></p>
+        <p><a href="">html</a> | <a href="{{request.path + "?_uri=" + uri + "&_format=text/turtle"}}">rdf/turtle</a></p>
         <h4><a class="definition" href={{report['t']}}>{{report['t_str']}}</a> Report</h4>
         <table class="lined">
             <tr><th>URI:</th><td><a href="{{ report['uri'] }}">{{ report['uri'] }}</a></td></tr>
-            <tr><th>Title:</th><td>{{report['l']}}</td></tr>
+            <tr><th>Label:</th><td>{{report['label']}}</td></tr>
             <tr><th>Reporting System:</th><td>
-                {% if report['rs'] and report['rs_t'] %}
-                <a href={{ web_subfolder }}/object?_uri={{ report['rs'] }}>{{ report['rs_t'] }}</a>
-                {% elif report['rs'] %}
-                <a href={{ web_subfolder }}/object?_uri={{ report['rs'] }}>{{ report['rs_u'] }}</a>
-                {% else %}
-                No ReportingSystem Registered
-                {% endif %}
+                <a href={{ web_subfolder }}/instance?_uri={{ report['rs'] }}>{{ report['rs']|unquote_plus }}</a>
             </td></tr>
-            <tr><th>Native ID:</th><td>{{report['id']}}</td></tr>
+            <tr><th>Native ID:</th><td>{{report['nid']}}</td></tr>
         </table>
         {% if report['r_script'] %}
             <h4>Neighbours view</h4>

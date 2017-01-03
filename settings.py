@@ -1,3 +1,6 @@
+import os
+import logging
+
 #
 #   Basic settings
 #
@@ -16,7 +19,7 @@ PORT = 9000
 #   If PROMS Server is installed somewhere it could be http://example.org/service/proms or perhaps
 #   http://proms.example.org
 #
-BASE_URI = 'http://localhost' + str(PORT)
+BASE_URI = 'http://localhost:' + str(PORT)
 
 #   If this instance of PROMS Server is installed at a location other than the root of a domain, e.g. at
 #   http://example.org/service/proms rather than at http://example.org, then this variable needs to be set to the
@@ -37,13 +40,17 @@ REPORTINGSYSTEM_BASE_URI = 'http://example.com/reportingsystem/'
 
 #   This is the location at which PROMS Server is installed on your file system. For Windows this could be something
 #   like 'c:/work/proms/', for Linux it could be '/opt/proms/' or '/var/www/proms/'
-HOME_DIR = 'c:/work/proms/'  # must end in a slash. Use forward slashes only, even in Windows
+#HOME_DIR = 'c:/work/proms/'  # must end in a slash. Use forward slashes only, even in Windows
+HOME_DIR = os.path.dirname(os.path.abspath(__file__))
 
 #   The directory in which the static content of PROMS Server is stored. Usually 'static/'
 STATIC_DIR = 'static/'
 
 #   The PROMS main log file. Usually somewhere in HOME_DIR but need not be
 LOGFILE = HOME_DIR + 'proms.log'
+
+#   the log level currently in use
+LOG_LEVEL = logging.DEBUG
 
 #   Flask debug mode. True for testing, False for production.
 #   Irrelevant if PROMS Server is deployed via Apache + mod_wsgi

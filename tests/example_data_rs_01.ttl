@@ -1,0 +1,13 @@
+@prefix proms: <http://promsns.org/def/proms#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+
+<http://pid.geoscience.gov.au/system/system-01> a proms:ReportingSystem ;
+    rdfs:label "System 01"@en ;
+    rdfs:comment "This is a minimal example of a ReportingSystem"@en
+.
+

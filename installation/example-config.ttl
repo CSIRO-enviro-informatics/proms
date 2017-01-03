@@ -1,0 +1,30 @@
+@prefix fuseki:  <http://jena.apache.org/fuseki#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix :        <http://nick.com> .
+
+[] a fuseki:Server ;
+	fuseki:services [
+	 	a fuseki:Service ;
+		fuseki:name              "tdb2" ;      # http://host:port/tdb2
+		fuseki:serviceQuery      "query" ;     # SPARQL query service
+		fuseki:serviceUpdate     "update" ;	   # SPARQL query service
+		fuseki:dataset           :dataset ;
+	]
+.
+
+:dataset
+	a tdb:DatasetTDB ;
+	tdb:location "{DATASET_FOLDER_LOCATION}" ;  # no trailing slash
+	tdb:unionDefaultGraph true ;
+	ja:defaultGraph :model;
+.
+
+:model
+	a ja:InfModel;
+	ja:reasoner [
+		ja:reasonerURL <http://jena.hpl.hp.com/2003/OWLFBRuleReasoner>
+	];
+.

@@ -1,0 +1,45 @@
+{% extends "template_layout.html" %}
+
+{% block content %}
+    <h1>PROMS Server</h1>
+    {% if AGENT %}
+        <h2>An Agent</h2>
+        <h3>URI: {{AGENT['uri']}}</h3>
+        <p><a href="">html</a> | <a href="{{request.path + "?_uri=" + AGENT['uri_html'] + "&_format=text/turtle"}}">rdf/turtle</a></p>
+        <table class="lined">
+            <tr><th>Title:</th><td>{{AGENT['n']}}</td></tr>
+        </table>
+        {% if AGENT['a_script'] %}
+            <h4>Neighbours view</h4>
+            <div id="neighbour_view"></div>
+            <script type="text/javascript" src="{{WEB_SUBFOLDER}}/static/js/raphael-min.js" charset="utf-8"></script>
+            <script type="text/javascript" src="{{WEB_SUBFOLDER}}/static/js/proms-svg.js" charset="utf-8"></script>
+            <script type="text/javascript">
+                {{AGENT['a_script'] | safe}}
+            </script>
+        {% endif %}
+    {% elif AGENTS %}
+        <h2>Agents Register</h2>
+        {% if AGENTS|length == 0 %}
+            <p>No Agents found.</p>
+        {% else %}
+            <ul>
+            {% for agent in AGENTS %}
+                <li><a href="{{WEB_SUBFOLDER}}/id/agent/?_uri={{agent['ag']}}">
+                    {% if agent['n'] -%}
+                        {{agent['n']}}
+                    {% else %}
+                        {{agent['ag_u']}}
+                    {% endif %}
+                    </a>
+                    {% if agent['n'] -%}
+                        ({{agent['ag_u']}})
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% else %}
+        <p>No Agent information found.</p>
+    {% endif %}
+{% endblock %}

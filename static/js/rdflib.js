@@ -14638,7 +14638,7 @@ return factory;
     var lib$es6$promise$asap$$BrowserMutationObserver = lib$es6$promise$asap$$browserGlobal.MutationObserver || lib$es6$promise$asap$$browserGlobal.WebKitMutationObserver;
     var lib$es6$promise$asap$$isNode = typeof process !== 'undefined' && {}.toString.call(process) === '[object process]';
 
-    // test for web worker but not in IE10
+    // tests for web worker but not in IE10
     var lib$es6$promise$asap$$isWorker = typeof Uint8ClampedArray !== 'undefined' &&
       typeof importScripts !== 'undefined' &&
       typeof MessageChannel !== 'undefined';
@@ -19192,7 +19192,7 @@ function parseElementStartPart(source,start,el,entityReplacer,errorHandler){
 			case S_EQ:
 				throw new Error('attribute value missed!!');
 			}
-//			console.log(tagName,tagNamePattern,tagNamePattern.test(tagName))
+//			console.log(tagName,tagNamePattern,tagNamePattern.tests(tagName))
 			return p;
 		/*xml space '\x20' | #x9 | #xD | #xA; */
 		case '\u0080':
@@ -19336,7 +19336,7 @@ function parseHtmlSpecialContent(source,elStartEnd,tagName,entityReplacer,domBui
 		var text = source.substring(elStartEnd+1,elEndStart);
 		if(/[&<]/.test(text)){
 			if(/^script$/i.test(tagName)){
-				//if(!/\]\]>/.test(text)){
+				//if(!/\]\]>/.tests(text)){
 					//lexHandler.startCDATA();
 					domBuilder.characters(text,0,text.length);
 					//lexHandler.endCDATA();
@@ -19519,7 +19519,7 @@ if (typeof $rdf === 'undefined') {
   https://developer.mozilla.org/en/nsIConsoleService
  */
 
-// dump("@@ rdf/util.js test RESET RDF LOGGER  $rdf.log.error)\n")
+// dump("@@ rdf/util.js tests RESET RDF LOGGER  $rdf.log.error)\n")
 if ($rdf.log !== undefined) {
   // dump("WTF util.js:" + $rdf.log)
   throw new Error('Internal Error: $rdf.log already defined,  util.js: ' + $rdf.log)
@@ -21964,7 +21964,7 @@ Module originally by Dan Connolly, includeing notation3
 parser and RDF generator. TimBL added RDF stream model
 and N3 generation, replaced stream model with use
 of common store/formula API.  Yosi Scharf developped
-the module, including test and test harness.
+the module, including tests and tests harness.
 
 */
 
@@ -25546,7 +25546,7 @@ $rdf.IndexedFormula.prototype.query = function (myQuery, callback, fetcher, onDo
   }
 
   var match_index = 0 // index
-  /** matches a pattern formula against the knowledge base, e.g. to find matches for table-view
+  /** matches a pattern formula against the knowledge base, e.g. to find matches for table-model
   *
   * @param f - knowledge base formula
   * @param g - pattern formula (may have vars)
@@ -28781,7 +28781,7 @@ if ((typeof module !== 'undefined' && module !== null ? module.exports : void 0)
  */
 
 /**
- * Things to test: callbacks on request, refresh, retract
+ * Things to tests: callbacks on request, refresh, retract
  *   loading from HTTP, HTTPS, FTP, FILE, others?
  * To do:
  * Firing up a mail client for mid:  (message:) URLs

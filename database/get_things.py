@@ -1,7 +1,8 @@
 import urllib
+
 from rdflib import Graph
+
 from database import sparqlqueries
-from routes.functions_reportingsystems import get_reportingsystem_details_svg, get_reportingsystem_reports_svg
 
 
 def get_agents():
@@ -75,54 +76,6 @@ def get_reportingsystems():
     return reportingsystem_items
 
 
-def get_reportingsystem(reportingsystem_uri):
-    """ Get details for a ReportingSystem
-    """
-    query = '''
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX proms: <http://promsns.org/def/proms#>
-        PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
-        SELECT ?t ?fn ?o ?em ?ph ?add ?v
-        WHERE {
-          <''' + reportingsystem_uri + '''> a proms:ReportingSystem .
-          <''' + reportingsystem_uri + '''> rdfs:label ?t .
-          OPTIONAL { <''' + reportingsystem_uri + '''> proms:owner ?o . }
-          OPTIONAL { <''' + reportingsystem_uri + '''> proms:validation ?v . }
-          OPTIONAL { ?o vcard:fn ?fn . }
-          OPTIONAL { ?o vcard:hasEmail ?em . }
-          OPTIONAL { ?o vcard:hasTelephone ?ph_1 . }
-          OPTIONAL { ?ph_1 vcard:hasValue ?ph . }
-          OPTIONAL { ?o vcard:hasAddress ?add_1 . }
-          OPTIONAL { ?add_1 vcard:locality ?add }
-        }
-    '''
-    reportingsystem_detail = sparqlqueries.query(query)
-    ret = {}
-    if reportingsystem_detail and 'results' in reportingsystem_detail:
-        if len(reportingsystem_detail['results']['bindings']) > 0:
-            ret['t'] = reportingsystem_detail['results']['bindings'][0]['t']['value']
-            if 'fn' in reportingsystem_detail['results']['bindings'][0]:
-                ret['fn'] = reportingsystem_detail['results']['bindings'][0]['fn']['value']
-            if 'o' in reportingsystem_detail['results']['bindings'][0]:
-                ret['o'] = reportingsystem_detail['results']['bindings'][0]['o']['value']
-            if 'em' in reportingsystem_detail['results']['bindings'][0]:
-                ret['em'] = reportingsystem_detail['results']['bindings'][0]['em']['value']
-            if 'ph' in reportingsystem_detail['results']['bindings'][0]:
-                ret['ph'] = reportingsystem_detail['results']['bindings'][0]['ph']['value']
-            if 'add' in reportingsystem_detail['results']['bindings'][0]:
-                ret['add'] = reportingsystem_detail['results']['bindings'][0]['add']['value']
-            if 'v' in reportingsystem_detail['results']['bindings'][0]:
-                ret['v'] = reportingsystem_detail['results']['bindings'][0]['v']['value']
-            ret['uri'] = reportingsystem_uri
-
-            svg_script = get_reportingsystem_details_svg(ret)
-            if svg_script[0] == True:
-                rs_script = svg_script[1]
-                rs_script += get_reportingsystem_reports_svg(reportingsystem_uri)
-                ret['rs_script'] = rs_script
-    return ret
-
-
 def get_reports():
     """ Get details of all Reports
     """
@@ -155,35 +108,6 @@ def get_reports():
                 ret['t'] = str(report['t']['value'])
             report_items.append(ret)
     return report_items
-
-
-def get_report(report_uri):
-    """ Get details for a a Report (JSON)
-    """
-    query = '''
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX proms: <http://promsns.org/def/proms#>
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        SELECT ?rt ?l ?id ?rs ?rs_t ?sac ?sac_t ?sat ?eac ?eac_t ?eat
-        WHERE {
-            GRAPH ?g {
-                <''' + report_uri + '''> a ?rt .
-                <''' + report_uri + '''> rdfs:label ?l .
-                <''' + report_uri + '''> proms:nativeId ?id .
-                OPTIONAL { <''' + report_uri + '''> proms:reportingSystem ?rs } .
-                OPTIONAL { <''' + report_uri + '''> proms:startingActivity ?sac .
-                    ?sac prov:startedAtTime ?sat .
-                    ?sac rdfs:label ?sac_t
-                } .
-                OPTIONAL { <''' + report_uri + '''> proms:endingActivity ?eac .
-                    ?eac prov:endedAtTime ?eat .
-                    ?eac rdfs:label ?eac_t .
-                } .
-            }
-            OPTIONAL { ?rs rdfs:label ?rs_t }
-        }
-    '''
-    return sparqlqueries.query(query)
 
 
 def get_class_object_graph(uri):
@@ -256,7 +180,7 @@ def get_entities():
 def get_entity(entity_uri):
     """ Get details for an Entity (JSON)
     """
-    # TODO: landing page with view options:
+    # TODO: landing page with model options:
     #   wasDerivedFrom, wasGeneratedBy, inv. used, hadPrimarySource, wasAttributedTo, value
     # get the report metadata from DB
     query = '''

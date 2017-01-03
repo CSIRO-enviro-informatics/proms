@@ -46,3 +46,18 @@ def insert(g, named_graph_uri=None):
         return True
     except requests.ConnectionError as e:
         raise Exception()
+
+
+def update(sparql_update_query, format_mimetype='application/sparql-results+json'):
+    """ Make a SPARQL update"""
+    auth = (settings.SPARQL_AUTH_USR, settings.SPARQL_AUTH_PWD)
+    data = {'update': sparql_update_query}
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': format_mimetype
+    }
+    try:
+        r = requests.post(settings.SPARQL_UPDATE_URI, auth=auth, data=data, headers=headers, timeout=1)
+        return r.text
+    except Exception as e:
+        raise e

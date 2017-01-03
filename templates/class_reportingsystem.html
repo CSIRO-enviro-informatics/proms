@@ -5,10 +5,7 @@
     <h2>A ReportingSystem</h2>
     <table class="lined">
         <tr><th>URI:</th><td><a href="{{ reportingsystem['uri'] }}">{{ reportingsystem['uri'] }}</a></td></tr>
-        <tr><th>Title:</th><td>{{reportingsystem['t']}}</td></tr>
-        {% if reportingsystem['o'] %}
-            <tr><th>Owner:</th><td>{{ reportingsystem['o'] }}</td></tr>
-        {% endif %}
+        <tr><th>Title:</th><td>{{reportingsystem['title']}}</td></tr>
     </table>
     {% if reportingsystem['rs_script'] %}
     <h4>Neighbours view</h4>
