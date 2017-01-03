@@ -167,21 +167,3 @@ def send_pingback(report_graph):
                     if 'pingback_successful' in pingback_result:
                         successful = pingback_result['pingback_successful']
     # TODO: Return attempts and successes if they're to be used
-
-
-def create_report_formparts(form_parts_json_obj):
-    # agent-new-existing [new, existing]
-    #   - agent (URI)
-    #   - agent-name, agent-URI, agent-email
-
-    # report-type [BasicReport, ExternalReport]
-    # report-title
-    # report-reportingsystem (URI-encoded)
-    # report-nativeId
-
-    # activity-title
-    # activity-description
-    # activity-startedAtTime
-    # activity-endedAtTime
-
-    pass

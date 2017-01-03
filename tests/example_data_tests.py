@@ -16,6 +16,7 @@ def load_rs():
         data=open(os.path.join(settings.HOME_DIR, 'tests', 'example_data_rs_01.ttl')).read(),
         headers={'Content-Type': 'text/turtle'}
     )
+    print r.content
     assert r.status_code == 201
 
 
@@ -26,6 +27,7 @@ def load_reports():
         data=open(os.path.join(settings.HOME_DIR, 'tests', 'example_data_rs_01_report_01.ttl')).read(),
         headers={'Content-Type': 'text/turtle'}
     )
+    print r.content
     assert r.status_code == 201
 
     r = requests.post(
@@ -33,6 +35,7 @@ def load_reports():
         data=open(os.path.join(settings.HOME_DIR, 'tests', 'example_data_rs_01_report_02.ttl')).read(),
         headers={'Content-Type': 'text/turtle'}
     )
+    print r.content
     assert r.status_code == 201
 
     r = requests.post(
@@ -40,6 +43,7 @@ def load_reports():
         data=open(os.path.join(settings.HOME_DIR, 'tests', 'example_data_rs_01_report_03.ttl')).read(),
         headers={'Content-Type': 'text/turtle'}
     )
+    print r.content
     assert r.status_code == 201
 
     r = requests.post(
@@ -47,23 +51,31 @@ def load_reports():
         data=open(os.path.join(settings.HOME_DIR, 'tests', 'example_data_rs_01_report_04.ttl')).read(),
         headers={'Content-Type': 'text/turtle'}
     )
+    print r.content
     assert r.status_code == 201
 
 
 def test_example_data_rs_html():
     # get the HTML
-    r = requests.get(
-        '%(BASE_URI)s/register?_uri=%(quoted_uri)s'
-        % {'BASE_URI': settings.BASE_URI, 'quoted_uri': 'http%3A%2F%2Fpromsns.org%2Fdef%2Fproms%23ReportingSystem'})
+    # get URI
+    get_uri = '%(BASE_URI)s/register?_uri=%(quoted_uri)s' % {
+                  'BASE_URI': settings.BASE_URI,
+                  'quoted_uri': 'http%3A%2F%2Fpromsns.org%2Fdef%2Fproms%23ReportingSystem'
+              }
+    r = requests.get(get_uri)
     html = r.content
-    assert '<li><a href="/instance?_uri=http://pid.geoscience.gov.au/system/system-01">System 01</a></li>' in html
+    line_to_seek = '<li><a href="/instance?_uri=%(quoted_uri)s">System 01</a></li>' % \
+                   {'quoted_uri': 'http%3A%2F%2Fpid.geoscience.gov.au%2Fsystem%2Fsystem-01'}
+    assert line_to_seek in html
 
 
 def test_example_data_rs_rdf():
-    # get the RDFin turtle
-    r = requests.get(
-        '%(BASE_URI)s/register?_uri=%(quoted_uri)s&_format=text/turtle'
-        % {'BASE_URI': settings.BASE_URI, 'quoted_uri': 'http%3A%2F%2Fpromsns.org%2Fdef%2Fproms%23ReportingSystem'})
+    # get the RDF in turtle
+    get_uri = '%(BASE_URI)s/register?_uri=%(quoted_uri)s&_format=text/turtle' % {
+                  'BASE_URI': settings.BASE_URI,
+                  'quoted_uri': 'http%3A%2F%2Fpromsns.org%2Fdef%2Fproms%23ReportingSystem'
+              }
+    r = requests.get(get_uri)
     html = r.content
     # fragile test as using formatted RDF, not logical RDF
     assert '<http://pid.geoscience.gov.au/system/system-01> a <http://promsns.org/def/proms#ReportingSystem> ;' in html
@@ -72,8 +84,8 @@ def test_example_data_rs_rdf():
 if __name__ == '__main__':
     # start afresh
     purge_db()
-
-    # load the example data (which are a type of test of course!)
+    #
+    # # load the example data (which are a type of test of course!)
     load_rs()
     load_reports()
 

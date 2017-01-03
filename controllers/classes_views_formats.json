@@ -49,6 +49,12 @@
     "alternates": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json", "application/json"],
     "neighbours": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"]
   },
+  "http://promsns.org/def/proms#ExternalReport": {
+    "renderer": "ReportRenderer",
+    "default": "neighbours",
+    "alternates": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json", "application/json"],
+    "neighbours": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"]
+  },
   "http://promsns.org/def/proms#ReportingSystem": {
     "renderer": "ReportingSystemRenderer",
     "default": "neighbours",

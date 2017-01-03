@@ -1,9 +1,8 @@
 from flask import Response, render_template
 from rdflib import Graph
-
-import database.get_things
+import urllib
 import settings
-from database import sparqlqueries
+import database
 from modules.ldapi import LDAPI
 
 
@@ -45,63 +44,8 @@ class EntityRenderer:
             return False
 
     def render_view_format(self, view, mimetype):
-        """
-        Renders a model and format of an Entity
-
-        No validation is needed as the model and format for an Entity are pre-validated before this class is instantiated
-        :param view: An allowed model model of an Entity
-        :param mimetype: An allowed format of an Entity
-        :return: A Flask Response object
-        """
         if view == 'neighbours':
-            # at this point, we only have the basic triples for the Entity but we need all its links to other things
-            # e.g. Activities & Agents & other Entities
-
-            # Activities related to this Entity
-            q2 = '''
-                    PREFIX prov: <http://www.w3.org/ns/prov#>
-                    PREFIX dc: <http://purl.org/dc/elements/1.1/>
-                    CONSTRUCT {
-                        ?s ?p ?o
-                    }
-                    WHERE {
-                        GRAPH ?g {
-                            ?a a prov:Activity .
-                            ?a ?p <''' + self.uri + ''''> .
-                            <''' + self.uri + ''''> ?p ?a .
-                            ?a dc:title ?t .
-                            #OPTIONAL { ?s (prov:used|prov:generated) <''' + self.uri + ''''1> }
-                            #OPTIONAL { <''' + self.uri + ''''> prov:wasGeneratedBy ?s }
-                        }
-                    }
-            '''
-            g2 = Graph().parse(data=sparqlqueries.query_turtle(q2), format='turtle')
-            self.g = self.g + g2
-
-            for s, p, o in self.g:
-                print str(s) + ' ' + str(p) + ' ' + str(o)
-
-            # other Entities related to this Entity
-            q3 = '''
-                    PREFIX prov: <http://www.w3.org/ns/prov#>
-                    PREFIX dc: <http://purl.org/dc/elements/1.1/>
-                    CONSTRUCT {
-                        ?s ?p ?o
-                    }
-                    WHERE {
-                        GRAPH ?g {
-                            ?s a prov:Entity .
-                            ?s ?p <''' + self.uri + ''''> .
-                            OPTIONAL { ?s (prov:used|prov:generated) <''' + self.uri + ''''> }
-                            OPTIONAL { <''' + self.uri + ''''> prov:wasGeneratedBy ?s }
-                        }
-                    }
-            '''
-            # TODO: show wasDerivedFrom in SVG
-
-            g3 = Graph().parse(data=sparqlqueries.query_turtle(q3), format='turtle')
-            self.g = self.g + g3
-
+            # no work to be done as we have already loaded the triples
             if mimetype in LDAPI.get_rdf_mimetypes_list():
                 return Response(
                     self.g.serialize(format=LDAPI.get_rdf_parser_for_mimetype(mimetype)),
@@ -111,57 +55,247 @@ class EntityRenderer:
             elif mimetype == 'text/html':
                 return render_template(
                     'class_entity.html',
-                    entity=database.get_things.get_entity(self.uri),
+                    entity=self.get_details(),
                     web_subfolder=settings.WEB_SUBFOLDER
                 )
-        # elif model == 'prov':
-        #     # remove all the non-PROV-O (and RDF) triples
-        #     self.g.update(
-        #         '''
-        #         DELETE { ?s ?p ?o }
-        #         WHERE {
-        #             ?s ?p ?o .
-        #             FILTER (!REGEX(STR(?p), "http://www.w3.org/ns/prov#") &&
-        #                 !(STR(?p) = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"))
-        #         }
-        #         '''
-        #     )
-        #     if format in LDAPI.MIMETYPES_PARSERS.iterkeys():
-        #         return Response(
-        #             self.g.serialize(format=LDAPI.MIMETYPES_PARSERS.get(format)),
-        #             status=200,
-        #             mimetype=format
-        #         )
-        #     else:  # HTML
-        #         return render_template(
-        #             'class_entity_prov.html',
-        #             entity=functions.get_entity_dict(self.uri),
-        #             web_subfolder=settings.WEB_SUBFOLDER
-        #         )
-        # elif model == 'ancestors':
-        #     # get all ancestors from database graph
-        #     q = '''
-        #
-        #     '''
-        #     # TODO: need reasoning in here
-        #     pass
-        # elif model == 'descendants':
-        #     # get all descendants from database graph
-        #     # TODO: need reasoning in here
-        #     pass
-        elif view == 'tests':
-            q = '''
+
+    def _get_details_query(self):
+        """ Get details for an Activity
+        """
+        query = '''
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX proms: <http://promsns.org/def/proms#>
-            SELECT * WHERE { GRAPH ?g {
-                { ?s a proms:Report }
-                UNION
-                { ?s a proms:BasicReport }
-                UNION
-                { ?s a proms:ExternalReport }
-                UNION
-                { ?s a proms:InternalReport }
-              }
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            SELECT *
+            WHERE {
+                GRAPH ?g {
+                    <%(uri)s>
+                        rdfs:label ?label .
+                    OPTIONAL {
+                        ?a_u prov:used <%(uri)s> .
+                    }
+                    OPTIONAL {
+                        <%(uri)s> prov:value ?v .
+                    }
+                    OPTIONAL {
+                        ?a_g prov:generated <%(uri)s> .
+                    }
+                    OPTIONAL {
+                        <%(uri)s> prov:generatedAtTime ?gat .
+                    }
+                    OPTIONAL {
+                        <%(uri)s> prov:wasAttributedTo ?wat .
+                    }
+                }
             }
+        ''' % {'uri': self.uri}
+        res = database.query(query)
+        return res
+    
+    def get_details(self):
+        """ Get details for an Entity (dict)"""
+        entity_details = self._get_details_query()
+        ret = {}
+        if entity_details and 'results' in entity_details:
+            if len(entity_details['results']['bindings']) > 0:
+                index = 0
+                ret = entity_details['results']['bindings'][index]
+                ret['uri'] = self.uri
+                ret['label'] = ret['label']['value']
+                if 'v' in ret:
+                    ret['v'] = ret['v']['value']
+                if 'a_u' in ret:
+                    ret['a_u'] = ret['a_u']['value']
+                if 'a_g' in ret:
+                    ret['a_g'] = ret['a_g']['value']
+                if 'gat' in ret:
+                    ret['gat'] = ret['gat']['value']
+                if 'wat' in ret:
+                    ret['wat'] = ret['wat']['value']
+                svg_script = self.get_details_svg(ret)
+                if svg_script[0]:
+                    e_script = svg_script[1]
+                    e_script += self.get_activity_wgb_svg()
+                    e_script += self.get_activity_used_svg()
+                    e_script += self.get_wdf_svg()
+                    ret['e_script'] = e_script
+        return ret
+
+    def get_entity_rdf(self):
+        """ Get details for an Entity as RDF"""
+        query = 'DESCRIBE <%(uri)s>' % {'uri': self.uri}
+        return database.query_turtle(query)
+
+    def get_details_svg(self, entity_dict):
+        """ Construct the SVG code for an Entity
+        """
+        # Draw Entity
+        eLabel = entity_dict.get('label', 'uri')
+        script = '''
+                    var eLabel = "''' + eLabel + '''";
+                    var entity = addEntity(380, 255, eLabel, "");
             '''
-            for s, p, o in self.g:
-                print str(s) + ' ' + str(p) + ' ' + str(o)
+
+        # Draw value if it has one
+        if entity_dict.get('v'):
+            script += '''
+                    var value = addValue(305, 400, "''' + entity_dict.get('v') + '''");
+                    addLink(entity, value, "prov:value", RIGHT);
+                '''
+
+        # Draw Person (if one exists)
+        if entity_dict.get('wat'):
+            agent_uri = entity_dict.get('wat')
+            agent_uri_encoded = urllib.quote(agent_uri)
+            agent_name = entity_dict.get('wat_name', '')
+            if agent_name == '':
+                agent_name = agent_uri.split('#')
+                if len(agent_name) < 2:
+                    agent_name = agent_uri.split('/')
+                agent_name = agent_name[-1]
+                script += '''
+                        var agentLabel = "''' + agent_name + '''";
+                        var agentUri = "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + agent_uri_encoded + '''";
+                        var agent = addAgent(305, 5, agentLabel, agentUri);
+                        addLink(entity, agent, "prov:wasAttributedTo", RIGHT);
+                    '''
+        return [True, script]
+
+    def get_activity_wgb_svg(self):
+        """ Get all prov:wasGeneratedBy Activities for an Entity
+        """
+        script = ''
+        query = '''
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                SELECT ?a ?t
+                WHERE {
+                    GRAPH ?g {
+                        ?a prov:generated <%(uri)s> .
+                        ?a rdfs:label ?t .
+                    }
+                }
+                ''' % {'uri': self.uri}
+        entity_results = database.query(query)
+        if entity_results and 'results' in entity_results:
+            wgb = entity_results['results']['bindings']
+            if len(wgb) == 1:
+                if wgb[0].get('t'):
+                    title = wgb[0]['t']['value']
+                else:
+                    title = 'uri'
+                uri_encoded = urllib.quote(wgb[0]['a']['value'])
+                script += '''
+                        var aLabel = "''' + title + '''";
+                        var aUri = "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''";
+                        var activityWGB = addActivity(5, 205, aLabel, aUri);
+                        addLink(entity, activityWGB, "prov:wasGeneratedBy", TOP);
+                    '''
+            else:
+                pass
+        return script
+
+    def get_activity_used_svg(self):
+        """ Construct SVG code for the prov:used Activities of an Entity
+        """
+        script = ''
+        query = '''
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                SELECT ?a ?t
+                WHERE {
+                    GRAPH ?g {
+                        ?a prov:used <%(uri)s> .
+                        ?a rdfs:label ?t .
+                    }
+                }
+                ''' % {'uri': self.uri}
+        entity_result = database.query(query)
+        if entity_result and 'results' in entity_result:
+            used = entity_result['results']['bindings']
+            if len(used) == 1:
+                if used[0].get('t'):
+                    title = used[0]['t']['value']
+                else:
+                    title = 'uri'
+                uri_encoded = urllib.quote(used[0]['a']['value'])
+                script = '''
+                        var aLabel = "''' + title + '''";
+                        var aUri = "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''";
+                        var activityUsed = addActivity(555, 205, aLabel, aUri);
+                        addLink(activityUsed, entity, "prov:used", TOP);
+                    '''
+            # TODO: Test, no current Entities have multiple prov:used Activities
+            elif len(used) > 1:
+                # TODO: Check query
+                query_encoded = urllib.quote(query)
+                script += '''
+                        activityUsed1 = addActivity(555, 215, "", "");
+                        activityUsed2 = addActivity(550, 210, "", "");
+                        activityUsedN = addActivity(545, 205, "Multiple Activities, click to search", "''' + settings.WEB_SUBFOLDER + "/function/sparql/?query=" + query_encoded + '''");
+                        addLink(activityUsedN, entity, "prov:used", TOP);
+                    '''
+            else:
+                # do nothing as no Activities found
+                pass
+        else:
+            # we have a fault
+            script += '''
+                    var activityFault = addActivity(550, 205, "There is a fault with retrieving Activities that may have used this Entity", "");
+                '''
+        return script
+
+        # TODO: Untested
+
+    def get_wdf_svg(self):
+        """ Get the prov:wasDerivedFrom Entities of an Entity
+        """
+        # XXX Could add the extra WDF to the original Entity query and not have to
+        # re-query
+        script = ''
+        query = '''
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                SELECT DISTINCT ?e ?t
+                WHERE {
+                    GRAPH ?g {
+                        { <%(uri)s> a prov:Entity . }
+                        UNION
+                        { <%(uri)s> a prov:Plan . }
+                        <%(uri)s> prov:wasDerivedFrom ?e .
+                        ?e rdfs:label ?t .
+                    }
+                }
+                ''' % {'uri': self.uri}
+        entity_results = database.query(query)
+
+        if entity_results and 'results' in entity_results:
+            wdf = entity_results['results']['bindings']
+            if len(wdf) == 1:
+                if wdf[0].get('t'):
+                    title = wdf[0]['t']['value']
+                else:
+                    title = 'uri'
+                uri_encoded = urllib.quote(wdf[0]['e']['value'])
+                script += '''
+                        var entityWDF = addEntity(355, 440, "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''");
+                        drawLink(entityWDF, entity, "prov:wasDerivedFrom", TOP);
+                    '''
+            elif len(wdf) > 1:
+                # TODO: Check query
+                query_encoded = urllib.quote(query)
+                script += '''
+                        var entityWDF1 = addEntity(355, 440, "", "");
+                        var entityWDF2 = addEntity(350, 435, "", "");
+                        var entityWDFN = addEntity(345, 430, "Multiple Entities, click here to search", "''' + settings.WEB_SUBFOLDER + "function/sparql/?query=" + query_encoded + '''");
+                        drawLink(entityWDFN, entity, "prov:wasDerivedFrom", TOP);
+                    '''
+            else:
+                # do nothing as no Activities found
+                pass
+        else:
+            # we have a fault
+            script += '''
+                    var entityFaultText = addEntity(350, 440, "There is a fault with retrieving Activities that may have used this Entity", "");
+                '''
+        return script

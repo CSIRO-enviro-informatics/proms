@@ -4,17 +4,12 @@
     <h1>PROMS Server</h1>
     {% if entity %}
         <h2>An Entity</h2>
-        <p><a href="">html</a> | <a href="{{request.path + "?_uri=" + entity['uri_html'] + "&_format=text/turtle"}}">rdf/turtle</a></p>
+        <p><a href="">html</a> | <a href="{{request.path + "?_uri=" + entity['uri'] | quote_plus + "&_format=text/turtle"}}">rdf/turtle</a></p>
         <table class="lined">
             <tr><th>URI:</th><td><a href="{{ entity['uri'] }}">{{ entity['uri'] }}</a></td></tr>
-            {% if entity['l'] %}
-            <tr><th>Title:</th><td>{{ entity['l'] }}</td></tr>
-            {% endif %}
-            {% if entity['c'] %}
-            <tr><th>Created:</th><td>{{ entity['c'] }}</td></tr>
-            {% endif %}
-            {% if entity['dl'] %}
-            <tr><th>Download URL:</th><td><a href={{ entity['dl'] }}>{{ entity['dl'] }}</a></td></tr>
+            <tr><th>Label:</th><td>{{ entity['label'] }}</td></tr>
+            {% if entity['v'] %}
+            <tr><th>Value:</th><td>{{ entity['v'] }}</td></tr>
             {% endif %}
         </table>
         {% if entity['e_script'] %}

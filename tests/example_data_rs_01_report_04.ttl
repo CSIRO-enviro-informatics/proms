@@ -8,13 +8,13 @@
 
 <http://placeholder.org#R01> a proms:BasicReport ;
     rdfs:label "Basic Report R Four"^^xsd:string ;
-    proms:endingActivity <http://placeholder.org#72b82ab7-b699-4f86-8305-6f855a6e0e39> ;
+    proms:endingActivity <http://placeholder.org#72b82ab7-b699-4f86-8305-6f855a6e4567> ;
     proms:nativeId "report-R04"^^xsd:string ;
-    proms:startingActivity <http://placeholder.org#72b82ab7-b699-4f86-8305-6f855a6e0e39> ;
+    proms:startingActivity <http://placeholder.org#72b82ab7-b699-4f86-8305-6f855a6e4567> ;
     proms:wasReportedBy <http://pid.geoscience.gov.au/system/system-01> ;
     prov:generatedAtTime "2000-01-01T12:00:05"^^xsd:dateTime .
 
-<http://placeholder.org#72b82ab7-b699-4f86-8305-6f855a6e0e39> a prov:Activity ;
+<http://placeholder.org#72b82ab7-b699-4f86-8305-6f855a6e4567> a prov:Activity ;
     rdfs:label "Test Activity"^^xsd:string ;
     rdfs:comment "A test Activity"^^xsd:string ;
     prov:endedAtTime "2000-01-01T12:00:05"^^xsd:dateTime ;

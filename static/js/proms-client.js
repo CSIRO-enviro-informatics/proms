@@ -2,7 +2,6 @@
  * Created by laura on 19/07/2016.
  */
 // For quick access to those namespaces:
-var FOAF = $rdf.Namespace('http://xmlns.com/foaf/0.1/');
 var RDF = $rdf.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
 var RDFS = $rdf.Namespace("http://www.w3.org/2000/01/rdf-schema#");
 var XSD = $rdf.Namespace("http://www.w3.org/2001/XMLSchema#");
@@ -142,12 +141,11 @@ function Entity(label, uri, value, comment) {
      };
 }
 
+
 /*
     Build Activity
 */
 function Activity(label, startedAtTime, endedAtTime, uri, wasAssociatedWith, comment, used_entities, generated_entities) {
-//(label, startedAtTime, endedAtTime, uri, wasAssociatedWith, comment, used_entities, generated_entities, wasInformedBy, namedActivityUri) {
-
     this.label = label;
 
     this.startedAtTime = startedAtTime;
@@ -239,6 +237,7 @@ function Activity(label, startedAtTime, endedAtTime, uri, wasAssociatedWith, com
     };
 }
 
+
 /*
     Build ReportingSystem
 */
@@ -280,9 +279,6 @@ function ReportingSystem(label, comment, uri, actedOnBehalfOf) {
     };
 }
 
-function getTurtle(g) {
-    return $rdf.serialize(null, g, null, 'text/turtle');
-}
 
 /*
     Build Report
@@ -324,4 +320,9 @@ function Report(label, reportingSystemURI, nativeId, reportActivity, comment, re
             return this.g;
         }
     };
+}
+
+
+function getTurtle(g) {
+    return $rdf.serialize(null, g, null, 'text/turtle');
 }

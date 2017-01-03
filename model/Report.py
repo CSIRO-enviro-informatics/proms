@@ -32,8 +32,7 @@ class ReportRenderer:
             elif mimetype == 'text/html':
                 return render_template(
                     'class_report.html',
-                    uri=self.uri,
-                    report=self.get_report(),
+                    report=self.get_details(),
                     web_subfolder=settings.WEB_SUBFOLDER
                 )
 
@@ -70,7 +69,7 @@ class ReportRenderer:
         res = database.query(query)
         return res
     
-    def get_report(self):
+    def get_details(self):
         """ Get details for a Report (dict)
         """
         report_details = self._get_details_query()
