@@ -1,0 +1,10 @@
+@prefix : <http://placeholder.org#> .
+@prefix proms: <http://promsns.org/def/proms#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:rs1 a proms:ReportingSystem ;
+    rdfs:label "Example Reporting System"^^xsd:string ;
+    rdfs:comment "This is a minimal example of a ReportingSystem"@en ;
+.
