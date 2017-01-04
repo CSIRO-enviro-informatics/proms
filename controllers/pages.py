@@ -3,7 +3,6 @@ HTTP routes for basic HTML pages
 """
 import os
 from flask import Blueprint, render_template, send_from_directory, request, Response
-import logging
 import settings
 import pages_functions
 pages = Blueprint('pages', __name__)

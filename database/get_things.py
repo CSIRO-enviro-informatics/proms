@@ -28,29 +28,6 @@ def get_agents():
     return agents
 
 
-def get_agent(agent_uri):
-    """ Get an Agent from the provenance database"""
-
-    q = '''
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        SELECT ?label
-        WHERE { GRAPH ?g {
-            <%(agent_uri)s> a prov:Agent ;
-                rdfs:label ?label .
-          }
-        }
-        ''' % {'agent_uri': agent_uri}
-    agent = None
-    for row in sparqlqueries.query(q)['results']['bindings']:
-        agent = {
-            'uri': agent_uri,
-            'label': row['label']['value']
-        }
-
-    return agent
-
-
 def get_reportingsystems():
     """ Get all ReportingSystem details"""
     query = '''
@@ -156,8 +133,6 @@ def get_entities():
                 { ?e a prov:Entity . }
                 UNION
                 { ?e a prov:Plan . }
-                UNION
-                { ?e a proms:ServiceEntity . }
                 OPTIONAL { ?e rdfs:label ?l . }
             }
         }

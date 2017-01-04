@@ -1,6 +1,5 @@
 from flask import Response, render_template
 from rdflib import Graph, URIRef, RDF, RDFS, XSD, Namespace, Literal
-
 import settings
 from modules.ldapi import LDAPI
 

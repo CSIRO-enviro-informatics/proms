@@ -1,8 +1,6 @@
 import cStringIO
 import uuid
-
 from rdflib import Graph
-
 import api_functions
 import settings
 from database import sparqlqueries

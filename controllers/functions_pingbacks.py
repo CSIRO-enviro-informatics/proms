@@ -1,7 +1,5 @@
 import cStringIO
-
 from rdflib import Graph
-
 from database import sparqlqueries
 from modules.ldapi import LDAPI
 

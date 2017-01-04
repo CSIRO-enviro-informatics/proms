@@ -77,7 +77,7 @@ def test_example_data_rs_rdf():
               }
     r = requests.get(get_uri)
     html = r.content
-    # fragile test as using formatted RDF, not logical RDF
+    # fragile tests as using formatted RDF, not logical RDF
     assert '<http://pid.geoscience.gov.au/system/system-01> a <http://promsns.org/def/proms#ReportingSystem> ;' in html
 
 
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     # start afresh
     purge_db()
     #
-    # # load the example data (which are a type of test of course!)
+    # # load the example data (which are a type of tests of course!)
     load_rs()
     load_reports()
 

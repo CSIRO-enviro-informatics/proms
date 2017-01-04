@@ -1,10 +1,8 @@
 import cStringIO
 import json
 import urllib
-
 from flask import Response, render_template
 from rdflib import Graph, Namespace, Literal, URIRef, RDF, XSD, BNode
-
 import settings
 from modules.ldapi import LDAPI
 
@@ -22,11 +20,11 @@ def get_sparql_service_description(rdf_format='turtle'):
         @prefix void: <http://rdfs.org/ns/void#> .
         @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-        <''' + settings.BASE_URI + '/function/sparql' + '''>
+        <%(BASE_URI)s/function/sparql>
             a                       sd:Service ;
-            sd:endpoint             <''' + settings.BASE_URI + '/function/sparql' + '''> ;
+            sd:endpoint             <%(BASE_URI)s/function/sparql> ;
             sd:supportedLanguage    sd:SPARQL11Query ; # yes, read only, sorry!
-            sd:resultFormat         sdf:SPARQL_Results_JSON ; # yes, we only deliver JSON results, sorry!
+            sd:resultFormat         sdf:SPARQL_Results_JSON ;  # yes, we only deliver JSON results, sorry!
             sd:feature sd:DereferencesURIs ;
             sd:defaultDataset [
                 a sd:Dataset ;
@@ -36,7 +34,7 @@ def get_sparql_service_description(rdf_format='turtle'):
                 ]
             ]
         .
-    '''
+    ''' % {'BASE_URI': settings.BASE_URI}
     g = Graph().parse(cStringIO.StringIO(sd_ttl), format='turtle')
     rdf_formats = list(set([x[1] for x in LDAPI.MIMETYPES_PARSERS]))
     if rdf_format[0][1] in rdf_formats:
@@ -60,14 +58,14 @@ def replace_uri(g, initial_uri, replacement_uri):
             ?s ?p ?o .
         }
         INSERT {
-            <''' + replacement_uri + '''> ?p ?o .
+            <%(replacement_uri)s> ?p ?o .
         }
         WHERE {
             ?s ?p ?o .
-            FILTER (STR(?s) = "''' + initial_uri + '''")
+            FILTER (STR(?s) = "%(initial_uri)s")
             # Nick: this really seems to need to be a FILTER, not a subgraph match i.e. <> ?p ?o . Don't know why.
         }
-    '''
+    ''' % {'replacement_uri': replacement_uri, 'initial_uri': initial_uri}
     g.update(u)
 
     # replace all objects
@@ -76,13 +74,13 @@ def replace_uri(g, initial_uri, replacement_uri):
             ?s ?p ?o .
         }
         INSERT {
-            ?s ?p <''' + replacement_uri + '''> .
+            ?s ?p <%(replacement_uri)s> .
         }
         WHERE {
             ?s ?p ?o .
-            FILTER (STR(?o) = "''' + initial_uri + '''")
+            FILTER (STR(?o) = "%(initial_uri)s")
         }
-    '''
+    ''' % {'replacement_uri': replacement_uri, 'initial_uri': initial_uri}
     g.update(u)
 
     # there are no predicates to place (no placeholder relations)
@@ -90,6 +88,7 @@ def replace_uri(g, initial_uri, replacement_uri):
 
 
 def Response_client_error(error_message):
+    """Returns a themed HTML page with an status code of 400 (Bad Request)"""
     return Response(
         error_message,
         status=400,
@@ -98,6 +97,7 @@ def Response_client_error(error_message):
 
 
 def Response_server_error(error_message):
+    """Returns a themed HTML page with an status code of 500 (Server Error)"""
     return Response(
         error_message,
         status=500,
@@ -106,6 +106,8 @@ def Response_server_error(error_message):
 
 
 def render_alternates_view(class_uri, instance_uri, views_formats, mimetype):
+    """Renders an HTML table, a JSON object string or a serialised RDF representation of the alternate views of an
+    object"""
     if mimetype == 'application/json':
         del views_formats['renderer']  # the renderer used is not for public consumption!
         return Response(json.dumps(views_formats), status=200, mimetype='application/json')

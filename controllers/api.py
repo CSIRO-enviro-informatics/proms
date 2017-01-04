@@ -1,8 +1,6 @@
 import json
-
 from flask import Blueprint, Response, request, render_template
 from requests.exceptions import ConnectionError
-
 import api_functions
 import database.get_things
 import functions_agents
@@ -18,8 +16,9 @@ api = Blueprint('api', __name__)
 
 @api.route('/function/lodge-agent', methods=['POST'])
 def lodge_agent():
+    """Insert an Agent into the provenance database"""
     # only accept RDF documents
-    acceptable_mimes = [x[0] for x in LDAPI.MIMETYPES_PARSERS]
+    acceptable_mimes = LDAPI.get_rdf_mimetypes_list()
     ct = request.content_type
     if ct not in acceptable_mimes:
         return api_functions.Response_client_error(
@@ -51,6 +50,7 @@ def lodge_agent():
 
 @api.route('/function/create-agent')
 def create_agent():
+    """Create an Agent for inserting into the provenance database using an HTML web form"""
     try:
         agents = database.get_things.get_agents()
     except ConnectionError:
@@ -64,8 +64,9 @@ def create_agent():
 
 @api.route('/function/lodge-reportingsystem', methods=['POST'])
 def lodge_reportingsystem():
+    """Insert a ReportingSystem into the provenance database"""
     # only accept RDF documents
-    acceptable_mimes = [x[0] for x in LDAPI.MIMETYPES_PARSERS]
+    acceptable_mimes = LDAPI.get_rdf_mimetypes_list()
     ct = request.content_type
     if ct not in acceptable_mimes:
         return api_functions.Response_client_error(
@@ -97,6 +98,7 @@ def lodge_reportingsystem():
 
 @api.route('/function/create-reportingsystem')
 def create_reportingsystem():
+    """Create a ReportingSystem for inserting into the provenance database using an HTML web form"""
     try:
         agents = database.get_things.get_agents()
     except ConnectionError:
@@ -110,8 +112,9 @@ def create_reportingsystem():
 
 @api.route('/function/lodge-report', methods=['POST'])
 def lodge_report():
+    """Insert a Report into the provenance database"""
     # only accept RDF documents
-    acceptable_mimes = [x[0] for x in LDAPI.MIMETYPES_PARSERS]
+    acceptable_mimes = LDAPI.get_rdf_mimetypes_list()
     ct = request.content_type
     if ct not in acceptable_mimes:
         return api_functions.Response_client_error(
@@ -139,6 +142,7 @@ def lodge_report():
 
 @api.route('/function/create-report')
 def create_report():
+    """Create a Report for inserting into the provenance database using an HTML web form"""
     try:
         reportingsystems = database.get_things.get_reportingsystems()
         agents = database.get_things.get_agents()
@@ -157,8 +161,9 @@ def create_report():
 
 @api.route('/function/lodge_pingback', methods=['POST'])
 def lodge_pingback():
+    """Insert an Pingback into the provenance database' pingbacks data named graph"""
     # only valid Pingback Cotent-Types
-    acceptable_mimes = [x[0] for x in LDAPI.MIMETYPES_PARSERS]  # TODO: change
+    acceptable_mimes = LDAPI.get_rdf_mimetypes_list()
     ct = request.content_type
     if ct not in acceptable_mimes:
         return api_functions.Response_client_error(
@@ -180,43 +185,6 @@ def lodge_pingback():
 
     # reply to sender
     return 204
-
-
-# @api.route('/function/pingback', methods=['POST'])
-# def pingback():
-#     """
-#     React to incoming pingback messages
-#
-#     :return: 204 if PROV-AQ successful, 201 if PROMS successfull, else 400 or 500 + msg
-#     """
-#     import pingbacks.handle_incoming.hi_functions as hi
-#
-#     # work out if it's a PROV-AQ message or a PROMS message
-#     if hi.is_provaq_msg(request):
-#         insert = hi.register_provaq_pingback(request)
-#         if insert[0]:
-#             return Response('', status=204)
-#         else:
-#             return Response('PROV-AQ pingback message not handled. ' + insert[1],
-#                             status=400,
-#                             mimetype='text/plain')
-#     elif hi.is_proms_msg(hi.register_provaq_pingback(request)):
-#         insert = hi.register_proms_pingback(request)
-#         if insert[0]:
-#             return Response('Created ' + insert[1] + ' triples.', status=201)
-#         else:
-#             return Response('PROMS pingback message not handled. ' + insert[1],
-#                             status=400,
-#                             mimetype='text/plain')
-#     else:
-#         # message not understood
-#         return 'Pingback message not understood. Not recognised as PROV-AQ or PROMS msg.', 400
-#
-#     pingback_result = functions.register_pingback(request.data)
-#     if pingback_result[0]:
-#         return Response('OK', status=200)
-#     else:
-#         return pingback_result[1], 400
 
 
 @api.route('/function/sparql', methods=['GET', 'POST'])
@@ -347,3 +315,40 @@ def sparql():
             else:
                 return api_functions.Response_client_error(
                     'Accept header must be one of ' + ', '.join(acceptable_mimes) + '.')
+
+
+# @api.route('/function/pingback', methods=['POST'])
+# def pingback():
+#     """
+#     React to incoming pingback messages
+#
+#     :return: 204 if PROV-AQ successful, 201 if PROMS successfull, else 400 or 500 + msg
+#     """
+#     import pingbacks.handle_incoming.hi_functions as hi
+#
+#     # work out if it's a PROV-AQ message or a PROMS message
+#     if hi.is_provaq_msg(request):
+#         insert = hi.register_provaq_pingback(request)
+#         if insert[0]:
+#             return Response('', status=204)
+#         else:
+#             return Response('PROV-AQ pingback message not handled. ' + insert[1],
+#                             status=400,
+#                             mimetype='text/plain')
+#     elif hi.is_proms_msg(hi.register_provaq_pingback(request)):
+#         insert = hi.register_proms_pingback(request)
+#         if insert[0]:
+#             return Response('Created ' + insert[1] + ' triples.', status=201)
+#         else:
+#             return Response('PROMS pingback message not handled. ' + insert[1],
+#                             status=400,
+#                             mimetype='text/plain')
+#     else:
+#         # message not understood
+#         return 'Pingback message not understood. Not recognised as PROV-AQ or PROMS msg.', 400
+#
+#     pingback_result = functions.register_pingback(request.data)
+#     if pingback_result[0]:
+#         return Response('OK', status=200)
+#     else:
+#         return pingback_result[1], 400

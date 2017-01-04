@@ -3,6 +3,7 @@ from lxml.builder import ElementMaker
 import settings
 
 
+# TODO: replace this with an XML Jinja2 template
 def get_capabilities():
     """This function enables an Open Geospatial Consortium Web Service-like GetCapabilities function which describes
     this service (PROMS as a whole) in a standardised way. See http://ogcnetwork.net/node/180 for the OGC's WFS

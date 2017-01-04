@@ -7,13 +7,13 @@
         <tr><th>URI:</th><td><a href="{{ agent['uri'] }}">{{ agent['uri'] }}</a></td></tr>
         <tr><th>Name:</th><td>{{agent['label']}}</td></tr>
     </table>
-    {% if agent['rs_script'] %}
+    {% if agent['a_script'] %}
     <h4>Neighbours view</h4>
         <div id="neighbour_view"></div>
         <script type="text/javascript" src="{{ web_subfolder }}/static/js/raphael-min.js"></script>
         <script type="text/javascript" src="{{ web_subfolder }}/static/js/proms-svg.js"></script>
         <script type="text/javascript">
-            {{ agent['rs_script'] | safe}}
+            {{ agent['a_script'] | safe}}
         </script>
     {% else %}
         <p>No Agent information found.</p>
