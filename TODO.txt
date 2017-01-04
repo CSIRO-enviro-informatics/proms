@@ -1,0 +1,10 @@
+General things not yet done
+
+* use format string % for all SPARQL
+* use os.path.join for all files accessed
+* use 'label' in queries, not 'title'
+* all template URLs like class_register.html
+* work out web_subfolder
+* test logging in prod
+* Order reports by date
+* read: https://code.google.com/archive/p/linked-data-api/wikis/API_Viewing_Resources.wiki

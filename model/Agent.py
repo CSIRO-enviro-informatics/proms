@@ -106,26 +106,26 @@ class AgentRenderer:
             '''
         return [True, script]
 
-    # TODO: reimplement
+    # TODO: test
     def get_agent_was_attributed_to_svg(self, agent_uri):
         """ Construct the SVG code for the prov:wasAttributedTo Entities of an Person
         """
         script = ''
         query = '''
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX prov: <http://www.w3.org/ns/prov#>
-    SELECT DISTINCT ?e ?t
-    WHERE {
-        GRAPH ?g {
-            { ?e a prov:Entity .}
-            UNION
-            { ?e a prov:Plan .}
-            ?e prov:wasAttributedTo <''' + agent_uri + '''> ;
-            OPTIONAL { ?e rdfs:label ?t . }
-        }
-    }
-        '''
-        entity_results = sparqlqueries.query(query)
+                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                SELECT DISTINCT ?e ?t
+                WHERE {
+                    GRAPH ?g {
+                        { ?e a prov:Entity .}
+                        UNION
+                        { ?e a prov:Plan .}
+                        ?e prov:wasAttributedTo <%(agent_uri)s> ;
+                        OPTIONAL { ?e rdfs:label ?t . }
+                    }
+                }
+                ''' % {'agent_uri': self.uri}
+        entity_results = database.query(query)
 
         if entity_results and 'results' in entity_results:
             wat = entity_results['results']
@@ -137,7 +137,7 @@ class AgentRenderer:
                 uri_encoded = urllib.quote(wat['bindings'][0]['e']['value'])
                 script += '''
                     entityLabel = "''' + title + '''";
-                    entityUri = "''' + settings.WEB_SUBFOLDER + '''/id/entity/?uri=''' + uri_encoded + '''";
+                    entityUri = "''' + settings.WEB_SUBFOLDER + '''/instance?_uri=''' + uri_encoded + '''";
                     var entityWAT = addEntity(385, 430, entityLabel, entityUri);
                     addLink(entity, entityWAT, "prov:wasAttributedTo", RIGHT);
                 '''
@@ -160,24 +160,24 @@ class AgentRenderer:
             '''
         return script
 
-    # TODO: reimplement
+    # TODO: test
     def get_agent_was_associated_with_svg(self, agent_uri):
         """ Construct the SVG code for the prov:wasAssociatedWith Activities of an Person
         """
         script = ''
         query = '''
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX prov: <http://www.w3.org/ns/prov#>
-    SELECT DISTINCT ?a ?t
-    WHERE {
-        GRAPH ?g {
-            { ?a a prov:Activity . }
-            ?a prov:wasAssociatedWith <''' + agent_uri + '''> ;
-            OPTIONAL { ?a rdfs:label ?t . }
-        }
-    }
-        '''
-        activity_results = sparqlqueries.query(query)
+                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                SELECT DISTINCT ?a ?t
+                WHERE {
+                    GRAPH ?g {
+                        { ?a a prov:Activity . }
+                        ?a prov:wasAssociatedWith <%(agent_uri)s> ;
+                        OPTIONAL { ?a rdfs:label ?t . }
+                    }
+                }
+            ''' % {'agent_uri': self.uri}
+        activity_results = database.query(query)
 
         if activity_results and 'results' in activity_results:
             waw = activity_results['results']

@@ -1,0 +1,9 @@
+@prefix orc: <https://orcid.org/>.
+@prefix prov: <http://www.w3.org/ns/prov#>.
+@prefix rd: <http://www.w3.org/2000/01/rdf-schema#>.
+
+orc:0000-0002-8742-7730
+    a    prov:Agent ;
+    rd:comment "A test instance of an Agent"@en ;
+    rd:label  "Nicholas Car"@en
+.
