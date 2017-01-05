@@ -112,9 +112,10 @@ def get_contents_classes():
         ORDER BY ?c
     '''
     classes = []
-    r = database.query(query)['results']['bindings']
-    if len(r) > 0:
-        for c in r:
+    try:
+        for c in database.query(query)['results']['bindings']:
             classes.append(c['c']['value'])
+    except ValueError:
+        pass  # i.e. no result
 
     return classes
