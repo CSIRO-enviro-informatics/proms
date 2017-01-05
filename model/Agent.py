@@ -113,14 +113,14 @@ class AgentRenderer:
         query = '''
                 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
-                SELECT DISTINCT ?e ?t
+                SELECT DISTINCT ?e ?label
                 WHERE {
                     GRAPH ?g {
                         { ?e a prov:Entity .}
                         UNION
                         { ?e a prov:Plan .}
                         ?e prov:wasAttributedTo <%(agent_uri)s> ;
-                        OPTIONAL { ?e rdfs:label ?t . }
+                        OPTIONAL { ?e rdfs:label ?label . }
                     }
                 }
                 ''' % {'agent_uri': self.uri}
@@ -129,13 +129,13 @@ class AgentRenderer:
         if entity_results and 'results' in entity_results:
             wat = entity_results['results']
             if len(wat['bindings']) == 1:
-                if wat['bindings'][0].get('t'):
-                    title = wat['bindings'][0]['t']['value']
+                if wat['bindings'][0].get('label'):
+                    label = wat['bindings'][0]['label']['value']
                 else:
-                    title = 'uri'
+                    label = 'uri'
                 uri_encoded = urllib.quote(wat['bindings'][0]['e']['value'])
                 script += '''
-                    entityLabel = "''' + title + '''";
+                    entityLabel = "''' + label + '''";
                     entityUri = "''' + settings.WEB_SUBFOLDER + '''/instance?_uri=''' + uri_encoded + '''";
                     var entityWAT = addEntity(385, 430, entityLabel, entityUri);
                     addLink(entity, entityWAT, "prov:wasAttributedTo", RIGHT);
@@ -167,12 +167,12 @@ class AgentRenderer:
         query = '''
                 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
-                SELECT DISTINCT ?a ?t
+                SELECT DISTINCT ?a ?label
                 WHERE {
                     GRAPH ?g {
                         { ?a a prov:Activity . }
                         ?a prov:wasAssociatedWith <%(agent_uri)s> ;
-                        OPTIONAL { ?a rdfs:label ?t . }
+                        OPTIONAL { ?a rdfs:label ?label . }
                     }
                 }
             ''' % {'agent_uri': self.uri}
@@ -181,13 +181,13 @@ class AgentRenderer:
         if activity_results and 'results' in activity_results:
             waw = activity_results['results']
             if len(waw['bindings']) == 1:
-                if waw['bindings'][0].get('t'):
-                    title = waw['bindings'][0]['t']['value']
+                if waw['bindings'][0].get('label'):
+                    label = waw['bindings'][0]['label']['value']
                 else:
-                    title = 'uri'
+                    label = 'uri'
                 uri_encoded = urllib.quote(waw['bindings'][0]['a']['value'])
                 script += '''
-                    activityLabel = "''' + title + '''";
+                    activityLabel = "''' + label + '''";
                     activityUri = "''' + settings.WEB_SUBFOLDER + '''/id/activity/?uri=''' + uri_encoded + '''";
                     var activityWAW = addActivity(5, 200, activityLabel, activityUri);
                     addLink(agent, activityWAW, "prov:wasAssociatedWith", TOP);

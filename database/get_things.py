@@ -165,20 +165,20 @@ def get_entity(entity_uri):
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-        SELECT DISTINCT ?l ?c ?dl ?t ?v ?wat ?wat_name
+        SELECT DISTINCT ?l ?c ?dl ?label ?v ?wat ?wat_name
         WHERE {
             GRAPH ?g {
-                <''' + entity_uri + '''> a prov:Entity .
-                OPTIONAL { <''' + entity_uri + '''> rdfs:label ?l . }
-                OPTIONAL { <''' + entity_uri + '''> dc:created ?c . }
-                OPTIONAL { <''' + entity_uri + '''> dcat:downloadURL ?dl . }
-                OPTIONAL { <''' + entity_uri + '''> rdfs:label ?t . }
-                OPTIONAL { <''' + entity_uri + '''> prov:value ?v . }
-                OPTIONAL { <''' + entity_uri + '''> prov:wasAttributedTo ?wat . }
+                <%(entity_uri)s> a prov:Entity .
+                OPTIONAL { <%(entity_uri)s> rdfs:label ?l . }
+                OPTIONAL { <%(entity_uri)s'> dc:created ?c . }
+                OPTIONAL { <%(entity_uri)s> dcat:downloadURL ?dl . }
+                OPTIONAL { <%(entity_uri)s> rdfs:label ?label . }
+                OPTIONAL { <%(entity_uri)s> prov:value ?v . }
+                OPTIONAL { <%(entity_uri)s> prov:wasAttributedTo ?wat . }
                 OPTIONAL { ?wat foaf:name ?wat_name . }
             }
         }
-    '''
+    ''' % {'entity_uri': entity_uri}
     return sparqlqueries.query(query)
 
 
@@ -188,11 +188,11 @@ def get_activities():
     query = '''
         PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        SELECT DISTINCT ?a ?l
+        SELECT DISTINCT ?a ?lable
         WHERE {
             GRAPH ?g {
                 ?a a prov:Activity .
-                ?a rdfs:label ?l
+                ?a rdfs:label ?lable
             }
         }
         ORDER BY ?a
@@ -205,7 +205,7 @@ def get_activities():
             ret['a'] = urllib.quote(str(activity['a']['value']))
             ret['a_u'] = str(activity['a']['value'])
             if activity.get('l'):
-                ret['l'] = str(activity['l']['value'])
+                ret['l'] = str(activity['label']['value'])
             activity_items.append(ret)
     return activity_items
 
@@ -221,20 +221,20 @@ def get_activity(activity_uri):
         SELECT DISTINCT ?l ?t ?sat ?eat ?waw ?r ?rt
         WHERE {
             GRAPH ?g {
-                <''' + activity_uri + '''> a prov:Activity .
-                <''' + activity_uri + '''> rdfs:label ?l .
-                { ?r proms:startingActivity <''' + activity_uri + '''> . }
+                <%(activity_uri)s> a prov:Activity .
+                <%(activity_uri)s> rdfs:label ?l .
+                { ?r proms:startingActivity <%(activity_uri)s> . }
                 UNION
-                { ?r proms:endingActivity <''' + activity_uri + '''> . }
+                { ?r proms:endingActivity <%(activity_uri)s> . }
                 OPTIONAL { ?r rdfs:label ?rt . }
-                OPTIONAL { <''' + activity_uri + '''> rdfs:label ?t . }
-                OPTIONAL { <''' + activity_uri + '''> prov:startedAtTime ?sat . }
-                OPTIONAL { <''' + activity_uri + '''> prov:endedAtTime ?eat . }
-                OPTIONAL { <''' + activity_uri + '''> prov:wasAssociatedWith ?waw . }
+                OPTIONAL { <%(activity_uri)s> rdfs:label ?t . }
+                OPTIONAL { <%(activity_uri)s> prov:startedAtTime ?sat . }
+                OPTIONAL { <%(activity_uri)s> prov:endedAtTime ?eat . }
+                OPTIONAL { <%(activity_uri)s> prov:wasAssociatedWith ?waw . }
                 OPTIONAL { ?waw foaf:name ?waw_name . }
             }
         }
-    '''
+    '''  % {'activity_uri': activity_uri}
     return sparqlqueries.query(query)
 
 

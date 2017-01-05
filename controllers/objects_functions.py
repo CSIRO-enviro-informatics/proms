@@ -1,6 +1,5 @@
 import json
-import urllib
-from flask import render_template
+import os
 import settings
 from werkzeug.contrib.cache import SimpleCache
 cache = SimpleCache()
@@ -13,7 +12,7 @@ def get_classes_views_formats():
     """
     cvf = cache.get('classes_views_formats')
     if cvf is None:
-        cvf = json.load(open('controllers/classes_views_formats.json'))
+        cvf = json.load(open(os.path.join(settings.HOME_DIR, 'controllers', 'classes_views_formats.json')))
         # times out never (i.e. on app startup/shutdown
         cache.set('classes_views_formats', cvf)
     return cvf

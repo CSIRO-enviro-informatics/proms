@@ -62,10 +62,10 @@ class ReportingSystemRenderer:
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX proms: <http://promsns.org/def/proms#>
             PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
-            SELECT ?title ?fn ?o ?em ?ph ?add ?v
+            SELECT *
             WHERE {
               <%(uri)s> a proms:ReportingSystem .
-              <%(uri)s> rdfs:label ?title .
+              <%(uri)s> rdfs:label ?label .
               OPTIONAL { <%(uri)s> proms:validation ?v . }
             }
         ''' % {'uri': self.uri}
@@ -73,7 +73,7 @@ class ReportingSystemRenderer:
         ret = {}
         if reportingsystem_detail and 'results' in reportingsystem_detail:
             if len(reportingsystem_detail['results']['bindings']) > 0:
-                ret['title'] = reportingsystem_detail['results']['bindings'][0]['title']['value']
+                ret['label'] = reportingsystem_detail['results']['bindings'][0]['label']['value']
                 if 'v' in reportingsystem_detail['results']['bindings'][0]:
                     ret['v'] = reportingsystem_detail['results']['bindings'][0]['v']['value']
                 ret['uri'] = self.uri
@@ -88,7 +88,7 @@ class ReportingSystemRenderer:
     def get_svg(self, reportingsystem_dict):
         """ Construct the SVG code for the ReportingSystem
         """
-        rLabel = reportingsystem_dict.get('title', 'Untitled')
+        rLabel = reportingsystem_dict.get('label', 'Untitled')
         script = '''
             var rLabel = "''' + rLabel + '''";
             var reportingSystem = addReportingSystem(35, 5, rLabel, "", "");
@@ -102,13 +102,13 @@ class ReportingSystemRenderer:
         if reports and reports['results']['bindings']:
             if len(reports['results']['bindings']) > 0:
                 r1uri_encoded = urllib.quote(reports['results']['bindings'][0]['r']['value'])
-                r1title = reports['results']['bindings'][0]['title']['value']
+                r1label = reports['results']['bindings'][0]['label']['value']
                 r1jobId = reports['results']['bindings'][0]['nid']['value']
                 y_top = 5
                 x_pos = 350
                 reports_script = '''
                     var reports = [];
-                    var report0 = addReport(''' + str(x_pos) + ''', ''' + str(y_top) + ''', "''' + r1title + \
+                    var report0 = addReport(''' + str(x_pos) + ''', ''' + str(y_top) + ''', "''' + r1label + \
                                  '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + r1uri_encoded + \
                                  '''", "''' + r1jobId + '''");
                     reports.push(report0);
@@ -133,11 +133,11 @@ class ReportingSystemRenderer:
                             break
                         uri = report['r']['value']
                         uri_encoded = urllib.quote(uri)
-                        title = report['title']['value']
+                        label = report['label']['value']
                         jobId = report['nid']['value']
                         reports_script += '''
                             var report = addReport(''' + str(x_pos) + ''', ''' + str(y_offset) + ''', "''' + \
-                                          title + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + \
+                                          label + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + \
                                           uri_encoded + '''", "''' + jobId + '''");
                             reports.push(report);
                         '''
@@ -171,7 +171,7 @@ class ReportingSystemRenderer:
                         { ?r a proms:InternalReport }
                         ?r proms:wasReportedBy <%(uri)s> .
                         ?r prov:generatedAtTime ?gat .
-                        ?r rdfs:label ?title .
+                        ?r rdfs:label ?label .
                         ?r proms:nativeId ?nid .
                     }
                 }

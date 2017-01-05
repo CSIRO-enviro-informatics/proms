@@ -1,11 +1,6 @@
 General things not yet done
 (in order of importance)
 
-* replace all web_subfolders with url_for -- see function_sparql.html
-* use 'label' in queries, not 'title'
-* all template URLs like class_register.html
-* use os.path.join for all files accessed
-* use format string % for all SPARQL
 * provide example register links (Entity, Activity, Agent etc)
 * test logging in prod
 * Order reports by date

@@ -74,8 +74,6 @@ class ActivityRenderer:
                 ret = activity_details['results']['bindings'][index]
                 ret['uri'] = self.uri
                 ret['label'] = ret['label']['value']
-                # if 't' in ret:
-                #     ret['t'] = ret['t']['value']
                 if 'sat' in ret:
                     ret['sat'] = ret['sat']['value']
                 if 'eat' in ret:
@@ -146,35 +144,35 @@ class ActivityRenderer:
             used = activity_results['results']
             if len(used['bindings']) > 0:
                 if used['bindings'][0].get('label'):
-                    title = used['bindings'][0]['label']['value']
+                    label = used['bindings'][0]['label']['value']
                 else:
-                    title = 'uri'
+                    label = 'uri'
                 uri_encoded = urllib.quote(used['bindings'][0]['u']['value'])
                 script += '''
-                    var entityUsed1 = addEntity(105, 250, "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''");
+                    var entityUsed1 = addEntity(105, 250, "''' + label + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''");
                     addLink(activity, entityUsed1, "prov:used", TOP);
                 '''
                 # TODO: Loop this if 1-3 Entities
                 if len(used['bindings']) > 1:
                     if used['bindings'][1].get('label'):
-                        title = used['bindings'][1]['label']['value']
+                        label = used['bindings'][1]['label']['value']
                     else:
-                        title = 'uri'
+                        label = 'uri'
                     uri_encoded = urllib.quote(used['bindings'][1]['u']['value'])
 
                     script += '''
-                        var entityUsed2 = addEntity(105, 100, "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''");
+                        var entityUsed2 = addEntity(105, 100, "''' + label + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''");
                         addLink(activity, entityUsed2, "prov:used", TOP);
                     '''
                     if len(used['bindings']) == 3:
                         if used['bindings'][2].get('label'):
-                            title = used['bindings'][2]['label']['value']
+                            label = used['bindings'][2]['label']['value']
                         else:
-                            title = 'uri'
+                            label = 'uri'
                         uri_encoded = urllib.quote(used['bindings'][2]['u']['value'])
 
                         script += '''
-                            var entityUsed3 = addEntity(105, 400, "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''");
+                            var entityUsed3 = addEntity(105, 400, "''' + label + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''");
                             addLink(activity, entityUsed3, "prov:used", RIGHT);
                         '''
                     elif len(used['bindings']) > 3:
@@ -209,7 +207,7 @@ class ActivityRenderer:
                         { <%(uri)s> prov:generated ?u . }
                         UNION
                         { ?u prov:wasGeneratedBy <%(uri)s> .}
-                        OPTIONAL {?u rdfs:label ?t .}
+                        OPTIONAL {?u rdfs:label ?label .}
                     }
                 }
                 ''' % {'uri': self.uri}
@@ -219,35 +217,35 @@ class ActivityRenderer:
             gen = activity_results['results']
             if len(gen['bindings']) > 0:
                 if gen['bindings'][0].get('label'):
-                    title = gen['bindings'][0]['label']['value']
+                    label = gen['bindings'][0]['label']['value']
                 else:
-                    title = 'uri'
+                    label = 'uri'
                 uri_encoded = urllib.quote(gen['bindings'][0]['u']['value'])
                 script += '''
-                    var entityGen1 = addEntity(605, 250, "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''");
+                    var entityGen1 = addEntity(605, 250, "''' + label + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''");
                     addLink(activity, entityGen1, "prov:generated", TOP);
                 '''
                 # Could make a loop to 3
                 if len(gen['bindings']) > 1:
                     if gen['bindings'][1].get('label'):
-                        title = gen['bindings'][1]['label']['value']
+                        label = gen['bindings'][1]['label']['value']
                     else:
-                        title = 'uri'
+                        label = 'uri'
                     uri_encoded = urllib.quote(gen['bindings'][1]['u']['value'])
 
                     script += '''
-                        var entityGen2 = addEntity(605, 100, "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''");
+                        var entityGen2 = addEntity(605, 100, "''' + label + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''");
                         addLink(activity, entityGen2, "prov:generated", TOP);
                     '''
                     if len(gen['bindings']) == 3:
                         if gen['bindings'][2].get('label'):
-                            title = gen['bindings'][2]['label']['value']
+                            label = gen['bindings'][2]['label']['value']
                         else:
-                            title = 'uri'
+                            label = 'uri'
                         uri_encoded = urllib.quote(gen['bindings'][2]['u']['value'])
 
                         script += '''
-                            var entityGen3 = addEntity(605, 400, "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''");
+                            var entityGen3 = addEntity(605, 400, "''' + label + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''");
                             addLink(activity, entityGen3, "prov:generated", TOP);
                         '''
                     elif len(gen['bindings']) > 3:
@@ -283,7 +281,7 @@ class ActivityRenderer:
                     GRAPH ?g {
                         <%(uri)s> a prov:Activity .
                         <%(uri)s> prov:wasInformedBy ?wif .
-                        OPTIONAL { ?wif rdfs:label ?t . }
+                        OPTIONAL { ?wif rdfs:label ?label . }
                     }
                 }
                 ''' % {'uri': self.uri}
@@ -293,12 +291,12 @@ class ActivityRenderer:
             wif = activity_results['results']
             if len(wif['bindings']) == 1:
                 if wif['bindings'][0].get('label'):
-                    title = wif['bindings'][0]['label']['value']
+                    label = wif['bindings'][0]['label']['value']
                 else:
-                    title = 'uri'
+                    label = 'uri'
                 uri_encoded = urllib.quote(wif['bindings'][0]['wif']['value'])
                 script += '''
-                    var activityWIB = addActivity(275, 399, "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''");
+                    var activityWIB = addActivity(275, 399, "''' + label + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''");
                     addLink(activity, activityWIB, "prov:wasInformedBy", RIGHT);
                 '''
             # TODO: Check query

@@ -167,11 +167,11 @@ class EntityRenderer:
         query = '''
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-                SELECT ?a ?t
+                SELECT *
                 WHERE {
                     GRAPH ?g {
                         ?a prov:generated <%(uri)s> .
-                        ?a rdfs:label ?t .
+                        ?a rdfs:label ?label .
                     }
                 }
                 ''' % {'uri': self.uri}
@@ -179,13 +179,13 @@ class EntityRenderer:
         if entity_results and 'results' in entity_results:
             wgb = entity_results['results']['bindings']
             if len(wgb) == 1:
-                if wgb[0].get('t'):
-                    title = wgb[0]['t']['value']
+                if wgb[0].get('label'):
+                    label = wgb[0]['label']['value']
                 else:
-                    title = 'uri'
+                    label = 'uri'
                 uri_encoded = urllib.quote(wgb[0]['a']['value'])
                 script += '''
-                        var aLabel = "''' + title + '''";
+                        var aLabel = "''' + label + '''";
                         var aUri = "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''";
                         var activityWGB = addActivity(5, 205, aLabel, aUri);
                         addLink(entity, activityWGB, "prov:wasGeneratedBy", TOP);
@@ -201,11 +201,11 @@ class EntityRenderer:
         query = '''
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-                SELECT ?a ?t
+                SELECT *
                 WHERE {
                     GRAPH ?g {
                         ?a prov:used <%(uri)s> .
-                        ?a rdfs:label ?t .
+                        ?a rdfs:label ?label .
                     }
                 }
                 ''' % {'uri': self.uri}
@@ -213,13 +213,13 @@ class EntityRenderer:
         if entity_result and 'results' in entity_result:
             used = entity_result['results']['bindings']
             if len(used) == 1:
-                if used[0].get('t'):
-                    title = used[0]['t']['value']
+                if used[0].get('label'):
+                    label = used[0]['label']['value']
                 else:
-                    title = 'uri'
+                    label = 'uri'
                 uri_encoded = urllib.quote(used[0]['a']['value'])
                 script = '''
-                        var aLabel = "''' + title + '''";
+                        var aLabel = "''' + label + '''";
                         var aUri = "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''";
                         var activityUsed = addActivity(555, 205, aLabel, aUri);
                         addLink(activityUsed, entity, "prov:used", TOP);
@@ -255,14 +255,14 @@ class EntityRenderer:
         query = '''
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-                SELECT DISTINCT ?e ?t
+                SELECT DISTINCT ?e ?label
                 WHERE {
                     GRAPH ?g {
                         { <%(uri)s> a prov:Entity . }
                         UNION
                         { <%(uri)s> a prov:Plan . }
                         <%(uri)s> prov:wasDerivedFrom ?e .
-                        ?e rdfs:label ?t .
+                        ?e rdfs:label ?label .
                     }
                 }
                 ''' % {'uri': self.uri}
@@ -271,13 +271,13 @@ class EntityRenderer:
         if entity_results and 'results' in entity_results:
             wdf = entity_results['results']['bindings']
             if len(wdf) == 1:
-                if wdf[0].get('t'):
-                    title = wdf[0]['t']['value']
+                if wdf[0].get('label'):
+                    label = wdf[0]['label']['value']
                 else:
-                    title = 'uri'
+                    label = 'uri'
                 uri_encoded = urllib.quote(wdf[0]['e']['value'])
                 script += '''
-                        var entityWDF = addEntity(355, 440, "''' + title + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''");
+                        var entityWDF = addEntity(355, 440, "''' + label + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + uri_encoded + '''");
                         drawLink(entityWDF, entity, "prov:wasDerivedFrom", TOP);
                     '''
             elif len(wdf) > 1:

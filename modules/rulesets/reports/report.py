@@ -53,7 +53,7 @@ class ReportProperties(Rule):
             { ?s  a            proms:ExternalReport .}
             UNION
             { ?s  a            proms:InternalReport .}
-            ?s  rdfs:label     ?t .
+            ?s  rdfs:label     ?label .
         }
         ''')
         if not bool(qres):

@@ -54,13 +54,13 @@ class ReportRenderer:
                         <%(uri)s>
                             proms:startingActivity ?sac .
                             ?sac prov:startedAtTime ?sat .
-                            ?sac rdfs:label ?sac_t
+                            ?sac rdfs:label ?sac_label
                     } .
                     OPTIONAL {
                         <%(uri)s>
                             proms:endingActivity ?eac .
                             ?eac prov:endedAtTime ?eat .
-                            ?eac rdfs:label ?eac_t .
+                            ?eac rdfs:label ?eac_label .
                     } .
                 }
             }
