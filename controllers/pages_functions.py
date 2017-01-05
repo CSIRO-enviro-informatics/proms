@@ -1,5 +1,6 @@
 from lxml import etree
 from lxml.builder import ElementMaker
+import database
 import settings
 
 
@@ -100,3 +101,18 @@ def get_capabilities():
         xml_declaration=True,
         encoding='UTF-8'
     )
+
+
+def get_contents_classes():
+    query = '''
+        SELECT DISTINCT ?c
+        WHERE {
+          ?s a ?c
+        }
+        ORDER BY ?c
+    '''
+    classes = []
+    for c in database.query(query)['results']['bindings']:
+        classes.append(c['c']['value'])
+
+    return classes

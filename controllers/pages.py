@@ -10,7 +10,6 @@ pages = Blueprint('pages', __name__)
 
 @pages.route('/')
 def home():
-    # TODO: add a GetCapabilities function here
     if request.args.get('_view') or request.args.get('request') or request.args.get('REQUEST'):
         return Response(
             pages_functions.get_capabilities(),
@@ -25,10 +24,17 @@ def home():
 
 @pages.route('/about')
 def about():
-    #logging.log(logging.INFO, '/about')
     return render_template(
         'page_about.html',
         version=settings.VERSION
+    )
+
+
+@pages.route('/contents')
+def contents():
+    return render_template(
+        'page_contents.html',
+        content_classes=pages_functions.get_contents_classes()
     )
 
 

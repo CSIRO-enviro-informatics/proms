@@ -1,0 +1,17 @@
+{% extends "template_layout.html" %}
+
+{% block content %}
+    <h1>PROMS Server</h1>
+    <h2>Content</h2>
+    <p>This page provides and overview of the content stored in this PROMS Server's provenance database.</p>
+
+    <h3>Classes</h3>
+    <p>The following classes<sup><a href="#note-1">*</a></sup> of item are present in this provenance database. The links lead to registers of items of those classes:</p>
+    <ul>
+    {% for class_uri in content_classes %}
+        <li><a href="{{ url_for('modelx.register') }}?_uri={{ class_uri|quote_plus }}">{{ class_uri }}</a></li>
+    {% endfor %}
+    </ul>
+
+    <p><sup><a name="note-1"></a></sup><em>Note: not all classes are shown, only 'primary' classes, i.e. those declared in the PROV & PROMS ontologies, not infered classes or bas OWL or RDFS classes</em></p>
+{% endblock %}
