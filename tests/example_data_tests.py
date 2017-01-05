@@ -66,8 +66,7 @@ def test_example_data_rs_html():
     }
     r = requests.get(get_uri)
     html = r.content
-    line_to_seek = '<li><a href="%(PROMS_BASE_URI)s/instance?_uri=%(quoted_uri)s">System 01</a></li>' % {
-        'PROMS_BASE_URI': PROMS_BASE_URI,
+    line_to_seek = '/instance?_uri=%(quoted_uri)s">System 01</a></li>' % {
         'quoted_uri': 'http%3A%2F%2Fpid.geoscience.gov.au%2Fsystem%2Fsystem-01'
     }
     assert line_to_seek in html
