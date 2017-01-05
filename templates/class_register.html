@@ -3,11 +3,15 @@
 {% block content %}
     <h1>PROMS Server</h1>
     <h2>Register view of <em><a href="{{ class_name }}">{{ class_name }}</a></em></h2>
+    <p><a href="{{ request.url }}">html</a> | <a href="{{ request.url + "&_format=text/turtle" }}">rdf/turtle</a></p>
+
+    <h3>Alternate views</h3>
+    <p>Different view of this register of objects are listed at its <a href="{{ request.url }}&_view=alternates">Alternate views</a> page.</p>
+
     <h3>Instances</h3>
     <ul>
     {% for instance in register %}
         <li><a href="{{ url_for('modelx.instance', _uri=instance['uri']) }}">{{ instance['label'] }}</a></li>
     {% endfor %}
     </ul>
-    <h4>See <em><a href="{{ url_for('modelx.register', _uri=class_name, _view='alternates') }}">Alternate views</a></em> for this Register view</h4>
 {% endblock %}

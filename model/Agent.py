@@ -32,8 +32,7 @@ class AgentRenderer:
             elif mimetype == 'text/html':
                 return render_template(
                     'class_agent.html',
-                    agent=self.get_details(),
-                    web_subfolder=settings.WEB_SUBFOLDER
+                    agent=self.get_details()
                 )
 
     def get_details(self):

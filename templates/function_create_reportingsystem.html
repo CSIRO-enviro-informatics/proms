@@ -1,11 +1,13 @@
 {% extends "template_layout.html" %}
 
 {% block content %}
-    <script src="/static/js/rdflib.js"></script>
-    <script src="/static/js/proms-client.js"></script>
-    <script src="/static/js/jquery.min.js"></script>
-    <script src="/static/js/jquery.validate.min.js"></script>
-    <script src="/static/js/additional-methods.min.js"></script> <!-- for jQuery Validate's URI validation -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.datetimepicker.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.validate.min.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/additional-methods.min.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/rdflib.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/proms-client.js') }}" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.datetimepicker.css') }}" />
 
     <h2>Create a <em>Reporting System</em></h2>
     <p>This page allows someone to create a <a class="definition" href="http://promsns.org/def/proms#ReportingSystem">Reportingsystem</a> allowing that ReportingSystem to send data to this PROMS Server instance in the form of <a class="definition" href="http://promsns.org/def/proms#Report"><em>Reports</em></a>.</p>

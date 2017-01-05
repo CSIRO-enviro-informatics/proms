@@ -27,8 +27,7 @@ class RegisterRenderer:
                 return render_template(
                     'class_register.html',
                     class_name=self.request.args.get('_uri'),
-                    register=self.register,
-                    web_subfolder=settings.WEB_SUBFOLDER
+                    register=self.register
                 )
         else:
             return Response('The requested model model is not valid for this class', status=400, mimetype='text/plain')

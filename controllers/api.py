@@ -57,8 +57,7 @@ def create_agent():
         return render_template('error_db_connection.html'), 500
     return render_template(
         'function_create_agent.html',
-        agents=agents,
-        web_subfolder=settings.WEB_SUBFOLDER
+        agents=agents
     )
 
 
@@ -105,8 +104,7 @@ def create_reportingsystem():
         return render_template('error_db_connection.html'), 500
     return render_template(
         'function_create_reportingsystem.html',
-        agents=agents,
-        web_subfolder=settings.WEB_SUBFOLDER
+        agents=agents
     )
 
 
@@ -154,8 +152,7 @@ def create_report():
         'function_create_report.html',
         agents=agents,
         entities=entities,
-        reportingsystems=reportingsystems,
-        web_subfolder=settings.WEB_SUBFOLDER
+        reportingsystems=reportingsystems
     )
 
 
@@ -239,8 +236,7 @@ def sparql():
             return render_template(
                 'function_sparql.html',
                 query=query,
-                query_result='No results: ' + e.message,
-                web_subfolder=settings.WEB_SUBFOLDER
+                query_result='No results: ' + e.message
             ), 400
         except ConnectionError:
             return render_template('error_db_connection.html'), 500
@@ -255,8 +251,8 @@ def sparql():
             return render_template(
                 'function_sparql.html',
                 query=query,
-                query_result=query_result,
-                web_subfolder=settings.WEB_SUBFOLDER)
+                query_result=query_result
+            )
         else:
             return Response(json.dumps(query_result), status=200, mimetype="application/sparql-results+json")
     # No query, display form
@@ -303,8 +299,8 @@ def sparql():
                 query = request.args.get('query')
                 return render_template(
                     'function_sparql.html',
-                    query=query,
-                    web_subfolder=settings.WEB_SUBFOLDER)
+                    query=query
+                )
             elif best is not None:
                 return Response(
                     api_functions.get_sparql_service_description(

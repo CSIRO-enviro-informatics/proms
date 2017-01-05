@@ -4,18 +4,22 @@
     <h1>PROMS Server</h1>
     {% if activity %}
         <h2>An Activity</h2>
-        <p><a href="">html</a> | <a href="{{request.path + "?_uri=" + activity['uri'] | quote_plus + "&_format=text/turtle"}}">rdf/turtle</a></p>
+        <p><a href="{{ request.url }}">html</a> | <a href="{{ request.url + "&_format=text/turtle" }}">rdf/turtle</a></p>
         <table class="lined">
             <tr><th>URI:</th><td><a href="{{ activity['uri'] }}">{{ activity['uri'] }}</a></td></tr>
             <tr><th>Label:</th><td>{{ activity['label'] }}</td></tr>
             <tr><th>Started:</th><td>{{ activity['sat'] }}</td></tr>
             <tr><th>Ended:</th><td>{{ activity['eat'] }}</td></tr>
         </table>
+
+        <h3>Alternate views</h3>
+        <p>Different view of this object are listed at its <a href="{{ request.url }}&_view=alternates">Alternate views</a> page.</p>
+
         {% if activity['a_script'] %}
             <h4>Neighbours view</h4>
             <div id="neighbour_view"></div>
-            <script type="text/javascript" src="{{ web_subfolder }}/static/js/raphael-min.js" charset="utf-8"></script>
-            <script type="text/javascript" src="{{ web_subfolder }}/static/js/proms-svg.js" charset="utf-8"></script>
+            <script type="text/javascript" src="{{ url_for('static', filename='js/raphael-min.js') }}" charset="utf-8"></script>
+            <script type="text/javascript" src="{{ url_for('static', filename='js/proms-svg.js') }}" charset="utf-8"></script>
             <script>
                 {{ activity['a_script'] | safe }}
             </script>

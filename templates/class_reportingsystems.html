@@ -9,7 +9,7 @@
         {% else %}
             <ul>
             {% for reportingsystem in reportingsystems %}
-                <li><a href="{{ web_subfolder }}/object/?_uri={{ reportingsystem['rs'] }}">
+                <li><a href="{{ url_for('modelx.instance') }}?_uri={{ reportingsystem['rs'] }}">
                     {% if reportingsystem['t'] -%}
                         {{reportingsystem['t']}}
                     {% else %}

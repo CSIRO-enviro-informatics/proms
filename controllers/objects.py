@@ -94,8 +94,7 @@ def register_name(class_name):
     return render_template(
         'class_register.html',
         class_name=class_name,
-        register=register,
-        web_subfolder=settings.WEB_SUBFOLDER
+        register=register
     )
 
 

@@ -10,14 +10,14 @@
     <tr><th>View</th><th>Formats</th></tr>
     {% for v, fs in views_formats.iteritems() %}
         {% if v == 'default' %}
-            <td>default</td><td><a href="{{base_uri}}{{web_subfolder}}?_uri={{ instance_uri if instance_uri != None else class_uri }}&_view={{ fs }}">{{ fs }}</a></td>
+            <td>default</td><td><a href="{{ request.base_url }}?_uri={{ instance_uri|quote_plus if instance_uri != None else class_uri | quote_plus }}&_view={{ fs }}">{{ fs }}</a></td>
         {% elif v == 'renderer' %}
         {% else %}
             <tr>
-                <td><a href="{{base_uri}}{{web_subfolder}}?_uri={{ instance_uri if instance_uri != None else class_uri }}&_view={{ v }}">{{ v }}</a></td>
+                <td><a href="{{ request.base_url }}?_uri={{ instance_uri|quote_plus if instance_uri != None else class_uri }}&_view={{ v }}">{{ v }}</a></td>
                 <td>
                 {% for f in fs %}
-                <a href="{{base_uri}}{{web_subfolder}}?_uri={{ instance_uri if instance_uri != None else class_uri }}&_view={{ v }}&_format={{ f }}">{{ f }}</a>
+                <a href="{{ request.base_url }}?_uri={{ instance_uri|quote_plus if instance_uri != None else class_uri }}&_view={{ v }}&_format={{ f }}">{{ f }}</a>
                 {% endfor %}
                 </td>
             </tr>

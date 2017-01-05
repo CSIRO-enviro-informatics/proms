@@ -32,8 +32,7 @@ class ReportRenderer:
             elif mimetype == 'text/html':
                 return render_template(
                     'class_report.html',
-                    report=self.get_details(),
-                    web_subfolder=settings.WEB_SUBFOLDER
+                    report=self.get_details()
                 )
 
     def _get_details_query(self):

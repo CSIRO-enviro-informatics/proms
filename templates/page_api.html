@@ -14,7 +14,7 @@
             <th>Instance viewer</th>
             <td>Accesses a single object from the provenance database</td>
             <td>
-                <p><a href="{{ web_subfolder }}/instance?_uri=">{{ web_subfolder }}/instance?_uri={uri}</a></p>
+                <p><a href="{{ url_for('modelx.instance') }}?_uri=">{{ url_for('modelx.instance') }}?_uri={uri}</a></p>
                 uri <em>(mandatory)</em>: the URI of an object in the provenance database, URL encoded
             </td>
         </tr>
@@ -22,7 +22,7 @@
             <th>Register viewer</th>
             <td>Accesses a register of a single class of object from the provenance database</td>
             <td>
-                <p><a href="{{ web_subfolder }}/register?_uri=">{{ web_subfolder }}/register?_uri={uri}</a></p>
+                <p><a href="{{ url_for('modelx.register') }}?_uri=">{{ url_for('modelx.register') }}?_uri={uri}</a></p>
                 uri <em>(mandatory)</em>: the URI of a class of object in the provenance database, URL encoded
             </td>
         </tr>
@@ -30,7 +30,7 @@
             <th>Register viewer, class name</th>
             <td>Accesses a register of a single one class of object from the provenance database using the class name, not the full URI of the class</td>
             <td>
-                <p><a href="{{ web_subfolder }}/register">{{ web_subfolder }}/register/{class_name}/</a></p>
+                <p><a href="{{ url_for('modelx.register') }}">{{ url_for('modelx.register') }}/{class_name}/</a></p>
                 class_names available are:
                 <ul>
                     <li>Activity</li>
@@ -46,7 +46,7 @@
             <th>SPARQL endpoint</th>
             <td>Provides a read-only <a href="https://www.w3.org/TR/sparql11-overview/">SPARQL 1.1</a> endpoint for the provenance database</td>
             <td>
-                <p><a href="{{ web_subfolder }}/function/sparql">{{ web_subfolder }}/function/sparql</a></p>
+                <p><a href="{{ url_for('api.sparql') }}">{{ url_for('api.sparql') }}</a></p>
                 See the SPARQL endpoint itself for documentation of use
             </td>
         </tr>
@@ -54,21 +54,21 @@
             <th>Lodge a <em>ReportingSystem</em></th>
             <td>Manually register a ReportingSystem for which Reports can then be sent to this PROMS Server instance</td>
             <td>
-                <p><a href="{{ web_subfolder }}/function/lodge-reportingsystem">{{ web_subfolder }}/function/lodge-reportingsystem</a></p>
+                <p><a href="{{ url_for('api.lodge_reportingsystem') }}">{{ url_for('api.lodge_reportingsystem') }}</a></p>
             </td>
         </tr>
         <tr>
             <th>Create a <em>ReportingSystem</em></th>
             <td>Manually create a PROMS ReportingSystem using a web form</td>
             <td>
-                <p><a href="{{ web_subfolder }}/function/create-reportingsystem">{{ web_subfolder }}/function/create-reportingsystem</a></p>
+                <p><a href="{{ url_for('api.create_reportingsystem') }}">{{ url_for('api.create_reportingsystem') }}</a></p>
             </td>
         </tr>
         <tr>
             <th>Lodge <em>Report</em></th>
             <td>POST a Report to this PROMS Server instance</td>
             <td>
-                <p><a href="{{ web_subfolder }}/function/lodge-report">{{ web_subfolder }}/function/lodge-report</a></p>
+                <p><a href="{{ url_for('api.lodge_report') }}">{{ url_for('api.lodge_report') }}</a></p>
                 Must be an <a href="https://en.wikipedia.org/wiki/POST_(HTTP)">HTTP POST</a> request containing a <a href="https://confluence.csiro.au/display/PROMS/Getting+information+into+PROMS+Server">valid PROMS Report</a> for a <a href="https://confluence.csiro.au/display/PROMS/Getting+information+into+PROMS+Server">registered ReportingSystem</a> in one of the following RDF mimetypes: 'text/turtle', 'application/rdf+xml', 'application/rdf+json', 'application/json', 'text/ntriples', 'text/nt', 'text/n3'
             </td>
         </tr>
@@ -76,7 +76,7 @@
             <th>Create a <em>Report</em></th>
             <td>Manually create a PROMS Report to download or send to this PROMS Server instance using a web form</td>
             <td>
-                <p><a href="{{ web_subfolder }}/function/create-report">{{ web_subfolder }}/function/create-report</a></p>
+                <p><a href="{{ url_for('api.create_report') }}">{{ url_for('api.create_report') }}</a></p>
             </td>
         </tr>
 
@@ -85,7 +85,7 @@
             <th>New <em>Pingback</em></th>
             <td>POST a PROV-O or PROMS Pingback to this PROMS Server instance</td>
             <td>
-                <p><a href="{{ web_subfolder }}/function/pingback">{{ web_subfolder }}/function/pingback</a></p>
+                <p><a href="{{ url_for('api.lodge_pingback') }}">{{ url_for('api.lodge_pingback') }}</a></p>
                 Must be an <a href="https://en.wikipedia.org/wiki/POST_(HTTP)">HTTP POST</a> request containing a <a href="http://promsns.org/pingbacks/validator">valid poingback message</a>.
             </td>
         </tr>

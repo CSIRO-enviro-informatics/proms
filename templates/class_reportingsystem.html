@@ -3,15 +3,20 @@
 {% block content %}
     <h1>PROMS Server</h1>
     <h2>A ReportingSystem</h2>
+    <p><a href="{{ request.url }}">html</a> | <a href="{{ request.url + "&_format=text/turtle" }}">rdf/turtle</a></p>
     <table class="lined">
         <tr><th>URI:</th><td><a href="{{ reportingsystem['uri'] | quote_plus }}">{{ reportingsystem['uri'] }}</a></td></tr>
         <tr><th>Title:</th><td>{{reportingsystem['title']}}</td></tr>
     </table>
+
+    <h3>Alternate views</h3>
+    <p>Different view of this object are listed at its <a href="{{ request.url }}&_view=alternates">Alternate views</a> page.</p>
+
     {% if reportingsystem['rs_script'] %}
     <h4>Neighbours view</h4>
         <div id="neighbour_view"></div>
-        <script type="text/javascript" src="{{ web_subfolder }}/static/js/raphael-min.js"></script>
-        <script type="text/javascript" src="{{ web_subfolder }}/static/js/proms-svg.js"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/raphael-min.js') }}" charset="utf-8"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/proms-svg.js') }}" charset="utf-8"></script>
         <script type="text/javascript">
             {{ reportingsystem['rs_script'] | safe}}
         </script>

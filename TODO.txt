@@ -1,10 +1,12 @@
 General things not yet done
+(in order of importance)
 
-* use format string % for all SPARQL
-* use os.path.join for all files accessed
+* replace all web_subfolders with url_for -- see function_sparql.html
 * use 'label' in queries, not 'title'
 * all template URLs like class_register.html
-* work out web_subfolder
+* use os.path.join for all files accessed
+* use format string % for all SPARQL
+* provide example register links (Entity, Activity, Agent etc)
 * test logging in prod
 * Order reports by date
 * read: https://code.google.com/archive/p/linked-data-api/wikis/API_Viewing_Resources.wiki

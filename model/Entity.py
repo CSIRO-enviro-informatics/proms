@@ -55,8 +55,7 @@ class EntityRenderer:
             elif mimetype == 'text/html':
                 return render_template(
                     'class_entity.html',
-                    entity=self.get_details(),
-                    web_subfolder=settings.WEB_SUBFOLDER
+                    entity=self.get_details()
                 )
 
     def _get_details_query(self):
@@ -287,7 +286,7 @@ class EntityRenderer:
                 script += '''
                         var entityWDF1 = addEntity(355, 440, "", "");
                         var entityWDF2 = addEntity(350, 435, "", "");
-                        var entityWDFN = addEntity(345, 430, "Multiple Entities, click here to search", "''' + settings.WEB_SUBFOLDER + "function/sparql/?query=" + query_encoded + '''");
+                        var entityWDFN = addEntity(345, 430, "Multiple Entities, click here to search", "''' + settings.WEB_SUBFOLDER + "/function/sparql/?query=" + query_encoded + '''");
                         drawLink(entityWDFN, entity, "prov:wasDerivedFrom", TOP);
                     '''
             else:

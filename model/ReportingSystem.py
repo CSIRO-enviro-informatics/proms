@@ -32,8 +32,7 @@ class ReportingSystemRenderer:
             elif mimetype == 'text/html':
                 return render_template(
                     'class_reportingsystem.html',
-                    reportingsystem=self.get_details(),
-                    web_subfolder=settings.WEB_SUBFOLDER
+                    reportingsystem=self.get_details()
                 )
         # elif model == 'prov':
         #     # remove all the non-PROV-O (and RDF) triples

@@ -19,23 +19,6 @@ def get_classes_views_formats():
     return cvf
 
 
-def render_graph_class_templates_alternates(parent_template, uri, graph_class, graph_class_name, views_formats):
-    return render_template(
-        parent_template,
-        base_uri=settings.BASE_URI,
-        web_subfolder=settings.WEB_SUBFOLDER,
-        view='alternates',
-        uri=uri,
-        graph_class=graph_class,
-        graph_class_name=graph_class_name,
-        placed_html=render_template(
-            'view_alternates.html',
-            uri=urllib.quote_plus(uri),
-            views_formats=views_formats
-        )
-    )
-
-
 def get_classes():
     cvf = get_classes_views_formats()
     classes = []

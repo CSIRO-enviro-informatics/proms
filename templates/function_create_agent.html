@@ -1,11 +1,13 @@
 {% extends "template_layout.html" %}
 
 {% block content %}
-    <script src="/static/js/rdflib.js"></script>
-    <script src="/static/js/proms-client.js"></script>
-    <script src="/static/js/jquery.min.js"></script>
-    <script src="/static/js/jquery.validate.min.js"></script>
-    <script src="/static/js/additional-methods.min.js"></script> <!-- for jQuery Validate's URI validation -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.datetimepicker.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.validate.min.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/additional-methods.min.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/rdflib.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/proms-client.js') }}" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.datetimepicker.css') }}" />
 
     <h2>Create an <em>Agent</em></h2>
     <p>This page allows someone to create an <a class="definition" href="http://www.w3.org/ns/prov#Agent">Agent</a> allowing to which data may be attributed, actions associated and on who's behalf a <a class="definition" href="http://promsns.org/def/proms#ReportingSystem">Reportingsystem</a> may operate. From PROV: "An agent is something that bears some form of responsibility for an activity taking place".</p>

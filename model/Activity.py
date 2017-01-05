@@ -32,8 +32,7 @@ class ActivityRenderer:
             elif mimetype == 'text/html':
                 return render_template(
                     'class_activity.html',
-                    activity=self.get_details(),
-                    web_subfolder=settings.WEB_SUBFOLDER
+                    activity=self.get_details()
                 )
 
     def _get_details_query(self):
@@ -120,7 +119,7 @@ class ActivityRenderer:
                 agent_name = agent_name[-1]
             script += '''
                 var agentName = "''' + agent_name + '''";
-                var agentUri = "''' + settings.WEB_SUBFOLDER + "/id/agent/?uri=" + agent_uri_encoded + '''";
+                var agentUri = "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + agent_uri_encoded + '''";
                 var agent = addAgent(275, 5, agentName, agentUri);
                 addLink(activity, agent, "prov:wasAssociatedWith", RIGHT);
             '''

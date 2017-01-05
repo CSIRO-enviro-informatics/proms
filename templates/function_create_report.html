@@ -3,21 +3,11 @@
 {% block content %}
     <h2>Create a <em>Report</em></h2>
     <p>Use this form to create a provenance <a class="definition" href="http://www.promsns.org/ns/proms#Report">Report</a> to be stored in the PROMS server.  </br>Input validation will ensure that the <em>Report</em> is valid.</p>
-    <script src="/static/js/jquery.min.js" charset="utf-8"></script>
-    <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"/ >
-    <script src="/static/js/jquery.datetimepicker.js"></script>
-    <script src="/static/js/rdflib.js"></script>
-    <script src="/static/js/proms-client.js"></script>
-    <style>
-        .entity-input-delete,
-        .entity-output-delete,
-        .entity-input-add,
-        .entity-output-add {
-            color: #0f4a84;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-    </style>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.datetimepicker.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/rdflib.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/proms-client.js') }}" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.datetimepicker.css') }}" />
     <script>
         var allAgents = {{ agents|tojson }};
         var allReportingSystems = {{  reportingsystems|tojson }};
@@ -292,7 +282,7 @@
                     <div id="agent-existing-value" style="width:300px;">
                         <select name="agent" id="agent">
                             {% for agent_item in agents %}
-                                <option value="{{ agent_item.ag_u }}">{{ agent_item.n + " " + agent_item.fn}}</option>
+                                <option value="{{ agent_item.ag_u }}">{{ agent_item.label}}</option>
                             {% endfor %}
                         </select>
                     </div>

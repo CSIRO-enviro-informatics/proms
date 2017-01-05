@@ -19,8 +19,7 @@ def home():
         )
 
     return render_template(
-        'page_index.html',
-        web_subfolder=settings.WEB_SUBFOLDER
+        'page_index.html'
     )
 
 
@@ -29,7 +28,6 @@ def about():
     #logging.log(logging.INFO, '/about')
     return render_template(
         'page_about.html',
-        web_subfolder=settings.WEB_SUBFOLDER,
         version=settings.VERSION
     )
 
@@ -37,8 +35,7 @@ def about():
 @pages.route('/api')
 def api():
     return render_template(
-        'page_api.html',
-        web_subfolder=settings.WEB_SUBFOLDER
+        'page_api.html'
     )
 
 
@@ -53,14 +50,12 @@ def favicon():
 @pages.app_errorhandler(404)
 def page_not_found(e):
     return render_template(
-        'error_404.html',
-        web_subfolder=settings.WEB_SUBFOLDER
+        'error_404.html'
     ), 404
 
 
 @pages.app_errorhandler(405)
 def page_not_found(e):
     return render_template(
-        'error_405.html',
-        web_subfolder=settings.WEB_SUBFOLDER
+        'error_405.html'
     ), 405

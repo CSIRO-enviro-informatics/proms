@@ -175,6 +175,5 @@ def render_alternates_view(class_uri, instance_uri, views_formats, mimetype):
             'alternates_view.html',
             class_uri=class_uri,
             instance_uri=instance_uri,
-            web_subfolder=settings.WEB_SUBFOLDER,
             views_formats=views_formats
         )
