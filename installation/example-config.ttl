@@ -8,7 +8,7 @@
 [] a fuseki:Server ;
 	fuseki:services [
 	 	a fuseki:Service ;
-		fuseki:name              "tdb2" ;      # http://host:port/tdb2
+		fuseki:name              "tdb" ;      # http://host:port/tdb2
 		fuseki:serviceQuery      "query" ;     # SPARQL query service
 		fuseki:serviceUpdate     "update" ;	   # SPARQL query service
 		fuseki:dataset           :dataset ;

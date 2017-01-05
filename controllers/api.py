@@ -7,7 +7,6 @@ import functions_agents
 import functions_pingbacks
 import functions_reportingsystems
 import functions_reports
-import settings
 from database import sparqlqueries
 from modules.ldapi import LDAPI
 
