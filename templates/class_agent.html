@@ -6,19 +6,22 @@
     <p><a href="{{ request.url }}">html</a> | <a href="{{ request.url + "&_format=text/turtle" }}">rdf/turtle</a></p>
     <table class="lined">
         <tr><th>URI:</th><td><a href="{{ agent['uri'] }}">{{ agent['uri'] }}</a></td></tr>
-        <tr><th>Name:</th><td>{{agent['label']}}</td></tr>
+        <tr><th>Label:</th><td>{{agent['label']}}</td></tr>
+        {% if activity['aobo'] is not none  %}
+            <tr><th>Acted Ob Behalf Of:</th><td><a href="{{ activity['aobo'] }}">{{ activity['aobo_lable'] }}</a></td></tr>
+        {% endif %}
     </table>
 
     <h3>Alternate views</h3>
     <p>Different view of this object are listed at its <a href="{{ request.url }}&_view=alternates">Alternate views</a> page.</p>
 
-    {% if agent['a_script'] %}
+    {% if agent['script'] %}
     <h4>Neighbours view</h4>
         <div id="neighbour_view"></div>
         <script type="text/javascript" src="{{ url_for('static', filename='js/raphael-min.js') }}" charset="utf-8"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/proms-svg.js') }}" charset="utf-8"></script>
         <script type="text/javascript">
-            {{ agent['a_script'] | safe}}
+            {{ agent['script'] | safe}}
         </script>
     {% else %}
         <p>No Agent information found.</p>

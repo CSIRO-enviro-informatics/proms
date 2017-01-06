@@ -87,8 +87,8 @@ DEBUG = True
 #   SPARQL_SECURE_QUERY_URI = 'http://localhost/fuseki/data/query'
 #
 #   as Apache server is hiding port 3030 from access by proxying to it.
-SPARQL_QUERY_URI = 'http://localhost:3030/tdb2/query'
-SPARQL_UPDATE_URI = 'http://localhost:3030/tdb2/update'
+SPARQL_QUERY_URI = 'http://localhost:3030/tdb/query'
+SPARQL_UPDATE_URI = 'http://localhost:3030/tdb/update'
 SPARQL_AUTH_USR = ''  # Ensure this matches any triplestore proxying settings (install-apache.sh)
 SPARQL_AUTH_PWD = ''  # Ensure this matches any triplestore proxying settings (install-apache.sh)
 SPARQL_TIMEOUT = 5  # Request Timeout in seconds

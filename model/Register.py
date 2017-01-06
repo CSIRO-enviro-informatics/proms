@@ -1,17 +1,19 @@
+from renderer import Renderer
 from flask import Response, render_template
 from rdflib import Graph, URIRef, RDF, RDFS, XSD, Namespace, Literal
-import settings
 from modules.ldapi import LDAPI
 
 
-class RegisterRenderer:
-    def __init__(self, request, uri, register):
+class RegisterRenderer(Renderer):
+    def __init__(self, request, uri, endpoints, register):
+        Renderer.__init__(self, uri, endpoints)
+
         self.request = request
         self.uri = uri
         self.register = register
         self.g = None
 
-    def render_view_format(self, view, mimetype):
+    def render(self, view, mimetype):
         if view == 'reg':
             # is an RDF format requested?
             if mimetype in LDAPI.get_rdf_mimetypes_list():
@@ -31,6 +33,11 @@ class RegisterRenderer:
                 )
         else:
             return Response('The requested model model is not valid for this class', status=400, mimetype='text/plain')
+
+    def _get_details(self):
+        """ Get the details for Register"""
+
+        pass
 
     def _make_dpr_graph(self, model_view):
         self.g = Graph()

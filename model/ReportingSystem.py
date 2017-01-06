@@ -1,39 +1,25 @@
+from renderer import Renderer
 from flask import Response, render_template
 import urllib
-import settings
-from database import sparqlqueries
+import database
 from modules.ldapi import LDAPI
 
 
-class ReportingSystemRenderer:
-    def __init__(self, g, uri):
-        # load Entity data from given graph
-        self.g = g
-        self.uri = uri
+class ReportingSystemRenderer(Renderer):
+    def __init__(self, uri, endpoints):
+        Renderer.__init__(self, uri, endpoints)
 
-    def render_view_format(self, view, mimetype):
-        """
-        Renders a model and format of an ReportingSystem
+        self.uri_encoded = urllib.quote_plus(uri)
+        self.label = None
+        self.script = None
 
-        No validation is needed as the model and format for an ReportingSystem are pre-validated before this class is
-        instantiated
-        :param view: An allowed model model of an ReportingSystem
-        :param format: An allowed format of an ReportingSystem
-        :return: A Flask Response object
-        """
+    def render(self, view, mimetype):
         if view == 'neighbours':
             # no work to be done as we have already loaded the triples
             if mimetype in LDAPI.get_rdf_mimetypes_list():
-                return Response(
-                    self.g.serialize(format=LDAPI.get_rdf_parser_for_mimetype(mimetype)),
-                    status=200,
-                    mimetype=mimetype
-                )
+                return self._neighbours_rdf(mimetype)
             elif mimetype == 'text/html':
-                return render_template(
-                    'class_reportingsystem.html',
-                    reportingsystem=self.get_details()
-                )
+                return self._neighbours_html()
         # elif model == 'prov':
         #     # remove all the non-PROV-O (and RDF) triples
         #     self.g.update(
@@ -55,9 +41,32 @@ class ReportingSystemRenderer:
         #     else:  # HTML
         #         return render_template('class_reportingrystem_prov.html')
 
-    def get_details(self):
-        """ Get details for a ReportingSystem
-        """
+    def _neighbours_rdf(self, mimetype):
+        return Response(
+            self.g.serialize(format=LDAPI.get_rdf_parser_for_mimetype(mimetype)),
+            status=200,
+            mimetype=mimetype
+        )
+
+    def _neighbours_html(self):
+        """Returns a simple dict of ReportingSystem properties for use by a Jinja template"""
+        ret = {
+            'uri': self.uri,
+            'uri_encoded': self.uri_encoded,
+            'label': self.label
+        }
+
+        if self.script is not None:
+            ret['script'] = self.script
+
+        return render_template(
+            'class_reportingsystem.html',
+            entity=ret
+        )
+
+    def _get_details(self):
+        """ Get the details for an ReportingSystem from an RDF triplestore"""
+        
         query = '''
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX proms: <http://promsns.org/def/proms#>
@@ -69,95 +78,27 @@ class ReportingSystemRenderer:
               OPTIONAL { <%(uri)s> proms:validation ?v . }
             }
         ''' % {'uri': self.uri}
-        reportingsystem_detail = sparqlqueries.query(query)
-        ret = {}
-        if reportingsystem_detail and 'results' in reportingsystem_detail:
-            if len(reportingsystem_detail['results']['bindings']) > 0:
-                ret['label'] = reportingsystem_detail['results']['bindings'][0]['label']['value']
-                if 'v' in reportingsystem_detail['results']['bindings'][0]:
-                    ret['v'] = reportingsystem_detail['results']['bindings'][0]['v']['value']
-                ret['uri'] = self.uri
+        reportingsystem = sparqlqueries.query(query)
 
-                svg_script = self.get_svg(ret)
-                if svg_script[0]:
-                    rs_script = svg_script[1]
-                    rs_script += self._get_reports_svg()
-                    ret['rs_script'] = rs_script
-        return ret
+        if reportingsystem and 'results' in reportingsystem:
+            if len(reportingsystem['results']['bindings']) > 0:
+                ret = reportingsystem['results']['bindings'][0]
+                self.label = reportingsystem['label']['value']
+                self.v = ret['v']['value'] if 'v' in ret else None
 
-    def get_svg(self, reportingsystem_dict):
-        """ Construct the SVG code for the ReportingSystem
-        """
-        rLabel = reportingsystem_dict.get('label', 'Untitled')
-        script = '''
-            var rLabel = "''' + rLabel + '''";
+    def _make_svg_script(self):
+        """ Construct the SVG code for a ReportingSystem's Neighbours view"""
+        self.script = '''
+            var rLabel = "%(label)s";
             var reportingSystem = addReportingSystem(35, 5, rLabel, "", "");
-        '''
-        return [True, script]
+        ''' % {'label': self.label if self.label is not None else 'uri'}
+
+        self._get_reports_svg()
 
     def _get_reports_svg(self):
-        """ Construct SVG code for all Reports contained in a ReportingSystem
-        """
-        reports = self._get_reports()
-        if reports and reports['results']['bindings']:
-            if len(reports['results']['bindings']) > 0:
-                r1uri_encoded = urllib.quote(reports['results']['bindings'][0]['r']['value'])
-                r1label = reports['results']['bindings'][0]['label']['value']
-                r1jobId = reports['results']['bindings'][0]['nid']['value']
-                y_top = 5
-                x_pos = 350
-                reports_script = '''
-                    var reports = [];
-                    var report0 = addReport(''' + str(x_pos) + ''', ''' + str(y_top) + ''', "''' + r1label + \
-                                 '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + r1uri_encoded + \
-                                 '''", "''' + r1jobId + '''");
-                    reports.push(report0);
-                '''
-                if len(reports['results']['bindings']) > 1:
-                    reports = reports['results']['bindings'][1:]
-                    y_gap = 15
-                    report_height = 100
-                    i = 1
-                    for report in reports:
-                        y_offset = y_top + (i*report_height) + (i*y_gap)
-                        if i == 3:
-                            query = self._get_reports_query()
-                            query_encoded = urllib.quote(query)
-                            reports_script += '''
-                                var report = addReport(''' + str(x_pos) + ''', ''' + str(y_offset) + \
-                                              ''', "Multiple Reports, click to search", "''' + \
-                                              settings.WEB_SUBFOLDER + "/function/sparql?query=" + \
-                                              query_encoded + '''");
-                                reports.push(report);
-                            '''
-                            break
-                        uri = report['r']['value']
-                        uri_encoded = urllib.quote(uri)
-                        label = report['label']['value']
-                        jobId = report['nid']['value']
-                        reports_script += '''
-                            var report = addReport(''' + str(x_pos) + ''', ''' + str(y_offset) + ''', "''' + \
-                                          label + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + \
-                                          uri_encoded + '''", "''' + jobId + '''");
-                            reports.push(report);
-                        '''
-                        i += 1
-                reports_script += '''
-                    addConnectedLinks(reportingSystem, reports, "proms:reportingSystem");
-                '''
-            else:
-                # no reports
-                reports_script = ''
-        else:
-            # we have a fault
-            reports_script = '''
-                //var reportUsedFaultText = addReport(550, 200, "There is a fault with retrieving Reports that may have used this ReportingSystem", "");
-                var reportUsedFaultText = addReport(550, 0, "No Reports for this RS", "");
-            '''
-        return reports_script
-
-    def _get_reports_query(self):
-        return '''
+        """ Construct SVG code for all Reports contained in a ReportingSystem"""
+        script = ''
+        query = '''
                 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
                 PREFIX proms: <http://promsns.org/def/proms#>
@@ -177,10 +118,73 @@ class ReportingSystemRenderer:
                 }
                 ORDER BY DESC(?gat)
         ''' % {'uri': self.uri}
+        reports_results = database.query(query)
 
-    def _get_reports(self):
-        """ Get all Reports for a ReportingSystem
-        """
-        q = self._get_reports_query()
-        res = sparqlqueries.query(q)
-        return res
+        if reports_results and 'results' in reports_results:
+            reports = reports_results['results']
+            if len(reports['bindings']) > 0:
+                label = reports['bindings'][0]['label']['value']
+                uri_encoded = urllib.quote(reports['bindings'][0]['r']['value'])
+                nid = reports['bindings'][0]['nid']['value']
+                y_top = 5
+                x_pos = 350
+                reports_script = '''
+                    var reports = [];
+                    var report0 = addReport(%(x_pos)s, %(y_top)s, "%(label)s", "%(instance_endpoint)s?_uri=%(uri_encoded)s", "%(nid)s");
+                    reports.push(report0);
+                ''' % {
+                    'x_pos': str(x_pos),
+                    'y_top': str(y_top),
+                    'nid': nid,
+                    'label': label,
+                    'instance_endpoint': self.endpoints['instance'],
+                    'uri_encoded': uri_encoded,                    
+                }
+                if len(reports['bindings']) > 1:
+                    reports = reports['bindings'][1:]
+                    y_gap = 15
+                    report_height = 100
+                    i = 1
+                    for report in reports:
+                        y_offset = y_top + (i*report_height) + (i*y_gap)
+                        if i == 3:
+                            query_encoded = urllib.quote(query)
+                            reports_script += '''
+                                var report = addReport(%(x_pos)s, %(y_offset)s', "Multiple Reports, click to search", "%(sparql_endpoint)s?query=%(query_encoded)s");
+                                reports.push(report);
+                            ''' % {
+                                'x_pos': str(x_pos),
+                                'y_offset': str(y_offset),
+                                'sparql_endpoint': self.endpoints['sparql'],
+                                'query_encoded': query_encoded
+                            }
+                            break
+                        uri = report['r']['value']
+                        uri_encoded = urllib.quote(uri)
+                        label = report['label']['value']
+                        nid = report['nid']['value']
+                        reports_script += '''
+                            var report = addReport(%(x_pos)s, %(y_offset)s, "%(label)s'", "%(instance_endpoint)s?_uri=%(uri_encoded)s", "%(nid)s");
+                            reports.push(report);
+                        ''' % {
+                            'x_pos': str(x_pos),
+                            'y_offset': str(y_offset),
+                            'nid': nid,
+                            'label': label,
+                            'instance_endpoint': self.endpoints['instance'],
+                            'uri_encoded': uri_encoded,
+                        }
+                        i += 1
+                reports_script += '''
+                    addConnectedLinks(reportingSystem, reports, "proms:reportingSystem");
+                '''
+            else:
+                # no reports
+                reports_script = ''
+        else:
+            # we have a fault
+            reports_script = '''
+                //var reportUsedFaultText = addReport(550, 200, "There is a fault with retrieving Reports that may have used this ReportingSystem", "");
+                var reportUsedFaultText = addReport(550, 0, "No Reports for this RS", "");
+            '''
+        return reports_script

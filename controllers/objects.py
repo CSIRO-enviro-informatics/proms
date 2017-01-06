@@ -1,15 +1,13 @@
 """
 This file contains all the HTTP routes for classes from the PROMS Ontology, such as Samples and the Sample Register
 """
-
 import urllib
 import model
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, url_for
 from requests.exceptions import ConnectionError
 import api_functions
 import database
 import objects_functions
-import settings
 from controllers.api_functions import Response_client_error
 from modules.ldapi import LDAPI, LdapiParameterError
 modelx = Blueprint('modelx', __name__)
@@ -61,7 +59,11 @@ def register():
         return render_template('error_db_connection.html'), 500
 
     # since everything's valid, use the Renderer to return a response
-    return model.RegisterRenderer(request, uri, class_register).render_view_format(view, mime_format)
+    endpoints = {
+        'instance': url_for('.instance'),
+        'sparql': url_for('api.sparql')
+    }
+    return model.RegisterRenderer(request, uri, endpoints, class_register).render(view, mime_format)
 
 
 @modelx.route('/register/<string:class_name>/')
@@ -135,10 +137,18 @@ def instance():
                 if view == 'alternates':
                     return api_functions.render_alternates_view(class_uri, instance_uri, views_formats, mime_format)
                 else:
-                    # all the relevant Python class for the graph class and render the particular model and format
+                    # chooses a class to render this instance based on the specified renderer in
+                    # classes_views_formats.json
                     # no need for further validation as instance_uri, model & format are already validated
                     renderer = getattr(__import__('model'), views_formats['renderer'])
-                    return renderer(g, instance_uri).render_view_format(view, mime_format)
+                    endpoints = {
+                        'instance': url_for('.instance'),
+                        'sparql': url_for('api.sparql')
+                    }
+                    return renderer(
+                        instance_uri,
+                        endpoints
+                    ).render(view, mime_format)
 
             except LdapiParameterError, e:
                 return Response_client_error(e)

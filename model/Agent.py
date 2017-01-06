@@ -1,43 +1,55 @@
+from renderer import Renderer
 from flask import Response, render_template
 import database.get_things
-import settings
 import urllib
 from modules.ldapi import LDAPI
 
 
-class AgentRenderer:
-    def __init__(self, g, uri):
-        # load Entity data from given graph
-        self.g = g
-        self.uri = uri
+class AgentRenderer(Renderer):
+    def __init__(self, uri, endpoints):
+        Renderer.__init__(self, g, uri, endpoints)
 
-    def render_view_format(self, view, mimetype):
-        """
-        Renders a model and format of an Agent
+        self.uri_encoded = urllib.quote_plus(uri)
+        self.label = None
+        self.aobo = None
+        self.aobo_label = None
+        self.script = None
 
-        No validation is needed as the model and format for an Agent are pre-validated before this class is
-        instantiated
-        :param view: An allowed model model of an Agent
-        :param mimetype: An allowed format of an Agent
-        :return: A Flask Response object
-        """
+    def render(self, view, mimetype):
         if view == 'neighbours':
-            # no work to be done as we have already loaded the triples
             if mimetype in LDAPI.get_rdf_mimetypes_list():
-                return Response(
-                    self.g.serialize(format=LDAPI.get_rdf_parser_for_mimetype(mimetype)),
-                    status=200,
-                    mimetype=mimetype
-                )
+                return self._neighbours_rdf(mimetype)
             elif mimetype == 'text/html':
-                return render_template(
-                    'class_agent.html',
-                    agent=self.get_details()
-                )
+                return self._neighbours_html()
 
-    def get_details(self):
-        """ Get an Agent from the provenance database"""
+    def _neighbours_rdf(self, mimetype):
+        return Response(
+            self.g.serialize(format=LDAPI.get_rdf_parser_for_mimetype(mimetype)),
+            status=200,
+            mimetype=mimetype
+        )
 
+    def _neighbours_html(self):
+        """Returns a simple dict of Activity properties for use by a Jinja template"""
+        ret = {
+            'uri': self.uri,
+            'uri_encoded': self.uri_encoded,
+            'label': self.label,
+            'aobo': self.aobo,
+            'aobo_label': self.aobo_label
+        }
+
+        if self.script is not None:
+            ret['script'] = self.script
+
+        return render_template(
+            'class_activity.html',
+            activity=ret
+        )
+
+    def _get_details(self):
+        """ Get the details for an Agent from an RDF triplestore"""
+        # formulate the query
         query = '''
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -49,64 +61,47 @@ class AgentRenderer:
                 OPTIONAL {
                     <%(agent_uri)s> prov:actedOnBehalfOf ?aobo .
                 }
+                OPTIONAL {
+                    ?aobo rdfs:label ?aobo_label .
+                }
               }
             }
             ''' % {'agent_uri': self.uri}
-        # agent = None
-        # for row in database.query(q)['results']['bindings']:
-        #     agent = {
-        #         'uri': self.uri,
-        #         'label': row['label']['value']
-        #     }
 
+        # run the query
         agent_details = database.query(query)
-        ret = {}
+
+        # extract results into instance vars
         if 'results' in agent_details:
             if len(agent_details['results']['bindings']) > 0:
-                ret['label'] = agent_details['results']['bindings'][0]['label']['value']
-                if agent_details['results']['bindings'][0].get('aobo') is not None:
-                    ret['aobo'] = agent_details['results']['bindings'][0]['aobo']['value']
-                ret['uri'] = self.uri
+                ret = agent_details['results']['bindings'][0]
+                self.label = ret['label']['value']
+                self.aobo = ret['aobo']['value'] if 'aobo' in ret else None
 
-        svg_script = self.get_svg(ret)
-        if svg_script[0]:
-            ret['a_script'] = svg_script[1]
-        return ret
-
-    def get_svg(self, agent_dict):
-        """ Construct the SVG code for an Person
-        """
-        a_uri = agent_dict.get('uri')
-        if agent_dict.get('label'):
-            a_label = agent_dict.get('label')
-        else:
-            aLabel = a_uri
-            aLabel = aLabel.split('#')
-            if len(aLabel) < 2:
-                aLabel = a_uri.split('/')
-            name = aLabel[-1]
-        script = '''
-            var aLabel = "''' + a_label + '''";
+    def _make_svg_script(self):
+        """ Construct the SVG code for an Agent's Neighbours view"""
+        self.script = '''
+            var aLabel = "%(label)s";
             var agent = addAgent(310, 200, aLabel, "");
-        '''
+        ''' % {'label': self.label if self.label is not None else 'uri'}
 
-        # print actedOnBehalfOf, if it has one
-        if agent_dict.get('aobo'):
-            agent_uri = agent_dict.get('aobo')
-            agent_uri_encoded = urllib.quote(agent_uri)
-            agent_name = agent_uri
-            agent_name = agent_name.split('#')
-            if len(agent_name) < 2:
-                agent_name = agent_uri.split('/')
-            agent_name = agent_name[-1]
-            script += '''
-                var agentAOBO = addAgent(310, 5, "''' + agent_name + '''", "''' + settings.WEB_SUBFOLDER + "/instance?_uri=" + agent_uri_encoded + '''");
+        self._get_aobo()
+
+    def _get_aobo(self):
+        if self.aobo is not None:
+            aobo_uri_encoded = urllib.quote(self.aobo)
+            aobo_label = self.aobo_label if self.aobo_label is not None else 'uri'
+
+            self.script += '''
+                var agentAOBO = addAgent(310, 5, "%(aobo_label)s", "%(instance_endpoint)s?_uri=%(aobo_uri_encoded)s");
                 addLink(agent, agentAOBO, "prov:actedOnBehalfOf", LEFT);
-            '''
-        return [True, script]
+            ''' % {
+                'aobo_label': aobo_label,
+                'instance_endpoint': self.endpoints['instance'],
+                'aobo_uri_encoded': aobo_uri_encoded
+            }
 
-    # TODO: test
-    def get_agent_was_attributed_to_svg(self, agent_uri):
+    def get_agent_was_attributed_to_svg(self):
         """ Construct the SVG code for the prov:wasAttributedTo Entities of an Person
         """
         script = ''
@@ -128,27 +123,33 @@ class AgentRenderer:
 
         if entity_results and 'results' in entity_results:
             wat = entity_results['results']
-            if len(wat['bindings']) == 1:
+            if len(wat['bindings']) > 0:
                 if wat['bindings'][0].get('label'):
                     label = wat['bindings'][0]['label']['value']
                 else:
                     label = 'uri'
                 uri_encoded = urllib.quote(wat['bindings'][0]['e']['value'])
                 script += '''
-                    entityLabel = "''' + label + '''";
-                    entityUri = "''' + settings.WEB_SUBFOLDER + '''/instance?_uri=''' + uri_encoded + '''";
+                    entityLabel = "%(label)s";
+                    entityUri = "%(instance_endpoint)s?_uri=%(uri_encoded)s";
                     var entityWAT = addEntity(385, 430, entityLabel, entityUri);
                     addLink(entity, entityWAT, "prov:wasAttributedTo", RIGHT);
-                '''
+                ''' % {
+                    'label': label,
+                    'instance_endpoint': self.endpoints['instance'],
+                    'uri_encoded': uri_encoded
+                }
             elif len(wat['bindings']) > 1:
-                # TODO: Check query
                 query_encoded = urllib.quote(query)
                 script += '''
                     var entityWAT1 = addEntity(395, 440, "", "");
                     var entityWAT2 = addEntity(390, 435, "", "");
-                    var entityWATN = addEntity(385, 430, "Multiple Entities, click here to search", "''' + settings.WEB_SUBFOLDER + "/function/sparql/?query=" + query_encoded + '''");
+                    var entityWATN = addEntity(385, 430, "Multiple Entities, click here to search", "%(sparql_endpoint)s?query=%(query_encoded)s");
                     addLink(agent, entityWATN, "prov:wasAttributedTo", RIGHT);
-                '''
+                ''' % {
+                    'sparql_endpoint': self.endpoints['sparql'],
+                    'query_encoded': query_encoded
+                }
             else:
                 # do nothing as no Activities found
                 pass
@@ -159,10 +160,8 @@ class AgentRenderer:
             '''
         return script
 
-    # TODO: test
-    def get_agent_was_associated_with_svg(self, agent_uri):
-        """ Construct the SVG code for the prov:wasAssociatedWith Activities of an Person
-        """
+    def get_agent_was_associated_with_svg(self):
+        """ Construct the SVG code for the prov:wasAssociatedWith Activities of an Agent"""
         script = ''
         query = '''
                 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -171,36 +170,42 @@ class AgentRenderer:
                 WHERE {
                     GRAPH ?g {
                         { ?a a prov:Activity . }
-                        ?a prov:wasAssociatedWith <%(agent_uri)s> ;
-                        OPTIONAL { ?a rdfs:label ?label . }
+                        ?waw prov:wasAssociatedWith <%(uri)s> ;
+                        OPTIONAL { ?waw rdfs:label ?waw_label . }
                     }
                 }
-            ''' % {'agent_uri': self.uri}
+            ''' % {'uri': self.uri}
         activity_results = database.query(query)
 
         if activity_results and 'results' in activity_results:
             waw = activity_results['results']
-            if len(waw['bindings']) == 1:
-                if waw['bindings'][0].get('label'):
-                    label = waw['bindings'][0]['label']['value']
+            if len(waw['bindings']) > 0:
+                if waw['bindings'][0].get('waw_label'):
+                    waw_label = waw['bindings'][0]['waw_label']['value']
                 else:
-                    label = 'uri'
-                uri_encoded = urllib.quote(waw['bindings'][0]['a']['value'])
+                    waw_label = 'uri'
+                waw_uri_encoded = urllib.quote(waw['bindings'][0]['waw']['value'])
                 script += '''
-                    activityLabel = "''' + label + '''";
-                    activityUri = "''' + settings.WEB_SUBFOLDER + '''/id/activity/?uri=''' + uri_encoded + '''";
+                    activityLabel = "%(waw_label)s";
+                    activityUri = "%(instance_endpoint)s?_uri=%(waw_uri_encoded)s";
                     var activityWAW = addActivity(5, 200, activityLabel, activityUri);
                     addLink(agent, activityWAW, "prov:wasAssociatedWith", TOP);
-                '''
+                ''' % {
+                    'waw_label': waw_label,
+                    'instance_endpoint': self.endpoints['instance'],
+                    'waw_uri_encoded': waw_uri_encoded
+                }
             elif len(waw['bindings']) > 1:
-                # TODO: Check query
                 query_encoded = urllib.quote(query)
                 script += '''
                     var activityWAW1 = addActivity(15, 210, "", "");
                     var activityWAW2 = addActivity(10, 205, "", "");
-                    var activityWAWN = addActivity(5, 200, "Multiple Activities, click here to search", "''' + settings.WEB_SUBFOLDER + "/function/sparql/?query=" + query_encoded + '''");
+                    var activityWAWN = addActivity(5, 200, "Multiple Activities, click here to search", "%(sparql_endpoint)s?query=%(query_encoded)s'");
                     addLink(agent, activityWAWN, "prov:wasAssociatedWith", TOP);
-                '''
+                ''' % {
+                    'sparql_endpoint': self.endpoints['sparql'],
+                    'query_encoded': query_encoded
+                }
             else:
                 # do nothing as no Activities found
                 pass
@@ -209,5 +214,18 @@ class AgentRenderer:
             script += '''
                 var activityUsedFaultText = addActivity(5, 200, "There is a fault with retrieving Activities that may be associated with this Person", "");
             '''
-        return script
 
+        self.script += script
+
+    def _export_for_html_template(self):
+        """Returns a simple dict of Agent properties for use by a Jinja template"""
+        ret = {
+            'uri': self.uri,
+            'uri_encoded': self.uri_encoded,
+            'label': self.label
+        }
+
+        if self.script is not None:
+            ret['script'] = self.script
+
+        return ret

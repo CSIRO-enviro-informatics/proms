@@ -3,28 +3,26 @@
 {% block content %}
     <h1>PROMS Server</h1>
     {% if report %}
-        <h2>A Report</h2>
-        <p><a href="{{ request.url }}">html</a> | <a href="{{ request.url + "&_format=text/turtle" }}">rdf/turtle</a></p>
-        <h4><a class="definition" href={{report['t']}}>{{report['t_str']}}</a> report</h4>
+        <h2>A {{ report['rt_label'] }} Report</h2>
+        <p><a href="{{ request.url }}">html</a> | <a href="{{ request.url }}&_format=text/turtle">rdf/turtle</a></p>
         <table class="lined">
             <tr><th>URI:</th><td><a href="{{ report['uri'] }}">{{ report['uri'] }}</a></td></tr>
             <tr><th>Label:</th><td>{{report['label']}}</td></tr>
-            <tr><th>reporting System:</th><td>
-                <a href={{ url_for('modelx.instance') }}?_uri={{ report['rs'] }}>{{ report['rs']|unquote_plus }}</a>
-            </td></tr>
             <tr><th>Native ID:</th><td>{{report['nid']}}</td></tr>
+            <tr><th>Generated At Time:</th><td>{{report['gat']}}</td></tr>
+            <tr><th>Was Reported By:</th><td><a href={{ url_for('modelx.instance') }}?_uri={{ report['rs_encoded'] }}>{{ report['rs'] }}</a></td></tr>
         </table>
 
         <h3>Alternate views</h3>
         <p>Different view of this object are listed at its <a href="{{ request.url }}&_view=alternates">Alternate views</a> page.</p>
 
-        {% if report['r_script'] %}
+        {% if report['script'] %}
             <h4>Neighbours view</h4>
             <div id="neighbour_view"></div>
             <script type="text/javascript" src="{{ url_for('static', filename='js/raphael-min.js') }}" charset="utf-8"></script>
             <script type="text/javascript" src="{{ url_for('static', filename='js/proms-svg.js') }}" charset="utf-8"></script>
             <script>
-                {{ report['r_script'] | safe }}
+                {{ report['script'] | safe }}
             </script>
         {% endif %}
     {% else %}

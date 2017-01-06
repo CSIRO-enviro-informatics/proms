@@ -11,4 +11,4 @@ rs_uri = 'http://pid.geoscience.gov.au/system/system-01'
 g = database.get_class_object_graph(rs_uri)
 
 rsr = ReportingSystemRenderer(g, rs_uri)
-print rsr.get_details()
+print rsr._get_details()
