@@ -18,6 +18,7 @@ class ProvPingback(RuleSet):
 
 class Header(Rule):
     def __init__(self, request):
+        self.passed = True
         self.fail_reasons = []
 
         # not valid if Content-Type not set to text/uri-list
@@ -71,8 +72,13 @@ class Header(Rule):
 
         rel = str(parts[1].strip())
 
-        if not rel in ['rel="http://www.w3.org/ns/prov#has_provenance"', 'rel="http://www.w3.org/ns/prov#has_query_service"']:
-            errors.append('the rel part must be either rel="http://www.w3.org/ns/prov#has_provenance" or rel="http://www.w3.org/ns/prov#has_query_service". You gave: {}'.format(rel))
+        if rel not in [
+            'rel="http://www.w3.org/ns/prov#has_provenance"',
+            'rel="http://www.w3.org/ns/prov#has_query_service"'
+        ]:
+            errors.append(
+                'The rel part must be either rel="http://www.w3.org/ns/prov#has_provenance" or '
+                'rel="http://www.w3.org/ns/prov#has_query_service". You gave: {}'.format(rel))
 
         anchor = str(parts[2].strip())
         anchor_uri = anchor.replace('anchor="', '').replace('"', '')
@@ -134,9 +140,10 @@ class Header(Rule):
 
 class Body(Rule):
     def __init__(self, request):
+        self.passed = True
         self.fail_reasons = []
 
-        body = request.content
+        body = request.data  # don't use request.content as Flask can't handle the text/uri-list mimetype
 
         # if content-length zero, don't allow content
         if int(request.headers.get('Content-Length')) == 0 and len(str(body).strip()) > 0:

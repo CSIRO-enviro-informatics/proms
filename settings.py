@@ -36,6 +36,7 @@ ENTITY_BASE_URI = 'http://example.com/entity/'
 PERSON_BASE_URI = 'http://example.com/person/'
 REPORT_BASE_URI = 'http://example.com/report/'
 REPORTINGSYSTEM_BASE_URI = 'http://example.com/reportingsystem/'
+PINGBACK_BASE_URI = 'http://example.com/pingback/'
 
 
 #   This is the location at which PROMS Server is installed on your file system. For Windows this could be something

@@ -1,7 +1,5 @@
 import StringIO
-
 import rdflib
-
 from modules.rulesets import RuleSet, Rule
 from ..reports.prov_constraints import ProvConstraints
 
@@ -9,17 +7,17 @@ from ..reports.prov_constraints import ProvConstraints
 class PromsPingback(RuleSet):
     def __init__(self, request, pingback_endpoint):
         if request.headers.get('Content-Type') == 'text/ntriples':
-            format = 'n3'
+            parser_format = 'n3'
         elif request.headers.get('Content-Type') == 'text/n3':
-            format = 'n3'
+            parser_format = 'n3'
         elif request.headers.get('Content-Type') == 'application/rdf+xml':
-            format = 'xml'
+            parser_format = 'xml'
         elif request.headers.get('Content-Type') == 'application/ld+json':
-            format = 'json-ld'
+            parser_format = 'json-ld'
         else:  # 'text/turtle'
-            format = 'turtle'
+            parser_format = 'turtle'
 
-        g = rdflib.Graph().parse(StringIO.StringIO(request.content), format=format)
+        g = rdflib.Graph().parse(StringIO.StringIO(request.data), format=parser_format)
 
         rules = []
         # r1, as per http://promsns.org/pingbacks/validator/about, is PROV-O compliance
@@ -77,21 +75,22 @@ class PingbackDeclaration(Rule):
             PREFIX prov: <http://www.w3.org/ns/prov#>
             ASK
             WHERE {
-                {?e  a prov:Entity .}
-                UNION
-                {?e  a prov:Plan .}
-                ?e    prov:pingback <%s> .
+                ?e  a prov:Entity ;
+                    prov:pingback <%s> .
             }
-        ''' % (pingback_endpoint)
+        ''' % pingback_endpoint
+
         qres = g.query(q)
         if not bool(qres):
             self.passed = False
-            self.fail_reasons.append('R2: No prov:Entity contains a prov:pingback property pointing to {}'.format(pingback_endpoint))
+            self.fail_reasons.append('R2: No prov:Entity contains a prov:pingback property pointing to {}'
+                                     .format(pingback_endpoint))
 
         Rule.__init__(
             self,
             'Pingback Declaration',
-            'At least one prov:Entity (or subclass) must declare a prov:pingback property with the pingback target URI as its range value (object).',
+            'At least one prov:Entity (or subclass) must declare a prov:pingback property with the pingback target URI '
+            'as its range value (object).',
             'PROV-AQ',
             self.passed,
             self.fail_reasons,
@@ -121,7 +120,8 @@ class EntitiesUsed(Rule):
         if bool(qres):
             self.passed = False
             self.fail_reasons.append(
-                'R3: Pingbacks cannot be sent for Entities declared as prov:wasGeneratedBy or prov:wasDerivedFrom in the pingbacked graph')
+                'R3: Pingbacks cannot be sent for Entities declared as prov:wasGeneratedBy or prov:wasDerivedFrom in '
+                'the pingbacked graph')
 
         Rule.__init__(
             self,

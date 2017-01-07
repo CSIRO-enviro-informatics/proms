@@ -31,8 +31,7 @@ def query_turtle(sparql_query):
 
 
 def insert(g, named_graph_uri=None):
-    """ Securely insert a named graph into the DB
-    """
+    """ Securely insert a named graph into the DB"""
     if named_graph_uri:
         data = {'update': 'INSERT DATA { GRAPH <' + named_graph_uri + '> { ' + g.serialize(format='nt') + ' } }'}
     else:  # insert into default graph

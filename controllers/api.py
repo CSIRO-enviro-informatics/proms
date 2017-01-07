@@ -1,5 +1,5 @@
 import json
-from flask import Blueprint, Response, request, render_template
+from flask import Blueprint, Response, request, render_template, url_for
 from requests.exceptions import ConnectionError
 import api_functions
 import database.get_things
@@ -32,7 +32,7 @@ def lodge_agent():
             ', '.join(sr.error_messages) + '.')
 
     # get the Agent's URI
-    sr.determine_agent_uri()
+    sr.determine_uri()
 
     # store the Agent
     if not sr.stored():
@@ -42,7 +42,7 @@ def lodge_agent():
 
     # reply to sender
     return Response(
-        sr.agent_uri,
+        sr.uri,
         status=201,
         mimetype='text/plain')
 
@@ -79,7 +79,7 @@ def lodge_reportingsystem():
             ', '.join(sr.error_messages) + '.')
 
     # get the ReportingSystem's URI
-    sr.determine_reportingsystem_uri()
+    sr.determine_uri()
 
     # store the ReportingSystem
     if not sr.stored():
@@ -89,7 +89,7 @@ def lodge_reportingsystem():
 
     # reply to sender
     return Response(
-        sr.reportingsystem_uri,
+        sr.uri,
         status=201,
         mimetype='text/plain')
 
@@ -125,7 +125,7 @@ def lodge_report():
             'The Report posted is not valid for the following reasons: ' + ', '.join(sr.error_messages) + '.')
 
     # get the Report's URI
-    sr.determine_report_uri()
+    sr.determine_uri()
 
     # store the Report
     if not sr.stored():
@@ -134,7 +134,7 @@ def lodge_report():
             ', '.join(sr.error_messages) + '.')
 
     # reply to sender
-    return sr.report_uri, 201
+    return sr.uri, 201
 
 
 @api.route('/function/create-report')
@@ -159,7 +159,7 @@ def create_report():
 def lodge_pingback():
     """Insert an Pingback into the provenance database' pingbacks data named graph"""
     # only valid Pingback Cotent-Types
-    acceptable_mimes = LDAPI.get_rdf_mimetypes_list()
+    acceptable_mimes = class_pingbacks.IncomingPingback.acceptable_mimes
     ct = request.content_type
     if ct not in acceptable_mimes:
         return api_functions.Response_client_error(
@@ -167,20 +167,24 @@ def lodge_pingback():
             ', '.join(acceptable_mimes) + '.')
 
     # validate Pingback
-    p = class_pingbacks.PingbacksFunctions(request.data, request.headers)
+    p = class_pingbacks.IncomingPingback(request)
     if not p.valid():
         return api_functions.Response_client_error(
             'The Pingback posted is not valid for the following reasons: ' + ', '
             .join(p.error_messages) + '.')
 
-    # store the Pingback
+    # convert the Pingback to RDF -- no need to test this step as successful validation, needed to get this far, ensures
+    # it can be converted
+    p.convert_pingback_to_rdf()
+
+    # store the Pingback's RDF
     if not p.stored():
         return api_functions.Response_server_error(
             'Report posted is valid but cannot be stored for the following reasons: , '
             .join(p.error_messages) + '.')
 
     # reply to sender
-    return 204
+    return '', 204  # PROV-AQ says to return an empty 204 response
 
 
 @api.route('/function/sparql', methods=['GET', 'POST'])
