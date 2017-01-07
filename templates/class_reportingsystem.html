@@ -5,10 +5,10 @@
     <h2>A ReportingSystem</h2>
     <p><a href="{{ request.url }}">html</a> | <a href="{{ request.url + "&_format=text/turtle" }}">rdf/turtle</a></p>
     <table class="lined">
-        <tr><th>URI:</th><td><a href="{{ reportingsystem['uri'] | quote_plus }}">{{ reportingsystem['uri'] }}</a></td></tr>
+        <tr><th>URI:</th><td><a href="{{ reportingsystem['uri'] }}">{{ reportingsystem['uri'] }}</a></td></tr>
         <tr><th>Label:</th><td>{{reportingsystem['label']}}</td></tr>
-        {% if activity['aobo'] is not none  %}
-            <tr><th>Acted Ob Behalf Of:</th><td><a href="{{ activity['aobo'] }}">{{ activity['aobo_lable'] }}</a></td></tr>
+        {% if 'aobo' in reportingsystem  %}
+            <tr><th>Acted On Behalf Of:</th><td><a href="{{ reportingsystem['aobo'] }}">{{ reportingsystem['aobo_label'] }}</a></td></tr>
         {% endif %}
     </table>
 

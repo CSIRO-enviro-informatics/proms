@@ -1,6 +1,6 @@
 import database
 import tests.example_data_tests
-from model.ReportingSystem import ReportingSystemRenderer
+from model.reportingsystem import ReportingSystemRenderer
 
 # start afresh
 tests.example_data_tests.purge_db()

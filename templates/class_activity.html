@@ -10,7 +10,7 @@
             <tr><th>Label:</th><td>{{ activity['label'] }}</td></tr>
             <tr><th>Started:</th><td>{{ activity['sat'] }}</td></tr>
             <tr><th>Ended:</th><td>{{ activity['eat'] }}</td></tr>
-            {% if activity['waw_encoded'] is not none  %}
+            {% if 'waw_encoded' in activity  %}
                 <tr><th>Was Associated With:</th><td><a href="{{ url_for('modelx.instance') + '?_uri=' + activity['waw_encoded'] }}">{{ activity['waw_label'] }}</a></td></tr>
             {% endif %}
         </table>

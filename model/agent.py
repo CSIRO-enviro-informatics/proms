@@ -34,10 +34,12 @@ class AgentRenderer(Renderer):
         ret = {
             'uri': self.uri,
             'uri_encoded': self.uri_encoded,
-            'label': self.label,
-            'aobo': self.aobo,
-            'aobo_label': self.aobo_label
+            'label': self.label
         }
+
+        if self.aobo is not None:
+            ret['aobo'] = self.aobo
+            ret['aobo_label'] = self.aobo_label
 
         if self.script is not None:
             ret['script'] = self.script
@@ -55,18 +57,16 @@ class AgentRenderer(Renderer):
             PREFIX prov: <http://www.w3.org/ns/prov#>
             SELECT *
             WHERE { GRAPH ?g {
-                <%(agent_uri)s>
+                <%(uri)s>
                     a prov:Agent ;
                     rdfs:label ?label .
                 OPTIONAL {
-                    <%(agent_uri)s> prov:actedOnBehalfOf ?aobo .
-                }
-                OPTIONAL {
-                    ?aobo rdfs:label ?aobo_label .
+                    <%(uri)s> prov:actedOnBehalfOf ?aobo .
+                    ?aobo rdfs:label ?aobo_label
                 }
               }
             }
-            ''' % {'agent_uri': self.uri}
+            ''' % {'uri': self.uri}
 
         # run the query
         agent_details = database.query(query)
@@ -76,7 +76,9 @@ class AgentRenderer(Renderer):
             if len(agent_details['results']['bindings']) > 0:
                 ret = agent_details['results']['bindings'][0]
                 self.label = ret['label']['value']
-                self.aobo = ret['aobo']['value'] if 'aobo' in ret else None
+                if 'aobo' in ret:
+                    self.aobo = ret['aobo']['value']
+                    self.aobo_label = ret['aobo_label']['value']
 
     def _make_svg_script(self):
         """ Construct the SVG code for an Agent's Neighbours view"""

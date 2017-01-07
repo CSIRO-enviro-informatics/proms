@@ -3,10 +3,10 @@ from flask import Blueprint, Response, request, render_template
 from requests.exceptions import ConnectionError
 import api_functions
 import database.get_things
-import functions_agents
-import functions_pingbacks
-import functions_reportingsystems
-import functions_reports
+import class_agents
+import class_pingbacks
+import class_reportingsystems
+import class_reports
 from database import sparqlqueries
 from modules.ldapi import LDAPI
 
@@ -25,7 +25,7 @@ def lodge_agent():
             ', '.join(acceptable_mimes) + '.')
 
     # validate Agent
-    sr = functions_agents.IncomingAgent(request.data, request.content_type)
+    sr = class_agents.IncomingAgent(request.data, request.content_type)
     if not sr.valid():
         return api_functions.Response_client_error(
             'The Agent posted is not valid for the following reasons: ' +
@@ -72,7 +72,7 @@ def lodge_reportingsystem():
             ', '.join(acceptable_mimes) + '.')
 
     # validate ReportingSystem
-    sr = functions_reportingsystems.IncomingReportingSystem(request.data, request.content_type)
+    sr = class_reportingsystems.IncomingReportingSystem(request.data, request.content_type)
     if not sr.valid():
         return api_functions.Response_client_error(
             'The ReportingSystem posted is not valid for the following reasons: ' +
@@ -119,7 +119,7 @@ def lodge_report():
             ', '.join(acceptable_mimes) + '.')
 
     # validate Report
-    sr = functions_reports.IncomingReport(request.data, request.content_type)
+    sr = class_reports.IncomingReport(request.data, request.content_type)
     if not sr.valid():
         return api_functions.Response_client_error(
             'The Report posted is not valid for the following reasons: ' + ', '.join(sr.error_messages) + '.')
@@ -167,7 +167,7 @@ def lodge_pingback():
             ', '.join(acceptable_mimes) + '.')
 
     # validate Pingback
-    p = functions_pingbacks.PingbacksFunctions(request.data, request.headers)
+    p = class_pingbacks.PingbacksFunctions(request.data, request.headers)
     if not p.valid():
         return api_functions.Response_client_error(
             'The Pingback posted is not valid for the following reasons: ' + ', '

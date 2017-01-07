@@ -8,7 +8,7 @@
         <table class="lined">
             <tr><th>URI:</th><td><a href="{{ entity['uri'] }}">{{ entity['uri'] }}</a></td></tr>
             <tr><th>Label:</th><td>{{ entity['label'] }}</td></tr>
-            {% if entity['value'] %}
+            {% if 'value' in entity %}
                 <tr><th>Value:</th><td>{{ entity['value'] }}</td></tr>
             {% endif %}
         </table>

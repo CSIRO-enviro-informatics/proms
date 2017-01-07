@@ -13,7 +13,7 @@ class ReportRenderer(Renderer):
         self.label = None
         self.rt = None
         self.rt_label = None
-        self.native_id = None
+        self.nid = None
         self.gat = None
         self.rs = None
         self.rs_encoded = None
@@ -23,6 +23,8 @@ class ReportRenderer(Renderer):
         self.ea = None
         self.ea_label = None
         self.script = None
+
+        self._get_details()
 
     def render(self, view, mimetype):
         if view == 'neighbours':
@@ -42,19 +44,26 @@ class ReportRenderer(Renderer):
     def _neighbours_html(self):
         """Returns a simple dict of Activity properties for use by a Jinja template"""
         ret = {
+            'rt_label': self.rt_label,
             'uri': self.uri,
             'uri_encoded': self.uri_encoded,
             'label': self.label,
+            'nid': self.nid,
+            'gat': self.gat,
+            'rs_encoded': self.rs_encoded,
+            'rs_label': self.rs_label,
             'sa': self.sa,
             'ea': self.ea
         }
+
+        self._make_svg_script()
 
         if self.script is not None:
             ret['script'] = self.script
 
         return render_template(
             'class_report.html',
-            activity=ret
+            report=ret
         )
 
     def _get_details(self):
@@ -73,12 +82,14 @@ class ReportRenderer(Renderer):
                         proms:nativeId ?nid ;
                         prov:generatedAtTime ?gat ;
                         proms:wasReportedBy ?rs .
-                    ?rs rdfs:label ?rs_label
+                    OPTIONAL {
+                       ?rs rdfs:label ?rs_label .
+                    }
                     OPTIONAL {
                         <%(uri)s>
                             proms:startingActivity ?sa .
-                            ?sa rdfs:label ?sa_label
-                    } .
+                            ?sa rdfs:label ?sa_label .
+                    }
                     OPTIONAL {
                         <%(uri)s>
                             proms:endingActivity ?ea .
@@ -96,23 +107,24 @@ class ReportRenderer(Renderer):
             if len(report_details['results']['bindings']) > 0:
                 ret = report_details['results']['bindings'][0]
                 self.rt = ret['rt']['value']
-                if 'Basic' in ret['rt']:
+                if 'Basic' in self.rt:
                     self.rt_label = 'Basic'
-                elif 'Internal' in ret['rt']:
+                elif 'Internal' in self.rt:
                     self.rt_label = 'Internal'
-                elif 'External' in ret['rt']:
+                elif 'External' in self.rt:
                     self.rt_label = 'External'
+                self.label = ret['label']['value']
                 self.nid = ret['nid']['value']
                 self.gat = ret['gat']['value']
                 self.rs = ret['rs']['value']
                 self.rs_encoded = urllib.quote_plus(self.rs)
-                self.rs_label = ret['rs_lable']['value']
+                self.rs_label = ret['rs_label']['value'] if 'rs_label' in ret else self.rs
                 if 'sa' in ret:
-                    self.sa = ret['sac']['value']
-                    self.sa_label = ret['eac_label']['value']
+                    self.sa = ret['sa']['value']
+                    self.sa_label = ret['sa_label']['value']
                 if 'ea' in ret:
-                    self.ea = ret['eac']['value']
-                    self.ea_lablel = ret['eac_label']['value']
+                    self.ea = ret['ea']['value']
+                    self.ea_label = ret['ea_label']['value']
 
     def _make_svg_script(self):
         """ Construct the SVG code for a Report's Neighbours view"""
@@ -137,9 +149,10 @@ class ReportRenderer(Renderer):
                 # External Report -- single Activity
                 self.script += '''
                     var uri = "%(instance_endpoint)s?_uri=%(uri_encoded)s";
-                    var label = "%(label)s'";
+                    var label = "%(label)s";
                     var activity = addActivity(50, 200, label, uri);
                     addLink(report, activity, "proms:startingActivity", TOP);
+                    addLink(report, activity, "proms:endingActivity", BOTTOM);
                 ''' % {
                     'instance_endpoint': self.endpoints['instance'],
                     'uri_encoded': urllib.quote(self.sa),
@@ -149,7 +162,7 @@ class ReportRenderer(Renderer):
                 # Internal Report -- 2 Activities
                 self.script += '''
                     var saUri = "%(instance_endpoint)s?_uri=%(uri_encoded)s";
-                    var saLabel = "%(label)s'";
+                    var saLabel = "%(label)s";
                     var sacActivity = addActivity(50, 120, sacLabel, sacUri);
                     addLink(report, sacActivity, "proms:startingActivity", TOP);
                 ''' % {

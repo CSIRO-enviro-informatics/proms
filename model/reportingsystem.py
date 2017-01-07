@@ -11,7 +11,11 @@ class ReportingSystemRenderer(Renderer):
 
         self.uri_encoded = urllib.quote_plus(uri)
         self.label = None
+        self.aobo = None
+        self.aobo_label = None
         self.script = None
+
+        self._get_details()
 
     def render(self, view, mimetype):
         if view == 'neighbours':
@@ -56,12 +60,18 @@ class ReportingSystemRenderer(Renderer):
             'label': self.label
         }
 
+        if self.aobo is not None:
+            ret['aobo'] = self.aobo
+            ret['aobo_label'] = self.aobo_label
+
+        self._make_svg_script()
+
         if self.script is not None:
             ret['script'] = self.script
 
         return render_template(
             'class_reportingsystem.html',
-            entity=ret
+            reportingsystem=ret
         )
 
     def _get_details(self):
@@ -69,21 +79,29 @@ class ReportingSystemRenderer(Renderer):
         
         query = '''
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX proms: <http://promsns.org/def/proms#>
             PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
             SELECT *
             WHERE {
-              <%(uri)s> a proms:ReportingSystem .
-              <%(uri)s> rdfs:label ?label .
-              OPTIONAL { <%(uri)s> proms:validation ?v . }
+                <%(uri)s> a proms:ReportingSystem ;
+                    rdfs:label ?label .
+                OPTIONAL {
+                    <%(uri)s> prov:actedOnBehalfOf ?aobo .
+                    ?aobo rdfs:label ?aobo_label
+                }
+                OPTIONAL { <%(uri)s> proms:validation ?v . }
             }
         ''' % {'uri': self.uri}
-        reportingsystem = sparqlqueries.query(query)
+        reportingsystem = database.query(query)
 
         if reportingsystem and 'results' in reportingsystem:
             if len(reportingsystem['results']['bindings']) > 0:
                 ret = reportingsystem['results']['bindings'][0]
-                self.label = reportingsystem['label']['value']
+                self.label = ret['label']['value']
+                if 'aobo' in ret:
+                    self.aobo = ret['aobo']['value']
+                    self.aobo_label = ret['aobo_label']['value']
                 self.v = ret['v']['value'] if 'v' in ret else None
 
     def _make_svg_script(self):
@@ -97,7 +115,6 @@ class ReportingSystemRenderer(Renderer):
 
     def _get_reports_svg(self):
         """ Construct SVG code for all Reports contained in a ReportingSystem"""
-        script = ''
         query = '''
                 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -128,7 +145,7 @@ class ReportingSystemRenderer(Renderer):
                 nid = reports['bindings'][0]['nid']['value']
                 y_top = 5
                 x_pos = 350
-                reports_script = '''
+                script = '''
                     var reports = [];
                     var report0 = addReport(%(x_pos)s, %(y_top)s, "%(label)s", "%(instance_endpoint)s?_uri=%(uri_encoded)s", "%(nid)s");
                     reports.push(report0);
@@ -149,8 +166,8 @@ class ReportingSystemRenderer(Renderer):
                         y_offset = y_top + (i*report_height) + (i*y_gap)
                         if i == 3:
                             query_encoded = urllib.quote(query)
-                            reports_script += '''
-                                var report = addReport(%(x_pos)s, %(y_offset)s', "Multiple Reports, click to search", "%(sparql_endpoint)s?query=%(query_encoded)s");
+                            script += '''
+                                var report = addReport(%(x_pos)s, %(y_offset)s, "Multiple Reports, click to search", "%(sparql_endpoint)s?query=%(query_encoded)s");
                                 reports.push(report);
                             ''' % {
                                 'x_pos': str(x_pos),
@@ -163,8 +180,8 @@ class ReportingSystemRenderer(Renderer):
                         uri_encoded = urllib.quote(uri)
                         label = report['label']['value']
                         nid = report['nid']['value']
-                        reports_script += '''
-                            var report = addReport(%(x_pos)s, %(y_offset)s, "%(label)s'", "%(instance_endpoint)s?_uri=%(uri_encoded)s", "%(nid)s");
+                        script += '''
+                            var report = addReport(%(x_pos)s, %(y_offset)s, "%(label)s", "%(instance_endpoint)s?_uri=%(uri_encoded)s", "%(nid)s");
                             reports.push(report);
                         ''' % {
                             'x_pos': str(x_pos),
@@ -175,16 +192,17 @@ class ReportingSystemRenderer(Renderer):
                             'uri_encoded': uri_encoded,
                         }
                         i += 1
-                reports_script += '''
+                script += '''
                     addConnectedLinks(reportingSystem, reports, "proms:reportingSystem");
                 '''
             else:
                 # no reports
-                reports_script = ''
+                script = ''
         else:
             # we have a fault
-            reports_script = '''
+            script = '''
                 //var reportUsedFaultText = addReport(550, 200, "There is a fault with retrieving Reports that may have used this ReportingSystem", "");
                 var reportUsedFaultText = addReport(550, 0, "No Reports for this RS", "");
             '''
-        return reports_script
+
+        self.script += script
