@@ -1,11 +1,12 @@
 from class_incoming import IncomingClass
 import cStringIO
 import uuid
-from rdflib import Graph, URIRef
+from rdflib import Graph, URIRef, Literal, Namespace, XSD
 from modules.rulesets.pingbacks import PromsPingback, ProvPingback
 import settings
 from database import sparqlqueries
 from modules.ldapi import LDAPI
+from datetime import datetime
 
 
 class IncomingPingback(IncomingClass):
@@ -41,22 +42,46 @@ class IncomingPingback(IncomingClass):
         self.uri = new_uri
 
     def convert_pingback_to_rdf(self):
-        # PROV Pingbacks can only be of mimtype text/uri-list
-        if self.mimetype == 'text/uri-list':
-            self._convert_prov_pingback_to_rdf()
-        # PROMS Pingbacks can only be of an RDF mimetype
+        # add graph metadata, regardless of the type of Pingback
+        # the URI of the Pingback must have been generated before doing this so we can refer to the graph
+        if self.uri is not None:
+            DCT = Namespace('http://purl.org/dc/terms/')
+            self.graph = Graph()
+            self.graph.bind('dct', DCT)
+            # a basic capturing of...
+            # ... the date this Pingback was sent to this PROMS Server
+            self.graph.add((
+                URIRef(self.uri),
+                DCT.dateSubmitted,
+                Literal(datetime.now().isoformat(), datatype=XSD.dateTime)
+            ))
+            # ... who contributed this Pingback
+            self.graph.add((
+                URIRef(self.uri),
+                DCT.contributor,
+                URIRef(self.request.remote_addr)
+            ))
+            # TODO: add other useful metadata variables gleaned from the HTTP message headers
+
+            # PROV Pingbacks can only be of mimtype text/uri-list
+            if self.mimetype == 'text/uri-list':
+                self._convert_prov_pingback_to_rdf()
+            # PROMS Pingbacks can only be of an RDF mimetype
+            else:
+                self._convert_proms_pingback_to_rdf()
         else:
-            self._convert_proms_pingback_to_rdf()
+            raise Exception('The Incoming Pingback must have had a URI generated for it by PROMS Server before the data'
+                            'for it is stored. The function determine_uri() generated the URI.')
 
     def _convert_prov_pingback_to_rdf(self):
         # TODO: convert a PROV pingback to RDF
         g = Graph()
         g.add((URIRef('http://fake.com'), URIRef('http://fake2.com'), URIRef('http://fake3.com')))
-        self.graph = g  # Graph()  # just use an fake graph for now
+        self.graph += g  # just add some fake data for now
 
     def _convert_proms_pingback_to_rdf(self):
         # convert the data to RDF (just de-serialise it)
-        self.graph = Graph().parse(data=self.request.data, format=LDAPI.get_rdf_parser_for_mimetype(self.request.mimetype))
+        self.graph += Graph().parse(data=self.request.data, format=LDAPI.get_rdf_parser_for_mimetype(self.request.mimetype))
 
 
 def register_pingback(data):
