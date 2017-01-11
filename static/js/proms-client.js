@@ -88,7 +88,6 @@ function Entity(label, uri, value, comment) {
         this.downloadURL = downloadURL;
     }
 */
-
     this.makeGraph = function() {
 
         this.g = new $rdf.graph();
@@ -122,23 +121,12 @@ function Entity(label, uri, value, comment) {
         }
 */
     };
-
-
-
-
-
-
-   this.get_graph = function () {
+    this.get_graph = function () {
         if (!this.g) {
             this.makeGraph();
             return this.g;
         }
     };
-    this.serialize_graph = function() {
-        var sg = this.get_graph();
-        var triples = new $rdf.serialize(sg.toN3(sg));
-        return triples;
-     };
 }
 
 

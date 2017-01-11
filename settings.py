@@ -21,10 +21,6 @@ PORT = 9000
 #
 BASE_URI = 'http://localhost:' + str(PORT)
 
-#   If this instance of PROMS Server is installed at a location other than the root of a domain, e.g. at
-#   http://example.org/service/proms rather than at http://example.org, then this variable needs to be set to the
-#   subfolder. In the example above, the value would be: WEB_SUBFOLDER = '/service/proms'
-WEB_SUBFOLDER = ''  # starting slash, no trailing slash
 
 #   These base URIs are the URIs that this instance of PROMS will use to replace http://placeholder.org URIs for the
 #   particular classes of objects in incoming ReportingSystems and Reports. E.g.: an incoming Report with the
@@ -43,9 +39,6 @@ PINGBACK_BASE_URI = 'http://example.com/pingback/'
 #   like 'c:/work/proms/', for Linux it could be '/opt/proms/' or '/var/www/proms/'
 #HOME_DIR = 'c:/work/proms/'  # must end in a slash. Use forward slashes only, even in Windows
 HOME_DIR = os.path.dirname(os.path.abspath(__file__))
-
-#   The directory in which the static content of PROMS Server is stored. Usually 'static/'
-STATIC_DIR = 'static/'
 
 #   The PROMS main log file. Usually somewhere in HOME_DIR but need not be
 LOGFILE = HOME_DIR + 'proms.log'
@@ -99,24 +92,7 @@ SPARQL_TIMEOUT = 5  # Request Timeout in seconds
 #   PROMS Server v3.1 Pingbacks settings
 #
 ENTITY_STATE_STORE = HOME_DIR + 'pingbacks/status_recorder/entities.json'
-#
-# Pingbacks
-#
-# {'id': 0, 'title': 'No Action'},
-# {'id': 1, 'title': 'Given Pingback'},
-# {'id': 2, 'title': 'Given Provenance'},
-# {'id': 3, 'title': 'Known Provenance Stores'},
-# {'id': 4, 'title': 'Pingback Lookup'},
-# {'id': 5, 'title': 'Provenance Lookup'}
-# Strategy 3: Known Provenance Stores
-#
-# For strategy 3, we have to have the pingback endpoint URI of the store, not the base URI of the store
-# For a PROMS Server of address {PROMS_URI} this is {PROMS_URI}/function/receive_pingback
-#
-PINGBACK_STRATEGIES = [3]
-KNOWN_PROVENANCE_STORE_PINGBACK_ENDPOINTS = [
-    'http://fake.com/function/receive_pingback',
-]
+
 
 
 #

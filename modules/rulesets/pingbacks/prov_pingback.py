@@ -29,15 +29,15 @@ class Header(Rule):
         # not valid if no Link header set and Content-Length == 0
         if not request.headers.get('Link') and int(request.headers.get('Content-Length')) == 0:
             self.fail_reasons.append(
-                'The pingback message must have either a non-zero Content-Lenth or a Link header set')
+                'The pingback message must have either a non-zero Content-Length or a Link header set')
 
         # validate each PROV-AQ Link header
         if request.headers.get('Link'):
             for link_header in request.headers.get('Link').split(','):
-                link_header_valid = self.valid_provaq_link_header(link_header.trim())
+                link_header_valid = self.valid_provaq_link_header(link_header.strip())
                 if not link_header_valid[0]:
                     self.fail_reasons.append(
-                        'The Link header "{}" is not valid: {}'.format(link_header, link_header_valid[1])
+                        'The Link header "{}" is not valid: {}'.format(link_header, ', '.join(link_header_valid[1]))
                     )
 
         # determine passed due to any fail_reasons

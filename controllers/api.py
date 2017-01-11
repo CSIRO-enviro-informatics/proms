@@ -133,6 +133,9 @@ def lodge_report():
             'Report posted is valid but cannot be stored for the following reasons: ' +
             ', '.join(sr.error_messages) + '.')
 
+    # kick off any Pingbacks for this Report, as per chosen Pingbacks strategies
+
+
     # reply to sender
     return sr.uri, 201
 
@@ -155,7 +158,7 @@ def create_report():
     )
 
 
-@api.route('/function/lodge_pingback', methods=['POST'])
+@api.route('/function/lodge-pingback', methods=['POST'])
 def lodge_pingback():
     """Insert an Pingback into the provenance database' pingbacks data named graph"""
     # only valid Pingback Cotent-Types

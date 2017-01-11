@@ -79,6 +79,27 @@
                 <p><a href="{{ url_for('api.create_report') }}">{{ url_for('api.create_report') }}</a></p>
             </td>
         </tr>
+        <tr>
+            <th>Lodge <em>Pingback</em></th>
+            <td>POST a PROV-AQ or a PROMS Pingback to this PROMS Server instance</td>
+            <td>
+                <p><a href="{{ url_for('api.lodge_pingback') }}">{{ url_for('api.lodge_pingback') }}</a></p>
+                <h4>PROV-AQ messages</h4>
+                <p>Must use:</p>
+                    <ul>
+                        <li><a href="{{ url_for('api.lodge_pingback') }}?resource_uri={RESOURCE_URI">{{ url_for('api.lodge_pingback') }}?resource_uri={RESOURCE_URI}</a></li>
+                    </ul>
+                <p>
+                    Where {RESOURCE_URI} is the URI of the resource the pingback is sent for. Given that <a href="https://www.w3.org/TR/prov-aq/">PROV-AQ</a> specifies that a PROV-AQ poingback should be sent to the resource's URI, a redirect from <code>{RESOURCE_URI} --> {{ url_for('api.lodge_pingback') }}?resource_uri={RESOURCE_URI}</code> seems appropriate to implement in front of PROMS Server.
+                </p>
+                <h4>PROMS messages</h4>
+                <p>Must use:</p>
+                    <ul>
+                        <li><a href="{{ url_for('api.lodge_pingback') }}">{{ url_for('api.lodge_pingback') }}</a></li>
+                    </ul>
+                <p>PROMS Pingback messages contain the resource information in their body therefore no query string arguments should be supplied.</p>
+            </td>
+        </tr>
 
         <!--
         <tr>
