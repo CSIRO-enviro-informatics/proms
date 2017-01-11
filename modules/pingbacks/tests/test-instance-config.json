@@ -1,0 +1,30 @@
+{
+  "none": {
+    "name": "No Action",
+    "enabled": false
+  },
+  "given_endpoint": {
+    "name": "Given Endpoint",
+    "enabled": false
+  },
+  "given_provenance": {
+    "name": "Given Provenance",
+    "enabled": false
+  },
+  "known_stores": {
+    "name": "Known Provenance Stores",
+    "enabled": true,
+    "store_uris": [
+      "http://test.com",
+      "http://test2.com"
+    ]
+  },
+  "pingback_lookup": {
+    "name": "Pingback Lookup",
+    "enabled": true
+  },
+  "provenance_lookup": {
+    "name": "Provenance Lookup",
+    "enabled": false
+  }
+}

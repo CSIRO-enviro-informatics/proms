@@ -1,0 +1,2914 @@
+[
+    {
+        "dereferencable": true, 
+        "first_attempt": "2017-01-11T22:23:00.635000", 
+        "last_attempt": "2017-01-11T22:23:00.635000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://test.com/entity/42"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:04.312000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:04.315000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:04.319000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:04.322000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:04.326000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:04.330000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:04.334000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:04.338000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:04.342000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:21.936000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:21.940000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:21.944000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:21.949000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:21.953000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:21.958000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:21.962000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:21.966000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:21.971000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:35.646000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:35.651000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:35.657000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:35.662000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:35.668000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:35.673000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:35.678000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:35.683000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:35.688000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:53.215000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:53.226000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:53.239000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:53.252000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:53.265000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:53.278000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:53.291000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:53.304000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:29:53.317000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:30:24.314000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:30:24.319000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:30:24.325000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:30:24.330000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:30:24.335000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:30:24.341000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:30:24.346000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:30:24.352000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:30:24.357000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:35.201000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:35.207000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:35.213000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:35.218000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:35.224000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:35.229000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:35.235000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:35.241000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:35.246000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:51.211000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:51.217000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:51.222000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:51.228000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:51.234000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:51.240000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:51.246000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:51.252000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:35:51.258000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:09.199000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:09.205000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:09.211000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:09.218000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:09.224000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:09.231000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:09.237000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:09.244000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:09.251000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:53.663000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:53.670000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:53.677000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:53.684000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:53.690000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:53.697000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:53.704000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:53.711000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:39:53.718000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:40:04.308000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:40:04.315000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:40:04.322000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:40:04.328000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:40:04.337000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:40:04.344000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:40:04.351000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:40:04.359000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:40:04.366000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:41:33.611000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:41:33.618000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:41:33.625000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:41:33.633000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:41:33.640000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:41:33.647000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:41:33.655000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:41:33.662000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:41:33.669000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:46:03.596000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:46:03.603000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:46:03.611000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:46:03.619000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:46:03.626000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:46:03.634000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:46:03.642000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:46:03.650000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-11T23:46:03.657000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:32:53.529000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:32:53.537000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:32:53.545000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:32:53.552000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:32:53.560000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:32:53.568000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:32:53.576000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:32:53.584000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:32:53.592000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:33:51.950000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:33:51.959000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:33:51.967000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:33:51.975000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:33:51.983000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:33:51.991000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:33:52", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:33:52.008000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:33:52.016000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:48:07.608000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:48:07.618000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:48:07.629000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:48:07.639000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:48:07.647000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:48:07.656000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:48:07.665000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:48:07.673000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:48:07.682000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:50:26.893000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:50:26.902000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:50:26.911000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:50:26.920000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:50:26.928000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:50:26.937000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:50:26.946000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:50:26.955000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:50:26.965000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:55:26.529000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:55:26.539000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:55:26.548000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:55:26.557000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:55:26.567000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:55:26.576000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:55:26.586000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:55:26.595000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:55:26.604000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:02.313000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:02.323000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:02.332000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:02.342000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:02.351000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:02.361000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:02.370000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:02.380000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:02.390000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:43.319000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:43.328000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:43.338000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:43.348000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:43.357000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:43.367000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:43.377000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:43.387000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:56:43.397000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:58:19.335000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:58:19.346000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:58:19.356000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:58:19.366000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:58:19.376000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:58:19.386000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:58:19.397000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:58:19.407000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:58:19.417000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:10.380000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:10.391000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:10.401000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:10.411000", 
+        "last_attempt": "2017-01-12T00:59:13.014000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:10.422000", 
+        "last_attempt": "2017-01-12T00:59:13.510000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:10.432000", 
+        "last_attempt": "2017-01-12T00:59:13.994000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:10.443000", 
+        "last_attempt": "2017-01-12T00:59:14.488000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:10.453000", 
+        "last_attempt": "2017-01-12T00:59:14.985000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:10.464000", 
+        "last_attempt": "2017-01-12T00:59:15.486000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:38.822000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:38.833000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:38.844000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:38.855000", 
+        "last_attempt": null, 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:38.866000", 
+        "last_attempt": null, 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:38.878000", 
+        "last_attempt": null, 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:38.889000", 
+        "last_attempt": null, 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:38.900000", 
+        "last_attempt": null, 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T00:59:38.911000", 
+        "last_attempt": null, 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T01:00:16.538000", 
+        "last_attempt": "2017-01-12T01:00:16.647000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_a"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T01:00:16.554000", 
+        "last_attempt": "2017-01-12T01:00:17.135000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_b"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T01:00:16.569000", 
+        "last_attempt": "2017-01-12T01:00:17.634000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_c"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T01:00:16.579000", 
+        "last_attempt": null, 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_d"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T01:00:16.591000", 
+        "last_attempt": null, 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_h"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T01:00:16.602000", 
+        "last_attempt": null, 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_k"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T01:00:16.613000", 
+        "last_attempt": null, 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_l"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T01:00:16.624000", 
+        "last_attempt": null, 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_p"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-12T01:00:16.635000", 
+        "last_attempt": null, 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://example.com/default#e_s"
+    }
+]

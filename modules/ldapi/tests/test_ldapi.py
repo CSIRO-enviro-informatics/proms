@@ -1,4 +1,4 @@
-from modules.ldapi.ldapi import LDAPI, LdapiParameterError
+from modules.ldapi.ldapi import LDAPI
 
 
 def test_get_rdf_mimetypes_list():

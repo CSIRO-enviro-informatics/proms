@@ -134,7 +134,9 @@ def lodge_report():
             ', '.join(sr.error_messages) + '.')
 
     # kick off any Pingbacks for this Report, as per chosen Pingbacks strategies
-
+    # TODO: split this off into another thread
+    from modules.pingbacks.engine import Engine
+    e = Engine(sr.graph, sr.uri, url_for('modelx.instance'), url_for('.sparql'))
 
     # reply to sender
     return sr.uri, 201

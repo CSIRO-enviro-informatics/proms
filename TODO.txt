@@ -1,7 +1,9 @@
 General things not yet done
 (in order of importance)
 
-* provide example register links (Entity, Activity, Agent etc)
+* make prov view for Entities
+    * for use in Pingback generation
+* pingback strategies 2+
 * test logging in prod
 * Order reports by date
 * read: https://code.google.com/archive/p/linked-data-api/wikis/API_Viewing_Resources.wiki
