@@ -105,7 +105,7 @@ def Response_server_error(error_message):
     )
 
 
-def render_alternates_view(class_uri, instance_uri, views_formats, mimetype):
+def render_alternates_view(class_uri, class_uri_encoded, instance_uri, instance_uri_encoded, views_formats, mimetype):
     """Renders an HTML table, a JSON object string or a serialised RDF representation of the alternate views of an
     object"""
     if mimetype == 'application/json':
@@ -174,6 +174,8 @@ def render_alternates_view(class_uri, instance_uri, views_formats, mimetype):
         return render_template(
             'alternates_view.html',
             class_uri=class_uri,
+            class_uri_encoded=class_uri_encoded,
             instance_uri=instance_uri,
+            instance_uri_encoded=instance_uri_encoded,
             views_formats=views_formats
         )

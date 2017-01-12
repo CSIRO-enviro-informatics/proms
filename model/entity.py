@@ -1,5 +1,6 @@
 from renderer import Renderer
 from flask import Response, render_template
+from rdflib import Graph, URIRef, Literal, Namespace
 import urllib
 import database
 from modules.ldapi import LDAPI
@@ -22,10 +23,40 @@ class EntityRenderer(Renderer):
                 return self._neighbours_rdf(mimetype)
             elif mimetype == 'text/html':
                 return self._neighbours_html()
+        if view == 'prov':
+            if mimetype in LDAPI.get_rdf_mimetypes_list():
+                return Response(
+                    self._prov_rdf().serialize(format=LDAPI.get_rdf_parser_for_mimetype(mimetype)),
+                    status=200,
+                    mimetype=mimetype
+                )
+            elif mimetype == 'text/html':
+                return self._prov_html()
 
     def _neighbours_rdf(self, mimetype):
+        query = '''
+                 SELECT * WHERE {
+                    <%(uri)s>  ?p ?o .
+                 }
+         ''' % {'uri': self.uri}
+        g = Graph()
+        g.bind('prov', Namespace('http://www.w3.org/ns/prov#'))
+        for r in database.query(query)['results']['bindings']:
+            if r['o']['type'] == 'literal':
+                g.add((URIRef(self.uri), URIRef(r['p']['value']), Literal(r['o']['value'])))
+            else:
+                g.add((URIRef(self.uri), URIRef(r['p']['value']), URIRef(r['o']['value'])))
+
+        query2 = '''
+                 SELECT * WHERE {
+                    ?s ?p <%(uri)s> .
+                 }
+         ''' % {'uri': self.uri}
+        for r in database.query(query2)['results']['bindings']:
+            g.add((URIRef(r['s']['value']), URIRef(r['p']['value']), URIRef(self.uri)))
+
         return Response(
-            self.g.serialize(format=LDAPI.get_rdf_parser_for_mimetype(mimetype)),
+            g.serialize(format=LDAPI.get_rdf_parser_for_mimetype(mimetype)),
             status=200,
             mimetype=mimetype
         )
@@ -49,6 +80,49 @@ class EntityRenderer(Renderer):
         return render_template(
             'class_entity.html',
             entity=ret
+        )
+
+    def _prov_rdf(self):
+        query = '''
+                 SELECT * WHERE {
+                    <%(uri)s>  ?p ?o .
+                 }
+         ''' % {'uri': self.uri}
+        g = Graph()
+        g.bind('prov', Namespace('http://www.w3.org/ns/prov#'))
+        for r in database.query(query)['results']['bindings']:
+            if r['o']['type'] == 'literal':
+                g.add((URIRef(self.uri), URIRef(r['p']['value']), Literal(r['o']['value'])))
+            else:
+                g.add((URIRef(self.uri), URIRef(r['p']['value']), URIRef(r['o']['value'])))
+
+        query2 = '''
+                 SELECT * WHERE {
+                    ?s ?p <%(uri)s> .
+                 }
+         ''' % {'uri': self.uri}
+        for r in database.query(query2)['results']['bindings']:
+            g.add((URIRef(r['s']['value']), URIRef(r['p']['value']), URIRef(self.uri)))
+
+        return g
+
+    def _prov_html(self):
+        """Returns a simple dict of Entity properties for use by a Jinja template"""
+        ret = {
+            'uri': self.uri,
+            'uri_encoded': self.uri_encoded,
+            'label': self.label
+        }
+
+        if self.value is not None:
+            ret['value'] = self.value
+
+        prov_data = self._prov_rdf().serialize(format='turtle')
+
+        return render_template(
+            'class_entity_prov.html',
+            entity=ret,
+            prov_data=prov_data
         )
 
     def _get_details(self):

@@ -2,6 +2,7 @@ from lxml import etree
 from lxml.builder import ElementMaker
 import database
 import settings
+import urllib
 
 
 # TODO: replace this with an XML Jinja2 template
@@ -114,7 +115,10 @@ def get_contents_classes():
     classes = []
     try:
         for c in database.query(query)['results']['bindings']:
-            classes.append(c['c']['value'])
+            classes.append({
+                'uri': c['c']['value'],
+                'uri_encoded': urllib.quote_plus(c['c']['value'])
+            })
     except ValueError:
         pass  # i.e. no result
 

@@ -9,8 +9,8 @@
     <p>The following classes<sup><a href="#note-1">*</a></sup> of item are present in this provenance database. The links lead to registers of items of those classes:</p>
     {%  if content_classes|length > 0 %}
         <ul>
-        {% for class_uri in content_classes %}
-            <li><a href="{{ url_for('modelx.register') }}?_uri={{ class_uri|quote_plus }}">{{ class_uri }}</a></li>
+        {% for class in content_classes %}
+            <li><a href="{{ url_for('modelx.register') }}?_uri={{ class['uri_encoded'] }}">{{ class['uri'] }}</a></li>
         {% endfor %}
         </ul>
     {%  else %}

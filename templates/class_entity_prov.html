@@ -3,7 +3,7 @@
 {% block content %}
     <h1>PROMS Server</h1>
     {% if entity %}
-        <h2>An Entity</h2>
+        <h2>An Entity - <a href="https://www.w3.org/TR/prov-o/">PROV</a> view</h2>
         <p><a href="{{ request.url }}">html</a> | <a href="{{ request.url }}&_format=text/turtle">rdf/turtle</a></p>
         <table class="lined">
             <tr><th>URI:</th><td><a href="{{ entity['uri'] }}">{{ entity['uri'] }}</a></td></tr>
@@ -16,15 +16,10 @@
         <h3>Alternate views</h3>
         <p>Different view of this object are listed at its <a href="{{ request.base_url }}?_uri={{ entity['uri_encoded'] }}&_view=alternates">Alternate views</a> page.</p>
 
-        {% if entity['script'] %}
-            <h3>Neighbours view</h3>
-            <div id="neighbour_view"></div>
-            <script type="text/javascript" src="{{ url_for('static', filename='js/raphael-min.js') }}" charset="utf-8"></script>
-            <script type="text/javascript" src="{{ url_for('static', filename='js/proms-svg.js') }}" charset="utf-8"></script>
-            <script type="text/javascript">
-                {{ entity['script'] | safe }}
-            </script>
-        {% endif %}
+        <h3>PROV view</h3>
+        <p>This view of this Entity shows everything from the provenance database known about this Entity, but only things according to the PROV ontology or upper contologies (RDF, RDFS, OWL). Additional facts recorded using other ontologies are not show.</p>
+        <textarea style="width:99%; height:200px;">{{ prov_data }}</textarea>
+
     {% else %}
         <p>No Entity information found.</p>
     {% endif %}

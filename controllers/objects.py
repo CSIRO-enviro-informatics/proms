@@ -50,7 +50,8 @@ def register():
 
     # if alternates model, return this info from file
     if view == 'alternates':
-        return api_functions.render_alternates_view(urllib.quote_plus(uri), None, views_formats, mime_format)
+        del views_formats['renderer']
+        return api_functions.render_alternates_view(uri, urllib.quote_plus(uri), None, None, views_formats, mime_format)
 
     # get the register of this class of thing from the provenance database
     try:
@@ -135,7 +136,10 @@ def instance():
 
                 # if alternates model, return this info from file
                 if view == 'alternates':
-                    return api_functions.render_alternates_view(class_uri, instance_uri, views_formats, mime_format)
+                    instance_uri_encoded = urllib.quote_plus(request.args.get('_uri'))
+                    class_uri_encoded = urllib.quote_plus(class_uri)
+                    del views_formats['renderer']
+                    return api_functions.render_alternates_view(class_uri, class_uri_encoded, instance_uri, instance_uri_encoded, views_formats, mime_format)
                 else:
                     # chooses a class to render this instance based on the specified renderer in
                     # classes_views_formats.json
