@@ -15,8 +15,9 @@ class LDAPI:
     # maps HTTP MIMETYPES to rdflib's RDF parsing formats
     MIMETYPES_PARSERS = [
         ('text/turtle', 'turtle'),
-        ('application/rdf+xml', 'xml'),
+        ('application/rdf xml', 'xml'),
         ('application/rdf+json', 'json-ld'),
+        ('application/rdf json', 'json-ld'),
         ('application/json', 'json-ld'),
         ('text/ntriples', 'nt'),
         ('text/nt', 'nt'),

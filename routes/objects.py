@@ -8,7 +8,7 @@ from requests.exceptions import ConnectionError
 import api_functions
 import database
 import objects_functions
-from controllers.api_functions import Response_client_error
+from routes.api_functions import Response_client_error
 from modules.ldapi import LDAPI, LdapiParameterError
 modelx = Blueprint('modelx', __name__)
 

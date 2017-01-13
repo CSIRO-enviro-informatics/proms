@@ -238,8 +238,6 @@ class Engine:
             proms = generator.PromsPingback(candidate, self.instance_endpoint)
             proms.send_dummy(pingback_endpoint)
 
-
-
     def _try_strategy_given_provenance(self, candidate):
         print 'trying _try_strategy_given_provenance'
 
@@ -251,58 +249,3 @@ class Engine:
 
     def _try_strategy_provenance_lookup(self, candidate):
         print 'trying _try_strategy_provenance_lookup'
-
-def register_pingback(data):
-    """ Register a pingback that has been sent to the system
-    """
-    g = Graph()
-    try:
-        g.parse(cStringIO.StringIO(data), format="n3")
-    except Exception as e:
-        return [False, 'Could not parse pingback: ' + str(e)]
-    query = '''
-        PREFIX prov: <http://www.w3.org/ns/prov#>
-        PREFIX dpn-proms: <http://promsns.org/def/dpn-proms#>
-
-        SELECT ?entity ?pq_uri WHERE {
-            ?entity a prov:Entity .
-            ?p dpn-proms:provenanceQueryUri ?pq_uri
-        }
-    '''
-    query_result = g.query(query)
-    for row in query_result:
-        if len(row) == 2:
-            query = '''
-                @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-                @prefix prov: <http://www.w3.org/ns/prov#> .
-                @prefix proms: <http://promsns.org/def/proms#> .
-                @prefix : <%(DPN_BASE_URI)s#> .
-
-                :x     a proms:LinkingActivity ;
-                    prov:used <%(entity)s> ;
-                    proms:provenaceQueryUri <%(pq_uri)s>^^xsd:anyUri
-                .
-            ''' % {
-                'DPN_BASE_URI': settings.DPN_BASE_URI,
-                'entity': row['entity'],
-                'pq_uri': row['pq_uri']
-            }
-            db_result = sparqlqueries.insert(query)
-            if not db_result[0]:
-                return [False, 'Problem storing received pingback: ' + db_result[1]]
-    return [True]
-
-
-def send_pingback(report_graph):
-    """ Send all pingbacks for the provided Report
-    """
-    if hasattr(settings, 'PINGBACK_STRATEGIES') and settings.PINGBACK_STRATEGIES:
-        for strategy in settings.PINGBACK_STRATEGIES:
-            if hasattr(strategy_functions, 'try_strategy_' + str(strategy)):
-                strategy_method = getattr(strategy_functions, 'try_strategy_' + str(strategy))
-                pingback_result = strategy_method(report_graph)
-                if 'pingback_attempt' in pingback_result:
-                    attempt = pingback_result['pingback_attempt']
-                    if 'pingback_successful' in pingback_result:
-                        successful = pingback_result['pingback_successful']
-    # TODO: Return attempts and successes if they're to be used

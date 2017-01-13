@@ -1,7 +1,7 @@
 import logging
 from flask import Flask
 import settings
-from controllers import objects, pages, api
+from routes import objects, pages, api
 # from secure.api import api -- not implemented yet
 
 app = Flask(__name__)

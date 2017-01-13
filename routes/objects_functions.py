@@ -12,8 +12,8 @@ def get_classes_views_formats():
     """
     cvf = cache.get('classes_views_formats')
     if cvf is None:
-        cvf = json.load(open(os.path.join(settings.HOME_DIR, 'controllers', 'classes_views_formats.json')))
-        # times out never (i.e. on app startup/shutdown
+        cvf = json.load(open(os.path.join(settings.HOME_DIR, 'routes', 'classes_views_formats.json')))
+        # times out never (i.e. on app startup/shutdown)
         cache.set('classes_views_formats', cvf)
     return cvf
 
