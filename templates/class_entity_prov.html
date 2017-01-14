@@ -7,8 +7,10 @@
         <p><a href="{{ request.url }}">html</a> | <a href="{{ request.url }}&_format=text/turtle">rdf/turtle</a></p>
         <table class="lined">
             <tr><th>URI:</th><td><a href="{{ entity['uri'] }}">{{ entity['uri'] }}</a></td></tr>
-            <tr><th>Label:</th><td>{{ entity['label'] }}</td></tr>
-            {% if 'value' in entity %}
+            {% if entity['label'] is not none %}
+                <tr><th>Label:</th><td>{{ entity['label'] }}</td></tr>
+            {% endif %}
+            {% if entity['value'] is not none %}
                 <tr><th>Value:</th><td>{{ entity['value'] }}</td></tr>
             {% endif %}
         </table>

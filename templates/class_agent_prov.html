@@ -1,0 +1,26 @@
+{% extends "template_layout.html" %}
+
+{% block content %}
+    <h1>PROMS Server</h1>
+    {% if agent %}
+        <h2>An Agent</h2>
+        <p><a href="{{ request.url }}">html</a> | <a href="{{ request.url + "&_format=text/turtle" }}">rdf/turtle</a></p>
+        <table class="lined">
+            <tr><th>URI:</th><td><a href="{{ agent['uri'] }}">{{ agent['uri'] }}</a></td></tr>
+            <tr><th>Label:</th><td>{{ agent['label'] }}</td></tr>
+            {% if agent['aobo'] is not none %}
+                <tr><th>Acted Ob Behalf Of:</th><td><a href="{{ activity['aobo'] }}">{{ activity['aobo_label'] }}</a></td></tr>
+            {% endif %}
+        </table>
+
+        <h3>Alternate views</h3>
+        <p>Different view of this object are listed at its <a href="{{ request.url }}&_view=alternates">Alternate views</a> page.</p>
+
+        <h3>PROV view</h3>
+        <p>This view of this Entity shows everything from the provenance database known about this Entity, but only things according to the PROV ontology or upper contologies (RDF, RDFS, OWL). Additional facts recorded using other ontologies are not show.</p>
+        <textarea style="width:99%; height:200px;">{{ prov_data }}</textarea>
+
+    {% else %}
+        <p>No Agent information found.</p>
+    {% endif %}
+{% endblock %}

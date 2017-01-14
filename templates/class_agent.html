@@ -7,7 +7,7 @@
     <table class="lined">
         <tr><th>URI:</th><td><a href="{{ agent['uri'] }}">{{ agent['uri'] }}</a></td></tr>
         <tr><th>Label:</th><td>{{ agent['label'] }}</td></tr>
-        {% if 'aobo' in agent  %}
+        {% if reportingsystem['aobo'] is not none %}
             <tr><th>Acted Ob Behalf Of:</th><td><a href="{{ activity['aobo'] }}">{{ activity['aobo_label'] }}</a></td></tr>
         {% endif %}
     </table>
