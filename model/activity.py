@@ -3,6 +3,7 @@ from flask import Response, render_template
 import urllib
 import database
 from modules.ldapi import LDAPI
+from rdflib import Graph, URIRef, Literal, Namespace
 
 
 class ActivityRenderer(Renderer):
@@ -18,24 +19,98 @@ class ActivityRenderer(Renderer):
         self.waw_label = None
         self.script = None
 
-        self._get_details()
-
     def render(self, view, mimetype):
         if view == 'neighbours':
             if mimetype in LDAPI.get_rdf_mimetypes_list():
                 return self._neighbours_rdf(mimetype)
             elif mimetype == 'text/html':
+                self._get_details()
                 return self._neighbours_html()
+        elif view == 'prov':
+            if mimetype in LDAPI.get_rdf_mimetypes_list():
+                return Response(
+                    self._prov_rdf().serialize(format=LDAPI.get_rdf_parser_for_mimetype(mimetype)),
+                    status=200,
+                    mimetype=mimetype
+                )
+            elif mimetype == 'text/html':
+                self._get_details()
+                return self._prov_html()
 
     def _neighbours_rdf(self, mimetype):
+        query = '''
+                 SELECT * WHERE {
+                    <%(uri)s>  ?p ?o .
+                 }
+         ''' % {'uri': self.uri}
+        g = Graph()
+        g.bind('prov', Namespace('http://www.w3.org/ns/prov#'))
+        for r in database.query(query)['results']['bindings']:
+            if r['o']['type'] == 'literal':
+                g.add((URIRef(self.uri), URIRef(r['p']['value']), Literal(r['o']['value'])))
+            else:
+                g.add((URIRef(self.uri), URIRef(r['p']['value']), URIRef(r['o']['value'])))
+
+        query2 = '''
+                 SELECT * WHERE {
+                    ?s ?p <%(uri)s> .
+                 }
+         ''' % {'uri': self.uri}
+        for r in database.query(query2)['results']['bindings']:
+            g.add((URIRef(r['s']['value']), URIRef(r['p']['value']), URIRef(self.uri)))
+
         return Response(
-            self.g.serialize(format=LDAPI.get_rdf_parser_for_mimetype(mimetype)),
+            g.serialize(format=LDAPI.get_rdf_parser_for_mimetype(mimetype)),
             status=200,
             mimetype=mimetype
         )
 
     def _neighbours_html(self):
         """Returns a simple dict of Activity properties for use by a Jinja template"""
+        self._make_svg_script()
+
+        ret = {
+            'uri': self.uri,
+            'uri_encoded': self.uri_encoded,
+            'label': self.label,
+            'sat': self.sat,
+            'eat': self.eat,
+            'waw_encoded': self.waw_encoded,
+            'waw_label': self.waw_label,
+            'script': self.script
+        }
+
+        return render_template(
+            'class_activity.html',
+            activity=ret
+        )
+
+    def _prov_rdf(self):
+        query = '''
+                 SELECT * WHERE {
+                    <%(uri)s>  ?p ?o .
+                 }
+         ''' % {'uri': self.uri}
+        g = Graph()
+        g.bind('prov', Namespace('http://www.w3.org/ns/prov#'))
+        for r in database.query(query)['results']['bindings']:
+            if r['o']['type'] == 'literal':
+                g.add((URIRef(self.uri), URIRef(r['p']['value']), Literal(r['o']['value'])))
+            else:
+                g.add((URIRef(self.uri), URIRef(r['p']['value']), URIRef(r['o']['value'])))
+
+        query2 = '''
+                 SELECT * WHERE {
+                    ?s ?p <%(uri)s> .
+                 }
+         ''' % {'uri': self.uri}
+        for r in database.query(query2)['results']['bindings']:
+            g.add((URIRef(r['s']['value']), URIRef(r['p']['value']), URIRef(self.uri)))
+
+        return g
+
+    def _prov_html(self):
+        """Returns a simple dict of Entity properties for use by a Jinja template"""
         ret = {
             'uri': self.uri,
             'uri_encoded': self.uri_encoded,
@@ -46,14 +121,12 @@ class ActivityRenderer(Renderer):
             'waw_label': self.waw_label
         }
 
-        self._make_svg_script()
-
-        if self.script is not None:
-            ret['script'] = self.script
+        prov_data = self._prov_rdf().serialize(format='turtle')
 
         return render_template(
-            'class_activity.html',
-            activity=ret
+            'class_activity_prov.html',
+            activity=ret,
+            prov_data=prov_data
         )
 
     def _get_details(self):
@@ -162,11 +235,11 @@ class ActivityRenderer(Renderer):
                     uri_encoded = urllib.quote(used['bindings'][1]['u']['value'])
 
                     script += '''
-                        var entityUsed2 = addEntity(105, 100, "%(u_label)s", "%(instance_endpoint)s?_uri=%(uri_encoded)s");
+                        var entityUsed2 = addEntity(105, 100, "%(u_label)s", "%(inst_end)s?_uri=%(uri_encoded)s");
                         addLink(activity, entityUsed2, "prov:used", TOP);
                     ''' % {
                         'u_label': u_label,
-                        'instance_endpoint': self.endpoints['instance'],
+                        'inst_end': self.endpoints['instance'],
                         'uri_encoded': uri_encoded
                     }
                     if len(used['bindings']) == 3:
@@ -177,11 +250,11 @@ class ActivityRenderer(Renderer):
                         uri_encoded = urllib.quote(used['bindings'][2]['u']['value'])
 
                         script += '''
-                            var entityUsed3 = addEntity(105, 400, "%(u_label)s", "%(instance_endpoint)s?_uri=%(uri_encoded)s");
+                            var entityUsed3 = addEntity(105, 400, "%(u_label)s", "%(inst_end)s?_uri=%(uri_encoded)s");
                             addLink(activity, entityUsed3, "prov:used", RIGHT);
                         ''' % {
                             'u_label': u_label,
-                            'instance_endpoint': self.endpoints['instance'],
+                            'inst_end': self.endpoints['instance'],
                             'uri_encoded': uri_encoded
                         }
                     elif len(used['bindings']) > 3:
@@ -190,7 +263,8 @@ class ActivityRenderer(Renderer):
                         script += '''
                             var entityUsed1 = addEntity(105, 260, "", "");
                             var entityUsed2 = addEntity(100, 255, "", "");
-                            var entityUsedN = addEntity(95, 250, "Multiple Entities, click here to search", "%(sparql_endpoint)s?query=%(query_encoded)s");
+                            var entityUsedN = addEntity(95, 250, "Multiple Entities, click to search", ''' \
+                            '''"%(sparql_endpoint)s?query=%(query_encoded)s");
                             addLink(activity, entityUsedN, "prov:used", TOP);
                         ''' % {
                             'sparql_endpoint': self.endpoints['sparql'],
@@ -201,9 +275,8 @@ class ActivityRenderer(Renderer):
                 pass
         else:
             # we have a fault
-            script += '''
-                var entityUsedFaultText = addEntity(1, 200, "There is a fault with retrieving Entities that may have been used by this Activity", "");
-            '''
+            script += 'var entityUsedFaultText = addEntity(1, 200, ' \
+                      '"There is a fault with retrieving Entities that may have been used by this Activity", "");'
 
         self.script += script
 
@@ -236,7 +309,11 @@ class ActivityRenderer(Renderer):
                 script += '''
                     var entityGen1 = addEntity(605, 250, "%(wgb_label)s", "%(instance_endpoint)s?_uri=%(uri_encoded)s");
                     addLink(activity, entityGen1, "prov:generated", TOP);
-                ''' % {'wgb_label': wgb_label, 'instance_endpoint': self.endpoints['instance'], 'uri_encoded': uri_encoded}
+                ''' % {
+                    'wgb_label': wgb_label,
+                    'instance_endpoint': self.endpoints['instance'],
+                    'uri_encoded': uri_encoded
+                }
                 if len(gen['bindings']) > 1:
                     if gen['bindings'][1].get('wgb_label'):
                         wgb_label = gen['bindings'][1]['wgb_label']['value']
@@ -245,9 +322,13 @@ class ActivityRenderer(Renderer):
                     uri_encoded = urllib.quote(gen['bindings'][1]['u']['value'])
 
                     script += '''
-                        var entityGen2 = addEntity(605, 100, "%(wgb_label)s", "%(instance_endpoint)s?_uri=%(uri_encoded)s");
+                        var entityGen2 = addEntity(605, 100, "%(wgb_label)s", "%(inst_endpoint)s?_uri=%(uri_encoded)s");
                         addLink(activity, entityGen2, "prov:generated", TOP);
-                    ''' % {'wgb_label': wgb_label, 'instance_endpoint': self.endpoints['instance'], 'uri_encoded': uri_encoded}
+                    ''' % {
+                        'wgb_label': wgb_label,
+                        'inst_endpoint': self.endpoints['instance'],
+                        'uri_encoded': uri_encoded
+                    }
                     if len(gen['bindings']) == 3:
                         if gen['bindings'][2].get('wgb_label'):
                             wgb_label = gen['bindings'][2]['wgb_label']['value']
@@ -256,9 +337,13 @@ class ActivityRenderer(Renderer):
                         uri_encoded = urllib.quote(gen['bindings'][2]['u']['value'])
 
                         script += '''
-                            var entityGen3 = addEntity(605, 400, "%(wgb_label)s", "%(instance_endpoint)s?_uri=%(uri_encoded)s");
+                            var entityGen3 = addEntity(605, 400, "%(wgb_label)s", "%(inst_end)s?_uri=%(uri_encoded)s");
                             addLink(activity, entityGen3, "prov:generated", TOP);
-                        ''' % {'wgb_label': wgb_label, 'instance_endpoint': self.endpoints['instance'], 'uri_encoded': uri_encoded}
+                        ''' % {
+                            'wgb_label': wgb_label,
+                            'inst_end': self.endpoints['instance'],
+                            'uri_encoded': uri_encoded
+                        }
                     elif len(gen['bindings']) > 3:
                         # TODO: Check query
                         query_encoded = urllib.quote(query)
@@ -266,7 +351,8 @@ class ActivityRenderer(Renderer):
                         script += '''
                             var entityGen1 = addEntity(615, 260, "", "");
                             var entityGen2 = addEntity(610, 255, "", "");
-                            var entityGenN = addEntity(605, 250, "Multiple Entities, click here to search", "%(sparql_endpoint)s?query=%(query_encoded)s");
+                            var entityGenN = addEntity(605, 250, "Multiple Entities, click here to search", ''' \
+                            '''%(sparql_endpoint)s?query=%(query_encoded)s");
                             addLink(activity, entityGenN, "prov:generated", TOP);
                         ''' % {'sparql_endpoint': self.endpoints['sparql'], 'query_encoded': query_encoded}
             else:
@@ -275,7 +361,8 @@ class ActivityRenderer(Renderer):
         else:
             # we have a fault
             script += '''
-                var entityGenFaultText = addEntity(349, 200, "There is a fault with retrieving Entities that may have been used by this Activity", "");
+                var entityGenFaultText = addEntity(349, 200, '''\
+                '''"There is a fault with retrieving Entities that may have been used by this Activity", "");
             '''
 
         self.script += script

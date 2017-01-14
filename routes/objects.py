@@ -8,8 +8,9 @@ from requests.exceptions import ConnectionError
 import api_functions
 import database
 import objects_functions
-from routes.api_functions import Response_client_error
+from routes.api_functions import client_error_response
 from modules.ldapi import LDAPI, LdapiParameterError
+from rdflib import Graph
 modelx = Blueprint('modelx', __name__)
 
 
@@ -30,7 +31,7 @@ def register():
     # ensure the class URI is one of the classes in the views_formats
     class_uris = objects_functions.get_class_uris()
     if uri not in class_uris:
-        return Response_client_error(
+        return client_error_response(
             'No URI of a class in the provenance database was supplied. Expecting a query string argument \'_uri\' '
             'equal to one of the following: ' +
             ', '.join(class_uris)
@@ -46,7 +47,7 @@ def register():
             views_formats
         )
     except LdapiParameterError, e:
-        return Response_client_error(e)
+        return client_error_response(e)
 
     # if alternates model, return this info from file
     if view == 'alternates':
@@ -55,7 +56,7 @@ def register():
 
     # get the register of this class of thing from the provenance database
     try:
-        class_register = database.get_class_register(uri)
+        class_register = get_class_register(uri)
     except ConnectionError:
         return render_template('error_db_connection.html'), 500
 
@@ -67,38 +68,26 @@ def register():
     return model.RegisterRenderer(request, uri, endpoints, class_register).render(view, mime_format)
 
 
-@modelx.route('/register/<string:class_name>/')
-def register_name(class_name):
-    """
-    Responds with a Register model response for classes listed in the graph
+def get_class_register(class_uri):
+    q = '''
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        SELECT ?uri ?label
+        WHERE {
+            GRAPH ?g {
+                ?uri a <%(class_uri)s> ;
+                    rdfs:label ?label .
+            }
+        }
+        ORDER BY ?label
+    ''' % {'class_uri': class_uri}
+    instances = []
+    for r in database.query(q)['results']['bindings']:
+        instances.append({
+            'uri': r['uri']['value'],
+            'label': r['label']['value']
+        })
 
-    Supported classes statically loaded from classes_views_formats.json
-    In the future, we will dynamically work out which classes are supported.
-
-    :param class_name: the name of a class of object in the graph db
-    :return: an HTTP message based on a particular model and format of the class
-    """
-
-    # check if class name given corresponds to a supported class name
-    supported_classes = sorted(objects_functions.get_classes())
-    if class_name not in supported_classes:
-        return api_functions.Response_client_error(
-            'class_name must be one of ' + ', '.join(supported_classes) + '.')
-
-    # get the class URI for this class_name
-    class_uri = objects_functions.get_class_uri(class_name)
-
-    # get the register of this class of thing from the provenance database
-    try:
-        register = database.get_things.get_class_register(class_uri)
-    except ConnectionError:
-        return render_template('error_db_connection.html'), 500
-
-    return render_template(
-        'class_register.html',
-        class_name=class_name,
-        register=register
-    )
+    return instances
 
 
 @modelx.route('/instance')
@@ -111,10 +100,10 @@ def instance():
     # must have the URI of an object in the graph
     instance_uri = request.args.get('_uri')
     try:
-        g = database.get_class_object_graph(instance_uri)
+        g = get_class_object(instance_uri)
 
         if not g:
-            return Response_client_error(
+            return client_error_response(
                 'No URI of an object in the provenance database was supplied. '
                 'Expecting a query string argument \'_uri\'.')
     except ConnectionError:
@@ -155,4 +144,27 @@ def instance():
                     ).render(view, mime_format)
 
             except LdapiParameterError, e:
-                return Response_client_error(e)
+                return client_error_response(e)
+
+
+def get_class_object(uri):
+    """
+    Returns the graph of an object in the graph database
+
+    :param uri: the URI of something in the graph database
+    :return: an RDF Graph
+    """
+    if uri is not None:
+        r = database.query_turtle(
+            'CONSTRUCT { <' + uri + '> ?p ?o } WHERE { GRAPH ?g { <' + uri + '> ?p ?o }}'
+        )
+        # a uri query string argument was supplied was supplied but it was not the URI of something in the graph
+        g = Graph().parse(data=r, format='turtle')
+
+        if len(g) == 0:
+            # nothing found
+            return False
+        else:
+            return g
+    else:
+        return False

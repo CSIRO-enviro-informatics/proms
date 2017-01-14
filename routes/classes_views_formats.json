@@ -24,42 +24,49 @@
     "renderer": "ActivityRenderer",
     "default": "neighbours",
     "alternates": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json", "application/json"],
-    "neighbours": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"]
+    "neighbours": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"],
+    "prov": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"]
   },
   "http://www.w3.org/ns/prov#Agent": {
     "renderer": "AgentRenderer",
     "default": "neighbours",
     "alternates": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json", "application/json"],
-    "neighbours": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"]
-  },
-  "http://www.w3.org/ns/prov#Person": {
-    "renderer": "PersonRenderer",
-    "default": "neighbours",
-    "alternates": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json", "application/json"],
-    "neighbours": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"]
+    "neighbours": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"],
+    "prov": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"]
   },
   "http://promsns.org/def/proms#Report": {
     "renderer": "ReportRenderer",
     "default": "neighbours",
     "alternates": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json", "application/json"],
-    "neighbours": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"]
+    "neighbours": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"],
+    "prov": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"]
   },
   "http://promsns.org/def/proms#BasicReport": {
     "renderer": "ReportRenderer",
     "default": "neighbours",
     "alternates": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json", "application/json"],
-    "neighbours": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"]
+    "neighbours": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"],
+    "prov": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"]
   },
   "http://promsns.org/def/proms#ExternalReport": {
     "renderer": "ReportRenderer",
     "default": "neighbours",
     "alternates": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json", "application/json"],
-    "neighbours": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"]
+    "neighbours": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"],
+    "prov": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"]
+  },
+  "http://promsns.org/def/proms#InternalReport": {
+    "renderer": "ReportRenderer",
+    "default": "neighbours",
+    "alternates": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json", "application/json"],
+    "neighbours": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"],
+    "prov": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"]
   },
   "http://promsns.org/def/proms#ReportingSystem": {
     "renderer": "ReportingSystemRenderer",
     "default": "neighbours",
     "alternates": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json", "application/json"],
-    "neighbours": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"]
+    "neighbours": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"],
+    "prov": ["text/html", "text/turtle", "application/rdf+xml", "application/rdf+json"]
   }
 }

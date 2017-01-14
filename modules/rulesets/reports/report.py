@@ -1,4 +1,4 @@
-from database import sparqlqueries
+from database import queries
 from modules.rulesets import RuleSet, Rule
 from prov_constraints import ProvConstraints
 
@@ -157,7 +157,7 @@ class HasAnExistingReportingSystem(Rule):
                 <%(reporting_system_uri)s> ?p proms:ReportingSystem .
             }}
         ''' % {'reporting_system_uri': reporting_system_uri}
-        if not sparqlqueries.query(q)['boolean']:
+        if not queries.query(q)['boolean']:
             self.fail_reasons.append('The Report does not refer to an existing ReportingSystem within the '
                                      'provenance database')
             self.passed = False

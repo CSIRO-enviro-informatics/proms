@@ -1,6 +1,9 @@
 General things not yet done
 (in order of importance)
 
+* link Activities to the Report they are in
+* link Entities to the Report(s) they are in
+* add a stand-alon format for neighbours, SVG (image/svg+xml), which is just the graphic
 * strategy given_endpoint record status after pingback attempt
 * pingback strategies 2+
 * test logging in prod

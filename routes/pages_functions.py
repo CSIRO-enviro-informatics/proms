@@ -5,7 +5,7 @@ import settings
 import urllib
 
 
-# TODO: replace this with an XML Jinja2 template
+# TODO: get_capabilities Python XML generation with an XML Jinja2 template
 def get_capabilities():
     """This function enables an Open Geospatial Consortium Web Service-like GetCapabilities function which describes
     this service (PROMS as a whole) in a standardised way. See http://ogcnetwork.net/node/180 for the OGC's WFS
@@ -106,11 +106,14 @@ def get_capabilities():
 
 def get_contents_classes():
     query = '''
-        SELECT DISTINCT ?c
-        WHERE {
-          ?s a ?c
-        }
-        ORDER BY ?c
+            SELECT DISTINCT ?c
+            WHERE {
+                GRAPH ?g {
+                    ?s a ?c .
+                }
+                FILTER(!REGEX(STR(?g), "/pingback/", "i")) .
+            }
+            ORDER BY ?c
     '''
     classes = []
     try:

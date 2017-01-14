@@ -4,7 +4,7 @@ import uuid
 from rdflib import Graph, URIRef, Literal, Namespace, RDF, XSD
 from modules.rulesets.pingbacks import PromsPingback, ProvPingback
 import settings
-from database import sparqlqueries
+from database import queries
 from modules.ldapi import LDAPI
 from datetime import datetime
 

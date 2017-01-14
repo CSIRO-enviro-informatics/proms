@@ -11,10 +11,9 @@ class EntityRenderer(Renderer):
         Renderer.__init__(self, uri, endpoints)
 
         self.uri_encoded = urllib.quote_plus(uri)
+        self.label = None
         self.value = None
         self.script = None
-
-        self._get_details()
 
     def render(self, view, mimetype):
         if view == 'neighbours':
@@ -22,8 +21,9 @@ class EntityRenderer(Renderer):
             if mimetype in LDAPI.get_rdf_mimetypes_list():
                 return self._neighbours_rdf(mimetype)
             elif mimetype == 'text/html':
+                self._get_details()
                 return self._neighbours_html()
-        if view == 'prov':
+        elif view == 'prov':
             if mimetype in LDAPI.get_rdf_mimetypes_list():
                 return Response(
                     self._prov_rdf().serialize(format=LDAPI.get_rdf_parser_for_mimetype(mimetype)),
@@ -31,6 +31,7 @@ class EntityRenderer(Renderer):
                     mimetype=mimetype
                 )
             elif mimetype == 'text/html':
+                self._get_details()
                 return self._prov_html()
 
     def _neighbours_rdf(self, mimetype):
@@ -63,19 +64,15 @@ class EntityRenderer(Renderer):
 
     def _neighbours_html(self):
         """Returns a simple dict of Entity properties for use by a Jinja template"""
+        self._make_svg_script()
+
         ret = {
             'uri': self.uri,
             'uri_encoded': self.uri_encoded,
-            'label': self.label
+            'label': self.label,
+            'value': self.value,
+            'script': self.script
         }
-
-        if self.value is not None:
-            ret['value'] = self.value
-
-        self._make_svg_script()
-
-        if self.script is not None:
-            ret['script'] = self.script
 
         return render_template(
             'class_entity.html',
@@ -111,11 +108,9 @@ class EntityRenderer(Renderer):
         ret = {
             'uri': self.uri,
             'uri_encoded': self.uri_encoded,
-            'label': self.label
+            'label': self.label,
+            'value': self.value,
         }
-
-        if self.value is not None:
-            ret['value'] = self.value
 
         prov_data = self._prov_rdf().serialize(format='turtle')
 
@@ -191,7 +186,7 @@ class EntityRenderer(Renderer):
     def _get_value_svg(self):
         if self.value is not None:
             self.script += '''
-                    var value = addValue(305, 400, "%(value)s'");
+                    var value = addValue(305, 400, "%(value)s");
                     addLink(entity, value, "prov:value", RIGHT);
                 ''' % {'value': self.value}
 
