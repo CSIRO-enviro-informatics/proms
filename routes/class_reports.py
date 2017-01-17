@@ -1,26 +1,28 @@
 from class_incoming import IncomingClass
 import cStringIO
 import uuid
-from rdflib import Graph
+from rdflib import Graph, Namespace, URIRef, Literal, RDF, XSD
 import api_functions
 import modules.rulesets.reports as report_rulesets
 import settings
 from modules.ldapi import LDAPI
+from datetime import datetime
 
 
 class IncomingReport(IncomingClass):
-    def __init__(self, data, mimetype):
-        IncomingClass.__init__(self, data, mimetype)
+    def __init__(self, request):
+        IncomingClass.__init__(self, request)
 
         self.type = None
+        self._generate_named_graph_uri()
 
     def valid(self):
         """Validates an incoming Report using direct tests (can it be parsed?) and appropriate RuleSets"""
         # try to parse the Report data
         try:
             self.graph = Graph().parse(
-                cStringIO.StringIO(self.data),
-                format=[item[1] for item in LDAPI.MIMETYPES_PARSERS if item[0] == self.mimetype][0]
+                cStringIO.StringIO(self.request.data),
+                format=[item[1] for item in LDAPI.MIMETYPES_PARSERS if item[0] == self.request.mimetype][0]
             )
         except Exception, e:
             self.error_messages = ['The serialised data cannot be parsed. Is it valid RDF?',
@@ -62,6 +64,7 @@ class IncomingReport(IncomingClass):
 
     def determine_uri(self):
         """Determines the URI for this Report"""
+        # TODO: replace these two SPARQL queries with one, use the inverse of the "placeholder" find
         # if this Report has a placeholder URI, generate a new one
         q = '''
             SELECT ?uri
@@ -103,3 +106,36 @@ class IncomingReport(IncomingClass):
         self.uri = new_uri
         # add that new URI to the in-memory graph
         api_functions.replace_uri(self.graph, old_uri, new_uri)
+
+    def _generate_named_graph_uri(self):
+        self.named_graph_uri = settings.REPORT_NAMED_GRAPH_BASE_URI + str(uuid.uuid4())
+
+    def generate_named_graph_metadata(self):
+        PROV = Namespace('http://www.w3.org/ns/prov#')
+        self.graph.bind('prov', PROV)
+
+        PROMS = Namespace('http://promsns.org/def/proms#')
+        self.graph.bind('proms', PROMS)
+
+        DCT = Namespace('http://purl.org/dc/terms/')
+        self.graph.bind('dct', DCT)
+
+        self.graph.add((
+            URIRef(self.named_graph_uri),
+            RDF.type,
+            PROMS.ReportNamedGraph
+        ))
+
+        # ... the date this Report was sent to this PROMS Server
+        self.graph.add((
+            URIRef(self.named_graph_uri),
+            DCT.dateSubmitted,
+            Literal(datetime.now().isoformat(), datatype=XSD.dateTime)
+        ))
+
+        # ... who contributed this Report
+        self.graph.add((
+            URIRef(self.named_graph_uri),
+            DCT.contributor,
+            URIRef(self.request.remote_addr)
+        ))

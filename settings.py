@@ -31,13 +31,17 @@ AGENT_BASE_URI = 'http://example.com/agent/'
 ENTITY_BASE_URI = 'http://example.com/entity/'
 PERSON_BASE_URI = 'http://example.com/person/'
 REPORT_BASE_URI = 'http://example.com/report/'
+REPORT_NAMED_GRAPH_BASE_URI = 'http://example.com/report/'
 REPORTINGSYSTEM_BASE_URI = 'http://example.com/reportingsystem/'
+REPORTINGSYSTEM_NAMED_GRAPH_BASE_URI = 'http://example.com/reportingsystem/'
 PINGBACK_BASE_URI = 'http://example.com/pingback/'
+PINGBACK_NAMED_GRAPH_BASE_URI = 'http://example.com/pingback/'
+PINGBACK_RESULTS_NAMED_GRAPH_BASE_URI = 'http://example.com/pingbackresults/'
 
 
 #   This is the location at which PROMS Server is installed on your file system. For Windows this could be something
 #   like 'c:/work/proms/', for Linux it could be '/opt/proms/' or '/var/www/proms/'
-#HOME_DIR = 'c:/work/proms/'  # must end in a slash. Use forward slashes only, even in Windows
+# HOME_DIR = 'c:/work/proms/'  # must end in a slash. Use forward slashes only, even in Windows
 HOME_DIR = os.path.dirname(os.path.abspath(__file__))
 
 #   The PROMS main log file. Usually somewhere in HOME_DIR but need not be
@@ -86,13 +90,6 @@ SPARQL_UPDATE_URI = 'http://localhost:3030/tdb/update'
 SPARQL_AUTH_USR = ''  # Ensure this matches any triplestore proxying settings (install-apache.sh)
 SPARQL_AUTH_PWD = ''  # Ensure this matches any triplestore proxying settings (install-apache.sh)
 SPARQL_TIMEOUT = 5  # Request Timeout in seconds
-
-
-#
-#   PROMS Server v3.1 Pingbacks settings
-#
-ENTITY_STATE_STORE = HOME_DIR + 'pingbacks/status_recorder/entities.json'
-
 
 
 #

@@ -6,11 +6,11 @@ class IncomingClass:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def __init__(self, data, mimetype):
-        self.data = data
-        self.mimetype = mimetype
+    def __init__(self, request):
+        self.request = request
         self.graph = None
         self.uri = None
+        self.named_graph_uri = None
         self.error_messages = None
 
     @abstractmethod
@@ -23,8 +23,13 @@ class IncomingClass:
 
     def stored(self):
         """ Add an item to PROMS"""
+        if self.graph is None or self.named_graph_uri is None:
+            msg = 'The graph and the named_grapoh_uri properties of this class instance must not be None when trying ' \
+                  'to store this instance in the provenance DB.'
+            self.error_messages = msg
+            return False
         try:
-            database.insert(self.graph, self.uri)
+            database.insert(self.graph, self.named_graph_uri)
             return True
         except Exception as e:
             self.error_messages = ['Could not connect to the provenance database']

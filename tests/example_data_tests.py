@@ -57,6 +57,10 @@ def load_reports():
     assert r.status_code == 201
 
 
+def load_pingbacks():
+    pass
+
+
 def test_example_data_rs_html():
     # get the HTML
     # get URI

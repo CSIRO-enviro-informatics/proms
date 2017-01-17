@@ -128,7 +128,14 @@ def instance():
                     instance_uri_encoded = urllib.quote_plus(request.args.get('_uri'))
                     class_uri_encoded = urllib.quote_plus(class_uri)
                     del views_formats['renderer']
-                    return api_functions.render_alternates_view(class_uri, class_uri_encoded, instance_uri, instance_uri_encoded, views_formats, mime_format)
+                    return api_functions.render_alternates_view(
+                        class_uri,
+                        class_uri_encoded,
+                        instance_uri,
+                        instance_uri_encoded,
+                        views_formats,
+                        mime_format
+                    )
                 else:
                     # chooses a class to render this instance based on the specified renderer in
                     # classes_views_formats.json

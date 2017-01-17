@@ -157,18 +157,6 @@ def render_alternates_view(class_uri, class_uri_encoded, instance_uri, instance_
                 for f in formats:
                     g.add((x, URIRef('http://purl.org/dc/terms/format'), Literal(f, datatype=XSD.string)))
 
-
-        # make the static part of the graph
-        # REG = Namespace('http://purl.org/linked-data/registry#')
-        # self.g.bind('reg', REG)
-        #
-        # self.g.add((URIRef(self.request.url), RDF.type, REG.Register))
-        #
-        # # add all the items
-        # for item in self.register:
-        #     self.g.add((URIRef(item['uri']), RDF.type, URIRef(self.uri)))
-        #     self.g.add((URIRef(item['uri']), RDFS.label, Literal(item['label'], datatype=XSD.string)))
-        #     self.g.add((URIRef(item['uri']), REG.register, URIRef(self.request.url)))
         rdflib_format = [item[1] for item in LDAPI.MIMETYPES_PARSERS if item[0] == mimetype][0]
         return Response(g.serialize(format=rdflib_format), status=200, mimetype=mimetype)
     else:  # HTML
@@ -221,9 +209,10 @@ def get_reportingsystems():
     # Check if nothing is returned
     if reportingsystems and 'results' in reportingsystems:
         for reportingsystem in reportingsystems['results']['bindings']:
-            ret = {}
-            ret['rs'] = urllib.quote(str(reportingsystem['rs']['value']))
-            ret['rs_u'] = str(reportingsystem['rs']['value'])
+            ret = {
+                'rs': urllib.quote(str(reportingsystem['rs']['value'])),
+                'rs_u': str(reportingsystem['rs']['value'])
+            }
             if reportingsystem.get('t'):
                 ret['t'] = str(reportingsystem['t']['value'])
             reportingsystem_items.append(ret)
@@ -253,9 +242,10 @@ def get_entities():
     # Check if nothing is returned
     if entities and 'results' in entities:
         for entity in entities['results']['bindings']:
-            ret = {}
-            ret['e'] = urllib.quote(str(entity['e']['value']))
-            ret['e_u'] = str(entity['e']['value'])
+            ret = {
+                'e': urllib.quote(str(entity['e']['value'])),
+                'e_u': str(entity['e']['value']),
+            }
             if entity.get('l'):
                 ret['l'] = str(entity['l']['value'])
             entity_items.append(ret)

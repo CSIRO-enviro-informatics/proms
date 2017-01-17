@@ -153,7 +153,7 @@ class HasAnExistingReportingSystem(Rule):
         q = '''
             PREFIX proms: <http://promsns.org/def/proms#>
             ASK
-            WHERE { GRAPH <%(reporting_system_uri)s> {
+            WHERE { GRAPH ?g {
                 <%(reporting_system_uri)s> ?p proms:ReportingSystem .
             }}
         ''' % {'reporting_system_uri': reporting_system_uri}

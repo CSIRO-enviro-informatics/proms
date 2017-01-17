@@ -28,14 +28,6 @@ def get_classes():
     return classes
 
 
-def get_class_uri(class_name):
-    cvf = get_classes_views_formats()
-    for c in cvf.iterkeys():
-        if not c.startswith('_'):
-            if c.split('#')[1] == class_name:
-                return c
-
-
 def get_class_uris():
     cvf = get_classes_views_formats()
     classes = []

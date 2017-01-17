@@ -13,17 +13,17 @@ class IncomingPingback(IncomingClass):
     acceptable_mimes = LDAPI.get_rdf_mimetypes_list() + ['text/uri-list']
 
     def __init__(self, request):
-        IncomingClass.__init__(self, request.data, request.mimetype)
+        IncomingClass.__init__(self, request)
 
-        self.request = request
         self.pingback_endpoint = request.url
 
         self.determine_uri()
+        self._generate_named_graph_uri()
 
     def valid(self):
         """Validates an incoming Pingback using direct tests using the Pingbacks RuleSet"""
         # PROV Pingbacks can only be of mimtype text/uri-list
-        if self.mimetype == 'text/uri-list':
+        if self.request.mimetype == 'text/uri-list':
             print self.request.headers
             conformant_pingback = ProvPingback(self.request)
 
@@ -58,42 +58,18 @@ class IncomingPingback(IncomingClass):
         return True
 
     def determine_uri(self):
-        """Gets the URI of the named graph used to store this Pingback's information"""
-        # ask PROMS Server for a new Pingbacks URI
-        new_uri = settings.PINGBACK_BASE_URI + str(uuid.uuid4())
-        self.uri = new_uri
+        pass  # no need for this!
+
+    def _generate_named_graph_uri(self):
+        self.named_graph_uri = settings.PINGBACK_NAMED_GRAPH_BASE_URI + str(uuid.uuid4())
 
     def convert_pingback_to_rdf(self):
-        # add graph metadata, regardless of the type of Pingback
-        # the URI of the Pingback must have been generated before doing this so we can refer to the graph
-        PROV = Namespace('http://www.w3.org/ns/prov#')
-        DCT = Namespace('http://purl.org/dc/terms/')
-        self.graph = Graph()
-        self.graph.bind('prov', PROV)
-        self.graph.bind('dct', DCT)
-        if self.uri is not None:
-            # a basic capturing of...
-            # ... the date this Pingback was sent to this PROMS Server
-            self.graph.add((
-                URIRef(self.uri),
-                RDF.type,
-                PROV.Bundle
-            ))
-            self.graph.add((
-                URIRef(self.uri),
-                DCT.dateSubmitted,
-                Literal(datetime.now().isoformat(), datatype=XSD.dateTime)
-            ))
-            # ... who contributed this Pingback
-            self.graph.add((
-                URIRef(self.uri),
-                DCT.contributor,
-                URIRef(self.request.remote_addr)
-            ))
-            # TODO: add other useful metadata variables gleaned from the HTTP message headers
-
+        # the URI of the Named Graph for this Pingback must have been generated before doing this
+        # so we can refer to the graph
+        if self.named_graph_uri is not None:
+            self.graph = Graph()
             # PROV Pingbacks can only be of mimtype text/uri-list
-            if self.mimetype == 'text/uri-list':
+            if self.request.mimetype == 'text/uri-list':
                 self._convert_prov_pingback_to_rdf()
             # PROMS Pingbacks can only be of an RDF mimetype
             else:
@@ -106,7 +82,8 @@ class IncomingPingback(IncomingClass):
         # every URI in the PROV-AQ message is treated as a provenance statement about the resource
         PROV = Namespace('http://www.w3.org/ns/prov#')
         self.graph.bind('prov', PROV)
-        for uri_line in self.data.split('\n'):
+
+        for uri_line in self.request.data.split('\n'):
             self.graph.add((
                 URIRef(self.request.args.get('resource_uri')),
                 PROV.has_provenance,
@@ -124,5 +101,72 @@ class IncomingPingback(IncomingClass):
                 ))
 
     def _convert_proms_pingback_to_rdf(self):
+        PROMS = Namespace('http://promsns.org/def/proms#')
+        self.graph.bind('proms', PROMS)
+
+        # type this pingback specifically
+        self.graph.add((
+            URIRef(self.named_graph_uri),
+            RDF.type,
+            PROMS.PromsPingback
+        ))
+
         # convert the data to RDF (just de-serialise it)
-        self.graph += Graph().parse(data=self.request.data, format=LDAPI.get_rdf_parser_for_mimetype(self.request.mimetype))
+        self.graph += Graph().parse(
+            data=self.request.data,
+            format=LDAPI.get_rdf_parser_for_mimetype(self.request.mimetype)
+        )
+
+    def generate_named_graph_metadata(self):
+        # add graph metadata, regardless of the type of Pingback
+        PROV = Namespace('http://www.w3.org/ns/prov#')
+        self.graph.bind('prov', PROV)
+
+        PROMS = Namespace('http://promsns.org/def/proms#')
+        self.graph.bind('proms', PROMS)
+
+        DCT = Namespace('http://purl.org/dc/terms/')
+        self.graph.bind('dct', DCT)
+
+        # ... the date this Pingback was sent to this PROMS Server
+        self.graph.add((
+            URIRef(self.named_graph_uri),
+            DCT.dateSubmitted,
+            Literal(datetime.now().isoformat(), datatype=XSD.dateTime)
+        ))
+        # ... who contributed this Pingback
+        self.graph.add((
+            URIRef(self.named_graph_uri),
+            DCT.contributor,
+            URIRef(self.request.remote_addr)
+        ))
+
+        # TODO: add other useful metadata variables gleaned from the HTTP message headers
+
+        # PROV Pingbacks can only be of mimtype text/uri-list
+        if self.request.mimetype == 'text/uri-list':
+            self._generate_prov_pingback_named_graph_metadata()
+        else:
+            self._generate_proms_pingback_named_graph_metadata()
+
+    def _generate_prov_pingback_named_graph_metadata(self):
+        PROMS = Namespace('http://promsns.org/def/proms#')
+        self.graph.bind('proms', PROMS)
+
+        # type this pingback specifically
+        self.graph.add((
+            URIRef(self.named_graph_uri),
+            RDF.type,
+            PROMS.ProvAqPingbackNamedGraph
+        ))
+
+    def _generate_proms_pingback_named_graph_metadata(self):
+        PROMS = Namespace('http://promsns.org/def/proms#')
+        self.graph.bind('proms', PROMS)
+
+        # type this pingback specifically
+        self.graph.add((
+            URIRef(self.named_graph_uri),
+            RDF.type,
+            PROMS.PromsPingbackNamedGraph
+        ))

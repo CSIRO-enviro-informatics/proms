@@ -1,11 +1,13 @@
 General things not yet done
 (in order of importance)
 
+* DB changes as per paper sheet
 * link Activities to the Report they are in
 * link Entities to the Report(s) they are in
-* add a stand-alon format for neighbours, SVG (image/svg+xml), which is just the graphic
+* add a stand-alone format for neighbours, SVG (image/svg+xml), which is just the graphic
 * strategy given_endpoint record status after pingback attempt
 * pingback strategies 2+
+* check against tests rec: https://blog.nelhage.com/2016/12/how-i-test/
 * test logging in prod
 * Order reports by date
 * read: https://code.google.com/archive/p/linked-data-api/wikis/API_Viewing_Resources.wiki

@@ -2,7 +2,6 @@ import json
 from flask import Blueprint, Response, request, render_template, url_for
 from requests.exceptions import ConnectionError
 import api_functions
-import database
 import class_agents
 import class_pingbacks
 import class_reportingsystems
@@ -73,24 +72,26 @@ def lodge_reportingsystem():
             ', '.join(acceptable_mimes) + '.')
 
     # validate ReportingSystem
-    sr = class_reportingsystems.IncomingReportingSystem(request.data, request.content_type)
-    if not sr.valid():
+    rs = class_reportingsystems.IncomingReportingSystem(request)
+    if not rs.valid():
         return api_functions.client_error_response(
             'The ReportingSystem posted is not valid for the following reasons: ' +
-            ', '.join(sr.error_messages) + '.')
+            ', '.join(rs.error_messages) + '.')
 
     # get the ReportingSystem's URI
-    sr.determine_uri()
+    rs.determine_uri()
+
+    rs.generate_named_graph_metadata()
 
     # store the ReportingSystem
-    if not sr.stored():
+    if not rs.stored():
         return api_functions.server_error_response(
             'ReportingSystem posted is valid but cannot be stored for the following reasons: ' +
-            ', '.join(sr.error_messages) + '.')
+            ', '.join(rs.error_messages) + '.')
 
     # reply to sender
     return Response(
-        sr.uri,
+        rs.uri,
         status=201,
         mimetype='text/plain')
 
@@ -120,27 +121,29 @@ def lodge_report():
             ', '.join(acceptable_mimes) + '.')
 
     # validate Report
-    sr = class_reports.IncomingReport(request.data, request.content_type)
-    if not sr.valid():
+    r = class_reports.IncomingReport(request)
+    if not r.valid():
         return api_functions.client_error_response(
-            'The Report posted is not valid for the following reasons: ' + ', '.join(sr.error_messages) + '.')
+            'The Report posted is not valid for the following reasons: ' + ', '.join(r.error_messages) + '.')
 
     # get the Report's URI
-    sr.determine_uri()
+    r.determine_uri()
+
+    r.generate_named_graph_metadata()
 
     # store the Report
-    if not sr.stored():
+    if not r.stored():
         return api_functions.server_error_response(
             'Report posted is valid but cannot be stored for the following reasons: ' +
-            ', '.join(sr.error_messages) + '.')
+            ', '.join(r.error_messages) + '.')
 
     # kick off any Pingbacks for this Report, as per chosen Pingbacks strategies
     # TODO: split this off into another thread
     from modules.pingbacks.engine import Engine
-    e = Engine(sr.graph, sr.uri, url_for('modelx.instance'), url_for('.sparql'))
+    e = Engine(r.graph, r.uri, url_for('modelx.instance'), url_for('.sparql'))
 
     # reply to sender
-    return sr.uri, 201
+    return r.uri, 201
 
 
 @api.route('/function/create-report')
@@ -179,9 +182,15 @@ def lodge_pingback():
             'The Pingback posted is not valid for the following reasons: ' + ', '
             .join(p.error_messages) + '.')
 
+    # get the Pingback's URI
+    p.determine_uri()
+
     # convert the Pingback to RDF -- no need to test this step as successful validation, needed to get this far, ensures
     # it can be converted
+    # this function also generated Named Graph metadata
     p.convert_pingback_to_rdf()
+
+    p.generate_named_graph_metadata()
 
     # store the Pingback's RDF
     if not p.stored():
@@ -320,40 +329,3 @@ def sparql():
             else:
                 return api_functions.client_error_response(
                     'Accept header must be one of ' + ', '.join(acceptable_mimes) + '.')
-
-
-# @api.route('/function/pingback', methods=['POST'])
-# def pingback():
-#     """
-#     React to incoming pingback messages
-#
-#     :return: 204 if PROV-AQ successful, 201 if PROMS successfull, else 400 or 500 + msg
-#     """
-#     import pingbacks.handle_incoming.hi_functions as hi
-#
-#     # work out if it's a PROV-AQ message or a PROMS message
-#     if hi.is_provaq_msg(request):
-#         insert = hi.register_provaq_pingback(request)
-#         if insert[0]:
-#             return Response('', status=204)
-#         else:
-#             return Response('PROV-AQ pingback message not handled. ' + insert[1],
-#                             status=400,
-#                             mimetype='text/plain')
-#     elif hi.is_proms_msg(hi.register_provaq_pingback(request)):
-#         insert = hi.register_proms_pingback(request)
-#         if insert[0]:
-#             return Response('Created ' + insert[1] + ' triples.', status=201)
-#         else:
-#             return Response('PROMS pingback message not handled. ' + insert[1],
-#                             status=400,
-#                             mimetype='text/plain')
-#     else:
-#         # message not understood
-#         return 'Pingback message not understood. Not recognised as PROV-AQ or PROMS msg.', 400
-#
-#     pingback_result = functions.register_pingback(request.data)
-#     if pingback_result[0]:
-#         return Response('OK', status=200)
-#     else:
-#         return pingback_result[1], 400
