@@ -1,0 +1,88 @@
+@prefix proms: <http://promsns.org/def/proms#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix : <http://test.com#> .
+
+:E00 a prov:Entity ;
+    rdfs:label "E 00"^^xsd:string .
+
+:E01 a prov:Entity ;
+    rdfs:label "E 01"^^xsd:string .
+
+:E02 a prov:Entity ;
+    rdfs:label "E 02"^^xsd:string .
+
+:E03 a prov:Entity ;
+    rdfs:label "E 03"^^xsd:string ;
+    prov:wasAttributedTo :Ag1 .
+
+:E04 a prov:Entity ;
+    rdfs:label "E 04"^^xsd:string .
+
+:E05 a prov:Entity ;
+    rdfs:label "E 05"^^xsd:string .
+
+:E06 a prov:Entity ;
+    rdfs:label "E 06"^^xsd:string ;
+    prov:wasAttributedTo :Ag2 .
+
+:E07 a prov:Entity ;
+    rdfs:label "E 07"^^xsd:string .
+
+:E08 a prov:Entity ;
+    rdfs:label "E 08"^^xsd:string .
+
+:E09 a prov:Entity ;
+    rdfs:label "E 09"^^xsd:string .
+
+# nothing associated with E10
+:E10 a prov:Entity ;
+    rdfs:label "E 10"^^xsd:string .
+
+:E11 a prov:Entity ;
+    rdfs:label "E 11"^^xsd:string ;
+    prov:wasGeneratedBy :A4 .
+
+:E12 a prov:Entity ;
+    rdfs:label "E 12"^^xsd:string .
+
+:Ag1 a prov:Agent ;
+    rdfs:label "Ag 1"^^xsd:string .
+
+:Ag2 a prov:Agent ;
+    rdfs:label "Ag 2"^^xsd:string .
+
+# nothing associated with Ag3
+:Ag3 a prov:Agent ;
+    rdfs:label "Ag 3"^^xsd:string .
+
+:A0 a prov:Activity ;
+    rdfs:label "A 0"^^xsd:string ;
+    prov:used :E00 ;
+    prov:generated :E02, :E12 .
+
+:A1 a prov:Activity ;
+    rdfs:label "A 1"^^xsd:string ;
+    prov:used :E01, :E02 ;
+    prov:generated :E03, :E04 ;
+    prov:wasAssociatedWith :Ag1 .
+
+:A2 a prov:Activity ;
+    rdfs:label "A 2"^^xsd:string ;
+    prov:used :E03, :E05 ;
+    prov:generated :E06 ;
+    prov:wasAssociatedWith :Ag2 .
+
+:A3 a prov:Activity ;
+    rdfs:label "A 3"^^xsd:string ;
+    prov:used :E06, :E07 ;
+    prov:generated :E08, :E09 .
+
+:A4 a prov:Activity ;
+    rdfs:label "A 4"^^xsd:string ;
+    prov:used :E09 .
+

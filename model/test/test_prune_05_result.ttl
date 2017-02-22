@@ -1,0 +1,29 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://test.com/entity/01> a prov:Entity ;
+    rdfs:label "Target Entity" ;
+    prov:wasAttributedTo <http://test.com/agent/01> ;
+    prov:value 42 .
+
+<http://test.com/entity/03> a prov:Entity ;
+    rdfs:label "Downstream Entity 01" ;
+    prov:wasGeneratedBy <http://test.com/activity/01> .
+
+<http://test.com/entity/04> a prov:Entity ;
+    rdfs:label "Downstream Entity 02" ;
+    prov:wasGeneratedBy <http://test.com/activity/02> .
+
+<http://test.com/activity/01> a prov:Activity ;
+    rdfs:label "Related Activity 01" ;
+    prov:used <http://test.com/entity/01> .
+
+<http://test.com/activity/02> a prov:Activity ;
+    rdfs:label "Related Activity 02" ;
+    prov:used <http://test.com/entity/01> .
+
+<http://test.com/agent/01> a prov:Agent ;
+    rdfs:label "Related Agent" .

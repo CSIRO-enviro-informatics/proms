@@ -1,0 +1,73 @@
+@prefix : <http://example.com/def/ont/my-animals#> .
+@prefix an: <http://example.com/def/ont/animals#> .
+@prefix ns1: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix proms: <http://promsns.org/def/proms#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.com/report/378b98cb-1d50-42c9-92f0-502984e0a72a> a proms:ReportNamedGraph ;
+    ns1:contributor <http://server/unset-base/127.0.0.1> ;
+    ns1:dateSubmitted "2017-01-23T21:40:31.273000"^^xsd:dateTime .
+
+<http://example.com/report/5465ebf0-47c5-4264-a16d-5c9b517c96f7> a proms:ExternalReport ;
+    rdfs:label "External Report R02" ;
+    proms:endingActivity <http://placeholder.org#72b82ab7-b699-4f86-8305-6f855a6e2345> ;
+    proms:nativeId "report-R02" ;
+    proms:startingActivity <http://placeholder.org#72b82ab7-b699-4f86-8305-6f855a6e2345> ;
+    proms:wasReportedBy <http://pid.geoscience.gov.au/system/system-01> ;
+    prov:generatedAtTime "2000-01-01T12:00:03"^^xsd:dateTime .
+
+<http://example.com/report/62367839-48ee-4d82-b384-b8e2f1e70f56> a proms:ExternalReport ;
+    rdfs:label "External Report R03" ;
+    proms:endingActivity <http://placeholder.org#72b82ab7-b699-4f86-8305-6f855a6e2346> ;
+    proms:nativeId "report-R03" ;
+    proms:startingActivity <http://placeholder.org#72b82ab7-b699-4f86-8305-6f855a6e2346> ;
+    proms:wasReportedBy <http://pid.geoscience.gov.au/system/system-01> ;
+    prov:generatedAtTime "2000-02-01T12:00:03"^^xsd:dateTime .
+
+<http://example.com/report/97f27c3c-4bd6-4f43-9e2f-3633916b36ce> a proms:ReportNamedGraph ;
+    ns1:contributor <http://server/unset-base/127.0.0.1> ;
+    ns1:dateSubmitted "2017-01-23T21:40:34.292000"^^xsd:dateTime .
+
+<http://placeholder.org#be24de81-7e93-462e-b5b6-6138e00bc3be> a prov:Entity ;
+    rdfs:label "Input 02" ;
+    rdfs:comment "The Entity, 02" ;
+    prov:value 42 .
+
+<http://placeholder.org#be24de81-7e93-462e-b5b6-6138e00bc3bf> a prov:Entity ;
+    rdfs:label "Input 02" ;
+    rdfs:comment "The Entity, 02" ;
+    prov:value 42 .
+
+<http://web3-wron:8080/water/thredds/somefile.nc> a prov:Entity ;
+    rdfs:label "Output Data" ;
+    rdfs:comment "The Entity, 03" .
+
+<http://web3-wron:8080/water/thredds/somefile2.nc> a prov:Entity ;
+    rdfs:label "Output Data" ;
+    rdfs:comment "The Entity, 03" .
+
+<http://pid.geoscience.gov.au/dataset/12> a prov:Entity ;
+    rdfs:label "Dataset 12" .
+
+<http://placeholder.org#72b82ab7-b699-4f86-8305-6f855a6e2345> a prov:Activity ;
+    rdfs:label "Test Activity linking to Entities" ;
+    rdfs:comment "A test Activity" ;
+    prov:endedAtTime "2000-01-01T12:00:03"^^xsd:dateTime ;
+    prov:generated <http://web3-wron:8080/water/thredds/somefile.nc> ;
+    prov:startedAtTime "2000-01-01T12:00:02"^^xsd:dateTime ;
+    prov:used <http://pid.geoscience.gov.au/dataset/12>,
+        <http://placeholder.org#be24de81-7e93-462e-b5b6-6138e00bc3be> .
+
+<http://placeholder.org#72b82ab7-b699-4f86-8305-6f855a6e2346> a prov:Activity ;
+    rdfs:label "Test Activity linking to Entities" ;
+    rdfs:comment "A test Activity" ;
+    prov:endedAtTime "2000-02-01T12:00:03"^^xsd:dateTime ;
+    prov:generated <http://web3-wron:8080/water/thredds/somefile2.nc> ;
+    prov:startedAtTime "2000-02-01T12:00:02"^^xsd:dateTime ;
+    prov:used <http://pid.geoscience.gov.au/dataset/12>,
+        <http://placeholder.org#be24de81-7e93-462e-b5b6-6138e00bc3bf> .

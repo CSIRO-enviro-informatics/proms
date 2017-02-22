@@ -1,11 +1,26 @@
-Prior to running the installation script, you must have:
+Prerequisites
+-------------
 
-1. Java 8
-    * see install-java.sh in the subfolder
-2. Git
-3. Python modules:
+1. Apache Server 2.4
+    * used to deliver PROMS Server as a container accessed via WSGI protocols
+    * could be replaced with other front-end servers such as nginx
+
+2. Apache 2.4 modules
+    * mod_wsgi
+
+3. Java 8
+    * required if using the default Jena/Fuseki triplestore
+    * see install-java.sh
+
+4. Git
+    * required to clone PROMS Server application code from https://bitbucket.csiro.au/scm/eis/proms.git
+
+5. Python 2.7.x
+    * required to run PROMS Server appication
+    * PROMS Server 4.2 (due June 2017) will move to Python 3.6
+
+6. Python 2.7 modules:
     * flask
-    * flask_httpauth
     * rdflib
     * rdflib-jsonld
     * watchdog

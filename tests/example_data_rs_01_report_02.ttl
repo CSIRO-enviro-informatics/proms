@@ -6,7 +6,7 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
 
-<http://placeholder.org#R01> a proms:ExternalReport ;
+<http://placeholder.org#R02> a proms:ExternalReport ;
     rdfs:label "External Report R02"^^xsd:string ;
     proms:endingActivity <http://placeholder.org#72b82ab7-b699-4f86-8305-6f855a6e2345> ;
     proms:nativeId "report-R02"^^xsd:string ;

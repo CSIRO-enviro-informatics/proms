@@ -1,17 +1,13 @@
 import os
 import logging
+import subprocess
+
+# the version of this PROMS instance is taken from the latest tag of the Git repo
+VERSION = subprocess.check_output(["git", "describe"]).split('-')[0].replace('v', '')
 
 #
 #   Basic settings
 #
-
-#   The IP address that the in-built Flask HTTP server will listen on. Default is 0.0.0.0
-#   Irrelevant if PROMS Server is deployed via Apache + mod_wsgi
-HOST = '0.0.0.0'
-
-#   The port that the in-built Flask HTTP server will listen on. Default is 9000
-#   Irrelevant if PROMS Server is deployed via Apache + mod_wsgi
-PORT = 9000
 
 #   This is the URI of this PROMS Server instance. It is the full address of where the service is installed. If running
 #   locally without port proxying, as you would for dev, it is likely to be something like http://localhost:9000
@@ -19,7 +15,7 @@ PORT = 9000
 #   If PROMS Server is installed somewhere it could be http://example.org/service/proms or perhaps
 #   http://proms.example.org
 #
-BASE_URI = 'http://localhost:' + str(PORT)
+BASE_URI = 'http://localhost:5000'
 
 
 #   These base URIs are the URIs that this instance of PROMS will use to replace http://placeholder.org URIs for the
@@ -76,7 +72,7 @@ DEBUG = True
 #   installation) or NginX or similar, these SPARQL endpoints could be something like
 #   'http://localhost/sparql/data/query' or 'http://localhost/data/update' or really anything. This setting is set by
 #   your proxy server configuration. If using the default installation, this will be set in
-#   installation/Ubuntu/install-apache.sh via 2 ProxyPass lines, e.g.:
+#   installation/scripts/install-apache.sh via 2 ProxyPass lines, e.g.:
 #
 #   ProxyPass   /fuseki/data/query   http://localhost:3030/data/query
 #
@@ -91,11 +87,3 @@ SPARQL_AUTH_USR = ''  # Ensure this matches any triplestore proxying settings (i
 SPARQL_AUTH_PWD = ''  # Ensure this matches any triplestore proxying settings (install-apache.sh)
 SPARQL_TIMEOUT = 5  # Request Timeout in seconds
 
-
-#
-#   PROMS Server v3.2 Secure PROV settings
-#
-SECRET_KEY = 'hello, proms'
-MONGODB = "127.0.0.1"
-
-VERSION = '3.1.0'

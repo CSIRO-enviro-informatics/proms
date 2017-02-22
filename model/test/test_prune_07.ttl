@@ -1,0 +1,45 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://test.com/entity/01> a prov:Entity ;
+    rdfs:label "Target Entity" ;
+    prov:value 42 .
+
+<http://test.com/entity/02> a prov:Entity ;
+    rdfs:label "Unrelated Upstream Entity" ;
+    prov:wasGeneratedBy <http://test.com/activity/02> .
+
+<http://test.com/entity/03> a prov:Entity ;
+    rdfs:label "Upstream Entity 01" ;
+    prov:wasGeneratedBy <http://test.com/activity/02> .
+
+<http://test.com/entity/04> a prov:Entity ;
+    rdfs:label "Upstream Entity 02" .
+
+<http://test.com/entity/05> a prov:Entity ;
+    rdfs:label "Unrelated Entity" ;
+    prov:wasGeneratedBy <http://test.com/activity/03> .
+
+<http://test.com/activity/01> a prov:Activity ;
+    rdfs:label "Related Activity" ;
+    prov:used <http://test.com/entity/03> ;
+    prov:generated <http://test.com/entity/01> ;
+    prov:wasAssociatedWith <http://test.com/agent/01> .
+
+<http://test.com/activity/02> a prov:Activity ;
+    rdfs:label "Upstream Activity" ;
+    prov:used <http://test.com/entity/04> ;
+    prov:wasAssociatedWith <http://test.com/agent/02> .
+
+<http://test.com/activity/03> a prov:Activity ;
+    rdfs:label "Unrelated Activity" ;
+    prov:generated <http://test.com/entity/05> .
+
+<http://test.com/agent/01> a prov:Agent ;
+    rdfs:label "Related Agent" .
+
+<http://test.com/agent/02> a prov:Agent ;
+    rdfs:label "Upstream Related Agent" .

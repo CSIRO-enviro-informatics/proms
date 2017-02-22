@@ -1,8 +1,0 @@
-Use Jena via Fuseki
-
-Currently working with Fuseki 2.4.1
-
-Config in {FUSEKI_HOME}/run/config.ttl
-
-Config as per example-config.ttl
-* inferencing appears not to be working just yet

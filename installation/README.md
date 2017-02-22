@@ -1,21 +1,25 @@
 # PROMS Installation Instructions
 
 1. Install prerequisites
-    * see 'prerequisites.txt'
+    * see prerequisites.txt
+    * see install scripts
 
 2. Install a triplestore with a RESTful SPARQL 1.1 interface
+    * see install-fuseki.sh
     * default is Apache Fuseki 2 (https://jena.apache.org/documentation/fuseki2/)
-    * see install-fuseki.sh in subfolder. You may need to update the Fuseki file version extension (currently -2.4.0.tar.gz)
+    * see install-fuseki.sh for qucik Java 8 installation on Ubuntu/Debian. 
+        * You may need to update the Fuseki file version extension (currently -2.4.0.tar.gz)
 
-3. Clone PROMS
-    * https://bitbucket.csiro.au/projects/EIS/repos/proms 
-    * make sure to clone recursively (git clone --recursive {PROMS_REPO}) in order to retireve Git submodules such as that for the RuleSets
+3. Clone PROMS Server Python application
+    * see install-proms.sh
+    * https://bitbucket.csiro.au/scm/eis/proms.git
 
 4. Configure settings.py
     * settings.py contains extensive documentation for each setting
+    * see settings-minimal.py for minimal required settings 
     
 5. Apply theme overlays
-    * PROMS Server ships wuith the 'vanilla' theme out of the box
+    * PROMS Server ships with the 'vanilla' theme out of the box
     * other themes are available which are Git modules containing instructions
     * see GA theme: https://github.com/nicholascar/proms-theme-ga
     * see CSIRO theme: https://bitbucket.csiro.au/projects/EIS/repos/proms-theme-csiro

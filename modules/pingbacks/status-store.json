@@ -3040,7 +3040,7 @@
     {
         "dereferencable": false, 
         "first_attempt": "2017-01-18T00:04:44.323000", 
-        "last_attempt": "2017-01-18T01:01:04.121000", 
+        "last_attempt": "2017-01-23T21:40:34.430000", 
         "pingback_endpoints": null, 
         "pingback_received": false, 
         "provenance_bundle_received": false, 
@@ -3054,7 +3054,7 @@
     {
         "dereferencable": false, 
         "first_attempt": "2017-01-18T00:04:44.341000", 
-        "last_attempt": "2017-01-18T01:01:04.265000", 
+        "last_attempt": "2017-01-23T21:40:31.788000", 
         "pingback_endpoints": null, 
         "pingback_received": false, 
         "provenance_bundle_received": false, 
@@ -3068,7 +3068,7 @@
     {
         "dereferencable": false, 
         "first_attempt": "2017-01-18T00:37:02.420000", 
-        "last_attempt": "2017-01-18T01:01:04.121000", 
+        "last_attempt": "2017-01-23T21:40:34.430000", 
         "pingback_endpoints": null, 
         "pingback_received": false, 
         "provenance_bundle_received": false, 
@@ -3082,7 +3082,7 @@
     {
         "dereferencable": false, 
         "first_attempt": "2017-01-18T00:37:02.420000", 
-        "last_attempt": "2017-01-18T01:01:04.265000", 
+        "last_attempt": "2017-01-23T21:40:31.788000", 
         "pingback_endpoints": null, 
         "pingback_received": false, 
         "provenance_bundle_received": false, 
@@ -3222,7 +3222,7 @@
     {
         "dereferencable": false, 
         "first_attempt": "2017-01-18T01:01:04.105000", 
-        "last_attempt": "2017-01-18T01:01:04.121000", 
+        "last_attempt": "2017-01-23T21:40:34.430000", 
         "pingback_endpoints": null, 
         "pingback_received": false, 
         "provenance_bundle_received": false, 
@@ -3236,7 +3236,7 @@
     {
         "dereferencable": false, 
         "first_attempt": "2017-01-18T01:01:04.105000", 
-        "last_attempt": "2017-01-18T01:01:04.265000", 
+        "last_attempt": "2017-01-23T21:40:31.788000", 
         "pingback_endpoints": null, 
         "pingback_received": false, 
         "provenance_bundle_received": false, 
@@ -3246,5 +3246,229 @@
             0
         ], 
         "uri": "http://placeholder.org#be24de81-7e93-462e-b5b6-6138e00bc3be"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-22T21:57:23.519000", 
+        "last_attempt": "2017-01-23T21:40:34.430000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://pid.geoscience.gov.au/dataset/12"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-22T21:57:23.540000", 
+        "last_attempt": "2017-01-23T21:40:31.788000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://placeholder.org#be24de81-7e93-462e-b5b6-6138e00bc3be"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-22T23:06:00.246000", 
+        "last_attempt": "2017-01-23T21:40:34.430000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://pid.geoscience.gov.au/dataset/12"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-22T23:06:00.262000", 
+        "last_attempt": "2017-01-23T21:40:31.788000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://placeholder.org#be24de81-7e93-462e-b5b6-6138e00bc3be"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-22T23:06:03.048000", 
+        "last_attempt": "2017-01-23T21:40:34.430000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://pid.geoscience.gov.au/dataset/12"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-22T23:06:03.048000", 
+        "last_attempt": "2017-01-23T21:40:34.577000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://placeholder.org#be24de81-7e93-462e-b5b6-6138e00bc3bf"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-22T23:11:10.408000", 
+        "last_attempt": "2017-01-23T21:40:34.430000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://pid.geoscience.gov.au/dataset/12"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-22T23:11:10.424000", 
+        "last_attempt": "2017-01-23T21:40:31.788000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://placeholder.org#be24de81-7e93-462e-b5b6-6138e00bc3be"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-22T23:11:13.370000", 
+        "last_attempt": "2017-01-23T21:40:34.430000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://pid.geoscience.gov.au/dataset/12"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-22T23:11:13.386000", 
+        "last_attempt": "2017-01-23T21:40:34.577000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://placeholder.org#be24de81-7e93-462e-b5b6-6138e00bc3bf"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-23T21:39:57.440000", 
+        "last_attempt": "2017-01-23T21:40:34.430000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://pid.geoscience.gov.au/dataset/12"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-23T21:39:57.463000", 
+        "last_attempt": "2017-01-23T21:40:31.788000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://placeholder.org#be24de81-7e93-462e-b5b6-6138e00bc3be"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-23T21:40:31.389000", 
+        "last_attempt": "2017-01-23T21:40:34.430000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://pid.geoscience.gov.au/dataset/12"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-23T21:40:31.408000", 
+        "last_attempt": "2017-01-23T21:40:31.788000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://placeholder.org#be24de81-7e93-462e-b5b6-6138e00bc3be"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-23T21:40:34.415000", 
+        "last_attempt": "2017-01-23T21:40:34.430000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://pid.geoscience.gov.au/dataset/12"
+    }, 
+    {
+        "dereferencable": false, 
+        "first_attempt": "2017-01-23T21:40:34.415000", 
+        "last_attempt": "2017-01-23T21:40:34.577000", 
+        "pingback_endpoints": null, 
+        "pingback_received": false, 
+        "provenance_bundle_received": false, 
+        "provenance_endpoints": null, 
+        "rdf_metadata": false, 
+        "strategies": [
+            0
+        ], 
+        "uri": "http://placeholder.org#be24de81-7e93-462e-b5b6-6138e00bc3bf"
     }
 ]

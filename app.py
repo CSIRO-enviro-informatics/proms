@@ -33,8 +33,6 @@ if __name__ == '__main__':
     # app.logger.addHandler(handler)
 
     app.run(
-        host=settings.HOST,
-        port=settings.PORT,
         threaded=True,
         debug=settings.DEBUG
     )

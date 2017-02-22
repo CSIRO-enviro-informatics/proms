@@ -1,0 +1,118 @@
+#
+#   Tests lengthy up and downstream Entity/Activity chains including unrelated Entities and Activities
+#
+
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+# target entity
+<http://test.com/entity/target> a prov:Entity ;
+    rdfs:label "Target Entity" ;
+    prov:value 42 .
+
+
+# upstream entities
+<http://test.com/entity/u01> a prov:Entity ;
+    rdfs:label "Eu 01" .
+
+<http://test.com/entity/u02> a prov:Entity ;
+    rdfs:label "Eu 02" .
+    
+<http://test.com/entity/u03> a prov:Entity ;
+    rdfs:label "Eu 03" .
+    
+<http://test.com/entity/u04> a prov:Entity ;
+    rdfs:label "Eu 04" .
+    
+<http://test.com/entity/u05> a prov:Entity ;
+    rdfs:label "Eu 05" .
+    
+<http://test.com/entity/u06> a prov:Entity ;
+    rdfs:label "Eu 06" .
+
+<http://test.com/entity/u07-ur> a prov:Entity ;
+    rdfs:label "Eu 07 Unrelated" .
+
+
+# peers
+<http://test.com/entity/p01> a prov:Entity ;
+    rdfs:label "Ed 01" .
+
+
+# downstream entities
+<http://test.com/entity/d01> a prov:Entity ;
+    rdfs:label "Ed 01" .
+
+<http://test.com/entity/d02> a prov:Entity ;
+    rdfs:label "Ed 02" .
+
+<http://test.com/entity/d03> a prov:Entity ;
+    rdfs:label "Ed 03" .
+
+<http://test.com/entity/d04> a prov:Entity ;
+    rdfs:label "Ed 04" .
+
+<http://test.com/entity/d05> a prov:Entity ;
+    rdfs:label "Ed 05" .
+
+<http://test.com/entity/d06> a prov:Entity ;
+    rdfs:label "Ed 06" .
+
+<http://test.com/entity/d07-ur> a prov:Entity ;
+    rdfs:label "E 07 Un" .
+
+<http://test.com/entity/d08-ur> a prov:Entity ;
+    rdfs:label "E 08 Un" .
+
+<http://test.com/entity/d09-ur> a prov:Entity ;
+    rdfs:label "E 09 Un" .
+
+
+# Activities
+<http://test.com/activity/au01> a prov:Activity ;
+    rdfs:label "Au 01" ;
+    prov:used <http://test.com/entity/u01> , <http://test.com/entity/u02> ;
+    prov:generated <http://test.com/entity/target> , <http://test.com/entity/u03> .
+
+<http://test.com/activity/au02> a prov:Activity ;
+    rdfs:label "Au 02" ;
+    prov:used <http://test.com/entity/u04> , <http://test.com/entity/u05> ;
+    prov:generated <http://test.com/entity/u02> .
+
+<http://test.com/activity/au03> a prov:Activity ;
+    rdfs:label "Au 03" ;
+    prov:used <http://test.com/entity/u06> , <http://test.com/entity/u07> ;
+    prov:generated <http://test.com/entity/u05> .
+
+<http://test.com/activity/au04> a prov:Activity ;
+    rdfs:label "Au 04" ;
+    prov:used <http://test.com/entity/u04> .
+
+<http://test.com/activity/ad01> a prov:Activity ;
+    rdfs:label "Ad 01" ;
+    prov:used <http://test.com/entity/target> ;
+    prov:generated <http://test.com/entity/d01> , <http://test.com/entity/d02> .
+
+<http://test.com/activity/ad02> a prov:Activity ;
+    rdfs:label "Ad 02" ;
+    prov:used <http://test.com/entity/d01> , <http://test.com/entity/d03> ;
+    prov:generated <http://test.com/entity/d04> , <http://test.com/entity/d05> .
+
+<http://test.com/activity/ad03> a prov:Activity ;
+    rdfs:label "Ad 03" ;
+    prov:used <http://test.com/entity/d05> ;
+    prov:generated <http://test.com/entity/d07> .
+
+<http://test.com/activity/related> a prov:Activity ;
+    rdfs:label "Ad 04" ;
+    prov:used <http://test.com/entity/d04> , <http://test.com/entity/d06> ;
+    prov:generated <http://test.com/entity/d05> .
+
+<http://test.com/activity/aur01> a prov:Activity ;
+    rdfs:label "A 01 un" ;
+    prov:used  <http://test.com/entity/d07-ur> . <http://test.com/entity/d08-ur> ;
+    prov:generated <http://test.com/entity/d09-ur> .

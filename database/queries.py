@@ -25,7 +25,7 @@ def query_turtle(sparql_query):
     headers = {'Accept': 'text/turtle'}
     r = requests.post(settings.SPARQL_QUERY_URI, data=data, auth=auth, headers=headers, timeout=1)
     try:
-        return r.text
+        return r.content
     except Exception as e:
         raise
 
