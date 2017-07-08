@@ -22,7 +22,12 @@ PROMS Server consists of an HTTP API coded in Python 3.6 using the Flask framewo
 See the [installation](installation/README.md) documents.
 
 ### Use
-*Coming!*
+PROMS Server expects to receive provenance *Reports* that are files containing bundles of provenance information in an RDF format. *Reports* are sent via HTTP POST requests to the PROMS Server's API, validated and then stored in its triplestore.
+
+![PROMS and toolkits](docs/PromsAndToolkits.png) 
+*Figure 2: Sending a Report to PROMS Server from a Python workflow via pyproms*
+
+Figure 2 shows PROMS Server receiving a provenance report from a Python workflow or set of scripts that is using the [pyproms](https://pypi.python.org/pypi/pyproms) Python package to log internal elements of the script into PROV-O compatible RDF. There are similar toolkits avialable for Java, JavaScript and .NET programming languages (see [promsns.org min page](http://promsns.org/)) or you could custom-code your own provenance logging.
 
 
 ## Contributing
