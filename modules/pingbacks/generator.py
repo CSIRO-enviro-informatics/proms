@@ -164,11 +164,11 @@ class ProvAqPingback:
             raise PingbackSentError('status_code: %s, message: %s' % (r.status_code, r.content))
 
     def send_dummy(self, pingback_target_uri):
-        print 'dummy sending PROV-AQ to %s' % pingback_target_uri
-        print '----------------------------------------'
-        print self.pingback_msg['headers']
-        print self.pingback_msg['body']
-        print '----------------------------------------'
+        print('dummy sending PROV-AQ to %s' % pingback_target_uri)
+        print('----------------------------------------')
+        print(self.pingback_msg['headers'])
+        print(self.pingback_msg['body'])
+        print('----------------------------------------')
 
 
 #
@@ -189,7 +189,7 @@ class PromsPingback:
             'instance_endpoint': self.instance_endpoint,
             'entity_uri_encoded': urllib.quote_plus(self.entity_uri)
         }
-        print query_uri
+        print(query_uri)
         r = requests.get(query_uri)
         if r.status_code == 200:
             return {
@@ -219,12 +219,12 @@ class PromsPingback:
                 return [True, r.content]
             else:
                 return [False, r.content]
-        except Exception, e:
+        except Exception as e:
             return [False, e.message]
 
     def send_dummy(self, pingback_target_uri):
-        print 'dummy sending PROMS to %s' % pingback_target_uri
-        print '----------------------------------------'
-        print self.pingback_msg['headers']
-        print self.pingback_msg['body']
-        print '----------------------------------------'
+        print('dummy sending PROMS to %s' % pingback_target_uri)
+        print('----------------------------------------')
+        print(self.pingback_msg['headers'])
+        print(self.pingback_msg['body'])
+        print('----------------------------------------')

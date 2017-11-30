@@ -5,9 +5,7 @@ import urllib
 import model
 from flask import Blueprint, request, render_template, url_for
 from requests.exceptions import ConnectionError
-import api_functions
 import database
-import objects_functions
 from routes.api_functions import client_error_response
 from modules.ldapi import LDAPI, LdapiParameterError
 from rdflib import Graph
@@ -46,7 +44,7 @@ def register():
             request.args.get('_format'),
             views_formats
         )
-    except LdapiParameterError, e:
+    except LdapiParameterError as e:
         return client_error_response(e)
 
     # if alternates model, return this info from file
@@ -150,7 +148,7 @@ def instance():
                         endpoints
                     ).render(view, mime_format)
 
-            except LdapiParameterError, e:
+            except LdapiParameterError as e:
                 return client_error_response(e)
 
 

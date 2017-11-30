@@ -1,4 +1,4 @@
-import cStringIO
+import io
 import json
 import urllib
 from flask import Response, render_template
@@ -36,7 +36,7 @@ def get_sparql_service_description(rdf_format='turtle'):
             ]
         .
     ''' % {'BASE_URI': settings.BASE_URI}
-    g = Graph().parse(cStringIO.StringIO(sd_ttl), format='turtle')
+    g = Graph().parse(io.StringIO(sd_ttl), format='turtle')
     rdf_formats = list(set([x[1] for x in LDAPI.MIMETYPES_PARSERS]))
     if rdf_format[0][1] in rdf_formats:
         return g.serialize(format=rdf_format[0][1])

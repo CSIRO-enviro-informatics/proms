@@ -3,7 +3,8 @@ import logging
 import subprocess
 
 # the version of this PROMS instance is taken from the latest tag of the Git repo
-VERSION = subprocess.check_output(["git", "describe"]).split('-')[0].replace('v', '')
+cwd = os.path.dirname(os.path.realpath(__file__))
+VERSION = subprocess.check_output(["git", "describe"], cwd=cwd).decode('utf-8').split('-')[0].replace('v', '')
 
 #
 #   Basic settings
@@ -81,9 +82,9 @@ DEBUG = True
 #   SPARQL_SECURE_QUERY_URI = 'http://localhost/fuseki/data/query'
 #
 #   as Apache server is hiding port 3030 from access by proxying to it.
-SPARQL_QUERY_URI = 'http://localhost:3030/tdb/query'
-SPARQL_UPDATE_URI = 'http://localhost:3030/tdb/update'
-SPARQL_AUTH_USR = ''  # Ensure this matches any triplestore proxying settings (install-apache.sh)
-SPARQL_AUTH_PWD = ''  # Ensure this matches any triplestore proxying settings (install-apache.sh)
+SPARQL_QUERY_URI = 'http://proms.promsns.org/fuseki/proms/query'
+SPARQL_UPDATE_URI = 'http://proms.promsns.org/fuseki/proms/update'
+SPARQL_AUTH_USR = 'fuseki'  # Ensure this matches any triplestore proxying settings (install-apache.sh)
+SPARQL_AUTH_PWD = 'provenator'  # Ensure this matches any triplestore proxying settings (install-apache.sh)
 SPARQL_TIMEOUT = 5  # Request Timeout in seconds
 

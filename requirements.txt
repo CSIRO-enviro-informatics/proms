@@ -1,0 +1,4 @@
+flask
+rdflib
+requests
+lxml

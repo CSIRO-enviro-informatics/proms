@@ -151,7 +151,7 @@ def validate(filename):
     result = checkTypeConstraints(g) is None and checkKeyConstraints(g) is None and checkCycle(
         g) is None and checkUniqueness(
         g) is None and checkImpossibility(g) is None
-    print filename + ' ' + str(result)
+    print(filename + ' ' + str(result))
     if result:
         return 'PASS'
     else:
@@ -171,8 +171,8 @@ def testCycleDetection():
     '''
     g = rdflib.Graph()
     processUpdate(g, qMakeCycle)
-    print g.serialize(format='turtle')
-    print checkCycle(g)
+    print(g.serialize(format='turtle'))
+    print(checkCycle(g))
 
 
 def testAllConstraints(dirs):
@@ -184,10 +184,10 @@ def testAllConstraints(dirs):
             numberoftestcases = numberoftestcases + 1
             res = validate(dirs + f)
             if not (res in f):
-                print "Not correct"
+                print("Not correct")
                 notcorrect = notcorrect + 1
 
-    print '(' + str(numberoftestcases - notcorrect) + '/' + str(numberoftestcases) + ')'
+    print('(' + str(numberoftestcases - notcorrect) + '/' + str(numberoftestcases) + ')')
 
 
 # testCycleDetection()

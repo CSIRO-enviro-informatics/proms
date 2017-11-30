@@ -1,11 +1,6 @@
 import json
 from flask import Blueprint, Response, request, render_template, url_for
 from requests.exceptions import ConnectionError
-import api_functions
-import class_agents
-import class_pingbacks
-import class_reportingsystems
-import class_reports
 import routes.api_functions
 from database import queries
 from modules.ldapi import LDAPI
@@ -250,7 +245,7 @@ def sparql():
         # sorry, we only return JSON results. See the service description!
         try:
             query_result = queries.query(query)
-        except ValueError, e:
+        except ValueError as e:
             return render_template(
                 'function_sparql.html',
                 query=query,

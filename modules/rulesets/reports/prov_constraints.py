@@ -1,7 +1,7 @@
 from ..ruleset import RuleSet
 from ..rule import Rule
 
-import prov_constraints_functions
+from .prov_constraints_functions import *
 
 
 class ProvConstraints(RuleSet):

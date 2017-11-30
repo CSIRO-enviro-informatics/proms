@@ -1,6 +1,6 @@
 from database import queries
 from modules.rulesets import RuleSet, Rule
-from prov_constraints import ProvConstraints
+from .prov_constraints import ProvConstraints
 
 
 class PromsReport(RuleSet):

@@ -1,5 +1,5 @@
 from modules.rulesets import RuleSet
-from report import PromsReport
+from .report import PromsReport
 
 
 class BasicReport(RuleSet):

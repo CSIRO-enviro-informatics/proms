@@ -1,5 +1,5 @@
 import datetime
-from rule import Rule
+from .rule import Rule
 
 
 class RuleSet:

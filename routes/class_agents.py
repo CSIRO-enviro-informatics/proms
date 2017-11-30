@@ -1,5 +1,5 @@
 from class_incoming import IncomingClass
-import cStringIO
+import io
 import uuid
 from rdflib import Graph
 import api_functions
@@ -16,10 +16,10 @@ class IncomingAgent(IncomingClass):
         # try to parse the Agent data
         try:
             self.graph = Graph().parse(
-                cStringIO.StringIO(self.data),
+                io.StringIO(self.data),
                 format=[item[1] for item in LDAPI.MIMETYPES_PARSERS if item[0] == self.mimetype][0]
             )
-        except Exception, e:
+        except Exception as e:
             self.error_messages = ['The serialised data cannot be parsed. Is it valid RDF?',
                                    'Parser says: ' + e.message]
             return False

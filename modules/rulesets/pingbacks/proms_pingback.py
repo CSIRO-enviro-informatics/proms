@@ -1,4 +1,4 @@
-import StringIO
+import io
 import rdflib
 from modules.rulesets import RuleSet, Rule
 from ..reports.prov_constraints import ProvConstraints
@@ -17,7 +17,7 @@ class PromsPingback(RuleSet):
         else:  # 'text/turtle'
             parser_format = 'turtle'
 
-        g = rdflib.Graph().parse(StringIO.StringIO(request.data), format=parser_format)
+        g = rdflib.Graph().parse(io.StringIO(request.data), format=parser_format)
 
         rules = []
         # r1, as per http://promsns.org/pingbacks/validator/about, is PROV-O compliance

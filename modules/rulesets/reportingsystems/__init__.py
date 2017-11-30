@@ -1,1 +1,1 @@
-from reportingsystems import ReportingSytems
+from .reportingsystems import ReportingSytems

@@ -5,7 +5,7 @@ import os
 from flask import Blueprint, render_template, send_from_directory, request, Response
 import settings
 from requests.exceptions import ConnectionError
-import pages_functions
+from routes import pages_functions
 pages = Blueprint('pages', __name__)
 
 

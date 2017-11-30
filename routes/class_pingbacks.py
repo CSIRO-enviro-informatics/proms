@@ -1,10 +1,8 @@
-from class_incoming import IncomingClass
-import cStringIO
+from .class_incoming import IncomingClass
 import uuid
 from rdflib import Graph, URIRef, Literal, Namespace, RDF, XSD
 from modules.rulesets.pingbacks import PromsPingback, ProvPingback
 import settings
-from database import queries
 from modules.ldapi import LDAPI
 from datetime import datetime
 
@@ -24,7 +22,7 @@ class IncomingPingback(IncomingClass):
         """Validates an incoming Pingback using direct tests using the Pingbacks RuleSet"""
         # PROV Pingbacks can only be of mimtype text/uri-list
         if self.request.mimetype == 'text/uri-list':
-            print self.request.headers
+            print(self.request.headers)
             conformant_pingback = ProvPingback(self.request)
 
             # ensure that this Pingback has the URI(s) of the Resource(s) it is for

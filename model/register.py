@@ -1,4 +1,4 @@
-from renderer import Renderer
+from .renderer import Renderer
 from flask import Response, render_template
 from rdflib import Graph, URIRef, RDF, RDFS, XSD, Namespace, Literal
 from modules.ldapi import LDAPI

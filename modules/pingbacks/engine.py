@@ -1,7 +1,7 @@
 import os
 import json
 from datetime import datetime
-from status_recorder import StatusRecorder
+from .status_recorder import StatusRecorder
 import strategy_functions
 import generator
 
@@ -239,13 +239,13 @@ class Engine:
             proms.send_dummy(pingback_endpoint)
 
     def _try_strategy_given_provenance(self, candidate):
-        print 'trying _try_strategy_given_provenance'
+        print('trying _try_strategy_given_provenance')
 
     def _try_strategy_known_stores(self, candidate):
-        print 'trying _try_strategy_known_stores'
+        print('trying _try_strategy_known_stores')
 
     def _try_strategy_pingback_lookup(self, candidate):
-        print 'trying _try_strategy_pingback_lookup'
+        print('trying _try_strategy_pingback_lookup')
 
     def _try_strategy_provenance_lookup(self, candidate):
-        print 'trying _try_strategy_provenance_lookup'
+        print('trying _try_strategy_provenance_lookup')

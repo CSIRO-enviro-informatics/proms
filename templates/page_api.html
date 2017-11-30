@@ -15,7 +15,7 @@
             <td>Accesses a single object from the provenance database</td>
             <td>
                 <p><a href="{{ url_for('modelx.instance') }}?_uri=">{{ url_for('modelx.instance') }}?_uri={uri}</a></p>
-                uri <em>(mandatory)</em>: the URI of an object in the provenance database, URL encoded
+                <p>uri <em>(mandatory)</em>: the URI of an object in the provenance database, URL encoded</p>
             </td>
         </tr>
         <tr>
@@ -23,7 +23,7 @@
             <td>Accesses a register of a single class of object from the provenance database</td>
             <td>
                 <p><a href="{{ url_for('modelx.register') }}?_uri=">{{ url_for('modelx.register') }}?_uri={uri}</a></p>
-                uri <em>(mandatory)</em>: the URI of a class of object in the provenance database, URL encoded
+                <p>uri <em>(mandatory)</em>: the URI of a class of object in the provenance database, URL encoded</p>
             </td>
         </tr>
         <tr>
@@ -31,7 +31,7 @@
             <td>Accesses a register of a single one class of object from the provenance database using the class name, not the full URI of the class</td>
             <td>
                 <p><a href="{{ url_for('modelx.register') }}">{{ url_for('modelx.register') }}/{class_name}/</a></p>
-                class_names available are:
+                <p>class_names available are:</p>
                 <ul>
                     <li>Activity</li>
                     <li>Agent</li>
@@ -69,7 +69,7 @@
             <td>POST a Report to this PROMS Server instance</td>
             <td>
                 <p><a href="{{ url_for('api.lodge_report') }}">{{ url_for('api.lodge_report') }}</a></p>
-                Must be an <a href="https://en.wikipedia.org/wiki/POST_(HTTP)">HTTP POST</a> request containing a <a href="https://confluence.csiro.au/display/PROMS/Getting+information+into+PROMS+Server">valid PROMS Report</a> for a <a href="https://confluence.csiro.au/display/PROMS/Getting+information+into+PROMS+Server">registered ReportingSystem</a> in one of the following RDF mimetypes: 'text/turtle', 'application/rdf+xml', 'application/rdf+json', 'application/json', 'text/ntriples', 'text/nt', 'text/n3'
+                <p>Must be an <a href="https://en.wikipedia.org/wiki/POST_(HTTP)">HTTP POST</a> request containing a <a href="https://confluence.csiro.au/display/PROMS/Getting+information+into+PROMS+Server">valid PROMS Report</a> for a <a href="https://confluence.csiro.au/display/PROMS/Getting+information+into+PROMS+Server">registered ReportingSystem</a> in one of the following RDF mimetypes: 'text/turtle', 'application/rdf+xml', 'application/rdf+json', 'application/json', 'text/ntriples', 'text/nt', 'text/n3'</p>
             </td>
         </tr>
         <tr>

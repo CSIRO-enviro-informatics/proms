@@ -510,15 +510,15 @@ def test_entity_08():
         data=_get_related_activity_generated(g, target_entity_uri).serialize(format='turtle'),
         format='turtle')
     g_up = _get_upstream_activities(g, target_entity_uri)
-    print g_up.serialize(format='turtle')
+    print(g_up.serialize(format='turtle'))
     g_pruned += g_up
     g_pruned += _get_downstream_activities(g, target_entity_uri)
 
     for (s, p, o) in sorted(g_static):
-        print '{:35s} {:50s} {:40s}'.format(str(s), str(p), str(o))
-    print '--------------------'
+        print('{:35s} {:50s} {:40s}'.format(str(s), str(p), str(o)))
+    print('--------------------')
     for (s, p, o) in sorted(g_pruned):
-        print '{:35s} {:50s} {:40s}'.format(str(s), str(p), str(o))
+        print('{:35s} {:50s} {:40s}'.format(str(s), str(p), str(o)))
     exit()
 
     assert rdflib.compare.isomorphic(g_pruned, g_static)
@@ -575,7 +575,7 @@ if __name__ == '__main__':
     # test_entity_06()
     # print 'Test 07'
     # test_entity_07()
-    print 'Test 08'
+    print('Test 08')
     test_entity_08()
     # print 'Test 09'
     # test_entity_09()

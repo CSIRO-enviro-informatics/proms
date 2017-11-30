@@ -1,5 +1,5 @@
-from class_incoming import IncomingClass
-import cStringIO
+from .class_incoming import IncomingClass
+import io
 import uuid
 from rdflib import Graph, Namespace, URIRef, Literal, RDF, XSD
 import api_functions
@@ -21,10 +21,10 @@ class IncomingReport(IncomingClass):
         # try to parse the Report data
         try:
             self.graph = Graph().parse(
-                cStringIO.StringIO(self.request.data),
+                io.StringIO(self.request.data),
                 format=[item[1] for item in LDAPI.MIMETYPES_PARSERS if item[0] == self.request.mimetype][0]
             )
-        except Exception, e:
+        except Exception as e:
             self.error_messages = ['The serialised data cannot be parsed. Is it valid RDF?',
                                    'Parser says: ' + e.message]
             return False

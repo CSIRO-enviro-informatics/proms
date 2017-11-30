@@ -1,11 +1,12 @@
 import settings
 from rdflib import URIRef
+import engine
 
 
 # Strategy 1: Given Pingback
 def try_strategy_1(g, excluded_entities=[]):
     # Get the URIs of the Entities for pingbacks
-    entities = cs_functions.get_candidates(g)
+    entities = engine.get_candidates(g)
 
     # remove those Entities specifically excluded (as a result of other strategies)
     for entity in excluded_entities:
@@ -33,7 +34,7 @@ def try_strategy_1(g, excluded_entities=[]):
     for entity in entities_with_pingback_uris:
         pingback_uri = entity['pingback_endpoint']
         entity_uri = [entity['entity']]
-        result = send_pingback(pingback_uri, entity_uri, further_links=[])
+        result = engine.send_pingback(pingback_uri, entity_uri, further_links=[])
         if result[0]:
             successful_pingbacks.append(entity_uri)
 
@@ -47,7 +48,7 @@ def try_strategy_1(g, excluded_entities=[]):
 # Strategy 2: Given Provenance
 def try_strategy_2(g, excluded_entities=[]):
     # Get the URIs of the Entities for pingbacks
-    entities = cs_functions.get_candidates(g)
+    entities = engine.get_candidates(g)
 
     # remove those Entities specifically excluded (as a result of other strategies)
     for entity in excluded_entities:
@@ -94,7 +95,7 @@ def try_strategy_2(g, excluded_entities=[]):
 # Strategy 3: Known Provenance Stores
 def try_strategy_3(g, excluded_entities=[]):
     # Get the URIs of the Entities for pingbacks
-    entities = cs_functions.get_candidates(g)
+    entities = engine.get_candidates(g)
 
     # remove those Entities specifically excluded (as a result of other strategies)
     for entity in excluded_entities:
@@ -133,7 +134,7 @@ def try_strategy_3(g, excluded_entities=[]):
 # Strategy 4: Pingback Lookup
 def try_strategy_4(g, excluded_entities=[]):
     # Get the URIs of the Entities for pingbacks
-    entities = cs_functions.get_candidates(g)
+    entities = engine.get_candidates(g)
 
     # remove those Entities specifically excluded (as a result of other strategies)
     for entity in excluded_entities:
@@ -144,7 +145,7 @@ def try_strategy_4(g, excluded_entities=[]):
     for entity in entities:
         """
         # look for an RDF description of the Entity
-        rdf = cs_functions.get_entity_rdf(entity)
+        rdf = engine.get_entity_rdf(entity)
         if rdf[0]:
             print entity
             print rdf[1]
@@ -164,7 +165,7 @@ def try_strategy_4(g, excluded_entities=[]):
         entity_uri = [entity['entity']]
         pingback_uris = entity['pingback_endpoints']
         for pingback_uri in pingback_uris:
-            result = send_pingback(pingback_uri, entity_uri, further_links=[])
+            result = engine.send_pingback(pingback_uri, entity_uri, further_links=[])
             if result[0]:
                 successful_pingbacks.append(entity_uri)
 
@@ -178,7 +179,7 @@ def try_strategy_4(g, excluded_entities=[]):
 # Endpoint Lookup Discovery
 def try_strategy_5(g, excluded_entities=[]):
     # Get the URIs of the Entities for pingbacks
-    entities = cs_functions.get_candidates(g)
+    entities = engine.get_candidates(g)
 
     # remove those Entities specifically excluded (as a result of other strategies)
     for entity in excluded_entities:
@@ -198,7 +199,7 @@ def try_strategy_5(g, excluded_entities=[]):
         pingback_uris = entity['pingback_endpoints']
         entity_uri = [entity['entity']]
         for pingback_uri in pingback_uris:
-            result = send_pingback(pingback_uri, entity_uri, further_links=[])
+            result = engine.send_pingback(pingback_uri, entity_uri, further_links=[])
             if result[0]:
                 if entity_uri not in successful_pingbacks:
                     successful_pingbacks.append(entity_uri)
@@ -214,7 +215,7 @@ def try_strategy_5(g, excluded_entities=[]):
 # not described in paper yet
 def try_strategy_6(g, excluded_entities=[]):
     # Get the URIs of the Entities for pingbacks
-    entities = cs_functions.get_candidates(g)
+    entities = engine.get_candidates(g)
 
     # remove those Entities specifically excluded (as a result of other strategies)
     for entity in excluded_entities:
@@ -225,7 +226,7 @@ def try_strategy_6(g, excluded_entities=[]):
 # not described in paper yet
 def try_strategy_7(g, excluded_entities=[]):
     # Get the URIs of the Entities for pingbacks
-    entities = cs_functions.get_candidates(g)
+    entities = engine.get_candidates(g)
 
     # remove those Entities specifically excluded (as a result of other strategies)
     for entity in excluded_entities:
@@ -297,7 +298,7 @@ def has_valid_rdf_meatadata(rdf_metadata, content_type_header):
         try:
             g = Graph().parse(data=rdf_metadata, format=format)
             return [True, g]
-        except Exception, e:
+        except Exception as e:
             return [False, 'RDF format ' + format + ' indicated in header but unable to parse RDF data to graph. Error: ' + e.message]
 
 
@@ -522,8 +523,8 @@ def send_provaq_pingback(pingback_target_uri, uri_list=None, further_links=None)
             return [True]
         else:
             return [False, r.content]
-    except Exception, e:
-        print e.message
+    except Exception as e:
+        print(e.message)
         return [False, e.message]
 
 
@@ -548,8 +549,8 @@ def send_proms_pingback(pingback_target_uri, payload, mimetype='text/turtle'):
             return [True, r.content]
         else:
             return [False, r.content]
-    except Exception, e:
-        print e.message
+    except Exception as e:
+        print(e.message)
         return [False, e.message]
 
 
@@ -582,7 +583,7 @@ def generate_proms_msg_from_report(report_graph, entities_uris, pingback_target_
 
         return report_graph.serialize(format='turtle')
     else:  # Internal
-        print 'Internal'
+        print('Internal')
 
 
 class PingbackFormulationError(Exception):

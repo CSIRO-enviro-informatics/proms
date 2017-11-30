@@ -1,4 +1,4 @@
-from renderer import Renderer
+from .renderer import Renderer
 from flask import Response, render_template
 import urllib
 import database
