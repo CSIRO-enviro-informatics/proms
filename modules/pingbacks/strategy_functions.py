@@ -1,6 +1,6 @@
-import settings
+import _config as conf
 from rdflib import URIRef
-import engine
+import modules.pingbacks.engine as engine
 
 
 # Strategy 1: Given Pingback
@@ -108,15 +108,15 @@ def try_strategy_3(g, excluded_entities=[]):
             {
                 'resource': entity,
                 'rel': 'has_query_service',
-                'anchor': settings.PROMS_INSTANCE_NAMESPACE_URI + '/function/sparql'
+                'anchor': conf.PROMS_INSTANCE_NAMESPACE_URI + '/function/sparql'
             },
             {
                 'resource': entity,
                 'rel': 'has_provenance',
-                'anchor': settings.ENTITY_BASE_URI + '/?uri=' + entity
+                'anchor': conf.ENTITY_BASE_URI + '/?uri=' + entity
             }
         ]
-        for known_store_pingback_endpoints in settings.KNOWN_PROVENANCE_STORE_PINGBACK_ENDPOINTS:
+        for known_store_pingback_endpoints in conf.KNOWN_PROVENANCE_STORE_PINGBACK_ENDPOINTS:
             if known_store_pingback_endpoints != '':
                 #result = send_provaq_pingback(known_store_pingback_endpoints, None, further_links)
                 proms_pingback_msg = generate_proms_msg_from_report(g, entities, known_store_pingback_endpoints)
@@ -587,6 +587,6 @@ def generate_proms_msg_from_report(report_graph, entities_uris, pingback_target_
 
 
 class PingbackFormulationError(Exception):
-    def __init__(self, *args):
+    def conf(self, *args):
         # *args is used to get a list of the parameters passed in
         self.args = [a for a in args]

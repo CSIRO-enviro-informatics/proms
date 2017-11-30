@@ -1,10 +1,11 @@
 import logging
+import _config as conf
 from flask import Flask
-import settings
-from routes import objects, pages, api
+from _config import __init__
+from controller import objects, pages, api
 # from secure.api import api -- not implemented yet
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=conf.TEMPLATES_DIR, static_folder=conf.STATIC_DIR)
 
 # regex paths
 app.url_map.strict_slashes = True
@@ -17,8 +18,8 @@ app.register_blueprint(objects.modelx)
 # run the app
 if __name__ == '__main__':
     logging.basicConfig(
-        filename=settings.LOGFILE,
-        level=settings.LOG_LEVEL,
+        filename=conf.LOGFILE,
+        level=conf.LOG_LEVEL,
         datefmt='%Y-%m-%d %H:%M:%S',
         format='%(asctime)s %(levelname)s %(filename)s:%(lineno)s %(message)s'
     )
@@ -34,5 +35,5 @@ if __name__ == '__main__':
 
     app.run(
         threaded=True,
-        debug=settings.DEBUG
+        debug=conf.DEBUG
     )

@@ -1,5 +1,4 @@
-from flask import Response, render_template
-import settings
+from flask import Response
 
 
 # TODO: add in a resumption token equiv (start, length, index property) just like OAI-PMH & CSW& GitHub (Link headers)
@@ -61,7 +60,7 @@ class LDAPI:
     @staticmethod
     def an_int(s):
         """
-        Safely (no Error throw) tests to see whether a string can be itnerpreted as an int
+        Safely (no Error throw) _tests to see whether a string can be itnerpreted as an int
 
         :param s: string
         :return: boolean
@@ -83,12 +82,12 @@ class LDAPI:
         :return: model name (string) or False
         """
         if view is not None:
-            if view in views_formats.iterkeys():
+            if view in views_formats.keys():
                 return view
             else:
                 raise LdapiParameterError(
                     'The _view parameter is invalid. For this object, it must be one of {0}.'
-                    .format(', '.join(views_formats.iterkeys()))
+                    .format(', '.join(views_formats.keys()))
                 )
         else:
             # views_formats will give us the default model

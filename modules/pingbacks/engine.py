@@ -147,7 +147,7 @@ class Engine:
         dir_path = os.path.dirname(os.path.realpath(__file__))
         strategies = json.load(open(os.path.join(dir_path, 'strategies-config.json')))
 
-        return list({str(k) for k, v in strategies.iteritems() if v['enabled']})
+        return list({str(k) for k, v in strategies.items() if v['enabled']})
 
     def do_pingbacks(self):
         total_count = 0

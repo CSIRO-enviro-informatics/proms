@@ -1,7 +1,7 @@
 from .renderer import Renderer
 from flask import Response, render_template
 import urllib
-import database
+import _database
 from modules.ldapi import LDAPI
 from rdflib import Graph, URIRef, Literal, Namespace
 
@@ -45,7 +45,7 @@ class ActivityRenderer(Renderer):
          ''' % {'uri': self.uri}
         g = Graph()
         g.bind('prov', Namespace('http://www.w3.org/ns/prov#'))
-        for r in database.query(query)['results']['bindings']:
+        for r in _database.query(query)['results']['bindings']:
             if r['o']['type'] == 'literal':
                 g.add((URIRef(self.uri), URIRef(r['p']['value']), Literal(r['o']['value'])))
             else:
@@ -56,7 +56,7 @@ class ActivityRenderer(Renderer):
                     ?s ?p <%(uri)s> .
                  }
          ''' % {'uri': self.uri}
-        for r in database.query(query2)['results']['bindings']:
+        for r in _database.query(query2)['results']['bindings']:
             g.add((URIRef(r['s']['value']), URIRef(r['p']['value']), URIRef(self.uri)))
 
         return Response(
@@ -93,7 +93,7 @@ class ActivityRenderer(Renderer):
          ''' % {'uri': self.uri}
         g = Graph()
         g.bind('prov', Namespace('http://www.w3.org/ns/prov#'))
-        for r in database.query(query)['results']['bindings']:
+        for r in _database.query(query)['results']['bindings']:
             if r['o']['type'] == 'literal':
                 g.add((URIRef(self.uri), URIRef(r['p']['value']), Literal(r['o']['value'])))
             else:
@@ -104,7 +104,7 @@ class ActivityRenderer(Renderer):
                     ?s ?p <%(uri)s> .
                  }
          ''' % {'uri': self.uri}
-        for r in database.query(query2)['results']['bindings']:
+        for r in _database.query(query2)['results']['bindings']:
             g.add((URIRef(r['s']['value']), URIRef(r['p']['value']), URIRef(self.uri)))
 
         return g
@@ -153,7 +153,7 @@ class ActivityRenderer(Renderer):
         ''' % {'uri': self.uri}
 
         # run the query
-        activity_details = database.query(query)
+        activity_details = _database.query(query)
 
         # extract results into instance vars
         if activity_details and 'results' in activity_details:
@@ -209,7 +209,7 @@ class ActivityRenderer(Renderer):
                     }
                 }
             ''' % {'uri': self.uri}
-        activity_results = database.query(query)
+        activity_results = _database.query(query)
 
         if activity_results and 'results' in activity_results:
             used = activity_results['results']
@@ -297,7 +297,7 @@ class ActivityRenderer(Renderer):
                 }
                 ''' % {'uri': self.uri}
 
-        activity_results = database.query(query)
+        activity_results = _database.query(query)
         if activity_results and 'results' in activity_results:
             gen = activity_results['results']
             if len(gen['bindings']) > 0:
@@ -383,7 +383,7 @@ class ActivityRenderer(Renderer):
                     }
                 }
                 ''' % {'uri': self.uri}
-        activity_results = database.query(query)
+        activity_results = _database.query(query)
 
         if activity_results and 'results' in activity_results:
             wif = activity_results['results']

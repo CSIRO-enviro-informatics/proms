@@ -2,7 +2,7 @@ from .renderer import Renderer
 from flask import Response, render_template
 from rdflib import Graph, URIRef, Literal, Namespace, RDF, RDFS
 import urllib
-import database
+import _database
 from modules.ldapi import LDAPI
 
 
@@ -51,7 +51,7 @@ class EntityRenderer(Renderer):
          ''' % {'uri': self.uri}
         g = Graph()
         g.bind('prov', Namespace('http://www.w3.org/ns/prov#'))
-        for r in database.query(query)['results']['bindings']:
+        for r in _database.query(query)['results']['bindings']:
             if r['o']['type'] == 'literal':
                 g.add((URIRef(self.uri), URIRef(r['p']['value']), Literal(r['o']['value'])))
             else:
@@ -62,7 +62,7 @@ class EntityRenderer(Renderer):
                     ?s ?p <%(uri)s> .
                  }
          ''' % {'uri': self.uri}
-        for r in database.query(query2)['results']['bindings']:
+        for r in _database.query(query2)['results']['bindings']:
             g.add((URIRef(r['s']['value']), URIRef(r['p']['value']), URIRef(self.uri)))
 
         return Response(
@@ -105,7 +105,7 @@ class EntityRenderer(Renderer):
 
         # retrieve all the triple of each Named Graph containing this entity
         # add them to in-memory graph
-        for row in database.query(q)['results']['bindings']:
+        for row in _database.query(q)['results']['bindings']:
             q2 = '''
                 CONSTRUCT {
                   ?s ?p ?o .
@@ -116,7 +116,7 @@ class EntityRenderer(Renderer):
                     }
                 }
                 ''' % {'g': str(row['g']['value'])}
-            ng = database.query_turtle(q2)
+            ng = _database.query_turtle(q2)
             self.g.parse(data=ng, format='turtle')
 
     def __graph_preconstruct(self):
@@ -273,7 +273,7 @@ class EntityRenderer(Renderer):
         ''' % {'uri': self.uri}
 
         # run the query
-        entity_details = database.query(query)
+        entity_details = _database.query(query)
 
         # extract results into instance vars
         if entity_details and 'results' in entity_details:
@@ -345,7 +345,7 @@ class EntityRenderer(Renderer):
                     }
                 }
                 ''' % {'uri': self.uri}
-        entity_results = database.query(query)
+        entity_results = _database.query(query)
 
         if entity_results and 'results' in entity_results:
             wgb = entity_results['results']['bindings']
@@ -385,7 +385,7 @@ class EntityRenderer(Renderer):
                     }
                 }
                 ''' % {'uri': self.uri}
-        entity_result = database.query(query)
+        entity_result = _database.query(query)
 
         if entity_result and 'results' in entity_result:
             used = entity_result['results']['bindings']
@@ -443,7 +443,7 @@ class EntityRenderer(Renderer):
                     }
                 }
                 ''' % {'uri': self.uri}
-        entity_results = database.query(query)
+        entity_results = _database.query(query)
 
         if entity_results and 'results' in entity_results:
             wdf = entity_results['results']['bindings']

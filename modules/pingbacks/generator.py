@@ -54,7 +54,7 @@ def is_a_uri(uri_candidate):
 
 def serialize_http_message(headers, body):
     msg = ''
-    for k, v in sorted(headers.iteritems()):
+    for k, v in sorted(headers.items()):
         msg += k + ': ' + str(v) + '\n'
     if body:
         msg += '\n'

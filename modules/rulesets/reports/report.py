@@ -1,4 +1,4 @@
-from database import queries
+from _database import queries
 from modules.rulesets import RuleSet, Rule
 from .prov_constraints import ProvConstraints
 
@@ -149,7 +149,7 @@ class HasAnExistingReportingSystem(Rule):
         for r in qres:
             reporting_system_uri = str(r['rs'])
 
-        # check to see if this ReportingSystem already exists in the provenance database
+        # check to see if this ReportingSystem already exists in the provenance _database
         q = '''
             PREFIX proms: <http://promsns.org/def/proms#>
             ASK
@@ -159,13 +159,13 @@ class HasAnExistingReportingSystem(Rule):
         ''' % {'reporting_system_uri': reporting_system_uri}
         if not queries.query(q)['boolean']:
             self.fail_reasons.append('The Report does not refer to an existing ReportingSystem within the '
-                                     'provenance database')
+                                     'provenance _database')
             self.passed = False
 
         Rule.__init__(
             self,
             'Report\'s Reporting System',
-            'Reports can only be lodged for ReportingSystems already in the provenance database',
+            'Reports can only be lodged for ReportingSystems already in the provenance _database',
             'PROMS system',
             self.passed,
             self.fail_reasons,

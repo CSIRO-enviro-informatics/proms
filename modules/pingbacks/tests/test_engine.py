@@ -1,12 +1,12 @@
 from modules.pingbacks.engine import Engine
 from rdflib import Graph
 import os
-import settings
+import _config as conf
 
 
 def test_entity_selection():
     g = Graph().parse(
-        source=os.path.join(settings.HOME_DIR, 'modules', 'pingbacks', 'tests', 'test_proms_report_internal.ttl'),
+        source=os.path.join(__init__.APP_DIR, 'modules', 'pingbacks', '_tests', 'test_proms_report_internal.ttl'),
         format='turtle'
     )
 
@@ -38,7 +38,7 @@ def test_get_strategies_enabled():
 
 def test_all():
     g = Graph().parse(
-        source=os.path.join(settings.HOME_DIR, 'modules', 'pingbacks', 'tests', 'test_proms_report_internal.ttl'),
+        source=os.path.join(__init__.APP_DIR, 'modules', 'pingbacks', '_tests', 'test_proms_report_internal.ttl'),
         format='turtle'
     )
 

@@ -51,7 +51,7 @@ class StatusRecorder:
 
         for entity in entities:
             if entity['uri'] == entity_uri:
-                for field in updated_fields.iteritems():
+                for field in updated_fields.items():
                     entity[field[0]] = field[1]
 
         with open(self.status_recorder.get('status_store'), 'w') as f:

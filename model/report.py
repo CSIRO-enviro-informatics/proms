@@ -1,7 +1,7 @@
 from .renderer import Renderer
 from flask import Response, render_template
 import urllib
-import database
+import _database
 from modules.ldapi import LDAPI
 from rdflib import Graph, URIRef, Literal, Namespace
 
@@ -52,7 +52,7 @@ class ReportRenderer(Renderer):
           ''' % {'uri': self.uri}
         g = Graph()
         g.bind('prov', Namespace('http://www.w3.org/ns/prov#'))
-        for r in database.query(query)['results']['bindings']:
+        for r in _database.query(query)['results']['bindings']:
             if r['o']['type'] == 'literal':
                 g.add((URIRef(self.uri), URIRef(r['p']['value']), Literal(r['o']['value'])))
             else:
@@ -63,7 +63,7 @@ class ReportRenderer(Renderer):
                      ?s ?p <%(uri)s> .
                   }
           ''' % {'uri': self.uri}
-        for r in database.query(query2)['results']['bindings']:
+        for r in _database.query(query2)['results']['bindings']:
             g.add((URIRef(r['s']['value']), URIRef(r['p']['value']), URIRef(self.uri)))
 
         return Response(
@@ -103,7 +103,7 @@ class ReportRenderer(Renderer):
          ''' % {'uri': self.uri}
         g = Graph()
         g.bind('prov', Namespace('http://www.w3.org/ns/prov#'))
-        for r in database.query(query)['results']['bindings']:
+        for r in _database.query(query)['results']['bindings']:
             if r['o']['type'] == 'literal':
                 g.add((URIRef(self.uri), URIRef(r['p']['value']), Literal(r['o']['value'])))
             else:
@@ -114,7 +114,7 @@ class ReportRenderer(Renderer):
                     ?s ?p <%(uri)s> .
                  }
          ''' % {'uri': self.uri}
-        for r in database.query(query2)['results']['bindings']:
+        for r in _database.query(query2)['results']['bindings']:
             g.add((URIRef(r['s']['value']), URIRef(r['p']['value']), URIRef(self.uri)))
 
         return g
@@ -176,7 +176,7 @@ class ReportRenderer(Renderer):
         ''' % {'uri': self.uri}
 
         # run the query
-        report_details = database.query(query)
+        report_details = _database.query(query)
 
         # extract results into instance vars
         if report_details and 'results' in report_details:
