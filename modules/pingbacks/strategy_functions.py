@@ -147,8 +147,8 @@ def try_strategy_4(g, excluded_entities=[]):
         # look for an RDF description of the Entity
         rdf = engine.get_entity_rdf(entity)
         if rdf[0]:
-            print entity
-            print rdf[1]
+            print(entity)
+            print(rdf[1])
         else:
             print entity
             print 'failed to get RDF'

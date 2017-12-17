@@ -221,4 +221,4 @@
 #     ]
 #     count = strategies.do_pingbacks(TEST_ENTITIES, TEST_ENTITY_STATUS_STORE, [1])
 #     '''
-#     print "hello"
+#     print("hello")

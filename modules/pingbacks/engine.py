@@ -2,8 +2,8 @@ import os
 import json
 from datetime import datetime
 from .status_recorder import StatusRecorder
-import strategy_functions
-import generator
+import modules.pingbacks.strategy_functions as strategy_functions
+import modules.pingbacks.generator as generator
 
 
 class Engine:
@@ -202,7 +202,7 @@ class Engine:
         #         if pingback_endpoints_var[0]:
         #             status_recorder.update(entity_status_store, candidate, {'pingback_endpoints': pingback_endpoints_var[1]})
         #
-        #         print pingback_endpoints_var
+        #         print(pingback_endpoints_var)
         #     if strategy == 1:
         #         has_provenance_endpoints_var = strategy_functions.get_provenance_query_service_endpoints_via_given(has_rdf_meatadata_var[1], candidate)
         #     if strategy == 2:

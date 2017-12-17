@@ -2,7 +2,7 @@ from .class_incoming import IncomingClass
 import uuid
 from rdflib import Graph, URIRef, Literal, Namespace, RDF, XSD
 from modules.rulesets.pingbacks import PromsPingback, ProvPingback
-from _config import __init__
+import _config as conf
 from modules.ldapi import LDAPI
 from datetime import datetime
 
@@ -59,7 +59,7 @@ class IncomingPingback(IncomingClass):
         pass  # no need for this!
 
     def _generate_named_graph_uri(self):
-        self.named_graph_uri = __init__.PINGBACK_NAMED_GRAPH_BASE_URI + str(uuid.uuid4())
+        self.named_graph_uri = conf.PINGBACK_NAMED_GRAPH_BASE_URI + str(uuid.uuid4())
 
     def convert_pingback_to_rdf(self):
         # the URI of the Named Graph for this Pingback must have been generated before doing this

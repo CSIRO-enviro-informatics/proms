@@ -136,8 +136,8 @@ def check(g, q):
     bindings = g.query(q)
     if len(bindings) > 0:
         # for b in bindings:
-        # print b
-        # print q
+        # print(b)
+        # print(q)
         return False
     else:
         return True
@@ -146,7 +146,7 @@ def check(g, q):
 def validate(filename):
     g = rdflib.Graph()
     g.parse(filename, format='turtle')
-    # print g.serialize(format='turtle')
+    # print(g.serialize(format='turtle'))
 
     result = checkTypeConstraints(g) is None and checkKeyConstraints(g) is None and checkCycle(
         g) is None and checkUniqueness(

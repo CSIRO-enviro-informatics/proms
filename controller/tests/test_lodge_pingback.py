@@ -108,7 +108,7 @@ def test_lodge_proms_pingback_03():
         headers={'Content-Type': 'text/turtle'}
     )
 
-    print r.content
+    print(r.content)
     assert r.status_code != 204
 
 

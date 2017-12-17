@@ -3,7 +3,7 @@ import io
 import uuid
 from rdflib import Graph
 import controller.api_functions as api_functions
-from _config import __init__
+import _config as conf
 from modules.ldapi import LDAPI
 
 
@@ -76,7 +76,7 @@ class IncomingAgent(IncomingClass):
 
     def _generate_new_uri(self, old_uri):
         # ask PROMS Server for a new RS URI
-        new_uri = __init__.AGENT_BASE_URI + str(uuid.uuid4())
+        new_uri = conf.AGENT_BASE_URI + str(uuid.uuid4())
         self.uri = new_uri
         # add that new URI to the in-memory graph
         api_functions.replace_uri(self.graph, old_uri, new_uri)

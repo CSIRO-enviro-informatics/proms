@@ -1,7 +1,6 @@
 import logging
 import _config as conf
 from flask import Flask
-from _config import __init__
 from controller import objects, pages, api
 # from secure.api import api -- not implemented yet
 

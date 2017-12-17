@@ -21,5 +21,5 @@ with open(sys.argv[1], 'rb') as payload:
                       data=d,
                       headers={'Content-Type': 'text/turtle'})
 
-print r.status_code
-print r.content
+print(r.status_code)
+print(r.content)

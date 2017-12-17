@@ -7,6 +7,5 @@ with open('../rulesets/rulesets/reportingsystems/_tests/rs_pass.ttl', 'rb') as p
                       data=payload,
                       headers={'Content-Type': 'text/turtle'})
 
-print r.status_code
-print r.text
-
+print(r.status_code)
+print(r.text)

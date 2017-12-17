@@ -6,7 +6,7 @@ import _config as conf
 
 def test_entity_selection():
     g = Graph().parse(
-        source=os.path.join(__init__.APP_DIR, 'modules', 'pingbacks', '_tests', 'test_proms_report_internal.ttl'),
+        source=os.path.join(conf.APP_DIR, 'modules', 'pingbacks', '_tests', 'test_proms_report_internal.ttl'),
         format='turtle'
     )
 
@@ -30,7 +30,7 @@ def test_entity_selection():
 
 
 def test_get_strategies_enabled():
-    e = Engine(Graph(), 'nothing')
+    e = Engine(Graph(), 'nothing', 'nothing', 'nothing')
     strategies = e.get_strategies_enabled()
 
     assert len(strategies) == 1  # by default, none only enabled strategy
@@ -38,11 +38,12 @@ def test_get_strategies_enabled():
 
 def test_all():
     g = Graph().parse(
-        source=os.path.join(__init__.APP_DIR, 'modules', 'pingbacks', '_tests', 'test_proms_report_internal.ttl'),
+        source=os.path.join(conf.APP_DIR, 'modules', 'pingbacks', '_tests', 'test_proms_report_internal.ttl'),
         format='turtle'
     )
 
     e = Engine(g, 'http://example.com/report', 'http://localhost:9000/instance', 'http://fake-sparql-endpoint.com')
+
 
 if __name__ == "__main__":
     # test_entity_selection()

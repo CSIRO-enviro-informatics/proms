@@ -19,13 +19,13 @@ def db_delete_all_secure():
         if r.status_code != 200 and r.status_code != 201:
             return [False, r.text]
         return [True, r.text]
-    except Exception, e:
-        print e.message
+    except Exception as e:
+        print(e.message)
         return [False, e.message]
 
 
 result = db_delete_all_secure()
 if result[0]:
-    print 'cleared'
+    print('cleared')
 else:
-    print 'ERROR: ' + result[1]
+    print('ERROR: ' + result[1])

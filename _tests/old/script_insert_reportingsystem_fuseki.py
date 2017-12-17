@@ -9,5 +9,5 @@ with open(sys.argv[1], 'rb') as payload:
     )
 
 
-print r.status_code
-print r.content
+print(r.status_code)
+print(r.content)

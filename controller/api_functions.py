@@ -1,9 +1,9 @@
 import io
 import json
-import urllib
+import urllib.parse as urlparse
 from flask import Response, render_template
 from rdflib import Graph, Namespace, Literal, URIRef, RDF, XSD, BNode
-from _config import __init__
+import _config as conf
 from _database import queries
 from modules.ldapi import LDAPI
 
@@ -35,7 +35,7 @@ def get_sparql_service_description(rdf_format='turtle'):
                 ]
             ]
         .
-    ''' % {'BASE_URI': __init__.BASE_URI}
+    ''' % {'BASE_URI': conf.BASE_URI}
     g = Graph().parse(io.StringIO(sd_ttl), format='turtle')
     rdf_formats = list(set([x[1] for x in LDAPI.MIMETYPES_PARSERS]))
     if rdf_format[0][1] in rdf_formats:
@@ -210,7 +210,7 @@ def get_reportingsystems():
     if reportingsystems and 'results' in reportingsystems:
         for reportingsystem in reportingsystems['results']['bindings']:
             ret = {
-                'rs': urllib.quote(str(reportingsystem['rs']['value'])),
+                'rs': urlparse.quote(str(reportingsystem['rs']['value'])),
                 'rs_u': str(reportingsystem['rs']['value'])
             }
             if reportingsystem.get('t'):

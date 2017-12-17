@@ -11,3 +11,5 @@ General things not yet done
 * test logging in prod
 * Order reports by date
 * read: https://code.google.com/archive/p/linked-data-api/wikis/API_Viewing_Resources.wiki
+
+* create a generic, simple, 404 override error message for m2m endpoints, rather than the normal HTML template

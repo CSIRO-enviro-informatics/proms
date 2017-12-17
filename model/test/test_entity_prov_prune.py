@@ -310,10 +310,10 @@ def test_entity_01():
     g_pruned = _get_entity_details(g, 'http://test.com/entity/01')
 
     # for r in sorted(g_static):
-    #     print r
+    #     print(r)
     # print '--------------------'
     # for r in sorted(g_pruned):
-    #     print r
+    #     print(r)
 
     assert rdflib.compare.isomorphic(g_pruned, g_static)
 
@@ -336,10 +336,10 @@ def test_entity_02():
         format='turtle')
 
     # for r in sorted(g_static):
-    #     print r
+    #     print(r)
     # print '--------------------'
     # for r in sorted(g_pruned):
-    #     print r
+    #     print(r)
 
     assert rdflib.compare.isomorphic(g_pruned, g_static)
 
@@ -363,10 +363,10 @@ def test_entity_03():
         format='turtle')
 
     # for r in sorted(g_static):
-    #     print r
+    #     print(r)
     # print '--------------------'
     # for r in sorted(g_pruned):
-    #     print r
+    #     print(r)
     # exit()
 
     assert rdflib.compare.isomorphic(g_pruned, g_static)
@@ -393,10 +393,10 @@ def test_entity_04():
         format='turtle')
 
     # for r in sorted(g_static):
-    #     print r
+    #     print(r)
     # print '--------------------'
     # for r in sorted(g_pruned):
-    #     print r
+    #     print(r)
     # exit()
 
     assert rdflib.compare.isomorphic(g_pruned, g_static)
@@ -426,10 +426,10 @@ def test_entity_05():
         format='turtle')
 
     # for r in sorted(g_static):
-    #     print r
+    #     print(r)
     # print '--------------------'
     # for r in sorted(g_pruned):
-    #     print r
+    #     print(r)
 
     assert rdflib.compare.isomorphic(g_pruned, g_static)
 
@@ -455,10 +455,10 @@ def test_entity_06():
     g_pruned += _get_downstream_activities(g, target_entity_uri)
 
     # for r in sorted(g_static):
-    #     print r
+    #     print(r)
     # print '--------------------'
     # for r in sorted(g_pruned):
-    #     print r
+    #     print(r)
     # exit()
 
     assert rdflib.compare.isomorphic(g_pruned, g_static)
@@ -484,10 +484,10 @@ def test_entity_07():
     g_pruned += _get_downstream_activities(g, target_entity_uri)
 
     # for r in sorted(g_static):
-    #     print r
+    #     print(r)
     # print '--------------------'
     # for r in sorted(g_pruned):
-    #     print r
+    #     print(r)
     # exit()
 
     assert rdflib.compare.isomorphic(g_pruned, g_static)
@@ -534,10 +534,10 @@ def test_entity_09():
     g_pruned += Graph().parse(data=_get_related_activity_generated(g, 'http://test.com/entity/01').serialize(format='turtle'), format='turtle')
 
     # for r in sorted(g_static):
-    #     print r
+    #     print(r)
     # print '--------------------'
     # for r in sorted(g_pruned):
-    #     print r
+    #     print(r)
 
     assert rdflib.compare.isomorphic(g_pruned, g_static)
 
@@ -552,32 +552,32 @@ def test_entity_10():
     g_pruned += Graph().parse(data=_get_related_activity_generated(g, 'http://test.com/entity/01').serialize(format='turtle'), format='turtle')
 
     # for r in sorted(g_static):
-    #     print r
+    #     print(r)
     # print '--------------------'
     # for r in sorted(g_pruned):
-    #     print r
+    #     print(r)
 
     assert rdflib.compare.isomorphic(g_pruned, g_static)
 
 
 if __name__ == '__main__':
-    # print 'Test 01'
+    # print('Test 01')
     # test_entity_01()
-    # print 'Test 02'
+    # print('Test 02')
     # test_entity_02()
-    # print 'Test 03'
+    # print('Test 03')
     # test_entity_03()
-    # print 'Test 04'
+    # print('Test 04')
     # test_entity_04()
-    # print 'Test 05'
+    # print('Test 05')
     # test_entity_05()
-    # print 'Test 06'
+    # print('Test 06')
     # test_entity_06()
-    # print 'Test 07'
+    # print('Test 07')
     # test_entity_07()
     print('Test 08')
     test_entity_08()
-    # print 'Test 09'
+    # print('Test 09')
     # test_entity_09()
-    # print 'Test 10'
+    # print('Test 10')
     # test_entity_10()
