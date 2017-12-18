@@ -1,6 +1,6 @@
 from .renderer import Renderer
 from flask import Response, render_template
-import urllib
+import urllib.parse as uriparse
 import _database
 from modules.ldapi import LDAPI
 from rdflib import Graph, URIRef, Literal, Namespace
@@ -10,7 +10,7 @@ class ActivityRenderer(Renderer):
     def __init__(self, uri, endpoints):
         Renderer.__init__(self, uri, endpoints)
 
-        self.uri_encoded = urllib.quote_plus(uri)
+        self.uri_encoded = uriparse.quote_plus(uri)
         self.label = None
         self.sat = None
         self.eat = None
@@ -164,7 +164,7 @@ class ActivityRenderer(Renderer):
                 self.eat = ret['eat']['value'] if 'eat' in ret else None
                 if 'waw' in ret:
                     self.waw = ret['waw']['value']
-                    self.waw_encoded = urllib.quote_plus(self.waw)
+                    self.waw_encoded = uriparse.quote_plus(self.waw)
                     self.waw_label = ret['waw_label']['value']
 
     def _make_svg_script(self):
@@ -181,7 +181,7 @@ class ActivityRenderer(Renderer):
 
     def _get_waw_svg(self):
         if self.waw is not None:
-            uri_encoded = urllib.quote(self.waw)
+            uri_encoded = uriparse.quote(self.waw)
             label = self.waw_label if self.waw_label is not None else 'uri'
 
             self.script += '''
@@ -218,7 +218,7 @@ class ActivityRenderer(Renderer):
                     label = used['bindings'][0]['label']['value']
                 else:
                     label = 'uri'
-                uri_encoded = urllib.quote(used['bindings'][0]['u']['value'])
+                uri_encoded = uriparse.quote(used['bindings'][0]['u']['value'])
                 script += '''
                     var entityUsed1 = addEntity(105, 250, "%(label)s", "%(instance_endpoint)s?_uri=%(uri_encoded)s");
                     addLink(activity, entityUsed1, "prov:used", TOP);
@@ -232,7 +232,7 @@ class ActivityRenderer(Renderer):
                         u_label = used['bindings'][1]['u_label']['value']
                     else:
                         u_label = 'uri'
-                    uri_encoded = urllib.quote(used['bindings'][1]['u']['value'])
+                    uri_encoded = uriparse.quote(used['bindings'][1]['u']['value'])
 
                     script += '''
                         var entityUsed2 = addEntity(105, 100, "%(u_label)s", "%(inst_end)s?_uri=%(uri_encoded)s");
@@ -247,7 +247,7 @@ class ActivityRenderer(Renderer):
                             u_label = used['bindings'][2]['u_label']['value']
                         else:
                             u_label = 'uri'
-                        uri_encoded = urllib.quote(used['bindings'][2]['u']['value'])
+                        uri_encoded = uriparse.quote(used['bindings'][2]['u']['value'])
 
                         script += '''
                             var entityUsed3 = addEntity(105, 400, "%(u_label)s", "%(inst_end)s?_uri=%(uri_encoded)s");
@@ -258,7 +258,7 @@ class ActivityRenderer(Renderer):
                             'uri_encoded': uri_encoded
                         }
                     elif len(used['bindings']) > 3:
-                        query_encoded = urllib.quote(query)
+                        query_encoded = uriparse.quote(query)
                         script = ''  # reset script
                         script += '''
                             var entityUsed1 = addEntity(105, 260, "", "");
@@ -305,7 +305,7 @@ class ActivityRenderer(Renderer):
                     wgb_label = gen['bindings'][0]['wgb_label']['value']
                 else:
                     wgb_label = 'uri'
-                uri_encoded = urllib.quote(gen['bindings'][0]['u']['value'])
+                uri_encoded = uriparse.quote(gen['bindings'][0]['u']['value'])
                 script += '''
                     var entityGen1 = addEntity(605, 250, "%(wgb_label)s", "%(instance_endpoint)s?_uri=%(uri_encoded)s");
                     addLink(activity, entityGen1, "prov:generated", TOP);
@@ -319,7 +319,7 @@ class ActivityRenderer(Renderer):
                         wgb_label = gen['bindings'][1]['wgb_label']['value']
                     else:
                         wgb_label = 'uri'
-                    uri_encoded = urllib.quote(gen['bindings'][1]['u']['value'])
+                    uri_encoded = uriparse.quote(gen['bindings'][1]['u']['value'])
 
                     script += '''
                         var entityGen2 = addEntity(605, 100, "%(wgb_label)s", "%(inst_endpoint)s?_uri=%(uri_encoded)s");
@@ -334,7 +334,7 @@ class ActivityRenderer(Renderer):
                             wgb_label = gen['bindings'][2]['wgb_label']['value']
                         else:
                             wgb_label = 'uri'
-                        uri_encoded = urllib.quote(gen['bindings'][2]['u']['value'])
+                        uri_encoded = uriparse.quote(gen['bindings'][2]['u']['value'])
 
                         script += '''
                             var entityGen3 = addEntity(605, 400, "%(wgb_label)s", "%(inst_end)s?_uri=%(uri_encoded)s");
@@ -346,7 +346,7 @@ class ActivityRenderer(Renderer):
                         }
                     elif len(gen['bindings']) > 3:
                         # TODO: Check query
-                        query_encoded = urllib.quote(query)
+                        query_encoded = uriparse.quote(query)
                         script = ''  # reset script
                         script += '''
                             var entityGen1 = addEntity(615, 260, "", "");
@@ -392,7 +392,7 @@ class ActivityRenderer(Renderer):
                     label = wif['bindings'][0]['wif_label']['value']
                 else:
                     label = 'uri'
-                uri_encoded = urllib.quote(wif['bindings'][0]['wif']['value'])
+                uri_encoded = uriparse.quote(wif['bindings'][0]['wif']['value'])
                 script += '''
                     var activityWIB = addActivity(275, 399, "%(label)s", "%(instance_endpoint)s?_uri=%(uri_encoded)s");
                     addLink(activity, activityWIB, "prov:wasInformedBy", RIGHT);
@@ -403,7 +403,7 @@ class ActivityRenderer(Renderer):
                 }
             # TODO: Check query
             elif len(wif['bindings']) > 1:
-                query_encoded = urllib.quote(query)
+                query_encoded = uriparse.quote(query)
                 script += '''
                     var activityWIB1 = addActivity(275, 399, "", "");
                     var activityWIB2 = addActivity(270, 394, "", "")

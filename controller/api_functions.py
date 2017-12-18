@@ -119,7 +119,7 @@ def render_alternates_view(class_uri, class_uri_encoded, instance_uri, instance_
         DCT = Namespace('http://purl.org/dc/terms/')
         g.bind('dct', DCT)
 
-        class_uri_ref = URIRef(urllib.unquote_plus(class_uri))
+        class_uri_ref = URIRef(uriparse.unquote_plus(class_uri))
 
         if instance_uri:
             instance_uri_ref = URIRef(instance_uri)
@@ -243,7 +243,7 @@ def get_entities():
     if entities and 'results' in entities:
         for entity in entities['results']['bindings']:
             ret = {
-                'e': urllib.quote(str(entity['e']['value'])),
+                'e': uriparse.quote(str(entity['e']['value'])),
                 'e_u': str(entity['e']['value']),
             }
             if entity.get('l'):

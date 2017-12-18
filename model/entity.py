@@ -1,7 +1,7 @@
 from .renderer import Renderer
 from flask import Response, render_template
 from rdflib import Graph, URIRef, Literal, Namespace, RDF, RDFS
-import urllib
+import urllib.parse as uriparse
 import _database
 from modules.ldapi import LDAPI
 
@@ -10,7 +10,7 @@ class EntityRenderer(Renderer):
     def __init__(self, uri, endpoints):
         Renderer.__init__(self, uri, endpoints)
 
-        self.uri_encoded = urllib.quote_plus(uri)
+        self.uri_encoded = uriparse.quote_plus(uri)
         self.label = None
         self.value = None
         self.script = None
@@ -314,7 +314,7 @@ class EntityRenderer(Renderer):
 
     def _get_wat_svg(self):
         if self.wat is not None:
-            uri_encoded = urllib.quote(self.wat)
+            uri_encoded = uriparse.quote(self.wat)
             label = self.wat_label if self.wat_label is not None else 'uri'
 
             self.script += '''
@@ -354,7 +354,7 @@ class EntityRenderer(Renderer):
                     label = wgb[0]['label']['value']
                 else:
                     label = 'uri'
-                uri_encoded = urllib.quote(wgb[0]['a']['value'])
+                uri_encoded = uriparse.quote(wgb[0]['a']['value'])
                 script += '''
                         var aLabel = "%(label)s";
                         var aUri = "%(instance_endpoint)s?_uri=%(uri_encoded)s";
@@ -394,7 +394,7 @@ class EntityRenderer(Renderer):
                     label = used[0]['label']['value']
                 else:
                     label = 'uri'
-                uri_encoded = urllib.quote(used[0]['a']['value'])
+                uri_encoded = uriparse.quote(used[0]['a']['value'])
                 script = '''
                         var aLabel = "%(label)s";
                         var aUri = "%(instance_endpoint)s?_uri=%(uri_encoded)s";
@@ -408,7 +408,7 @@ class EntityRenderer(Renderer):
             # TODO: Test, no current Entities have multiple prov:used Activities
             elif len(used) > 1:
                 # TODO: Check query
-                query_encoded = urllib.quote(query)
+                query_encoded = uriparse.quote(query)
                 script += '''
                         activityUsed1 = addActivity(555, 215, "", "");
                         activityUsed2 = addActivity(550, 210, "", "");
@@ -452,7 +452,7 @@ class EntityRenderer(Renderer):
                     label = wdf[0]['label']['value']
                 else:
                     label = 'uri'
-                uri_encoded = urllib.quote(wdf[0]['e']['value'])
+                uri_encoded = uriparse.quote(wdf[0]['e']['value'])
                 script += '''
                         var entityWDF = addEntity(355, 440, "%(label)s", "%(instance_endpoint)s?_uri=%(uri_encoded)s");
                         drawLink(entityWDF, entity, "prov:wasDerivedFrom", TOP);
@@ -462,7 +462,7 @@ class EntityRenderer(Renderer):
                         'uri_encoded': uri_encoded
                     }
             elif len(wdf) > 1:
-                query_encoded = urllib.quote(query)
+                query_encoded = uriparse.quote(query)
                 script += '''
                         var entityWDF1 = addEntity(355, 440, "", "");
                         var entityWDF2 = addEntity(350, 435, "", "");

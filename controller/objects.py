@@ -1,7 +1,7 @@
 """
 This file contains all the HTTP routes for classes from the PROMS Ontology, such as Samples and the Sample Register
 """
-import urllib
+import urllib.parse as uriparse
 import model
 from flask import Blueprint, request, render_template, url_for
 from requests.exceptions import ConnectionError
@@ -52,7 +52,7 @@ def register():
     # if alternates model, return this info from file
     if view == 'alternates':
         del views_formats['renderer']
-        return api_functions.render_alternates_view(uri, urllib.parse.quote_plus(uri), None, None, views_formats, mime_format)
+        return api_functions.render_alternates_view(uri, uriparse.parse.quote_plus(uri), None, None, views_formats, mime_format)
 
     # get the register of this class of thing from the provenance database
     try:
@@ -125,8 +125,8 @@ def instance():
 
                 # if alternates model, return this info from file
                 if view == 'alternates':
-                    instance_uri_encoded = urllib.quote_plus(request.args.get('_uri'))
-                    class_uri_encoded = urllib.quote_plus(class_uri)
+                    instance_uri_encoded = uriparse.quote_plus(request.args.get('_uri'))
+                    class_uri_encoded = uriparse.quote_plus(class_uri)
                     del views_formats['renderer']
                     return api_functions.render_alternates_view(
                         class_uri,

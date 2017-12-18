@@ -1,6 +1,6 @@
 from .renderer import Renderer
 from flask import Response, render_template
-import urllib
+import urllib.parse as uriparse
 import _database
 from modules.ldapi import LDAPI
 from rdflib import Graph, URIRef, Literal, Namespace
@@ -10,7 +10,7 @@ class ReportingSystemRenderer(Renderer):
     def __init__(self, uri, endpoints):
         Renderer.__init__(self, uri, endpoints)
 
-        self.uri_encoded = urllib.parse.quote_plus(uri)
+        self.uri_encoded = uriparse.quote_plus(uri)
         self.label = None
         self.aobo = None
         self.aobo_label = None
@@ -190,7 +190,7 @@ class ReportingSystemRenderer(Renderer):
             reports = reports_results['results']
             if len(reports['bindings']) > 0:
                 label = reports['bindings'][0]['label']['value']
-                uri_encoded = urllib.quote(reports['bindings'][0]['r']['value'])
+                uri_encoded = uriparse.quote(reports['bindings'][0]['r']['value'])
                 nid = reports['bindings'][0]['nid']['value']
                 y_top = 5
                 x_pos = 350
@@ -214,7 +214,7 @@ class ReportingSystemRenderer(Renderer):
                     for report in reports:
                         y_offset = y_top + (i*report_height) + (i*y_gap)
                         if i == 3:
-                            query_encoded = urllib.quote(query)
+                            query_encoded = uriparse.quote(query)
                             script += '''
                                 var report = addReport(%(x_pos)s, %(y_offset)s, "Multiple Reports, click to search", "%(sparql_endpoint)s?query=%(query_encoded)s");
                                 reports.push(report);
@@ -226,7 +226,7 @@ class ReportingSystemRenderer(Renderer):
                             }
                             break
                         uri = report['r']['value']
-                        uri_encoded = urllib.quote(uri)
+                        uri_encoded = uriparse.quote(uri)
                         label = report['label']['value']
                         nid = report['nid']['value']
                         script += '''

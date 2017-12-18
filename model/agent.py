@@ -1,7 +1,7 @@
 from .renderer import Renderer
 from flask import Response, render_template
 import _database
-import urllib
+import urllib.parse as uriparse
 from modules.ldapi import LDAPI
 from rdflib import Graph, URIRef, Literal, Namespace
 
@@ -10,7 +10,7 @@ class AgentRenderer(Renderer):
     def __init__(self, uri, endpoints):
         Renderer.__init__(self, uri, endpoints)
 
-        self.uri_encoded = urllib.quote_plus(uri)
+        self.uri_encoded = uriparse.quote_plus(uri)
         self.label = None
         self.aobo = None
         self.aobo_label = None
@@ -164,7 +164,7 @@ class AgentRenderer(Renderer):
 
     def _get_aobo(self):
         if self.aobo is not None:
-            aobo_uri_encoded = urllib.quote(self.aobo)
+            aobo_uri_encoded = uriparse.quote(self.aobo)
             aobo_label = self.aobo_label if self.aobo_label is not None else 'uri'
 
             self.script += '''
@@ -203,7 +203,7 @@ class AgentRenderer(Renderer):
                     label = wat['bindings'][0]['label']['value']
                 else:
                     label = 'uri'
-                uri_encoded = urllib.quote(wat['bindings'][0]['e']['value'])
+                uri_encoded = uriparse.quote(wat['bindings'][0]['e']['value'])
                 script += '''
                     entityLabel = "%(label)s";
                     entityUri = "%(instance_endpoint)s?_uri=%(uri_encoded)s";
@@ -215,7 +215,7 @@ class AgentRenderer(Renderer):
                     'uri_encoded': uri_encoded
                 }
             elif len(wat['bindings']) > 1:
-                query_encoded = urllib.quote(query)
+                query_encoded = uriparse.quote(query)
                 script += '''
                     var entityWAT1 = addEntity(395, 440, "", "");
                     var entityWAT2 = addEntity(390, 435, "", "");
@@ -259,7 +259,7 @@ class AgentRenderer(Renderer):
                     waw_label = waw['bindings'][0]['waw_label']['value']
                 else:
                     waw_label = 'uri'
-                waw_uri_encoded = urllib.quote(waw['bindings'][0]['waw']['value'])
+                waw_uri_encoded = uriparse.quote(waw['bindings'][0]['waw']['value'])
                 script += '''
                     activityLabel = "%(waw_label)s";
                     activityUri = "%(instance_endpoint)s?_uri=%(waw_uri_encoded)s";
@@ -271,7 +271,7 @@ class AgentRenderer(Renderer):
                     'waw_uri_encoded': waw_uri_encoded
                 }
             elif len(waw['bindings']) > 1:
-                query_encoded = urllib.quote(query)
+                query_encoded = uriparse.quote(query)
                 script += '''
                     var activityWAW1 = addActivity(15, 210, "", "");
                     var activityWAW2 = addActivity(10, 205, "", "");

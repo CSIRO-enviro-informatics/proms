@@ -1,6 +1,6 @@
 import _config as conf
 from rdflib import URIRef
-import modules.pingbacks.engine as engine
+from . import engine as engine
 
 
 # Strategy 1: Given Pingback

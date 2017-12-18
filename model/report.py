@@ -1,6 +1,6 @@
 from .renderer import Renderer
 from flask import Response, render_template
-import urllib
+import urllib.parse as uriparse
 import _database
 from modules.ldapi import LDAPI
 from rdflib import Graph, URIRef, Literal, Namespace
@@ -10,7 +10,7 @@ class ReportRenderer(Renderer):
     def __init__(self, uri, endpoints):
         Renderer.__init__(self, uri, endpoints)
 
-        self.uri_encoded = urllib.quote_plus(uri)
+        self.uri_encoded = uriparse.quote_plus(uri)
         self.label = None
         self.rt = None
         self.rt_label = None
@@ -193,7 +193,7 @@ class ReportRenderer(Renderer):
                 self.nid = ret['nid']['value']
                 self.gat = ret['gat']['value']
                 self.rs = ret['rs']['value']
-                self.rs_encoded = urllib.quote_plus(self.rs)
+                self.rs_encoded = uriparse.quote_plus(self.rs)
                 self.rs_label = ret['rs_label']['value'] if 'rs_label' in ret else self.rs
                 if 'sa' in ret:
                     self.sa = ret['sa']['value']
@@ -231,7 +231,7 @@ class ReportRenderer(Renderer):
                     addLink(report, activity, "proms:endingActivity", BOTTOM);
                 ''' % {
                     'instance_endpoint': self.endpoints['instance'],
-                    'uri_encoded': urllib.quote(self.sa),
+                    'uri_encoded': uriparse.quote(self.sa),
                     'label': self.sa_label
                 }
             else:
@@ -243,7 +243,7 @@ class ReportRenderer(Renderer):
                     addLink(report, sacActivity, "proms:startingActivity", TOP);
                 ''' % {
                     'instance_endpoint': self.endpoints['instance'],
-                    'uri_encoded': urllib.quote(self.sa),
+                    'uri_encoded': uriparse.quote(self.sa),
                     'label': self.sa_label
                 }
 
@@ -254,7 +254,7 @@ class ReportRenderer(Renderer):
                     addLink(report, eacActivity, "proms:endingActivity", BOTTOM);
                 ''' % {
                     'instance_endpoint': self.endpoints['instance'],
-                    'uri_encoded': urllib.quote(self.ea),
+                    'uri_encoded': uriparse.quote(self.ea),
                     'label': self.ea_label
                 }
         else:

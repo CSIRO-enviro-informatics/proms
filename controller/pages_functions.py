@@ -2,7 +2,7 @@ from lxml import etree
 from lxml.builder import ElementMaker
 import _database
 import _config as conf
-import urllib
+import urllib.parse as uriparse
 
 
 # TODO: get_capabilities Python XML generation with an XML Jinja2 template
@@ -120,7 +120,7 @@ def get_contents_classes():
         for c in _database.query(query)['results']['bindings']:
             classes.append({
                 'uri': c['c']['value'],
-                'uri_encoded': urllib.parse.quote_plus(c['c']['value'])
+                'uri_encoded': uriparse.quote_plus(c['c']['value'])
             })
     except ValueError:
         pass  # i.e. no result

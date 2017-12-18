@@ -1,7 +1,6 @@
 from ..ruleset import RuleSet
 from ..rule import Rule
-
-import modules.rulesets.reports.prov_constraints_functions as funcs
+from . import prov_constraints_functions as funcs
 
 
 class ProvConstraints(RuleSet):

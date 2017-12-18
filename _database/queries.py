@@ -13,7 +13,7 @@ def query(sparql_query, format_mimetype='application/sparql-results+json'):
     }
     try:
         r = requests.post(conf.SPARQL_QUERY_URI, auth=auth, data=data, headers=headers, timeout=1)
-        return json.loads(r.text)
+        return json.loads(r.content.decode('utf-8'))
     except Exception as e:
         raise e
 

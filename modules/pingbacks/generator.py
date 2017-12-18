@@ -1,5 +1,5 @@
 import requests
-import urllib
+import urllib.parse as uriparse
 
 
 #
@@ -90,7 +90,7 @@ class ProvAqPingback:
         # PROMS Server can only give a PROMS Server query URI that give PROV provenance for <entity_uri>
         return ['%(instance_endpoint)s?_uri=%(entity_uri_encoded)s&_view=prov&_format=text/turtle' % {
             'instance_endpoint': self.instance_endpoint,
-            'entity_uri_encoded': urllib.quote_plus(self.entity_uri)
+            'entity_uri_encoded': uriparse.quote_plus(self.entity_uri)
         }]
 
     def _make_further_links(self):
@@ -187,7 +187,7 @@ class PromsPingback:
         # Entity
         query_uri = '%(instance_endpoint)s?_uri=%(entity_uri_encoded)s&_view=prov&_format=text/turtle' % {
             'instance_endpoint': self.instance_endpoint,
-            'entity_uri_encoded': urllib.quote_plus(self.entity_uri)
+            'entity_uri_encoded': uriparse.quote_plus(self.entity_uri)
         }
         print(query_uri)
         r = requests.get(query_uri)
