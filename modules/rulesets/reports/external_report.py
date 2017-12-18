@@ -23,7 +23,7 @@ class HasIdenticalActivities(Rule):
         self.passed = True
         self.fail_reasons = []
 
-        qres = g.query('''
+        q = g.query('''
             PREFIX proms: <http://promsns.org/def/proms#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             ASK
@@ -33,7 +33,7 @@ class HasIdenticalActivities(Rule):
                 ?s proms:endingActivity ?sa .
             }
             ''')
-        if not bool(qres):
+        if not bool(q):
             self.fail_reasons.append('The Report does not contain a single Activity indicated as both the starting and ending Activity')
 
         # determine passed due to any fail_reasons
@@ -58,7 +58,7 @@ class HasUsedAndGeneratedEntities(Rule):
         self.passed = True
         self.fail_reasons = []
 
-        qres = g.query('''
+        q = g.query('''
             PREFIX proms: <http://promsns.org/def/proms#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             ASK
@@ -69,10 +69,10 @@ class HasUsedAndGeneratedEntities(Rule):
                 ?e1 a prov:Entity.
             }
             ''')
-        if not bool(qres):
+        if not bool(q):
             self.fail_reasons.append('The Report\'s Activity does not use any Entities')
 
-        qres = g.query('''
+        q = g.query('''
             PREFIX proms: <http://promsns.org/def/proms#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             ASK
@@ -83,7 +83,7 @@ class HasUsedAndGeneratedEntities(Rule):
                 ?e1 a prov:Entity.
             }
             ''')
-        if not bool(qres):
+        if not bool(q):
             self.fail_reasons.append('The Report\'s Activity does not generate any Entities')
 
         # determine passed due to any fail_reasons

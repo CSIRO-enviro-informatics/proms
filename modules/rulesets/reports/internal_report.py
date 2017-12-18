@@ -24,7 +24,7 @@ class HasDifferentActivities(Rule):
         self.passed = True
         self.fail_reasons = []
 
-        qres = g.query('''
+        q = g.query('''
             PREFIX proms: <http://promsns.org/def/proms#>
             ASK
             WHERE {
@@ -35,9 +35,10 @@ class HasDifferentActivities(Rule):
             }
             ''')
 
-        if not bool(qres):
+        if not bool(q):
             self.fail_reasons.append(
-                'The Report does not contain at least two different Activities indicated by the starting and ending Activity')
+                'The Report does not contain at least two different Activities '
+                'indicated by the starting and ending Activity')
 
         # determine passed due to any fail_reasons
         # if there are any failure reasons it means it's failed
@@ -61,7 +62,7 @@ class StartBeforeEnd(Rule):
         self.passed = True
         self.fail_reasons = []
 
-        qres = g.query('''
+        q = g.query('''
             PREFIX prov: <http://www.w3.org/ns/prov#>
             PREFIX proms: <http://promsns.org/def/proms#>
             ASK
@@ -75,7 +76,7 @@ class StartBeforeEnd(Rule):
             }
             ''')
 
-        if not bool(qres):
+        if not bool(q):
             self.fail_reasons.append(
                 'The Report\'s starting Activity doesn\'t start before its ending Activity starts')
 

@@ -21,7 +21,7 @@ class IncomingReport(IncomingClass):
         # try to parse the Report data
         try:
             self.graph = Graph().parse(
-                io.StringIO(self.request.data),
+                io.StringIO(self.request.data.decode('utf-8')),
                 format=[item[1] for item in LDAPI.MIMETYPES_PARSERS if item[0] == self.request.mimetype][0]
             )
         except Exception as e:

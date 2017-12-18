@@ -24,7 +24,7 @@ class ReportProperties(Rule):
         self.fail_reasons = []
 
         # has a Report class
-        qres = g.query('''
+        q = g.query('''
         PREFIX proms: <http://promsns.org/def/proms#>
         SELECT ?s
         WHERE {
@@ -37,11 +37,11 @@ class ReportProperties(Rule):
             { ?s  a            proms:InternalReport .}
         }
         ''')
-        if not bool(qres):
+        if not bool(q):
             self.fail_reasons.append('The report does not contain a Report class or subclass')
 
         # has a label
-        qres = g.query('''
+        q = g.query('''
         PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT ?s
@@ -56,11 +56,11 @@ class ReportProperties(Rule):
             ?s  rdfs:label     ?label .
         }
         ''')
-        if not bool(qres):
+        if not bool(q):
             self.fail_reasons.append('The Report class does not contain an rdfs:label')
 
         # has a nativeId
-        qres = g.query('''
+        q = g.query('''
         PREFIX proms: <http://promsns.org/def/proms#>
         SELECT ?s
         WHERE {
@@ -74,11 +74,11 @@ class ReportProperties(Rule):
             ?s  proms:nativeId  ?j .
         }
         ''')
-        if not bool(qres):
+        if not bool(q):
             self.fail_reasons.append('The Report class does not contain a proms:nativeId')
 
         # has a ReportingSystem
-        qres = g.query('''
+        q = g.query('''
         PREFIX proms: <http://promsns.org/def/proms#>
         SELECT ?s
         WHERE {
@@ -92,12 +92,12 @@ class ReportProperties(Rule):
             ?s  proms:wasReportedBy  ?rs .
         }
         ''')
-        if not bool(qres):
+        if not bool(q):
             self.fail_reasons.append('The Report class does not indicate which ReportingSystem reported it with a '
                                      'proms:wasReportedBy property')
 
         # has a generatedAtTime
-        qres = g.query('''
+        q = g.query('''
         PREFIX proms: <http://promsns.org/def/proms#>
         PREFIX prov: <http://www.w3.org/ns/prov#>
         ASK
@@ -112,7 +112,7 @@ class ReportProperties(Rule):
             ?s prov:generatedAtTime ?t .
         }
         ''')
-        if not bool(qres):
+        if not bool(q):
             self.fail_reasons.append('The Report class does not contain a prov:generatedAtTime value')
 
         # determine passed due to any fail_reasons
@@ -139,14 +139,14 @@ class HasAnExistingReportingSystem(Rule):
         reporting_system_uri = None
 
         # get the ReportingSystem URI
-        qres = g.query('''
+        q = g.query('''
         PREFIX proms: <http://promsns.org/def/proms#>
         SELECT ?rs
         WHERE {
             ?r proms:wasReportedBy ?rs .
         }
         ''')
-        for r in qres:
+        for r in q:
             reporting_system_uri = str(r['rs'])
 
         # check to see if this ReportingSystem already exists in the provenance _database
@@ -179,7 +179,7 @@ class HasStartingAndEndingActivities(Rule):
         self.passed = True
         self.fail_reasons = []
 
-        qres = g.query('''
+        q = g.query('''
             PREFIX proms: <http://promsns.org/def/proms#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             ASK
@@ -195,10 +195,10 @@ class HasStartingAndEndingActivities(Rule):
                 ?rs a prov:Activity .
             }
         ''')
-        if not bool(qres):
+        if not bool(q):
             self.fail_reasons.append('The Report class does not contain a proms:startingActivity')
 
-        qres = g.query('''
+        q = g.query('''
             PREFIX proms: <http://promsns.org/def/proms#>
             PREFIX prov: <http://www.w3.org/ns/prov#>
             ASK
@@ -214,7 +214,7 @@ class HasStartingAndEndingActivities(Rule):
                 ?rs a prov:Activity .
             }
         ''')
-        if not bool(qres):
+        if not bool(q):
             self.fail_reasons.append('The Report class does not contain a proms:endingActivity')
 
         # determine passed due to any fail_reasons

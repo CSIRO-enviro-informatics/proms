@@ -1,7 +1,7 @@
 from ..ruleset import RuleSet
 from ..rule import Rule
 
-from .prov_constraints_functions import *
+import modules.rulesets.reports.prov_constraints_functions as funcs
 
 
 class ProvConstraints(RuleSet):
@@ -32,7 +32,7 @@ class Cycle(Rule):
     def __init__(self, g):
         passed = True
         fail_reasons = []
-        f = prov_constraints_functions.checkCycle(g)
+        f = funcs.checkCycle(g)
         if f is not None:
             passed = False
             fail_reasons.append(str(f))  # no need to name the Rule as the Ruleset will append this
@@ -55,7 +55,7 @@ class Impossibility(Rule):
     def __init__(self, g):
         passed = True
         fail_reasons = []
-        f = prov_constraints_functions.checkImpossibility(g)
+        f = funcs.checkImpossibility(g)
         if f is not None:
             passed = False
             fail_reasons.append(str(f))  # no need to name the Rule as the Ruleset will append this
@@ -77,7 +77,7 @@ class KeyConstraints(Rule):
     def __init__(self, g):
         passed = True
         fail_reasons = []
-        f = prov_constraints_functions.checkKeyConstraints(g)
+        f = funcs.checkKeyConstraints(g)
         if f is not None:
             passed = False
             fail_reasons.append(str(f))  # no need to name the Rule as the Ruleset will append this
@@ -99,7 +99,7 @@ class TypeConstraints(Rule):
     def __init__(self, g):
         passed = True
         fail_reasons = []
-        f = prov_constraints_functions.checkTypeConstraints(g)
+        f = funcs.checkTypeConstraints(g)
         if f is not None:
             passed = False
             fail_reasons.append(str(f))  # no need to name the Rule as the Ruleset will append this
@@ -121,7 +121,7 @@ class Uniqueness(Rule):
     def __init__(self, g):
         passed = True
         fail_reasons = []
-        f = prov_constraints_functions.checkUniqueness(g)
+        f = funcs.checkUniqueness(g)
         if f is not None:
             passed = False
             fail_reasons.append(str(f))  # no need to name the Rule as the Ruleset will append this
