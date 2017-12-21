@@ -131,17 +131,12 @@ def lodge_report():
         return api_functions.client_error_response(
             'The Report posted is not valid for the following reasons: ' + ', '.join(r.error_messages) + '.')
 
-    # TODO: implement Named Graph annotation metadata
-    ''' UNUSED yet
-    # this code is incomplete. It is to generate Named Graph metadata so Reports flowing to PROMS can each be stored in 
-    annotated Named Graphs
-    # get the Report's URI
+    # generate Named Graph metadata
     r.determine_uri()
-
     r.generate_named_graph_metadata()
-    '''
 
     # store the Report
+    # since it is valid and NG metadata has been built, we can store it
     if not r.stored():
         return api_functions.server_error_response(
             'Report posted is valid but cannot be stored for the following reasons: ' +
