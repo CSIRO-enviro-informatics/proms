@@ -64,7 +64,7 @@ class ClassRenderer(Renderer):
         prov_data = self._prov_rdf().serialize(format='turtle')
 
         return render_template(
-            'class_entity_prov.html',
+            'class_owlclass.html',
             agent=ret,
             prov_data=prov_data
         )

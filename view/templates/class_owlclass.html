@@ -1,0 +1,17 @@
+{% extends "template_layout_vanilla.html" %}
+
+{% block content %}
+    <h1>PROMS Server</h1>
+    <h2>A Class</h2>
+    <p><a href="{{ request.url }}">html</a> | <a href="{{ request.url }}&_format=text/turtle">rdf/turtle</a></p>
+    <table class="lined">
+        <tr><th>URI:</th><td><a href="{{ entity['uri'] }}">{{ entity['uri'] }}</a></td></tr>
+        {% if entity['label'] is not none %}
+            <tr><th>Label:</th><td>{{ entity['label'] }}</td></tr>
+        {% endif %}
+    </table>
+
+    <h3>Alternate views</h3>
+    <p>Different view of this object are listed at its <a href="{{ request.base_url }}?_uri={{ entity['uri_encoded'] }}&_view=alternates">Alternate views</a> page.</p>
+
+{% endblock %}

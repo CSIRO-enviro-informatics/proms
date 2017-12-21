@@ -111,10 +111,24 @@ def instance():
 
     # the URI is of something in the graph so now we validate the requested model and format
     # find the class of the URI
-    for s, p, o in g:
-        if str(p) == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type':
+    q = '''
+    SELECT DISTINCT ?o WHERE {
+        <%s> a ?o .
+    }
+    ''' % instance_uri
+    for r in g.query(q):
+        class_uri = str(str(r['o']))
+        # first preference render
+        if class_uri in [
+            'http://www.w3.org/ns/prov#Activity',
+            'http://www.w3.org/ns/prov#Agent',
+            'http://www.w3.org/ns/prov#Entity',
+            'http://promsns.org/def/proms#BasicReport',
+            'http://promsns.org/def/proms#ExternalReport',
+            'http://promsns.org/def/proms#InternalReport',
+            'http://promsns.org/def/proms#ReportingSystem'
+        ]:
             # validate this request's model and format
-            class_uri = str(o)
             views_formats = objects_functions.get_classes_views_formats().get(class_uri)
             try:
                 view, mime_format = LDAPI.get_valid_view_and_format(
