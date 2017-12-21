@@ -9,6 +9,7 @@ import controller.class_reportingsystems as class_reportingsystems
 import controller.class_agents as class_agents
 import controller.class_reports as class_reports
 import controller.class_pingbacks as class_pingbacks
+import _config as conf
 
 api = Blueprint('api', __name__)
 
@@ -111,7 +112,11 @@ def create_reportingsystem():
 
 @api.route('/function/lodge-report', methods=['POST'])
 def lodge_report():
-    """Insert a Report into the provenance _database"""
+    """Insert a Report into the provenance database
+
+    This function should be edited if any custom actions are to be undertaken by PROMS on reciept of a Report, such as
+    Ppingbacks
+    """
     # only accept RDF documents
     acceptable_mimes = LDAPI.get_rdf_mimetypes_list()
     ct = request.content_type
@@ -120,16 +125,21 @@ def lodge_report():
             'The Report posted is not encoded with a valid RDF Content-Type. Must be one of: ' +
             ', '.join(acceptable_mimes) + '.')
 
-    # validate Report
+    # validate Report, using the controller validator class, IncomingReport
     r = class_reports.IncomingReport(request)
     if not r.valid():
         return api_functions.client_error_response(
             'The Report posted is not valid for the following reasons: ' + ', '.join(r.error_messages) + '.')
 
+    # TODO: implement Named Graph annotation metadata
+    ''' UNUSED yet
+    # this code is incomplete. It is to generate Named Graph metadata so Reports flowing to PROMS can each be stored in 
+    annotated Named Graphs
     # get the Report's URI
     r.determine_uri()
 
     r.generate_named_graph_metadata()
+    '''
 
     # store the Report
     if not r.stored():
@@ -137,10 +147,13 @@ def lodge_report():
             'Report posted is valid but cannot be stored for the following reasons: ' +
             ', '.join(r.error_messages) + '.')
 
-    # kick off any Pingbacks for this Report, as per chosen Pingbacks strategies
-    # TODO: split this off into another thread
-    from modules.pingbacks.engine import Engine
-    e = Engine(r.graph, r.uri, url_for('modelx.instance'), url_for('.sparql'))
+    # Custom Actions
+    # Only try to any custom actions, e.g. Pingbacks, if the module is turned on
+    if conf.MODULES.get('pingbacks').get('valid'):
+        # kick off any Pingbacks for this Report, as per chosen Pingbacks strategies
+        # TODO: split Pingbacks process off into another thread
+        from modules.pingbacks.engine import Engine
+        e = Engine(r.graph, r.uri, url_for('modelx.instance'), url_for('.sparql'))
 
     # reply to sender
     return r.uri, 201

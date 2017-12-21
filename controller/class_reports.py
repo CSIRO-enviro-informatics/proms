@@ -17,7 +17,14 @@ class IncomingReport(IncomingClass):
         self._generate_named_graph_uri()
 
     def valid(self):
-        """Validates an incoming Report using direct _tests (can it be parsed?) and appropriate RuleSets"""
+        """Validates an incoming Report using direct tests (can it be parsed?) and appropriate RuleSets
+
+        This is the function that should be edited in order to cater for additional, instance-specific, RuleSets. To
+        include additional RuleSets, this code simply has to quick read the incoming report and use any custom code to
+        determine the starting RuleSet which, given that they include their dependencies, should then include one of the
+        PROMS Report RuleSets (Basic, Externa or Internal) which will then, in turn, include PROV Constraints in its
+        dependencies.
+        """
         # try to parse the Report data
         try:
             self.graph = Graph().parse(
@@ -48,6 +55,12 @@ class IncomingReport(IncomingClass):
                 self.type = str(row[0])
 
         # choose RuleSet based on Report type
+
+        # We always validate Reports with 2 or more RuleSets: PROV Constraints and either the Basic, External or
+        # Internal PROMS Report RuleSets plus any others implemented for a particular PROMS instance. We don't need to
+        # know which RuleSets are in play though as they contain their dependencies so Basic, External and Internal
+        # PROMS Report RuleSets all contain the dependency of PROV Constraints, so we just need to indicate the starting
+        # RuleSet
         if self.type == 'http://promsns.org/def/proms#BasicReport':
             conformant_report = report_rulesets.BasicReport(self.graph)
         elif self.type == 'http://promsns.org/def/proms#ExternalReport':

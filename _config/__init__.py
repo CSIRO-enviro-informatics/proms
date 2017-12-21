@@ -89,3 +89,28 @@ SPARQL_AUTH_USR = 'fuseki'  # Ensure this matches any triplestore proxying setti
 SPARQL_AUTH_PWD = 'provenator'  # Ensure this matches any triplestore proxying settings (install-apache.sh)
 SPARQL_TIMEOUT = 5  # Request Timeout in seconds
 
+MODULES = {
+    'ldapi': {
+        'enabled': True,
+        'path': join(APP_DIR, 'modules', 'ldapi'),
+    },
+    'pingbacks': {
+        'enabled': True,
+        'path': join(APP_DIR, 'modules', 'pingbacks'),
+    },
+    'rulesets': {
+        'enabled': True,
+        'path': join(APP_DIR, 'modules', 'rulesets'),
+        'rulesets': {
+            'reports': {
+                'enabled': True
+            },
+            'reportingsystems': {
+                'enabled': True
+            },
+            'pingbacks': {
+                'enabled': False
+            }
+        }
+    }
+}
