@@ -71,7 +71,7 @@ def register():
 def get_class_register(class_uri):
     q = '''
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        SELECT ?uri ?label
+        SELECT DISTINCT ?uri ?label
         WHERE {
             GRAPH ?g {
                 ?uri a <%(class_uri)s> ;
@@ -156,16 +156,16 @@ def instance():
 
 def get_class_object(uri):
     """
-    Returns the graph of an object in the graph _database
+    Returns the graph of an object in the graph database
 
-    :param uri: the URI of something in the graph _database
+    :param uri: the URI of something in the graph database
     :return: an RDF Graph
     """
     if uri is not None:
         r = _database.query_turtle(
             'CONSTRUCT { <' + uri + '> ?p ?o } WHERE { GRAPH ?g { <' + uri + '> ?p ?o }}'
         )
-        # a uri query string argument was supplied was supplied but it was not the URI of something in the graph
+        # a uri query string argument was supplied but it was not the URI of something in the graph
         g = Graph().parse(data=r, format='turtle')
 
         if len(g) == 0:
