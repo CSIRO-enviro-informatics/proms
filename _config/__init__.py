@@ -83,8 +83,8 @@ DEBUG = True
 #   SPARQL_SECURE_QUERY_URI = 'http://localhost/fuseki/data/query'
 #
 #   as Apache server is hiding port 3030 from access by proxying to it.
-SPARQL_QUERY_URI = 'http://proms.promsns.org/fuseki/proms/query'
-SPARQL_UPDATE_URI = 'http://proms.promsns.org/fuseki/proms/update'
+SPARQL_QUERY_URI = 'http://localhost:3030/proms-ds/query'
+SPARQL_UPDATE_URI = 'http://localhost:3030/proms-ds/update'
 SPARQL_AUTH_USR = 'fuseki'  # Ensure this matches any triplestore proxying settings (install-apache.sh)
 SPARQL_AUTH_PWD = 'provenator'  # Ensure this matches any triplestore proxying settings (install-apache.sh)
 SPARQL_TIMEOUT = 5  # Request Timeout in seconds
