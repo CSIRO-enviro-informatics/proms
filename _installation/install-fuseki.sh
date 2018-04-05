@@ -11,14 +11,14 @@ sudo nano /var/lib/tomcat8/conf/tomcat-users.xml
 
 # download Fuseki with Jena
 # NOTE: update the Fuseki version number in file name to latest
-wget http://apache.mirror.serversaustralia.com.au/jena/binaries/apache-jena-fuseki-3.5.0.tar.gz -O fuseki.tar.gz
+wget http://apache.mirror.serversaustralia.com.au/jena/binaries/apache-jena-fuseki-3.6.0.tar.gz -O fuseki.tar.gz
 # load the Fuseki WAR into Tomcat
-tar -xzf apache-jena-fuseki-3.5.0.tar.gz
-sudo cp apache-jena-fuseki-3.5.0/fuseki.war /var/lib/tomcat8/webapps/
+tar -xzf fuseki.tar.gz
+sudo cp apache-jena-fuseki-3.6.0/fuseki.war /var/lib/tomcat8/webapps/
 
 # create the Fuseki data dir
 sudo mkdir /etc/fuseki
-sudo chown tomcat8 /etc/fuseki/
+sudo chown -R tomcat8 /etc/fuseki/
 
 # start the Fuseki webapp in Tomcat manager http://{IP-ADDRESS}/manager/html/
 # all config for Fuseki is now in /etc/fuseki/

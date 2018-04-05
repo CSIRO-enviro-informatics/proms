@@ -1,19 +1,50 @@
+@font-face {
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 400;
+    src: local("Montserrat Regular"), local("Montserrat-Regular"), url("https://fonts.gstatic.com/s/montserrat/v12/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2") format("woff2"); unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 body {
 	margin: 0 auto;
 	text-align: center;
-	background-color: #E0E0E0;
+	background-color: rgb(240, 240, 235);
 }
 
-#container-logo {
+.biglink {
+    color: rgb(6, 109, 87);
+    font-family: "Montserrat", sans-serif;
+    text-decoration: none;
+}
+.biglink:hover {
+    text-decoration: underline;
+}
+
+#logolink {
+    display: block;
+    margin-bottom: 15px;
+}
+
+#container-header {
 	margin: 0 auto;
+    margin-top: 15px;
 	text-align:left;
 	width:894px;
 	position:relative;
 	height:50px;
 }
 
+#container-logo {
+    float: left;
+}
+
+#container-nav {
+    float: right;
+}
+
 #container-content {
 	margin: 0 auto;
+    margin-top: 150px;
 	text-align:left;
 	width:894px;
 	background-color:white;
@@ -26,16 +57,19 @@ body {
 h1 {
     padding: 0 0 0 0;
     margin: 0 0 0.2em 0;
-    color: #01313c;
-    font-family: Verdana, Geneva, sans-serif;
-    font-size: 3.2em;
+    color: rgb(6, 109, 87);
+    font-family: "Montserrat", sans-serif;
+    font-size: 2rem;
     font-weight: normal;
     line-height: 1.1;
+    text-transform: uppercase;
 }
 
 h2, h3 {
-    font-family: Verdana, Geneva, sans-serif;
-    font-weight: normal;
+    color: rgb(63, 72, 84);
+    font-family: "Montserrat", sans-serif;
+    font-size: 2rem;
+        font-weight: normal;
 }
 
 h4, p, li {
@@ -52,7 +86,13 @@ p, li {
 
 p a,
 ul li a {
-    color: #0f4a84;
+    color: rgb(6, 109, 87);
+    font-weight: bold;
+    text-decoration: none;
+}
+p a:hover,
+ul li a:hover {
+    text-decoration: underline;
 }
 
 #footer {
@@ -81,19 +121,16 @@ ul li a {
 }
 
 #footer-external-links li a {
-    color: #0f4a84;
+    color: rgb(6, 109, 87);
 }
 
 #nav {
-    font-family: Verdana, Arial, helvetica, sans-serif;
-    font-weight:bold;
-    font-size:small;
-    margin: 0 10px 0 10px;
+    margin-top: -75px;
     text-align: right;
+    border: solid 1px red;
 }
 
-#nav a {
-    color: #0f4a84;
+#eudm-nav a {
     padding: 3px 5px 3px 5px;
 }
 

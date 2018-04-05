@@ -3,8 +3,9 @@
 INSTALL_DIR="`( pwd )`"
 
 # installs Apache, mod_wsgi, sets a BASIC auth pwd
-sudo aptitude install -y apache2
-sudo aptitude install -y apache2-utils
+sudo apt install -y apache2
+sudo apt install -y apache2-utils
+sudo apt install libapache2-mod-wsgi-py3
 sudo a2enmod wsgi
 sudo a2enmod proxy
 sudo a2enmod proxy_http

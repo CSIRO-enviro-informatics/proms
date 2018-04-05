@@ -1,9 +1,12 @@
-{% extends "template_layout_vanilla.html" %}
+{% extends "template_layout_eudm.html" %}
 
 {% block content %}
     <h1>PROMS Server</h1>
-    <h2>Home</h2>
-    <p>This is the index page for the PROMS (PROvenance Management System) data store. It contains a database to store provenance data and a series of functions to manage that data.</p>
+    <h2>For the EUDM project</h2>
+    <p>This is the home page for an instance of PROMS (PROvenance Management System) for the <a href="https://eudm.csiro.au">EUDM project</a>. It contains a database to store provenance data and a series of functions to manage that data.</p>
+    <p>The EUDM project tracks the provenance of data that is incorporated into the energy use data model and that provenance is stored within this system.</p>
+    <h3>More about EUDM</h3>
+    <p>See the main <a href="https://eudm.csiro.au">EUDM project</a> data catalogue.</p>
     <h3>More About PROMS Server</h3>
     <p>See the <a href="{{ url_for('pages.about') }}">About</a> page.</p>
 {% endblock %}

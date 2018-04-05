@@ -1,16 +1,29 @@
 #!/bin/bash
-# install Git
-sudo aptitude install -y git
+# updated to Ubuntu 16.04
+
+# basic server setup
+sudo timedatectl set-timezone Australia/Brisbane
+sudo apt update
+sudo apt upgrade -y
 
 # install Python packages
-sudo aptitude install -y python-pip
-sudo pip install flask
-sudo pip install rdflib
-sudo pip install rdflib-jsonld
+sudo apt install -y python3-pip
+sudo pip3 install --upgrade pip
+sudo pip3 install flask
+sudo pip3 install rdflib
+sudo pip3 install rdflib-jsonld
+sudo pip3 install lxml
 # install watchdog to avoid issued with six.py requiring _winreg
-sudo pip install watchdog
+sudo pip3 install watchdog
+
+# install Apache as per install-apache-apt.sh
+
+# install Git
+sudo apt install -y git
 
 # clone PROMS code
-mkdir /var/www/proms
+sudo mkdir /var/www/proms
+sudo chown -R ubuntu:ubuntu /var/www/proms
 cd /var/www/proms
 git clone https://bitbucket.csiro.au/scm/eis/proms.git .
+git checkout eudm
